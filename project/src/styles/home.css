@@ -5,6 +5,56 @@
    already token-based, so the values below are copied, not reinterpreted —
    only moved from style="" attributes into real classes). */
 
+/* ---------------------------------------------------------------- entrance motion
+   "The lamp comes on." Nothing travels on entrance — light is the only material
+   that changes, which is the one depth language this system already has (the DS
+   readme's "elevation reads as emerald glow, not shadow"). Sections cross-fade,
+   the single emerald card blooms its glow and warms its border as the row
+   arrives, medallions come up from desaturated, and the beaded rule nodes ignite.
+
+   Scroll-driven and script-free: `animation-timeline: view()` means no observer
+   to fail and no hidden-until-JS content. Browsers without scroll-driven support
+   ignore the timeline and simply play each entrance once on load; both paths end
+   at the element's natural state, so the page is never left invisible.
+   components.css disables animation wholesale under prefers-reduced-motion, and
+   because every "to" state is the resting state, that path renders correctly. */
+@keyframes lamp-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lamp-card {
+  from { box-shadow: 0 0 0 rgba(44,196,134,0), var(--glow-inset); border-color: var(--border-hairline); }
+  to   { box-shadow: var(--glow-md), var(--glow-inset); border-color: var(--border-accent); }
+}
+@keyframes lamp-medallion {
+  from { box-shadow: 0 0 0 rgba(44,196,134,0); filter: saturate(.55) brightness(.85); }
+  to   { box-shadow: var(--glow-sm); filter: none; }
+}
+@keyframes lamp-node {
+  from { box-shadow: 0 0 0 rgba(44,196,134,0); }
+  to   { box-shadow: 0 0 18px rgba(44,196,134,.45); }
+}
+
+main > section {
+  animation: lamp-fade 520ms var(--ease-entrance) both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 60%;
+}
+.card--emerald {
+  animation: lamp-card 900ms var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 12% entry 78%;
+}
+.feature-card__badge,
+.service-card__badge {
+  animation: lamp-medallion 700ms var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 10% entry 70%;
+}
+.glow-rule__dot,
+.keyword-rail__dot {
+  animation: lamp-node 620ms var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 20% entry 85%;
+}
+
 /* ---------------------------------------------------------------- page ground
    The radial teal-green bloom + faint vertical mesh that sit behind the
    whole page (Mitec Design System readme §4 "Backgrounds"). */
@@ -20,41 +70,80 @@
 .page-content { position: relative; }
 
 /* ---------------------------------------------------------------- section rhythm
-   Each section carries the exact max-width/padding/gap the design specifies;
-   values differ per section (gap especially), so they're set individually
-   rather than forced into one shared shorthand. */
-.section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-10) var(--gutter); display: flex; flex-direction: column; }
+   One interval between a heading and its content, everywhere. The sections used
+   to carry seven different gaps (48/40/32/40/40/24/32) with nothing deciding
+   which got which, so tight and generous read as noise rather than cadence.
+   Only genuine exceptions stay per-section: the FAQ's narrow measure and the
+   extra breathing room under the closing CTA. */
+.section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-10) var(--gutter); display: flex; flex-direction: column; gap: var(--space-8); }
 section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jumps */
 
-#services { gap: var(--space-8); }
-#work { gap: var(--space-7); }
-#process { gap: var(--space-8); }
-#about { gap: var(--space-8); }
-.testimonials { gap: var(--space-6); }
-#faq { max-width: var(--container-narrow); gap: var(--space-7); }
+#faq { max-width: var(--container-narrow); }
 #contact { padding-bottom: var(--space-12); }
 
-/* ---------------------------------------------------------------- hero */
-.hero { max-width: var(--container-max); margin-inline: auto; padding: var(--space-12) var(--gutter) var(--space-10); display: flex; flex-direction: column; gap: var(--space-8); }
-.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; }
-.hero__glow-rule { display: flex; justify-content: center; }
-.hero__glow-rule .glow-rule { width: 420px; max-width: 100%; }
+/* ---------------------------------------------------------------- hero
+   Split masthead: the copy and the project stage share the first viewport
+   side by side instead of queueing down a single centred column, so the
+   promise and the proof of it are read together. Below 900px the two
+   columns collapse back to one and the stage follows the copy. */
+.hero { max-width: var(--container-max); margin-inline: auto; padding: var(--space-12) var(--gutter) var(--space-10); display: flex; flex-direction: column; gap: var(--space-9); }
+.hero__masthead { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8); align-items: center; }
+.hero__copy { display: flex; flex-direction: column; gap: var(--space-5); text-align: start; align-items: flex-start; }
+/* Display-2 rather than display-1: the headline now shares the row with the
+   stage, so it takes the next step down the ramp instead of a bespoke size.
+   Balanced wrapping keeps the last line from stranding a single word. */
+.hero__copy .section-heading__title { font-size: var(--text-display-2); text-wrap: balance; }
+.hero__copy .section-heading__sub { max-width: 46ch; }
+.hero__copy .glow-rule { width: 100%; max-width: 320px; }
+.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: flex-start; }
+
+/* Single column: the keyword rail that used to sit beside the clients strip was
+   four adjectives with no figure behind them, which the design system's own
+   proof-over-adjectives rule rejects, so the strip now has the row to itself. */
+.hero__foot { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); align-items: center; }
+.hero__foot .logo-strip { border-top: 0; border-radius: var(--radius-lg); }
+
+/* Hero proof bands carry emerald ground instead of plain glass — the action
+   colour trades a little rarity for territory in the first viewport only.
+   Scoped to .hero on purpose: past the fold the page switches to the ink/ivory
+   strategy (the ivory service cards), so the two treatments never overlap. */
+.hero .stat-bar {
+  background-image:
+    linear-gradient(160deg, rgba(15,76,63,.42) 0%, rgba(9,51,73,.42) 100%),
+    var(--grad-glass);
+  border-color: color-mix(in oklab, var(--border-accent) 50%, var(--border-hairline));
+}
+.hero .logo-strip {
+  background-color: var(--surface-sunken);
+  background-image: linear-gradient(160deg, rgba(15,76,63,.30) 0%, rgba(9,51,73,.30) 100%);
+}
+/* The emerald tint darkens the ground under these bands, and --text-muted was
+   already sitting on the palette's 4.6:1 floor. Captions on a tinted band step
+   up to body ink so they stay measurable — a real colour, never faded opacity. */
+.hero .stat-bar .stat-block__label,
+.hero .logo-strip__label { color: var(--ink-200); }
+
+@media (min-width: 900px) {
+  .hero__masthead { grid-template-columns: minmax(0, 1fr) minmax(0, 46%); }
+}
 
 /* Laptop + phone mockup stage */
-.hero__stage { position: relative; max-width: 760px; margin-inline: auto; width: 100%; }
+.hero__stage { position: relative; max-width: none; margin-inline: 0; width: 100%; }
 .hero__stage-glow { position: absolute; inset-inline: 12%; top: 6%; height: 70%; background: radial-gradient(ellipse at center, rgba(44,196,134,.34), transparent 68%); filter: blur(46px); pointer-events: none; }
 .hero__stage-inner { position: relative; }
 
 .hero__laptop-frame { padding: 10px 10px 8px; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs); background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg), var(--glow-inset); }
 .hero__laptop-screen { border-radius: var(--radius-media); overflow: hidden; border: var(--border-width) solid var(--border-hairline); aspect-ratio: 16 / 10; background: var(--surface-sunken); }
-.hero__laptop-base { width: 112%; margin-inline-start: -6%; height: 15px; border-radius: 0 0 var(--radius-md) var(--radius-md); background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow: var(--shadow-lg); }
+/* The foot is intentionally wider than the screen, but its overhang is capped
+   to the gutter so it can never push the page into horizontal scroll. */
+.hero__laptop-base { width: min(112%, calc(100% + 2 * var(--gutter))); margin-inline-start: max(-6%, calc(-1 * var(--gutter))); height: 15px; border-radius: 0 0 var(--radius-md) var(--radius-md); background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow: var(--shadow-lg); }
 .hero__laptop-shadow { width: 74%; height: 90px; margin: 0 auto; background: linear-gradient(180deg, rgba(44,196,134,.3), transparent 72%); filter: blur(20px); }
 
-.hero__dash-card { position: absolute; top: 13%; inset-inline-start: -5%; width: min(46%, 212px); }
+.hero__dash-card { position: absolute; top: 13%; inset-inline-start: -3%; width: min(52%, 196px); }
 .hero__dash-card .card { padding: var(--space-4); }
 .hero__dash-label { font-size: var(--text-caption); color: var(--text-muted); margin-bottom: var(--space-3); }
 .hero__dash-bars { display: flex; align-items: flex-end; gap: 6px; height: 52px; }
-.hero__dash-bars span { flex: 1; display: block; border-radius: 3px; background: var(--grad-accent); }
+.hero__dash-bars span { flex: 1; display: block; border-radius: var(--radius-xs); background: var(--grad-accent); }
 .hero__dash-bars span.is-gold { background: var(--grad-gold); }
 
 .hero__phone { position: absolute; bottom: 12%; inset-inline-start: 2%; width: min(20%, 100px); }
@@ -62,7 +151,6 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 .hero__phone-screen { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 9 / 17; background: var(--surface-sunken); }
 
 /* ---------------------------------------------------------------- grids */
-.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-4); }
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
 .work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--space-4); }
 .process-grid { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-4); }

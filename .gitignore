@@ -1,3 +1,10 @@
 .DS_Store
 Thumbs.db
 node_modules/
+
+# Impeccable live-mode working state: session journals, accept receipts and
+# absolute machine paths. The design sidecar and live config are kept.
+.impeccable/live/sessions/
+.impeccable/live/accept-receipts/
+.impeccable/live/roots.json
+.impeccable/live/inject-journal.json

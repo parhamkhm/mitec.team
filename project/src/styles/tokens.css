@@ -33,3 +33,34 @@
   --font-display: 'Vazirmatn', system-ui, sans-serif;
   --font-body: 'Vazirmatn', system-ui, sans-serif;
 }
+
+/* Type ramp — the second documented override, on a 1.414 ratio.
+   Two reasons this replaces the system's ramp rather than tuning it locally:
+
+   1. The floor. The system ships 15px body, 13.5px secondary and 12px caption,
+      all under the 16px web body floor. That costs the most in exactly this
+      project's conditions — Persian script, light text, dark ground — so the
+      whole reading ramp moves up.
+   2. Role distance. The original leans on size alone to separate roles. Here the
+      eyebrow goes smaller but tracks much wider, and the sub-heading becomes a
+      real deck (see components.css) instead of body copy under a title, so the
+      roles stay legible from each other without inflating the headings.
+
+   The wider ratio is why display sizes climb: at 1.414 the top of the ramp has
+   to carry the extra distance the bottom gained. */
+:root {
+  --text-caption: 12.5px;
+  --text-body-sm: 14px;
+  --text-body: 16px;
+  --text-body-lg: 18px;
+  --text-lead: 23px;
+  --text-h4: 23px;
+  --text-h3: 32px;
+  --text-h2: 45px;
+  --text-h1: 52px;
+  --text-display-3: clamp(30px, 3.8vw, 45px);
+  --text-display-2: clamp(36px, 4.8vw, 56px);
+  --text-display-1: clamp(42px, 6.2vw, 76px);
+  --text-eyebrow: 11px;
+  --ls-eyebrow: .26em;
+}

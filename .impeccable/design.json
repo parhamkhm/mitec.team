@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-22T00:00:00.000Z",
+  "title": "Design System: mitec.team",
+  "extensions": {
+    "colorMeta": {
+      "navy-ground": {
+        "role": "neutral",
+        "displayName": "Navy Ground",
+        "canonical": "#06142D",
+        "tonalRamp": ["#030C1C", "#06142D", "#0A1C3A", "#102647", "#1A3358", "#274470", "#5A7AA8", "#B8C7DC"]
+      },
+      "navy-deep": {
+        "role": "neutral",
+        "displayName": "Navy Deep",
+        "canonical": "#030C1C",
+        "tonalRamp": ["#030C1C", "#06142D", "#0A1C3A", "#102647", "#1A3358", "#274470", "#5A7AA8", "#B8C7DC"]
+      },
+      "navy-raised": {
+        "role": "neutral",
+        "displayName": "Navy Raised",
+        "canonical": "#0C2140",
+        "tonalRamp": ["#030C1C", "#06142D", "#0A1C3A", "#0C2140", "#1A3358", "#274470", "#5A7AA8", "#B8C7DC"]
+      },
+      "teal-hero": {
+        "role": "tertiary",
+        "displayName": "Teal Hero",
+        "canonical": "#07211F",
+        "tonalRamp": ["#041418", "#07211F", "#0B322C", "#10463B", "#15594A", "#1E7D66", "#49B39A", "#A9DCD0"]
+      },
+      "emerald-action": {
+        "role": "primary",
+        "displayName": "Emerald Action",
+        "canonical": "#1AA36B",
+        "tonalRamp": ["#0E5A3C", "#14764F", "#1AA36B", "#2CC486", "#5FE0AC", "#A6F0CE", "#D9FAEB", "#F0FDF7"]
+      },
+      "emerald-lit": {
+        "role": "primary",
+        "displayName": "Emerald Lit",
+        "canonical": "#2CC486",
+        "tonalRamp": ["#0E5A3C", "#14764F", "#1AA36B", "#2CC486", "#5FE0AC", "#A6F0CE", "#D9FAEB", "#F0FDF7"]
+      },
+      "emerald-speech": {
+        "role": "primary",
+        "displayName": "Emerald Speech",
+        "canonical": "#5FE0AC",
+        "tonalRamp": ["#0E5A3C", "#14764F", "#1AA36B", "#2CC486", "#5FE0AC", "#A6F0CE", "#D9FAEB", "#F0FDF7"]
+      },
+      "emerald-label-dark": {
+        "role": "primary",
+        "displayName": "Deep Emerald Label",
+        "canonical": "#0E5A3C",
+        "tonalRamp": ["#0E5A3C", "#14764F", "#1AA36B", "#2CC486", "#5FE0AC", "#A6F0CE", "#D9FAEB", "#F0FDF7"]
+      },
+      "emerald-label-hover": {
+        "role": "primary",
+        "displayName": "Deep Emerald Label Hover",
+        "canonical": "#14764F",
+        "tonalRamp": ["#0E5A3C", "#14764F", "#1AA36B", "#2CC486", "#5FE0AC", "#A6F0CE", "#D9FAEB", "#F0FDF7"]
+      },
+      "bronze-emphasis": {
+        "role": "secondary",
+        "displayName": "Bronze Emphasis",
+        "canonical": "#C9A682",
+        "tonalRamp": ["#5A3F2B", "#7E5A3E", "#9C7150", "#B98C5F", "#C9A682", "#E2C6A4", "#F0DDC5", "#FAF2E8"]
+      },
+      "bronze-lifted": {
+        "role": "secondary",
+        "displayName": "Bronze Lifted",
+        "canonical": "#E2C6A4",
+        "tonalRamp": ["#5A3F2B", "#7E5A3E", "#9C7150", "#B98C5F", "#C9A682", "#E2C6A4", "#F0DDC5", "#FAF2E8"]
+      },
+      "bronze-on-light": {
+        "role": "secondary",
+        "displayName": "Bronze On Light",
+        "canonical": "#7E5A3E",
+        "tonalRamp": ["#5A3F2B", "#7E5A3E", "#9C7150", "#B98C5F", "#C9A682", "#E2C6A4", "#F0DDC5", "#FAF2E8"]
+      },
+      "ink-white": {
+        "role": "neutral",
+        "displayName": "Ink White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#0E1A18", "#2C3B39", "#5A6F6C", "#7A908D", "#9DB2AE", "#C2D2CE", "#E4EDEA", "#FFFFFF"]
+      },
+      "ink-ivory": {
+        "role": "neutral",
+        "displayName": "Ink Ivory",
+        "canonical": "#F4F7F6",
+        "tonalRamp": ["#0E1A18", "#2C3B39", "#5A6F6C", "#7A908D", "#9DB2AE", "#C2D2CE", "#E4EDEA", "#F4F7F6"]
+      },
+      "ink-body": {
+        "role": "neutral",
+        "displayName": "Ink Body",
+        "canonical": "#C2D2CE",
+        "tonalRamp": ["#0E1A18", "#2C3B39", "#5A6F6C", "#7A908D", "#9DB2AE", "#C2D2CE", "#E4EDEA", "#F4F7F6"]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "#7A908D",
+        "tonalRamp": ["#0E1A18", "#2C3B39", "#5A6F6C", "#7A908D", "#9DB2AE", "#C2D2CE", "#E4EDEA", "#F4F7F6"]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink Dark",
+        "canonical": "#0E1A18",
+        "tonalRamp": ["#0E1A18", "#2C3B39", "#5A6F6C", "#7A908D", "#9DB2AE", "#C2D2CE", "#E4EDEA", "#F4F7F6"]
+      },
+      "status-danger": {
+        "role": "tertiary",
+        "displayName": "Signal Red",
+        "canonical": "#E0544A",
+        "tonalRamp": ["#5C1E19", "#8A2C25", "#B33A31", "#E0544A", "#EC8880", "#F7C6C2", "#FBE2E0", "#FEF5F4"]
+      },
+      "status-warning": {
+        "role": "tertiary",
+        "displayName": "Signal Amber",
+        "canonical": "#D9A441",
+        "tonalRamp": ["#5A4114", "#84601F", "#AE802C", "#D9A441", "#E6BE73", "#F1D8A6", "#F9EDD3", "#FDF8EE"]
+      },
+      "status-info": {
+        "role": "tertiary",
+        "displayName": "Signal Blue",
+        "canonical": "#3E9BD4",
+        "tonalRamp": ["#123A52", "#1B567A", "#2A78A6", "#3E9BD4", "#76B9E2", "#A9D4ED", "#D3E9F6", "#EFF7FC"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero titles only, one per page. Vazirmatn 800 at tight tracking."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles, often carrying the single bronze emphasis run."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles and feature names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running Persian copy at 1.62 leading. Lead paragraphs step up to 20px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrows and micro-labels, uppercase at 0.18em tracking. Overlines go 11px / 0.24em."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Stat numerals, always bronze, always in Persian digits."
+      }
+    },
+    "shadows": [
+      { "name": "glow-sm", "value": "0 0 18px rgba(44,196,134,.22)", "purpose": "Resting glow on lit elements — medallions, primary buttons, active tabs." },
+      { "name": "glow-md", "value": "0 0 38px rgba(44,196,134,.30)", "purpose": "Hover lift, and the emerald card's resting state." },
+      { "name": "glow-lg", "value": "0 0 80px rgba(44,196,134,.26)", "purpose": "Ambient wash behind a hero element." },
+      { "name": "glow-inset", "value": "inset 0 1px 0 rgba(255,255,255,.10)", "purpose": "Top highlight that makes a glass surface read as a surface." },
+      { "name": "shadow-ivory", "value": "0 18px 40px -18px rgba(3,12,28,.45)", "purpose": "The only true drop shadow on a resting surface — ivory cards on the dark ground." },
+      { "name": "shadow-md", "value": "0 8px 24px -8px rgba(3,12,28,.55)", "purpose": "Tooltips and floating panels." },
+      { "name": "shadow-lg", "value": "0 24px 60px -20px rgba(3,12,28,.7)", "purpose": "Ivory card hover." },
+      { "name": "ring-focus", "value": "0 0 0 3px rgba(95,224,172,.35)", "purpose": "Focus halo. Always visible, never removed." }
+    ],
+    "motion": [
+      { "name": "dur-instant", "value": "90ms", "purpose": "Immediate feedback with no perceived transition." },
+      { "name": "dur-fast", "value": "140ms", "purpose": "Press feedback and fast state flips." },
+      { "name": "dur", "value": "220ms", "purpose": "Default duration for hover, colour and border transitions." },
+      { "name": "dur-slow", "value": "420ms", "purpose": "Entrances." },
+      { "name": "ease-out", "value": "cubic-bezier(.22,.61,.36,1)", "purpose": "Default easing. Nothing bounces, nothing overshoots." },
+      { "name": "ease-entrance", "value": "cubic-bezier(.16,.84,.44,1)", "purpose": "Element entrances at 420ms." },
+      { "name": "lift-hover", "value": "translateY(-2px)", "purpose": "The only hover displacement in the system." },
+      { "name": "press-scale", "value": "0.97", "purpose": "Press state, 140ms, no colour change." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "860px" },
+      { "name": "sm", "value": "620px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single action control. Deep emerald pair so the white label clears 4.5:1.",
+      "html": "<button class=\"ds-btn-primary\">ساخت سفارش من</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: var(--font-body, 'Vazirmatn', system-ui, sans-serif); font-size: 15px; font-weight: 700; line-height: 1; letter-spacing: .005em; color: #FFFFFF; background: linear-gradient(135deg, #0E5A3C 0%, #14764F 100%); border: 1px solid transparent; border-radius: 999px; padding: 11px 20px; cursor: pointer; box-shadow: 0 0 18px rgba(44,196,134,.22), inset 0 1px 0 rgba(255,255,255,.10); transition: background-color 220ms cubic-bezier(.22,.61,.36,1), box-shadow 220ms cubic-bezier(.22,.61,.36,1), transform 140ms cubic-bezier(.22,.61,.36,1); } .ds-btn-primary:hover { background: linear-gradient(135deg, #14764F 0%, #14764F 100%); box-shadow: 0 0 38px rgba(44,196,134,.30), inset 0 1px 0 rgba(255,255,255,.10); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(95,224,172,.35); } .ds-btn-primary:active { transform: scale(.97); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Glass companion to the primary. Never competes for the action role.",
+      "html": "<button class=\"ds-btn-secondary\">دیدن نمونه‌کارها</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: var(--font-body, 'Vazirmatn', system-ui, sans-serif); font-size: 15px; font-weight: 700; line-height: 1; color: #FFFFFF; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 11px 20px; cursor: pointer; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); transition: background-color 220ms cubic-bezier(.22,.61,.36,1), border-color 220ms cubic-bezier(.22,.61,.36,1); } .ds-btn-secondary:hover { background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.26); } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(95,224,172,.35); } .ds-btn-secondary:active { transform: scale(.97); }"
+    },
+    {
+      "name": "Glass Card",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "The default surface on dark. Hairline plus inset highlight, no drop shadow.",
+      "html": "<div class=\"ds-card-glass\"><h3 class=\"ds-card-glass__title\">طراحی سایت</h3><p class=\"ds-card-glass__body\">طراحی و ساخت متناسب با نیاز واقعی شما.</p></div>",
+      "css": ".ds-card-glass { border-radius: 20px; padding: 24px; background: linear-gradient(150deg, rgba(255,255,255,.085) 0%, rgba(255,255,255,.025) 60%, rgba(255,255,255,.01) 100%); border: 1px solid rgba(255,255,255,.08); color: #C2D2CE; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: inset 0 1px 0 rgba(255,255,255,.10); transition: transform 220ms cubic-bezier(.22,.61,.36,1), box-shadow 220ms cubic-bezier(.22,.61,.36,1), border-color 220ms cubic-bezier(.22,.61,.36,1); } .ds-card-glass:hover { transform: translateY(-2px); border-color: rgba(44,196,134,.45); box-shadow: 0 0 38px rgba(44,196,134,.30), inset 0 1px 0 rgba(255,255,255,.10); } .ds-card-glass__title { font-family: var(--font-display, 'Vazirmatn', system-ui, sans-serif); font-size: 19px; font-weight: 700; letter-spacing: -0.012em; color: #FFFFFF; margin: 0 0 8px; } .ds-card-glass__body { font-size: 15px; line-height: 1.62; margin: 0; }"
+    },
+    {
+      "name": "Emerald Card (the lit one)",
+      "kind": "card",
+      "refersTo": "card-emerald",
+      "description": "Exactly one per row. Marks the featured or active item — the system's signature move.",
+      "html": "<div class=\"ds-card-emerald\"><h3 class=\"ds-card-emerald__title\">سئو و هاست</h3><p class=\"ds-card-emerald__body\">رشد جست‌وجو و زیرساخت میزبانی.</p></div>",
+      "css": ".ds-card-emerald { border-radius: 20px; padding: 24px; background: linear-gradient(160deg, #0F4C3F 0%, #093349 100%); border: 1px solid rgba(44,196,134,.45); color: #E4EDEA; box-shadow: 0 0 38px rgba(44,196,134,.30), inset 0 1px 0 rgba(255,255,255,.10); transition: transform 220ms cubic-bezier(.22,.61,.36,1), box-shadow 220ms cubic-bezier(.22,.61,.36,1); } .ds-card-emerald:hover { transform: translateY(-2px); } .ds-card-emerald__title { font-family: var(--font-display, 'Vazirmatn', system-ui, sans-serif); font-size: 19px; font-weight: 700; letter-spacing: -0.012em; color: #FFFFFF; margin: 0 0 8px; } .ds-card-emerald__body { font-size: 15px; line-height: 1.62; margin: 0; }"
+    },
+    {
+      "name": "Ivory Card",
+      "kind": "card",
+      "refersTo": "card-ivory",
+      "description": "Light card on the dark ground. Flips the whole text ramp and carries the system's only resting drop shadow.",
+      "html": "<div class=\"ds-card-ivory\"><h3 class=\"ds-card-ivory__title\">پشتیبانی بعد از تحویل</h3><p class=\"ds-card-ivory__body\">بعد از تحویل هم در دسترس‌ایم.</p></div>",
+      "css": ".ds-card-ivory { border-radius: 20px; padding: 24px; background: linear-gradient(160deg, #FFFFFF 0%, #EDF3F0 100%); border: 1px solid rgba(255,255,255,.6); color: #2C3B39; box-shadow: 0 18px 40px -18px rgba(3,12,28,.45); transition: transform 220ms cubic-bezier(.22,.61,.36,1), box-shadow 220ms cubic-bezier(.22,.61,.36,1); } .ds-card-ivory:hover { transform: translateY(-2px); box-shadow: 0 24px 60px -20px rgba(3,12,28,.7); } .ds-card-ivory__title { font-family: var(--font-display, 'Vazirmatn', system-ui, sans-serif); font-size: 19px; font-weight: 700; letter-spacing: -0.012em; color: #0E1A18; margin: 0 0 8px; } .ds-card-ivory__body { font-size: 15px; line-height: 1.62; margin: 0; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Sunken navy ground, 10px radius, emerald focus halo.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"شماره سفارش\" dir=\"rtl\" />",
+      "css": ".ds-input { width: 100%; font-family: var(--font-body, 'Vazirmatn', system-ui, sans-serif); font-size: 15px; line-height: 1.4; color: #C2D2CE; background: rgba(3,12,28,.55); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 11px 20px; transition: border-color 220ms cubic-bezier(.22,.61,.36,1), box-shadow 220ms cubic-bezier(.22,.61,.36,1); } .ds-input::placeholder { color: #7A908D; } .ds-input:hover { border-color: rgba(255,255,255,.26); } .ds-input:focus { outline: none; border-color: rgba(44,196,134,.45); box-shadow: 0 0 0 3px rgba(95,224,172,.35); }"
+    },
+    {
+      "name": "Accent Badge",
+      "kind": "chip",
+      "refersTo": "badge-accent",
+      "description": "Pill micro-label in emerald tint. Bronze variant swaps to the gold tint for emphasis, never for action.",
+      "html": "<span class=\"ds-badge-accent\">در حال انجام</span>",
+      "css": ".ds-badge-accent { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-family: var(--font-body, 'Vazirmatn', system-ui, sans-serif); font-size: 12px; font-weight: 700; letter-spacing: .06em; line-height: 1.4; white-space: nowrap; background: rgba(26,163,107,.14); color: #5FE0AC; border: 1px solid rgba(44,196,134,.45); }"
+    },
+    {
+      "name": "Icon Medallion",
+      "kind": "custom",
+      "refersTo": "medallion",
+      "description": "The brand's one icon container — a 48px circle of bright accent gradient. The one place the bright gradient sits under a foreground mark, because a glyph is a graphic, not text.",
+      "html": "<span class=\"ds-medallion\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"22\" height=\"22\"><rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"/><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"/></svg></span>",
+      "css": ".ds-medallion { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #1AA36B 0%, #2CC486 100%); color: #FFFFFF; box-shadow: 0 0 18px rgba(44,196,134,.22); }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "The only fixed element. Translucent navy at 72% over a 40px blur, hairline bottom border, emerald underline on the active link.",
+      "html": "<nav class=\"ds-nav\" dir=\"rtl\"><a class=\"ds-nav__link ds-nav__link--active\" href=\"#\">خانه</a><a class=\"ds-nav__link\" href=\"#\">نمونه‌کارها</a><a class=\"ds-nav__link\" href=\"#\">تماس</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; padding: 16px 40px; background: rgba(6,20,45,.72); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-bottom: 1px solid rgba(255,255,255,.08); } .ds-nav__link { position: relative; padding: 6px 0; font-family: var(--font-body, 'Vazirmatn', system-ui, sans-serif); font-size: 15px; font-weight: 500; color: #C2D2CE; text-decoration: none; transition: color 220ms cubic-bezier(.22,.61,.36,1); } .ds-nav__link:hover { color: #FFFFFF; } .ds-nav__link--active { font-weight: 700; color: #FFFFFF; } .ds-nav__link--active::after { content: ''; position: absolute; inset-inline: 0; bottom: -2px; height: 2px; border-radius: 2px; background: linear-gradient(135deg, #1AA36B 0%, #2CC486 100%); box-shadow: 0 0 18px rgba(44,196,134,.22); } .ds-nav__link:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(95,224,172,.35); border-radius: 10px; }"
+    },
+    {
+      "name": "Keyword Rail",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The system's closing gesture: single value words beaded on glowing emerald nodes, separated by hairlines that fade to zero at both ends.",
+      "html": "<div class=\"ds-rail\" dir=\"rtl\"><span class=\"ds-rail__line\"></span><span class=\"ds-rail__word\">مدرن</span><span class=\"ds-rail__dot\"></span><span class=\"ds-rail__word ds-rail__word--alt\">سریع</span><span class=\"ds-rail__dot\"></span><span class=\"ds-rail__word\">امن</span><span class=\"ds-rail__line\"></span></div>",
+      "css": ".ds-rail { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; } .ds-rail__line { width: 60px; height: 1px; background: linear-gradient(90deg, rgba(44,196,134,0) 0%, rgba(44,196,134,.55) 50%, rgba(44,196,134,0) 100%); } .ds-rail__dot { width: 5px; height: 5px; border-radius: 50%; background: #2CC486; box-shadow: 0 0 18px rgba(44,196,134,.22); } .ds-rail__word { font-family: var(--font-display, 'Vazirmatn', system-ui, sans-serif); font-weight: 600; font-size: 19px; letter-spacing: .01em; color: #F4F7F6; } .ds-rail__word--alt { color: #E2C6A4; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Atelier",
+    "overview": "mitec is two people who build the thing themselves, and the interface says so before the copy does. The ground is deep navy with a teal-green bloom sitting off-centre — a room at night, not a corporate slide. Bronze appears where a name or a finished number belongs, the way a warm lamp falls on a nameplate. Emerald appears only where a hand is actually working: the button you press, the card that is live, the field that has focus. Nothing else is permitted to compete for attention, and the restraint is what makes a two-person studio read as deliberate rather than small.\n\nThe system is Persian and right-to-left first. Vazirmatn carries every role — display, body, numerals — because the original Montserrat/Mulish pairing has no Persian glyphs, and that substitution is the system's documented entry point for type. Density is generous rather than packed: sections breathe on a clamp(64px, 8vw, 128px) rhythm, cards hold 24px of air, and running copy sits at 1.62 leading so long Persian sentences stay readable. Surfaces are glass over that navy bloom — 4.5% white fills, 8% hairlines, an inset top highlight — so the page reads as layered atmosphere rather than stacked boxes.\n\nThe confirmed anti-reference is the stock-template comp the palette was sampled from: its filled pictograms, its borrowed client logos, and its invented proof numbers are all explicitly rejected. mitec ships three real projects and a two-person team, and the design must stay honest at that scale. Where the reference reached for a photograph, this system renders depth in CSS instead — there is no photography yet, and none should be faked.",
+    "keyCharacteristics": [
+      "Deep navy ground with an off-centre teal bloom; never a flat fill",
+      "Emerald is the only action colour; bronze is the only emphasis colour",
+      "Glass surfaces, hairline borders, emerald glow instead of drop shadow",
+      "Persian RTL throughout, Vazirmatn across every type role",
+      "Exactly one lit (emerald) card per row; the rest stay pale",
+      "Proof over adjectives — every claim carries a real figure or is cut"
+    ],
+    "rules": [
+      { "name": "The Single Actor Rule", "body": "Only emerald acts and only bronze emphasises. If an element is neither pressable nor a point of emphasis, it is navy, glass, or ink. Two competing accents on one surface is a defect, not a choice.", "section": "colors" },
+      { "name": "The One Lit Card Rule", "body": "In any row or grid of cards, exactly one may be emerald. Three pale cards and one lit one is the system's signature move; two lit cards destroys it.", "section": "colors" },
+      { "name": "The Real Colour Rule", "body": "Body text is never set at reduced opacity. Muted text uses --text-muted, an actual colour, so contrast stays measurable rather than inherited.", "section": "colors" },
+      { "name": "The Label Pair Rule", "body": "Any surface carrying text on the action colour uses the deep emerald pair (#0E5A3C → #14764F), not the standard accent gradient. Icon medallions, the nav underline, and chart bars keep the bright gradient — they are non-text graphics, where 3.23:1 clears WCAG 1.4.11's 3:1 bar.", "section": "colors" },
+      { "name": "The Three-Part Headline Rule", "body": "A headline stacks: an italic kicker, a bronze subject naming what it is, and a white payoff naming what you get. Exactly one bronze run per headline.", "section": "typography" },
+      { "name": "The No-Emoji Rule", "body": "Never in UI, never in copy, never in headings. Iconography carries that load, and icons are Lucide masks — never inline SVG paths, never Unicode glyphs (▸ ✓ ★) standing in for icons.", "section": "typography" },
+      { "name": "The Persian Numeral Rule", "body": "All user-facing figures render in Persian digits (۳, ۱ روز). src/utils/persian-digits.js exists for exactly this; a Latin digit in the UI is a bug.", "section": "typography" }
+    ],
+    "dos": [
+      "Do deliver the page ground as --grad-page — a radial teal-green bloom at ~22%/38% over navy, darkening to #040F24 at the edges.",
+      "Do use the deep emerald pair (#0E5A3C → #14764F) for any surface carrying text on the action colour; it clears 4.5:1 where the bright gradient does not.",
+      "Do keep exactly one emerald card per row — the lit one marks what is featured or active.",
+      "Do reach for semantic aliases (--surface-card, --text-muted, --accent) rather than the raw ramps.",
+      "Do render every user-facing figure in Persian digits.",
+      "Do attach a real number to every claim, or cut the claim — the three delivered projects, the two-person team, and the one-business-day response are the only proof available, and inventing more is a product-level violation.",
+      "Do draw icons as Lucide CSS masks with background-color: currentColor, at 16 / 20 / 22 / 26px.",
+      "Do keep .logo at direction: ltr so the Latin wordmark holds its order on an RTL page."
+    ],
+    "donts": [
+      "Don't use bronze as a button, a surface, or a border. It emphasises; it never acts.",
+      "Don't put two accent colours in competition on one surface.",
+      "Don't use a flat background colour anywhere the page ground shows — it is always a gradient.",
+      "Don't set body text at reduced opacity; use --text-muted, a real colour.",
+      "Don't use --text-muted (#7A908D, 4.6:1) for running copy — it is the floor, for captions and hints only.",
+      "Don't use a square corner, a 2px border, a flat grey divider, or a coloured-left-border-only card.",
+      "Don't fade opacity on hover — that reads as disabled. Brighten instead.",
+      "Don't let anything bounce, overshoot, or spin. Cross-fades and 2px translations only, at 220ms on cubic-bezier(.22,.61,.36,1).",
+      "Don't use emoji or Unicode characters as icons, and never hand-write SVG paths.",
+      "Don't reproduce anything from the source reference comp — its 'BizNext' branding, its client logos, or its invented figures (500+ Projects, 98% Client Satisfaction). It is an art-direction reference and a confirmed anti-reference for content.",
+      "Don't fabricate photography. There is none yet; depth is rendered in CSS until real images arrive."
+    ]
+  }
+}
