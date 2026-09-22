@@ -1,0 +1,35 @@
+/* mitec — design tokens
+   ──────────────────────────────────────────────────────────────────────────
+   This file no longer defines tokens. The bound **Mitec Design System** is the
+   single source of truth; importing it here means non-DC pages get the same
+   values the .dc.html designs use.
+
+       _ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/*.css
+
+   Names you will use most (see the design system's readme for the full set):
+     ground     --bg-page  --grad-page  --grad-mesh-line  --surface-sunken
+     surfaces   --surface-card  --border-hairline  --border-subtle  --border-accent
+     text       --text-heading  --text-body  --text-muted  --text-accent  --text-action
+     action     --accent  --grad-accent  --glow-sm/md/lg  --ring-focus
+     emphasis   --emphasis  --grad-gold           (bronze: emphasis only, never a button)
+     shape      --radius-card/-input/-pill  --space-1…13  --container-max
+   ────────────────────────────────────────────────────────────────────────── */
+
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css");
+@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css");
+
+/* Type substitution — the one documented override.
+   Montserrat and Mulish carry no Persian glyphs, so the two font tokens are
+   re-pointed at Vazirmatn. Everything else is used exactly as authored.
+   PRODUCTION: serve Vazirmatn from public/fonts, not a CDN (access from Iran). */
+:root {
+  --font-display: 'Vazirmatn', system-ui, sans-serif;
+  --font-body: 'Vazirmatn', system-ui, sans-serif;
+}

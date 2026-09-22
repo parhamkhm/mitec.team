@@ -1,0 +1,168 @@
+/* mitec — home page (/)
+   Layout and section-specific styles for index.html. Component visuals live
+   in components.css; this file is the page composition on top, translated
+   1:1 from the approved "Mitec Home.dc.html" design (its inline styles are
+   already token-based, so the values below are copied, not reinterpreted —
+   only moved from style="" attributes into real classes). */
+
+/* ---------------------------------------------------------------- page ground
+   The radial teal-green bloom + faint vertical mesh that sit behind the
+   whole page (Mitec Design System readme §4 "Backgrounds"). */
+.page { position: relative; }
+.page-bg { position: absolute; inset: 0; pointer-events: none; }
+.page-bg--mesh {
+  background: var(--grad-mesh-line);
+  background-size: 64px 100%;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);
+}
+.page-bg--glow { background: radial-gradient(52% 40% at 18% 26%, rgba(44,196,134,.22), transparent 68%); }
+.page-content { position: relative; }
+
+/* ---------------------------------------------------------------- section rhythm
+   Each section carries the exact max-width/padding/gap the design specifies;
+   values differ per section (gap especially), so they're set individually
+   rather than forced into one shared shorthand. */
+.section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-10) var(--gutter); display: flex; flex-direction: column; }
+section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jumps */
+
+#services { gap: var(--space-8); }
+#work { gap: var(--space-7); }
+#process { gap: var(--space-8); }
+#about { gap: var(--space-8); }
+.testimonials { gap: var(--space-6); }
+#faq { max-width: var(--container-narrow); gap: var(--space-7); }
+#contact { padding-bottom: var(--space-12); }
+
+/* ---------------------------------------------------------------- hero */
+.hero { max-width: var(--container-max); margin-inline: auto; padding: var(--space-12) var(--gutter) var(--space-10); display: flex; flex-direction: column; gap: var(--space-8); }
+.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; }
+.hero__glow-rule { display: flex; justify-content: center; }
+.hero__glow-rule .glow-rule { width: 420px; max-width: 100%; }
+
+/* Laptop + phone mockup stage */
+.hero__stage { position: relative; max-width: 760px; margin-inline: auto; width: 100%; }
+.hero__stage-glow { position: absolute; inset-inline: 12%; top: 6%; height: 70%; background: radial-gradient(ellipse at center, rgba(44,196,134,.34), transparent 68%); filter: blur(46px); pointer-events: none; }
+.hero__stage-inner { position: relative; }
+
+.hero__laptop-frame { padding: 10px 10px 8px; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs); background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg), var(--glow-inset); }
+.hero__laptop-screen { border-radius: var(--radius-media); overflow: hidden; border: var(--border-width) solid var(--border-hairline); aspect-ratio: 16 / 10; background: var(--surface-sunken); }
+.hero__laptop-base { width: 112%; margin-inline-start: -6%; height: 15px; border-radius: 0 0 var(--radius-md) var(--radius-md); background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow: var(--shadow-lg); }
+.hero__laptop-shadow { width: 74%; height: 90px; margin: 0 auto; background: linear-gradient(180deg, rgba(44,196,134,.3), transparent 72%); filter: blur(20px); }
+
+.hero__dash-card { position: absolute; top: 13%; inset-inline-start: -5%; width: min(46%, 212px); }
+.hero__dash-card .card { padding: var(--space-4); }
+.hero__dash-label { font-size: var(--text-caption); color: var(--text-muted); margin-bottom: var(--space-3); }
+.hero__dash-bars { display: flex; align-items: flex-end; gap: 6px; height: 52px; }
+.hero__dash-bars span { flex: 1; display: block; border-radius: 3px; background: var(--grad-accent); }
+.hero__dash-bars span.is-gold { background: var(--grad-gold); }
+
+.hero__phone { position: absolute; bottom: 12%; inset-inline-start: 2%; width: min(20%, 100px); }
+.hero__phone-frame { border-radius: var(--radius-md); padding: 5px; background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg); }
+.hero__phone-screen { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 9 / 17; background: var(--surface-sunken); }
+
+/* ---------------------------------------------------------------- grids */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-4); }
+.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
+.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--space-4); }
+.process-grid { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-4); }
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
+
+/* ---------------------------------------------------------------- services */
+.service-card { display: flex; flex-direction: column; gap: var(--space-4); }
+.service-card__badge { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--radius-circle); background: var(--grad-accent); color: var(--accent-fg); box-shadow: var(--glow-sm); }
+.service-card p { font-size: var(--text-body); color: var(--text-ink-body); line-height: var(--lh-body); }
+.service-card__link { font-size: var(--text-body-sm); display: inline-flex; align-items: center; gap: var(--space-2); }
+.service-card__link .icon { width: 16px; height: 16px; }
+
+/* ---------------------------------------------------------------- work / portfolio */
+.work-tabs-row { display: flex; justify-content: center; }
+.work-card__media { aspect-ratio: 16 / 10; border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow: hidden; background: var(--surface-sunken); }
+.work-card__body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-4); }
+.work-card__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.work-card dl { margin: 0; display: grid; gap: var(--space-3); font-size: var(--text-body-sm); }
+.work-card dt { color: var(--text-accent); font-size: var(--text-caption); font-weight: var(--weight-semibold); letter-spacing: var(--ls-eyebrow); margin-bottom: 2px; }
+.work-card dd { margin: 0; color: var(--text-ink-body); }
+.work-card__link { font-size: var(--text-body-sm); display: inline-flex; align-items: center; gap: var(--space-2); }
+.work-card__link .icon { width: 16px; height: 16px; }
+.work-card__note { font-size: var(--text-body-sm); color: var(--text-muted); }
+.work-empty { margin: 0; text-align: center; color: var(--text-ink-body); }
+
+/* ---------------------------------------------------------------- process */
+.process-step__n { font-family: var(--font-display); font-weight: var(--weight-black); font-size: var(--text-h3); letter-spacing: var(--ls-stat); }
+.process-step__title { margin: var(--space-2) 0; }
+.process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--text-ink-body); line-height: var(--lh-body); }
+
+/* ---------------------------------------------------------------- about */
+.about-card { display: flex; gap: var(--space-5); align-items: center; }
+.about-card__photo { flex: 0 0 auto; width: 96px; height: 96px; border-radius: var(--radius-circle); overflow: hidden; border: var(--border-width) solid var(--border-accent); box-shadow: var(--glow-sm); }
+.about-card h3 { margin: 0 0 var(--space-1); }
+.about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--text-action); }
+.about-card__bio { margin: 0; font-size: var(--text-body-sm); color: var(--text-ink-body); line-height: var(--lh-body); }
+
+/* ---------------------------------------------------------------- testimonials */
+.testimonials__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3); }
+.testimonials__head h2 { font-size: var(--text-display-3); line-height: var(--lh-display); }
+.testimonial blockquote { margin: 0 0 var(--space-4); font-size: var(--text-body-lg); color: var(--text-heading); line-height: var(--lh-body); }
+.testimonial figcaption { font-size: var(--text-body-sm); color: var(--text-muted); }
+
+/* ---------------------------------------------------------------- FAQ */
+.faq-list { display: grid; gap: var(--space-3); }
+.faq-item h3 { margin: 0; }
+.faq-item__q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  background: transparent; border: 0; margin: 0; color: var(--text-heading); font-family: var(--font-body);
+  font-size: var(--text-body-lg); font-weight: var(--weight-semibold); text-align: start;
+  padding: var(--space-5) var(--space-6); cursor: pointer;
+}
+.faq-item__chevron { flex: 0 0 auto; color: var(--text-action); font-size: 1.1em; line-height: 1; }
+.faq-item__a { padding: 0 var(--space-6) var(--space-5); color: var(--text-ink-body); font-size: var(--text-body); }
+.faq-item__a[hidden] { display: none; }
+
+/* ---------------------------------------------------------------- contact CTA */
+.contact-card { padding: clamp(28px, 5vw, 64px); display: flex; flex-direction: column; gap: var(--space-7); }
+.contact-card__top { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
+.contact-card__copy { flex: 1 1 420px; display: flex; flex-direction: column; gap: var(--space-4); }
+.contact-card__copy h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
+.contact-card__copy p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--ink-100); max-width: 52ch; }
+.contact-card__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.contact-card__links { border-top: var(--border-width) solid var(--border-hairline); padding-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); align-items: center; }
+.contact-card__links-label { color: var(--ink-200); font-size: var(--text-body); }
+.contact-card__links a { font-size: var(--text-body); }
+.contact-card__insta { direction: ltr; }
+
+/* ---------------------------------------------------------------- responsive nav
+   The DS's NavBar has no small-screen treatment (it assumes desktop width);
+   below this breakpoint the links collapse into a toggled panel so the page
+   stays usable from 320px with no horizontal scroll. */
+@media (max-width: 860px) {
+  .navbar__toggle { display: inline-flex; }
+  .navbar__menu {
+    position: fixed;
+    inset: 64px var(--gutter) auto;
+    margin: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--bg-deep);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lg);
+    display: none;
+  }
+  .navbar__menu.is-open { display: flex; }
+  .navbar__link { padding: var(--space-3) var(--space-2); }
+  .navbar__link::after { display: none; }
+  .navbar__link.is-active { background: var(--surface-card); border-radius: var(--radius-sm); }
+  .navbar__cta { margin-top: var(--space-2); justify-content: center; }
+
+  .hero__dash-card { display: none; } /* the floating widget has no room to float at phone widths */
+}
+
+@media (max-width: 620px) {
+  .contact-card__top { flex-direction: column; align-items: stretch; }
+  .contact-card__ctas { justify-content: stretch; }
+  .contact-card__ctas .btn { flex: 1 1 auto; }
+}

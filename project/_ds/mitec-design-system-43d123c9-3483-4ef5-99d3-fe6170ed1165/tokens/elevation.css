@@ -1,0 +1,18 @@
+:root{
+--shadow-none:none;
+--shadow-sm:0 1px 2px rgba(3,12,28,.4);
+--shadow-md:0 8px 24px -8px rgba(3,12,28,.55);
+--shadow-lg:0 24px 60px -20px rgba(3,12,28,.7);
+--shadow-ivory:0 18px 40px -18px rgba(3,12,28,.45);
+
+/* Glow is elevation on dark grounds — emerald only, never gold, never white. */
+--glow-sm:0 0 18px rgba(44,196,134,.22);
+--glow-md:0 0 38px rgba(44,196,134,.30);
+--glow-lg:0 0 80px rgba(44,196,134,.26);
+--glow-inset:inset 0 1px 0 rgba(255,255,255,.10);
+
+--ring-focus:0 0 0 3px rgba(95,224,172,.35);
+--hairline-top:inset 0 1px 0 rgba(255,255,255,.08); /* @kind shadow */
+--blur-glass:18px; /* @kind other */
+--blur-scrim:40px; /* @kind other */
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="صفحه پیدا نشد — mitec">
+<title>صفحه پیدا نشد — mitec</title>
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/styles.css">
+<script src="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/_ds_bundle.js"></script>
+<!-- PRODUCTION: serve Vazirmatn from public/fonts (no external CDN — Iran). CDN link is preview-only. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Type substitution, per the design system's own escape hatch (readme §4). */
+  :root { --font-display: 'Vazirmatn', system-ui, sans-serif; --font-body: 'Vazirmatn', system-ui, sans-serif; }
+  /* The DS declares --text-body twice at :root — a colour in colors.css and a
+     font-size in typography.css. Reordering would break the size uses, so body
+     ink gets a non-colliding alias here, with the ivory-card scope preserved. */
+  :root { --text-ink-body: var(--ink-200); }
+  .mt-on-light { --text-ink-body: var(--ink-700); }
+  body { margin: 0; background: var(--bg-page); color: var(--text-ink-body); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); }
+  *:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sm); }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</helmet>
+<div dir="rtl" lang="fa" style="position:relative; min-height:100vh; background:var(--grad-page); color:var(--text-ink-body); font-family:var(--font-body); line-height:var(--lh-body); display:flex; align-items:center; justify-content:center; padding:var(--space-9) var(--gutter); overflow:hidden;">
+
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:var(--grad-mesh-line); background-size:64px 100%; -webkit-mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent); mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);"></div>
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(52% 40% at 22% 30%, rgba(44,196,134,.2), transparent 68%);"></div>
+
+  <div style="position:relative; max-width:560px; width:100%;">
+    <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="clamp(28px, 5vw, 52px)" hint-size="100%,340px">
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:var(--space-5);">
+        <div style="font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-display-1); line-height:var(--lh-display); letter-spacing:var(--ls-display); background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;">۴۰۴</div>
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.GlowRule" dots="{{ true }}" width="260px" hint-size="260px,12px"></x-import>
+        <h1 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h2); line-height:var(--lh-heading); letter-spacing:var(--ls-heading); color:var(--text-heading);">این صفحه پیدا نشد</h1>
+        <p style="margin:0; font-size:var(--text-body-lg); color:var(--text-ink-body); max-width:40ch;">ممکن است آدرس عوض شده باشد یا اشتباه تایپ شده باشد.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:var(--space-3); justify-content:center;">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" as="a" href="./Mitec%20Home.dc.html" icon-after="arrow-right" hint-size="160px,52px">صفحه اصلی</x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" variant="secondary" as="a" href="./Mitec%20Order%20Builder.dc.html" hint-size="150px,52px">سفارش سایت</x-import>
+        </div>
+      </div>
+    </x-import>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}"></script>
+</body>
+</html>

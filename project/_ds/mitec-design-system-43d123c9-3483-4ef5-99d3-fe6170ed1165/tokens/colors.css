@@ -1,0 +1,70 @@
+:root{
+/* ---- Base ramps -------------------------------------------------- */
+/* Navy — the page ground. Cool, slightly blue-violet in the deepest steps. */
+--navy-950:#030C1C;--navy-900:#06142D;--navy-800:#0A1C3A;--navy-700:#102647;--navy-600:#1A3358;--navy-500:#274470;
+/* Teal — the hero ground. Navy rotated toward green; used only in gradients + glows. */
+--teal-950:#041418;--teal-900:#07211F;--teal-800:#0B322C;--teal-700:#10463B;--teal-600:#15594A;
+/* Emerald — the single action colour. */
+--green-700:#0E5A3C;--green-600:#14764F;--green-500:#1AA36B;--green-400:#2CC486;--green-300:#5FE0AC;--green-200:#A6F0CE;--green-100:#D9FAEB;
+/* Bronze/gold — emphasis only. Never a button, never a surface. */
+--gold-700:#7E5A3E;--gold-600:#9C7150;--gold-500:#B98C5F;--gold-400:#C9A682;--gold-300:#E2C6A4;--gold-200:#F0DDC5;
+/* Ink — text + light surfaces. Slightly green-tinted neutrals, never pure grey. */
+--ink-0:#FFFFFF;--ink-50:#F4F7F6;--ink-100:#E4EDEA;--ink-200:#C2D2CE;--ink-300:#9DB2AE;--ink-400:#7A908D;--ink-500:#5A6F6C;--ink-700:#2C3B39;--ink-900:#0E1A18;
+/* Status */
+--red-500:#E0544A;--red-200:#F7C6C2;--amber-500:#D9A441;--blue-500:#3E9BD4;
+
+/* ---- Semantic aliases -------------------------------------------- */
+--bg-page:var(--navy-900);
+--bg-deep:var(--navy-950);
+--bg-hero:var(--teal-900);
+--bg-light:var(--ink-50);
+
+--surface-card:rgba(255,255,255,.045);
+--surface-card-hover:rgba(255,255,255,.075);
+--surface-raised:#0C2140;
+--surface-sunken:rgba(3,12,28,.55);
+--surface-ivory:var(--ink-50);
+--surface-emerald:var(--teal-800);
+
+--border-hairline:rgba(255,255,255,.08);
+--border-subtle:rgba(255,255,255,.14);
+--border-strong:rgba(255,255,255,.26);
+--border-accent:rgba(44,196,134,.45);
+--border-ink:rgba(14,26,24,.12);
+
+--text-heading:var(--ink-0);
+--text-body:var(--ink-200);
+--text-muted:var(--ink-400);
+--text-accent:var(--gold-400);
+--text-action:var(--green-300);
+--text-on-light:var(--ink-900);
+--text-on-light-muted:var(--ink-500);
+--text-inverse:var(--navy-950);
+
+--accent:var(--green-500);
+--accent-hover:var(--green-400);
+--accent-press:var(--green-600);
+--accent-fg:var(--ink-0);
+--accent-soft:rgba(26,163,107,.14);
+
+--emphasis:var(--gold-400);
+--emphasis-soft:rgba(201,166,130,.14);
+
+--focus-ring:var(--green-300);
+--success:var(--green-400);--warning:var(--amber-500);--danger:var(--red-500);--info:var(--blue-500);
+--link:var(--green-300);--link-hover:var(--green-200);
+}
+
+/* Light scope — the ivory feature cards and any printed/inverted surface. */
+.mt-on-light{
+--text-heading:var(--ink-900);
+--text-body:var(--ink-700);
+--text-muted:var(--ink-500);
+--text-accent:var(--gold-700);
+--surface-card:#FFFFFF;
+--surface-card-hover:#FFFFFF;
+--border-hairline:rgba(14,26,24,.08);
+--border-subtle:rgba(14,26,24,.12);
+--border-strong:rgba(14,26,24,.22);
+--link:var(--green-600);--link-hover:var(--green-700);
+}

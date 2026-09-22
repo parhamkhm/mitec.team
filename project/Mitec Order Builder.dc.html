@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="سفارش‌ساز mitec — در پنج قدم کوتاه سایتی که لازم دارید را مشخص کنید.">
+<meta property="og:title" content="سفارش‌ساز mitec">
+<meta property="og:locale" content="fa_IR">
+<title>سفارش سایت — mitec</title>
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/styles.css">
+<script src="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/_ds_bundle.js"></script>
+<!-- PRODUCTION: serve Vazirmatn from public/fonts (no external CDN — Iran). CDN link is preview-only. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Type substitution, per the design system's own escape hatch (readme §4). */
+  :root { --font-display: 'Vazirmatn', system-ui, sans-serif; --font-body: 'Vazirmatn', system-ui, sans-serif; }
+  /* The DS declares --text-body twice at :root — a colour in colors.css and a
+     font-size in typography.css. Reordering would break the size uses, so body
+     ink gets a non-colliding alias here, with the ivory-card scope preserved. */
+  :root { --text-ink-body: var(--ink-200); }
+  .mt-on-light { --text-ink-body: var(--ink-700); }
+  body { margin: 0; background: var(--bg-page); color: var(--text-ink-body); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); }
+  input, textarea, button, select { font-family: inherit; }
+  *:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sm); }
+  /* Bidi fix: the DS wordmark is built from separate LTR runs. Scoped to the NavBar. */
+  header > span:first-child { direction: ltr; }
+  @keyframes mt-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</helmet>
+<div dir="rtl" lang="fa" style="position:relative; min-height:100vh; background:var(--grad-page); color:var(--text-ink-body); font-family:var(--font-body); line-height:var(--lh-body); overflow:hidden;">
+
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:var(--grad-mesh-line); background-size:64px 100%; -webkit-mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent); mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);"></div>
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(52% 40% at 18% 20%, rgba(44,196,134,.18), transparent 68%);"></div>
+
+  <div style="position:relative;">
+
+    <x-import component-from-global-scope="MitecDesignSystem_43d123.NavBar" sticky="{{ true }}" items="{{ navItems }}" active="سفارش سایت" on-navigate="{{ onNavigate }}" cta="مشاوره در واتساپ" on-cta="{{ goWhatsapp }}" hint-size="100%,66px"></x-import>
+
+    <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+      <main style="max-width:var(--container-narrow); margin:0 auto; padding:var(--space-12) var(--gutter);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="emerald" padding="clamp(28px, 5vw, 56px)" hint-size="100%,380px">
+          <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:var(--space-5);">
+            <span aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-md);">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="check" size="{{ 26 }}" hint-size="26px,26px"></x-import>
+            </span>
+            <h1 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-display-3); line-height:var(--lh-display); letter-spacing:var(--ls-display); color:var(--text-heading);">سفارش شما ثبت شد</h1>
+            <p style="margin:0; font-size:var(--text-body-lg); color:var(--ink-100); max-width:46ch;">تا حدود یک روز کاری با شما تماس می‌گیریم. این کد را نگه دارید؛ با آن می‌توانید وضعیت سفارش را ببینید.</p>
+            <div style="width:100%; background:var(--surface-sunken); border:var(--border-width) dashed var(--border-accent); border-radius:var(--radius-lg); padding:var(--space-5);">
+              <div style="font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--ink-200); margin-bottom:var(--space-2);">کد رهگیری</div>
+              <div style="font-family:var(--font-mono); font-size:var(--text-h2); direction:ltr; background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;">{{ trackingCode }}</div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:var(--space-3); justify-content:center;">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" icon="check" on-click="{{ copyCode }}" hint-size="190px,52px">{{ copyLabel }}</x-import>
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" variant="secondary" as="a" href="./Mitec%20Track.dc.html" hint-size="160px,52px">پیگیری سفارش</x-import>
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" variant="ghost" as="a" href="./Mitec%20Home.dc.html" hint-size="150px,52px">صفحه اصلی</x-import>
+            </div>
+          </div>
+        </x-import>
+      </main>
+    </sc-if>
+
+    <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+      <main style="max-width:var(--container-max); margin:0 auto; padding:var(--space-8) var(--gutter) var(--space-12);">
+
+        <div style="margin-bottom:var(--space-7);">
+          <div style="display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:var(--space-2) var(--space-4); margin-bottom:var(--space-4);">
+            <h1 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-h1); line-height:var(--lh-heading); letter-spacing:var(--ls-display); color:var(--text-heading);">{{ stepTitle }}</h1>
+            <span style="font-size:var(--text-body-sm); color:var(--text-ink-body);">قدم {{ stepNumFa }} از ۵</span>
+          </div>
+          <div role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="{{ step }}" aria-label="پیشرفت سفارش" style="height:5px; border-radius:var(--radius-pill); background:var(--surface-sunken); overflow:hidden;">
+            <div style="height:100%; border-radius:var(--radius-pill); background:var(--grad-accent); box-shadow:var(--glow-sm); transition:width var(--dur) var(--ease-out); width:{{ progressPct }}"></div>
+          </div>
+          <ol style="margin:var(--space-4) 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5); font-size:var(--text-body-sm);">
+            <sc-for list="{{ stepDots }}" as="dot" hint-placeholder-count="5">
+              <li style="display:flex; align-items:center; gap:var(--space-2);">
+                <span aria-hidden="true" style="position:relative; width:20px; height:20px; border-radius:var(--radius-circle); border:var(--border-width) solid var(--border-subtle); display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:10px;">
+                  <span hidden="{{ dot.inactive }}" style="position:absolute; inset:-1px; border-radius:var(--radius-circle); background:var(--grad-accent); box-shadow:var(--glow-sm);"></span>
+                  <span style="position:relative; color:{{ dot.numColor }}">{{ dot.n }}</span>
+                </span>
+                <span style="color:{{ dot.color }}">{{ dot.label }}</span>
+              </li>
+            </sc-for>
+          </ol>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; gap:var(--space-5); align-items:flex-start;">
+
+          <section aria-live="polite" style="flex:1 1 440px; min-width:min(100%, 300px);">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="clamp(20px, 3vw, 32px)" hint-size="100%,500px">
+
+              <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <p style="margin:0 0 var(--space-6); color:var(--text-ink-body);">چه نوع سایتی لازم دارید؟ اگر مطمئن نیستید، «نمی‌دانم» را انتخاب کنید.</p>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:var(--space-3);">
+                    <sc-for list="{{ siteTypes }}" as="t" hint-placeholder-count="7">
+                      <button type="button" onClick="{{ t.select }}" aria-pressed="{{ t.pressed }}" style="position:relative; text-align:start; background:var(--surface-card); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-lg); padding:var(--space-5); color:var(--text-ink-body); cursor:pointer; transition:transform var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);" style-hover="transform:translateY(-2px); border-color:var(--border-accent)">
+                        <span hidden="{{ t.off }}" style="position:absolute; inset:0; border-radius:var(--radius-lg); border:var(--border-width) solid var(--border-accent); background:var(--grad-emerald-card); box-shadow:var(--glow-md);"></span>
+                        <span style="position:relative; display:block;">
+                          <span aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-sm); margin-bottom:var(--space-3);">
+                            <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="{{ t.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import>
+                          </span>
+                          <span style="display:block; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading); margin-bottom:var(--space-1);">{{ t.label }}</span>
+                          <span style="display:block; font-size:var(--text-body-sm); color:var(--text-ink-body); line-height:var(--lh-body);">{{ t.desc }}</span>
+                        </span>
+                      </button>
+                    </sc-for>
+                  </div>
+
+                  <div hidden="{{ unsureHidden }}" style="margin-top:var(--space-6); background:var(--surface-sunken); border:var(--border-width) solid var(--border-subtle); border-radius:var(--radius-lg); padding:var(--space-6);">
+                    <h2 style="margin:0 0 var(--space-1); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-accent);">سه سؤال کوتاه</h2>
+                    <p style="margin:0 0 var(--space-4); font-size:var(--text-body-sm); color:var(--text-ink-body);">جواب‌ها فقط برای پیشنهاد اولیه است؛ هر وقت بخواهید عوضش می‌کنیم.</p>
+                    <div style="display:grid; gap:var(--space-4);">
+                      <sc-for list="{{ unsureQs }}" as="q" hint-placeholder-count="3">
+                        <div>
+                          <div style="font-size:var(--text-body-sm); margin-bottom:var(--space-2); color:var(--text-ink-body);">{{ q.label }}</div>
+                          <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                            <button type="button" onClick="{{ q.yes }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:7px 16px; border-radius:var(--radius-pill); cursor:pointer;">
+                              <span hidden="{{ q.yesOff }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                              <span style="position:relative;">{{ q.yesLabel }}</span>
+                            </button>
+                            <button type="button" onClick="{{ q.no }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:7px 16px; border-radius:var(--radius-pill); cursor:pointer;">
+                              <span hidden="{{ q.noOff }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                              <span style="position:relative;">{{ q.noLabel }}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div hidden="{{ suggestionHidden }}" style="margin-top:var(--space-5); border-top:var(--border-width) solid var(--border-hairline); padding-top:var(--space-4);"><div style="display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center;">
+                      <span style="font-size:var(--text-body-sm); color:var(--text-ink-body);">پیشنهاد ما: <strong style="color:var(--text-heading); font-weight:var(--weight-semibold);">{{ suggestionLabel }}</strong></span>
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="sm" icon-after="arrow-right" on-click="{{ acceptSuggestion }}" hint-size="170px,36px">همین را انتخاب کن</x-import>
+                    </div></div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <p style="margin:0 0 var(--space-6); color:var(--text-ink-body);">یکی از طرح‌های آماده را انتخاب کنید یا بگویید ترکیبی می‌خواهید. طرح نهایی در مرحله طراحی با شما تأیید می‌شود.</p>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:var(--space-3);">
+                    <sc-for list="{{ templates }}" as="tp" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ tp.select }}" aria-pressed="{{ tp.pressed }}" style="position:relative; text-align:start; background:var(--surface-card); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-lg); padding:var(--space-4); color:var(--text-ink-body); cursor:pointer; transition:transform var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);" style-hover="transform:translateY(-2px); border-color:var(--border-accent)">
+                        <span hidden="{{ tp.off }}" style="position:absolute; inset:0; border-radius:var(--radius-lg); border:var(--border-width) solid var(--border-accent); background:var(--grad-emerald-card); box-shadow:var(--glow-md);"></span>
+                        <span style="position:relative; display:block;">
+                          <span aria-hidden="true" style="display:flex; flex-direction:column; gap:5px; padding:10px; aspect-ratio:4/3; background:var(--surface-sunken); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-media); margin-bottom:var(--space-3);">
+                            <span style="height:8px; background:var(--grad-accent); border-radius:3px; display:block;"></span>
+                            <span style="flex:1; background:rgba(255,255,255,.12); border-radius:5px; display:block;"></span>
+                            <span style="display:flex; gap:5px;">
+                              <span style="flex:1; height:14px; background:var(--grad-gold); border-radius:3px; display:block;"></span>
+                              <span style="flex:1; height:14px; background:rgba(255,255,255,.14); border-radius:3px; display:block;"></span>
+                            </span>
+                          </span>
+                          <span style="display:block; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-body-lg); color:var(--text-heading); margin-bottom:2px;">{{ tp.label }}</span>
+                          <span style="display:block; font-size:var(--text-body-sm); color:var(--text-ink-body);">{{ tp.desc }}</span>
+                        </span>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="margin-top:var(--space-4); background:var(--surface-sunken); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-lg); padding:var(--space-5);">
+                    <button type="button" onClick="{{ selectMixed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body); padding:9px 18px; border-radius:var(--radius-pill); cursor:pointer; margin-bottom:var(--space-3);">
+                      <span hidden="{{ mixedOff }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                      <span style="position:relative;">ترکیبی — خودم توضیح می‌دهم</span>
+                    </button>
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="چه چیزی در ذهن دارید؟" hint="اختیاری" hint-size="100%,120px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" multiline="{{ true }}" rows="{{ 3 }}" value="{{ templateNote }}" on-change="{{ onTemplateNote }}" placeholder="مثلاً: ساختار لیستی ولی با عکس بزرگ بالای صفحه" hint-size="100%,80px"></x-import>
+                    </x-import>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid; gap:var(--space-7);">
+                  <p style="margin:0; color:var(--text-ink-body);">هر چه لازم دارید انتخاب کنید. هر کدام را نمی‌دانید، رد کنید — در جلسه مشاوره مشخص می‌شود.</p>
+
+                  <div>
+                    <h2 style="margin:0 0 var(--space-3); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">بخش‌های صفحه</h2>
+                    <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="8">
+                        <button type="button" onClick="{{ s.toggle }}" aria-pressed="{{ s.pressed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer;" style-hover="border-color:var(--border-accent)">
+                          <span hidden="{{ s.off }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft); box-shadow:var(--glow-sm);"></span>
+                          <span style="position:relative;">{{ s.label }}</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 style="margin:0 0 var(--space-3); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">امکانات</h2>
+                    <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                      <sc-for list="{{ features }}" as="f" hint-placeholder-count="8">
+                        <button type="button" onClick="{{ f.toggle }}" aria-pressed="{{ f.pressed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer;" style-hover="border-color:var(--border-accent)">
+                          <span hidden="{{ f.off }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft); box-shadow:var(--glow-sm);"></span>
+                          <span style="position:relative;">{{ f.label }}</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; flex-wrap:wrap; gap:var(--space-7);">
+                    <div style="flex:1 1 200px;">
+                      <h2 style="margin:0 0 var(--space-1); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">رنگ اصلی</h2>
+                      <p style="margin:0 0 var(--space-3); font-size:var(--text-body-sm); color:var(--text-muted);">از یک فهرست محدود؛ ما برندسازی انجام نمی‌دهیم.</p>
+                      <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                        <sc-for list="{{ colors }}" as="c" hint-placeholder-count="5">
+                          <button type="button" onClick="{{ c.select }}" aria-pressed="{{ c.pressed }}" aria-label="{{ c.label }}" title="{{ c.label }}" style="position:relative; width:38px; height:38px; border-radius:var(--radius-md); border:var(--border-width) solid var(--border-subtle); cursor:pointer; background:{{ c.hex }}">
+                            <span hidden="{{ c.off }}" style="position:absolute; inset:-4px; border-radius:var(--radius-md); border:var(--border-width-thick) solid var(--ink-0); box-shadow:var(--glow-sm);"></span>
+                          </button>
+                        </sc-for>
+                        <button type="button" onClick="{{ skipColor }}" style="position:relative; background:transparent; border:var(--border-width) dashed var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:0 14px; height:38px; border-radius:var(--radius-md); cursor:pointer;">
+                          <span hidden="{{ colorSkipOff }}" style="position:absolute; inset:0; border-radius:var(--radius-md); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                          <span style="position:relative;">نمی‌دانم</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div style="flex:1 1 200px;">
+                      <h2 style="margin:0 0 var(--space-1); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">فونت</h2>
+                      <p style="margin:0 0 var(--space-3); font-size:var(--text-body-sm); color:var(--text-muted);">سه گزینه خوانا برای فارسی.</p>
+                      <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                        <sc-for list="{{ fonts }}" as="ft" hint-placeholder-count="3">
+                          <button type="button" onClick="{{ ft.select }}" aria-pressed="{{ ft.pressed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer;">
+                            <span hidden="{{ ft.off }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                            <span style="position:relative;">{{ ft.label }}</span>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; flex-wrap:wrap; gap:var(--space-7); border-top:var(--border-width) solid var(--border-hairline); padding-top:var(--space-6);">
+                    <div style="flex:1 1 220px;">
+                      <h2 style="margin:0 0 var(--space-3); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">لوگو دارید؟</h2>
+                      <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                        <sc-for list="{{ logoOpts }}" as="o" hint-placeholder-count="3">
+                          <button type="button" onClick="{{ o.select }}" aria-pressed="{{ o.pressed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer;">
+                            <span hidden="{{ o.off }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                            <span style="position:relative;">{{ o.label }}</span>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <div style="flex:1 1 220px;">
+                      <h2 style="margin:0 0 var(--space-3); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">متن و عکس محتوا آماده است؟</h2>
+                      <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                        <sc-for list="{{ contentOpts }}" as="o" hint-placeholder-count="3">
+                          <button type="button" onClick="{{ o.select }}" aria-pressed="{{ o.pressed }}" style="position:relative; background:var(--surface-card); border:var(--border-width) solid var(--border-subtle); color:var(--text-ink-body); font-size:var(--text-body-sm); padding:8px 16px; border-radius:var(--radius-pill); cursor:pointer;">
+                            <span hidden="{{ o.off }}" style="position:absolute; inset:0; border-radius:var(--radius-pill); border:var(--border-width) solid var(--border-accent); background:var(--accent-soft);"></span>
+                            <span style="position:relative;">{{ o.label }}</span>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <p style="margin:0 0 var(--space-6); color:var(--text-ink-body);">فقط نام کسب‌وکار و شماره موبایل لازم است؛ بقیه کمک می‌کند بهتر آماده شویم.</p>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:var(--space-4);">
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="نام کسب‌وکار" required="{{ true }}" error="{{ nameErr }}" hint-size="100%,88px">
+                      <!-- no `icon` on RTL-text inputs: the DS pins it with physical left/paddingLeft -->
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" value="{{ bizName }}" on-change="{{ onName }}" invalid="{{ nameInvalid }}" hint-size="100%,44px"></x-import>
+                    </x-import>
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="زمینه کاری" hint-size="100%,88px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" value="{{ bizField }}" on-change="{{ onField }}" placeholder="مثلاً کافه، فروشگاه لوازم پزشکی" hint-size="100%,44px"></x-import>
+                    </x-import>
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="اینستاگرام یا سایت فعلی" hint-size="100%,88px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" value="{{ bizHandle }}" on-change="{{ onHandle }}" placeholder="@example" dir="ltr" hint-size="100%,44px"></x-import>
+                    </x-import>
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="شماره موبایل" required="{{ true }}" error="{{ phoneErr }}" hint-size="100%,88px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" icon="phone" type="tel" inputmode="numeric" value="{{ bizPhone }}" on-change="{{ onPhone }}" invalid="{{ phoneInvalid }}" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" hint-size="100%,44px"></x-import>
+                    </x-import>
+                  </div>
+
+                  <div style="margin-top:var(--space-4);">
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="سایت‌هایی که دوست دارید" hint="یکی دو آدرس، با کاما" hint-size="100%,88px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" value="{{ bizRefs }}" on-change="{{ onRefs }}" hint-size="100%,44px"></x-import>
+                    </x-import>
+                  </div>
+
+                  <div style="margin-top:var(--space-4);">
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="هر چیزی که خوب است بدانیم" hint-size="100%,140px">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" multiline="{{ true }}" rows="{{ 4 }}" value="{{ bizDesc }}" on-change="{{ onDesc }}" placeholder="کسب‌وکار چه کاری انجام می‌دهد و سایت باید چه مشکلی را حل کند؟" hint-size="100%,100px"></x-import>
+                    </x-import>
+                  </div>
+
+                  <div style="margin-top:var(--space-4); background:var(--surface-sunken); border:var(--border-width) dashed var(--border-subtle); border-radius:var(--radius-lg); padding:var(--space-5);">
+                    <div style="font-size:var(--text-eyebrow); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--text-heading); margin-bottom:var(--space-1);">فایل (اختیاری)</div>
+                    <p style="margin:0 0 var(--space-3); font-size:var(--text-body-sm); color:var(--text-ink-body);">{{ uploadHint }}</p>
+                    <input type="file" multiple onChange="{{ onFiles }}" style="font-size:var(--text-body-sm); color:var(--text-ink-body);">
+                    <div hidden="{{ filesHidden }}"><ul style="margin:var(--space-3) 0 0; padding:0; list-style:none; display:grid; gap:var(--space-2);">
+                      <sc-for list="{{ files }}" as="fl" hint-placeholder-count="1">
+                        <li style="font-size:var(--text-body-sm); color:var(--text-ink-body); display:flex; gap:var(--space-3); justify-content:space-between; background:var(--surface-card); border-radius:var(--radius-sm); padding:7px 12px;">
+                          <span style="direction:ltr;">{{ fl.name }}</span>
+                          <span style="color:{{ fl.color }}">{{ fl.status }}</span>
+                        </li>
+                      </sc-for>
+                    </ul></div>
+                  </div>
+
+                  <!-- anti-spam: honeypot (must stay empty) + slot for an optional captcha widget, both controlled by app.config.js -->
+                  <div aria-hidden="true" style="position:absolute; inset-inline-start:-9999px; width:1px; height:1px; overflow:hidden;">
+                    <label>شرکت<input type="text" tabindex="-1" autocomplete="off" onChange="{{ onHoneypot }}"></label>
+                  </div>
+                  <div id="captcha-slot" hidden="{{ captchaHidden }}" style="margin-top:var(--space-4); border:var(--border-width) dashed var(--border-subtle); border-radius:var(--radius-md); padding:var(--space-4); font-size:var(--text-body-sm); color:var(--text-ink-body);">جای ویجت کپچا — با <code style="direction:ltr; font-family:var(--font-mono);">captcha.enabled</code> در app.config.js روشن می‌شود.</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <p style="margin:0 0 var(--space-6); color:var(--text-ink-body);">همه‌چیز را یک بار مرور کنید. هر بخشی را لازم دیدید، ویرایش کنید.</p>
+                  <div style="display:grid; gap:var(--space-3);">
+                    <sc-for list="{{ summary }}" as="row" hint-placeholder-count="6">
+                      <div style="background:var(--surface-sunken); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-md); padding:var(--space-4) var(--space-5); display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-4); align-items:flex-start;">
+                        <div style="flex:1 1 200px;">
+                          <div style="font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--text-accent); margin-bottom:3px;">{{ row.label }}</div>
+                          <div style="font-size:var(--text-body); color:var(--text-heading);">{{ row.value }}</div>
+                        </div>
+                        <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="sm" variant="ghost" on-click="{{ row.edit }}" hint-size="80px,34px">ویرایش</x-import>
+                      </div>
+                    </sc-for>
+                  </div>
+
+                  <div style="margin-top:var(--space-5); display:flex; flex-wrap:wrap; gap:var(--space-3);">
+                    <div style="flex:1 1 200px; background:var(--surface-card); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-lg); padding:var(--space-5);">
+                      <div style="font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--text-ink-body); margin-bottom:var(--space-1);">زمان تقریبی</div>
+                      <div style="font-family:var(--font-display); font-size:var(--text-h3); font-weight:var(--weight-bold); color:var(--text-heading);">{{ timeline }}</div>
+                    </div>
+                    <div hidden="{{ priceHidden }}" style="flex:1 1 200px; background:var(--emphasis-soft); border:var(--border-width) solid var(--border-subtle); border-radius:var(--radius-lg); padding:var(--space-5);">
+                      <div style="font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--text-ink-body); margin-bottom:var(--space-1);">محدوده تقریبی هزینه</div>
+                      <div style="font-family:var(--font-display); font-size:var(--text-h3); font-weight:var(--weight-bold); color:var(--text-accent);">{{ price }}</div>
+                      <div style="font-size:var(--text-caption); color:var(--text-ink-body); margin-top:var(--space-1);">عدد نهایی بعد از جلسه مشاوره مشخص می‌شود.</div>
+                    </div>
+                  </div>
+
+                  <div hidden="{{ errorHidden }}" style="margin-top:var(--space-5);">
+                    <x-import component-from-global-scope="MitecDesignSystem_43d123.Alert" tone="danger" title="ثبت سفارش انجام نشد" hint-size="100%,80px">{{ errorMsg }} انتخاب‌های شما محفوظ است؛ می‌توانید دوباره تلاش کنید.</x-import>
+                  </div>
+
+                  <p style="margin:var(--space-5) 0 0; font-size:var(--text-body-sm); color:var(--text-ink-body);">با ثبت سفارش، اطلاعات بالا برای ما ارسال می‌شود. هیچ پرداختی در این مرحله انجام نمی‌شود.</p>
+                </div>
+              </sc-if>
+
+              <div style="margin-top:var(--space-7); border-top:var(--border-width) solid var(--border-hairline); padding-top:var(--space-5); display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center;">
+                <div hidden="{{ backHidden }}">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" variant="secondary" on-click="{{ back }}" hint-size="90px,44px">قبلی</x-import>
+                </div>
+                <div hidden="{{ skipHidden }}">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" variant="ghost" on-click="{{ skipStep }}" hint-size="180px,44px">فعلاً نمی‌دانم، رد کن</x-import>
+                </div>
+                <span style="margin-inline-end:auto;"></span>
+                <div hidden="{{ nextHidden }}">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" icon-after="arrow-right" disabled="{{ nextDisabled }}" on-click="{{ next }}" hint-size="120px,52px">بعدی</x-import>
+                </div>
+                <div hidden="{{ submitHidden }}">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" icon-after="arrow-right" disabled="{{ submitting }}" on-click="{{ submit }}" hint-size="160px,52px">{{ submitLabel }}</x-import>
+                </div>
+              </div>
+            </x-import>
+          </section>
+
+          <aside style="flex:1 1 280px; max-width:400px; min-width:min(100%, 260px); position:sticky; top:86px;">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card)" hint-size="100%,360px">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-3); margin-bottom:var(--space-1);">
+                <h2 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">پیش‌نمایش ساختار</h2>
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="sm" variant="ghost" on-click="{{ togglePreview }}" hint-size="70px,32px">{{ previewToggleLabel }}</x-import>
+              </div>
+              <p style="margin:0 0 var(--space-4); font-size:var(--text-body-sm); color:var(--text-ink-body);">طرح انتزاعی است، نه طراحی نهایی.</p>
+              <div hidden="{{ previewClosed }}">
+                <div style="background:var(--surface-sunken); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-md); padding:10px; display:grid; gap:7px;">
+                  <div style="display:flex; align-items:center; gap:6px; padding:7px 9px; background:var(--accent-soft); border-radius:var(--radius-sm);">
+                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--text-action); direction:ltr;">mitec</span>
+                    <span style="margin-inline-start:auto; display:flex; gap:4px;">
+                      <span style="width:14px; height:4px; background:rgba(255,255,255,.3); border-radius:2px; display:block;"></span>
+                      <span style="width:14px; height:4px; background:rgba(255,255,255,.3); border-radius:2px; display:block;"></span>
+                      <span style="width:20px; height:8px; background:var(--grad-gold); border-radius:3px; display:block;"></span>
+                    </span>
+                  </div>
+                  <sc-for list="{{ previewBlocks }}" as="b" hint-placeholder-count="4">
+                    <div style="border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-sm); padding:9px 10px; display:flex; align-items:center; gap:var(--space-2); background:var(--surface-card); min-height:{{ b.h }}">
+                      <span style="width:4px; align-self:stretch; border-radius:2px; background:{{ b.bar }}"></span>
+                      <span style="font-size:11px; color:var(--text-ink-body);">{{ b.label }}</span>
+                    </div>
+                  </sc-for>
+                  <div style="display:flex; gap:5px; padding:7px 9px; border-radius:var(--radius-sm); background:rgba(255,255,255,.03);">
+                    <span style="width:30%; height:4px; background:rgba(255,255,255,.22); border-radius:2px; display:block;"></span>
+                    <span style="width:20%; height:4px; background:rgba(255,255,255,.22); border-radius:2px; display:block;"></span>
+                  </div>
+                </div>
+                <div hidden="{{ previewFeaturesHidden }}" style="margin-top:var(--space-4);">
+                  <div style="font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); color:var(--text-ink-body); margin-bottom:var(--space-2);">امکانات انتخاب‌شده</div>
+                  <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                    <sc-for list="{{ previewFeatures }}" as="pf" hint-placeholder-count="2">
+                      <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="bronze" hint-size="auto,24px">{{ pf.label }}</x-import>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </x-import>
+            <p style="margin:var(--space-4) var(--space-2) 0; font-size:var(--text-body-sm); color:var(--text-ink-body);">انتخاب‌های شما روی همین مرورگر ذخیره می‌شود؛ اگر صفحه بسته شود، از دست نمی‌رود.</p>
+          </aside>
+        </div>
+      </main>
+    </sc-if>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showPrice&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;سفارش‌ساز&quot;}}">
+const STORE_KEY = 'mitec.order.v1';
+const FA = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+const toFa = (v) => String(v ?? '').replace(/\d/g, (d) => FA[+d]);
+const toEn = (v) => String(v ?? '').replace(/[۰-۹]/g, (d) => String(FA.indexOf(d)));
+
+const STEP_TITLES = ['نوع سایت', 'طرح و سبک', 'شخصی‌سازی', 'اطلاعات کسب‌وکار', 'مرور و ثبت'];
+const STEP_SHORT = ['نوع سایت', 'طرح', 'شخصی‌سازی', 'اطلاعات', 'ثبت'];
+
+// Lucide names for the step-1 cards, keyed by catalog id.
+const TYPE_ICONS = {
+  ecommerce: 'shopping-cart', corporate: 'building-2', menu: 'layout-dashboard',
+  catalog: 'bar-chart-3', landing: 'trending-up', custom: 'shield-check', unsure: 'circle-help'
+};
+
+const NAV_TARGETS = {
+  'خانه': './Mitec Home.dc.html',
+  'خدمات': './Mitec Home.dc.html#services',
+  'نمونه‌کارها': './Mitec Home.dc.html#work',
+  'سفارش سایت': './Mitec Order Builder.dc.html',
+  'پیگیری سفارش': './Mitec Track.dc.html'
+};
+
+const EMPTY = {
+  siteType: null, template: null, templateNote: '',
+  sections: [], features: [], color: null, font: null,
+  hasLogo: null, hasContent: null,
+  business: { name: '', field: '', handle: '', refs: '', desc: '', phone: '' }
+};
+
+class Component extends DCLogic {
+  state = {
+    step: 1,
+    catalog: null,
+    selection: JSON.parse(JSON.stringify(EMPTY)),
+    unsure: {},
+    previewOpen: true,
+    files: [],
+    honeypot: '',
+    touched4: false,
+    status: 'idle',      // idle | submitting | error | success
+    errorMsg: '',
+    fieldErrors: {},
+    trackingCode: '',
+    copied: false,
+    config: { showPrice: false, upload: { maxSizeMB: 8, maxFiles: 5, accept: ['image/png','image/jpeg','image/webp','application/pdf'] }, captcha: { enabled: false } }
+  };
+
+  async componentDidMount() {
+    this.restore();
+    try {
+      const res = await fetch('./src/config/order-catalog.json');
+      if (res.ok) this.setState({ catalog: await res.json() });
+    } catch (e) { /* catalog optional in preview */ }
+    try {
+      const mod = await import('./src/config/app.config.js');
+      if (mod?.APP_CONFIG) this.setState({ config: mod.APP_CONFIG });
+    } catch (e) { /* defaults above apply */ }
+  }
+
+  restore() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved && saved.selection) {
+        this.setState({
+          selection: { ...JSON.parse(JSON.stringify(EMPTY)), ...saved.selection, business: { ...EMPTY.business, ...(saved.selection.business || {}) } },
+          step: Math.min(Math.max(saved.step || 1, 1), 5),
+          unsure: saved.unsure || {}
+        });
+      }
+    } catch (e) { /* storage unavailable — wizard still works */ }
+  }
+
+  persist(next) {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ selection: next.selection, step: next.step, unsure: next.unsure }));
+    } catch (e) { /* ignore quota / privacy mode */ }
+  }
+
+  patch = (partial) => this.setState((s) => { this.persist({ ...s, ...partial }); return partial; });
+
+  setSel = (partial) => this.setState((s) => {
+    const selection = { ...s.selection, ...partial };
+    this.persist({ ...s, selection });
+    return { selection };
+  });
+
+  setBiz = (key, value) => this.setState((s) => {
+    const selection = { ...s.selection, business: { ...s.selection.business, [key]: value } };
+    this.persist({ ...s, selection });
+    return { selection };
+  });
+
+  toggleIn = (key, id) => this.setState((s) => {
+    const list = s.selection[key];
+    const nextList = list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+    const selection = { ...s.selection, [key]: nextList };
+    this.persist({ ...s, selection });
+    return { selection };
+  });
+
+  go = (step) => this.setState((s) => { this.persist({ ...s, step }); return { step }; });
+
+  suggest() {
+    const cat = this.state.catalog;
+    if (!cat) return null;
+    if (Object.keys(this.state.unsure).length < cat.unsureQuestions.length) return null;
+    const score = {};
+    cat.unsureQuestions.forEach((q) => {
+      const pick = q.options.find((o) => o.id === this.state.unsure[q.id]);
+      if (!pick) return;
+      Object.entries(pick.weight || {}).forEach(([k, v]) => { score[k] = (score[k] || 0) + v; });
+    });
+    const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0];
+    return best ? best[0] : null;
+  }
+
+  estimate() {
+    const cat = this.state.catalog;
+    const sel = this.state.selection;
+    const base = cat?.estimates?.[sel.siteType] || cat?.estimates?.unsure || { weeks: [2, 6], price: [15000000, 60000000] };
+    const w = [...base.weeks], p = [...base.price];
+    (sel.features || []).forEach((f) => {
+      const c = cat?.featureCost?.[f];
+      if (!c) return;
+      p[0] += c[0]; p[1] += Math.round(c[0] * 1.6); w[1] += c[1];
+    });
+    const secCost = (cat?.sectionCost || 0) * (sel.sections || []).length;
+    p[0] += secCost; p[1] += Math.round(secCost * 1.5);
+    return { weeks: w, price: p };
+  }
+
+  validate4() {
+    const b = this.state.selection.business;
+    const errs = {};
+    if (!String(b.name).trim()) errs.name = 'نام کسب‌وکار را بنویسید.';
+    const phone = toEn(b.phone).replace(/[\s-]/g, '');
+    if (!phone) errs.phone = 'شماره موبایل لازم است.';
+    else if (!/^09\d{9}$/.test(phone)) errs.phone = 'شماره موبایل معتبر نیست (مثل ۰۹۱۲۳۴۵۶۷۸۹).';
+    return errs;
+  }
+
+  next = () => {
+    const s = this.state;
+    if (s.step === 4) {
+      const errs = this.validate4();
+      if (Object.keys(errs).length) { this.setState({ touched4: true, fieldErrors: errs }); return; }
+      this.setState({ fieldErrors: {} });
+    }
+    this.go(Math.min(s.step + 1, 5));
+  };
+
+  back = () => this.go(Math.max(this.state.step - 1, 1));
+
+  skipStep = () => {
+    const s = this.state;
+    if (s.step === 2) this.setSel({ template: 'skip' });
+    if (s.step === 3) this.setSel({ color: null, font: null });
+    this.go(Math.min(s.step + 1, 5));
+  };
+
+  submit = async () => {
+    if (this.state.honeypot) return; // bot
+    this.setState({ status: 'submitting', errorMsg: '' });
+    let res;
+    try {
+      const api = await import('./src/api/client.js');
+      res = await api.submitOrder(this.state.selection, this.state.catalog);
+    } catch (e) {
+      // api layer unreachable in this preview — mirror the mock adapter so the flow stays demoable
+      await new Promise((r) => setTimeout(r, 900));
+      const phone = toEn(this.state.selection.business.phone);
+      res = /0000$/.test(phone)
+        ? { ok: false, error: { code: 'SERVER_ERROR', message: 'ثبت سفارش انجام نشد.' } }
+        : { ok: true, data: { trackingCode: 'MTC-' + Array.from({ length: 5 }, () => Math.floor(Math.random() * 10)).join('') } };
+    }
+    if (res.ok) {
+      this.setState({ status: 'success', trackingCode: res.data.trackingCode || '' });
+      try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    } else {
+      this.setState({ status: 'error', errorMsg: res.error?.message || 'ارسال انجام نشد.', fieldErrors: res.error?.fieldErrors || {} });
+    }
+  };
+
+  copyCode = () => {
+    try {
+      navigator.clipboard.writeText(this.state.trackingCode);
+      this.setState({ copied: true });
+      setTimeout(() => this.setState({ copied: false }), 2000);
+    } catch (e) {}
+  };
+
+  onFiles = (e) => {
+    const { maxSizeMB, accept, maxFiles } = this.state.config.upload;
+    const picked = Array.from(e.target.files || []).slice(0, maxFiles);
+    const files = picked.map((f) => {
+      let status = 'آماده ارسال', color = 'var(--success)';
+      if (accept && !accept.includes(f.type)) { status = 'نوع فایل پشتیبانی نمی‌شود'; color = 'var(--danger)'; }
+      else if (f.size > maxSizeMB * 1024 * 1024) { status = 'حجم بیش از حد مجاز'; color = 'var(--danger)'; }
+      return { name: f.name, status, color };
+    });
+    this.setState({ files });
+  };
+
+  renderVals() {
+    const s = this.state;
+    const cat = s.catalog;
+    const sel = s.selection;
+    const step = s.step;
+    const est = this.estimate();
+    const suggestion = this.suggest();
+    const showPrice = this.props.showPrice ?? s.config.showPrice ?? false;
+
+    const label = (list, id) => (list || []).find((x) => x.id === id)?.label || null;
+    const tplList = (cat?.templates?.[sel.siteType]) || [];
+
+    const previewBlocks = [
+      { label: 'بخش اصلی صفحه (Hero)', h: '44px', bar: 'var(--grad-accent)' },
+      ...(sel.sections || []).map((id) => ({ label: label(cat?.sections, id) || id, h: '30px', bar: 'rgba(44,196,134,.45)' }))
+    ];
+    if ((sel.features || []).includes('payment')) previewBlocks.push({ label: 'سبد خرید و پرداخت', h: '30px', bar: 'var(--grad-gold)' });
+    if ((sel.features || []).includes('loyalty')) previewBlocks.push({ label: 'باشگاه مشتریان', h: '30px', bar: 'var(--grad-gold)' });
+    if ((sel.features || []).includes('booking')) previewBlocks.push({ label: 'فرم رزرو', h: '30px', bar: 'var(--grad-gold)' });
+
+    const errs = s.touched4 ? { ...this.validate4(), ...s.fieldErrors } : s.fieldErrors;
+
+    const weeksTxt = est.weeks[0] === est.weeks[1]
+      ? `حدود ${toFa(est.weeks[0])} هفته`
+      : `${toFa(est.weeks[0])} تا ${toFa(est.weeks[1])} هفته`;
+    const priceTxt = `${toFa(Math.round(est.price[0] / 1e6))} تا ${toFa(Math.round(est.price[1] / 1e6))} میلیون تومان`;
+
+    const opt3 = (key, opts) => opts.map((o) => ({
+      label: o.label,
+      pressed: sel[key] === o.value ? 'true' : 'false',
+      off: sel[key] === o.value ? undefined : true,
+      select: () => this.setSel({ [key]: o.value })
+    }));
+
+    return {
+      navItems: Object.keys(NAV_TARGETS),
+      onNavigate: (item) => { const t = NAV_TARGETS[item]; if (t) location.href = t; },
+      goWhatsapp: () => window.open('https://wa.me/989000000000', '_blank', 'noopener'),
+
+      step, stepNumFa: toFa(step), stepTitle: STEP_TITLES[step - 1],
+      progressPct: (step / 5) * 100 + '%',
+      stepDots: STEP_SHORT.map((l, i) => ({
+        n: toFa(i + 1), label: l,
+        inactive: i + 1 <= step ? undefined : true,
+        color: i + 1 === step ? 'var(--text-heading)' : 'var(--text-ink-body)',
+        numColor: i + 1 <= step ? 'var(--accent-fg)' : 'var(--text-ink-body)'
+      })),
+      isStep1: step === 1, isStep2: step === 2, isStep3: step === 3, isStep4: step === 4, isStep5: step === 5,
+      isSuccess: s.status === 'success',
+      notDone: s.status !== 'success',
+
+      siteTypes: (cat?.siteTypes || []).map((t) => ({
+        label: t.label, desc: t.desc, icon: TYPE_ICONS[t.id] || 'circle',
+        pressed: sel.siteType === t.id ? 'true' : 'false',
+        off: sel.siteType === t.id ? undefined : true,
+        select: () => this.setSel({ siteType: t.id, template: null })
+      })),
+      unsureHidden: sel.siteType === 'unsure' ? undefined : true,
+      unsureQs: (cat?.unsureQuestions || []).map((q) => ({
+        label: q.label,
+        yesLabel: q.options[0].label, noLabel: q.options[1].label,
+        yesOff: s.unsure[q.id] === q.options[0].id ? undefined : true,
+        noOff: s.unsure[q.id] === q.options[1].id ? undefined : true,
+        yes: () => this.patch({ unsure: { ...s.unsure, [q.id]: q.options[0].id } }),
+        no: () => this.patch({ unsure: { ...s.unsure, [q.id]: q.options[1].id } })
+      })),
+      suggestionHidden: suggestion ? undefined : true,
+      suggestionLabel: label(cat?.siteTypes, suggestion) || '',
+      acceptSuggestion: () => { this.setSel({ siteType: suggestion, template: null }); this.go(2); },
+
+      templates: tplList.map((tp) => ({
+        label: tp.label, desc: tp.desc,
+        pressed: sel.template === tp.id ? 'true' : 'false',
+        off: sel.template === tp.id ? undefined : true,
+        select: () => this.setSel({ template: tp.id })
+      })),
+      selectMixed: () => this.setSel({ template: 'mixed' }),
+      mixedOff: sel.template === 'mixed' ? undefined : true,
+      templateNote: sel.templateNote || '',
+      onTemplateNote: (e) => this.setSel({ templateNote: e.target.value }),
+
+      sections: (cat?.sections || []).map((x) => ({
+        label: x.label,
+        pressed: sel.sections.includes(x.id) ? 'true' : 'false',
+        off: sel.sections.includes(x.id) ? undefined : true,
+        toggle: () => this.toggleIn('sections', x.id)
+      })),
+      features: (cat?.features || []).map((x) => ({
+        label: x.label,
+        pressed: sel.features.includes(x.id) ? 'true' : 'false',
+        off: sel.features.includes(x.id) ? undefined : true,
+        toggle: () => this.toggleIn('features', x.id)
+      })),
+      colors: (cat?.colors || []).map((c) => ({
+        label: c.label, hex: c.hex,
+        pressed: sel.color === c.id ? 'true' : 'false',
+        off: sel.color === c.id ? undefined : true,
+        select: () => this.setSel({ color: c.id })
+      })),
+      skipColor: () => this.setSel({ color: null }),
+      colorSkipOff: sel.color === null ? undefined : true,
+      fonts: (cat?.fonts || []).map((f) => ({
+        label: f.label,
+        pressed: sel.font === f.id ? 'true' : 'false',
+        off: sel.font === f.id ? undefined : true,
+        select: () => this.setSel({ font: f.id })
+      })),
+      logoOpts: opt3('hasLogo', [{ label: 'دارم', value: true }, { label: 'ندارم', value: false }, { label: 'نمی‌دانم', value: 'unsure' }]),
+      contentOpts: opt3('hasContent', [{ label: 'آماده است', value: true }, { label: 'آماده نیست', value: false }, { label: 'نمی‌دانم', value: 'unsure' }]),
+
+      bizName: sel.business.name, bizField: sel.business.field, bizHandle: sel.business.handle,
+      bizPhone: sel.business.phone, bizRefs: sel.business.refs, bizDesc: sel.business.desc,
+      onName: (e) => this.setBiz('name', e.target.value),
+      onField: (e) => this.setBiz('field', e.target.value),
+      onHandle: (e) => this.setBiz('handle', e.target.value),
+      onPhone: (e) => this.setBiz('phone', e.target.value),
+      onRefs: (e) => this.setBiz('refs', e.target.value),
+      onDesc: (e) => this.setBiz('desc', e.target.value),
+      onHoneypot: (e) => this.setState({ honeypot: e.target.value }),
+      nameErr: errs.name || '', nameInvalid: errs.name ? true : undefined,
+      phoneErr: errs.phone || '', phoneInvalid: errs.phone ? true : undefined,
+      uploadHint: `لوگو یا عکس‌ها — حداکثر ${toFa(s.config.upload.maxSizeMB)} مگابایت، تا ${toFa(s.config.upload.maxFiles)} فایل.`,
+      files: s.files, filesHidden: s.files.length ? undefined : true,
+      onFiles: this.onFiles,
+      captchaHidden: s.config.captcha?.enabled ? undefined : true,
+
+      summary: [
+        { label: 'نوع سایت', value: label(cat?.siteTypes, sel.siteType) || 'انتخاب نشده', edit: () => this.go(1) },
+        { label: 'طرح و سبک', value: sel.template === 'skip' ? 'بعداً مشخص می‌شود' : sel.template === 'mixed' ? 'ترکیبی — ' + (sel.templateNote || 'توضیح در جلسه') : (label(tplList, sel.template) || 'انتخاب نشده'), edit: () => this.go(2) },
+        { label: 'بخش‌ها', value: (sel.sections || []).map((id) => label(cat?.sections, id) || id).join('، ') || 'بدون بخش اضافه', edit: () => this.go(3) },
+        { label: 'امکانات', value: (sel.features || []).map((id) => label(cat?.features, id) || id).join('، ') || 'بدون امکانات اضافه', edit: () => this.go(3) },
+        { label: 'سبک بصری', value: [label(cat?.colors, sel.color), label(cat?.fonts, sel.font)].filter(Boolean).join(' • ') || 'در جلسه مشاوره', edit: () => this.go(3) },
+        { label: 'کسب‌وکار', value: [sel.business.name, sel.business.field, toFa(sel.business.phone)].filter(Boolean).join(' • ') || 'کامل نشده', edit: () => this.go(4) }
+      ],
+      timeline: weeksTxt,
+      price: priceTxt,
+      priceHidden: showPrice ? undefined : true,
+      errorHidden: s.status === 'error' ? undefined : true,
+      errorMsg: s.errorMsg,
+
+      back: this.back, next: this.next, skipStep: this.skipStep, submit: this.submit,
+      backHidden: step === 1 ? true : undefined,
+      skipHidden: (step === 2 || step === 3) ? undefined : true,
+      nextHidden: step === 5 ? true : undefined,
+      nextDisabled: step === 1 && !sel.siteType ? true : undefined,
+      submitHidden: step === 5 ? undefined : true,
+      submitting: s.status === 'submitting' ? true : undefined,
+      submitLabel: s.status === 'submitting' ? 'در حال ارسال…' : 'ثبت سفارش',
+
+      previewClosed: s.previewOpen ? undefined : true,
+      previewToggleLabel: s.previewOpen ? 'بستن' : 'نمایش',
+      togglePreview: () => this.setState({ previewOpen: !s.previewOpen }),
+      previewBlocks,
+      previewFeatures: (sel.features || []).map((id) => ({ label: label(cat?.features, id) || id })),
+      previewFeaturesHidden: (sel.features || []).length ? undefined : true,
+
+      trackingCode: s.trackingCode,
+      copyCode: this.copyCode,
+      copyLabel: s.copied ? 'کپی شد' : 'کپی کد رهگیری'
+    };
+  }
+}
+
+</script>
+</body>
+</html>

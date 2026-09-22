@@ -1,0 +1,411 @@
+{
+  "_note": "Single source of truth for the order wizard. Replaceable by an API response (getCatalog()) without touching code.",
+  "siteTypes": [
+    {
+      "id": "ecommerce",
+      "label": "فروشگاه اینترنتی",
+      "desc": "فروش محصول، سبد خرید و پرداخت آنلاین"
+    },
+    {
+      "id": "corporate",
+      "label": "سایت شرکتی",
+      "desc": "معرفی شرکت، خدمات و راه‌های تماس"
+    },
+    {
+      "id": "menu",
+      "label": "منوی آنلاین",
+      "desc": "منوی کافه و رستوران با QR"
+    },
+    {
+      "id": "catalog",
+      "label": "کاتالوگ و نمونه‌کار",
+      "desc": "نمایش محصولات یا پروژه‌ها بدون فروش"
+    },
+    {
+      "id": "landing",
+      "label": "لندینگ پیج",
+      "desc": "یک صفحه برای یک کمپین یا یک محصول"
+    },
+    {
+      "id": "custom",
+      "label": "سرویس اختصاصی",
+      "desc": "باشگاه مشتریان، رزرو، پنل مدیریت و مشابه"
+    },
+    {
+      "id": "unsure",
+      "label": "نمی‌دانم",
+      "desc": "چند سؤال کوتاه می‌پرسیم و پیشنهاد می‌دهیم"
+    }
+  ],
+  "unsureQuestions": [
+    {
+      "id": "sell",
+      "label": "قرار است چیزی مستقیم از سایت فروخته شود؟",
+      "options": [
+        {
+          "id": "yes",
+          "label": "بله، محصول یا خدمات",
+          "weight": {
+            "ecommerce": 3
+          }
+        },
+        {
+          "id": "no",
+          "label": "نه، فقط معرفی",
+          "weight": {
+            "corporate": 2,
+            "catalog": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "place",
+      "label": "کسب‌وکار شما کافه یا رستوران است؟",
+      "options": [
+        {
+          "id": "yes",
+          "label": "بله",
+          "weight": {
+            "menu": 3
+          }
+        },
+        {
+          "id": "no",
+          "label": "نه",
+          "weight": {
+            "corporate": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "members",
+      "label": "می‌خواهید مشتری‌ها حساب کاربری یا باشگاه داشته باشند؟",
+      "options": [
+        {
+          "id": "yes",
+          "label": "بله",
+          "weight": {
+            "custom": 3
+          }
+        },
+        {
+          "id": "no",
+          "label": "فعلاً نه",
+          "weight": {
+            "landing": 1
+          }
+        }
+      ]
+    }
+  ],
+  "templates": {
+    "ecommerce": [
+      {
+        "id": "shop-grid",
+        "label": "شبکه‌ای",
+        "desc": "تمرکز روی تصویر محصول"
+      },
+      {
+        "id": "shop-editorial",
+        "label": "مجله‌ای",
+        "desc": "محصول همراه با محتوا"
+      },
+      {
+        "id": "shop-compact",
+        "label": "فشرده",
+        "desc": "برای تعداد کم محصول"
+      }
+    ],
+    "corporate": [
+      {
+        "id": "corp-classic",
+        "label": "کلاسیک",
+        "desc": "هدر بزرگ و بخش‌های پشت‌سرهم"
+      },
+      {
+        "id": "corp-split",
+        "label": "دوستونه",
+        "desc": "متن و تصویر کنار هم"
+      },
+      {
+        "id": "corp-minimal",
+        "label": "مینیمال",
+        "desc": "تایپوگرافی محور"
+      }
+    ],
+    "menu": [
+      {
+        "id": "menu-cards",
+        "label": "کارتی",
+        "desc": "هر آیتم با عکس"
+      },
+      {
+        "id": "menu-list",
+        "label": "لیستی",
+        "desc": "سریع و سبک، مناسب QR"
+      },
+      {
+        "id": "menu-tabs",
+        "label": "دسته‌بندی تب‌دار",
+        "desc": "جابه‌جایی سریع بین دسته‌ها"
+      }
+    ],
+    "catalog": [
+      {
+        "id": "cat-gallery",
+        "label": "گالری",
+        "desc": "تصویرمحور"
+      },
+      {
+        "id": "cat-table",
+        "label": "جدولی",
+        "desc": "مناسب مشخصات فنی"
+      }
+    ],
+    "landing": [
+      {
+        "id": "land-hero",
+        "label": "تک‌پیام",
+        "desc": "یک دعوت به اقدام مشخص"
+      },
+      {
+        "id": "land-story",
+        "label": "روایتی",
+        "desc": "اسکرول پله‌پله"
+      }
+    ],
+    "custom": [
+      {
+        "id": "custom-panel",
+        "label": "پنل‌محور",
+        "desc": "داشبورد و مدیریت داده"
+      },
+      {
+        "id": "custom-flow",
+        "label": "فرم‌محور",
+        "desc": "ثبت درخواست و پیگیری"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "id": "gallery",
+      "label": "گالری تصاویر"
+    },
+    {
+      "id": "blog",
+      "label": "وبلاگ"
+    },
+    {
+      "id": "testimonials",
+      "label": "نظر مشتری‌ها"
+    },
+    {
+      "id": "faq",
+      "label": "سؤالات متداول"
+    },
+    {
+      "id": "map",
+      "label": "نقشه و آدرس"
+    },
+    {
+      "id": "team",
+      "label": "معرفی تیم"
+    },
+    {
+      "id": "pricing",
+      "label": "تعرفه‌ها"
+    },
+    {
+      "id": "contact-form",
+      "label": "فرم تماس"
+    }
+  ],
+  "features": [
+    {
+      "id": "payment",
+      "label": "پرداخت آنلاین"
+    },
+    {
+      "id": "auth",
+      "label": "ثبت‌نام و ورود"
+    },
+    {
+      "id": "loyalty",
+      "label": "باشگاه مشتریان"
+    },
+    {
+      "id": "chat",
+      "label": "چت آنلاین"
+    },
+    {
+      "id": "seo",
+      "label": "سئوی پایه"
+    },
+    {
+      "id": "i18n",
+      "label": "چندزبانه"
+    },
+    {
+      "id": "booking",
+      "label": "نوبت‌دهی و رزرو"
+    },
+    {
+      "id": "cms",
+      "label": "پنل مدیریت محتوا"
+    }
+  ],
+  "colors": [
+    {
+      "id": "green",
+      "label": "سبز",
+      "hex": "#57B79A"
+    },
+    {
+      "id": "amber",
+      "label": "کهربایی",
+      "hex": "#E0A25C"
+    },
+    {
+      "id": "navy",
+      "label": "سرمه‌ای",
+      "hex": "#2F4E7E"
+    },
+    {
+      "id": "clay",
+      "label": "آجری",
+      "hex": "#B4553F"
+    },
+    {
+      "id": "graphite",
+      "label": "زغالی",
+      "hex": "#3A3F3D"
+    }
+  ],
+  "fonts": [
+    {
+      "id": "vazirmatn",
+      "label": "وزیرمتن",
+      "desc": "خوانا و امروزی"
+    },
+    {
+      "id": "estedad",
+      "label": "استعداد",
+      "desc": "کمی رسمی‌تر"
+    },
+    {
+      "id": "morabba",
+      "label": "مربا",
+      "desc": "برای تیترهای گرم"
+    }
+  ],
+  "estimates": {
+    "ecommerce": {
+      "weeks": [
+        4,
+        7
+      ],
+      "price": [
+        38000000,
+        75000000
+      ]
+    },
+    "corporate": {
+      "weeks": [
+        2,
+        4
+      ],
+      "price": [
+        18000000,
+        38000000
+      ]
+    },
+    "menu": {
+      "weeks": [
+        1,
+        2
+      ],
+      "price": [
+        9000000,
+        18000000
+      ]
+    },
+    "catalog": {
+      "weeks": [
+        2,
+        3
+      ],
+      "price": [
+        14000000,
+        28000000
+      ]
+    },
+    "landing": {
+      "weeks": [
+        1,
+        2
+      ],
+      "price": [
+        8000000,
+        16000000
+      ]
+    },
+    "custom": {
+      "weeks": [
+        3,
+        8
+      ],
+      "price": [
+        30000000,
+        90000000
+      ]
+    },
+    "unsure": {
+      "weeks": [
+        2,
+        6
+      ],
+      "price": [
+        15000000,
+        60000000
+      ]
+    }
+  },
+  "featureCost": {
+    "payment": [
+      6000000,
+      2
+    ],
+    "auth": [
+      4000000,
+      1
+    ],
+    "loyalty": [
+      12000000,
+      3
+    ],
+    "chat": [
+      2000000,
+      0
+    ],
+    "seo": [
+      3000000,
+      1
+    ],
+    "i18n": [
+      8000000,
+      2
+    ],
+    "booking": [
+      10000000,
+      2
+    ],
+    "cms": [
+      7000000,
+      2
+    ]
+  },
+  "sectionCost": 1500000
+}

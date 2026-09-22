@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="mitec — طراحی، ساخت و پشتیبانی سایت و سرویس آنلاین برای کسب‌وکار شما.">
+<meta property="og:title" content="mitec — سایت و سرویس آنلاین کسب‌وکار شما">
+<meta property="og:description" content="طراحی، ساخت و پشتیبانی سایت و سرویس آنلاینی که کسب‌وکار شما لازم دارد.">
+<meta property="og:locale" content="fa_IR">
+<title>mitec — طراحی و ساخت سایت و سرویس آنلاین</title>
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/styles.css">
+<script src="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/_ds_bundle.js"></script>
+<!-- PRODUCTION: serve Vazirmatn from public/fonts (no external CDN — Iran). CDN link is preview-only. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  /* Type substitution, per the design system's own escape hatch (readme §4):
+     Montserrat/Mulish carry no Persian glyphs, so --font-display/--font-body are
+     re-pointed at Vazirmatn. Every other token is used as authored. */
+  :root { --font-display: 'Vazirmatn', system-ui, sans-serif; --font-body: 'Vazirmatn', system-ui, sans-serif; }
+  /* The DS declares --text-body twice at :root — a colour in colors.css and a
+     font-size in typography.css. Reordering would break the size uses, so body
+     ink gets a non-colliding alias here, with the ivory-card scope preserved. */
+  :root { --text-ink-body: var(--ink-200); }
+  .mt-on-light { --text-ink-body: var(--ink-700); }
+  body { margin: 0; background: var(--bg-page); color: var(--text-ink-body); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); }
+  ::selection { background: var(--accent-soft); }
+  *:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sm); }
+  /* Bidi fix: the DS wordmark is built from separate LTR runs, which an RTL
+     page reorders. Scoped to the NavBar's own <header>; cannot be inlined. */
+  header > span:first-child { direction: ltr; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</helmet>
+<div dir="rtl" lang="fa" style="position:relative; min-height:100vh; background:var(--grad-page); color:var(--text-ink-body); font-family:var(--font-body); line-height:var(--lh-body); overflow:hidden;">
+
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:var(--grad-mesh-line); background-size:64px 100%; -webkit-mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent); mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);"></div>
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(52% 40% at 18% 26%, rgba(44,196,134,.22), transparent 68%);"></div>
+
+  <div style="position:relative;">
+
+    <x-import component-from-global-scope="MitecDesignSystem_43d123.NavBar" sticky="{{ true }}" items="{{ navItems }}" active="خانه" on-navigate="{{ onNavigate }}" cta="سفارش سایت" on-cta="{{ goOrder }}" hint-size="100%,66px"></x-import>
+
+    <main id="top">
+
+      <section style="max-width:var(--container-max); margin:0 auto; padding:var(--space-12) var(--gutter) var(--space-10); display:flex; flex-direction:column; gap:var(--space-8);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="طراحی سایت حرفه‌ای" kicker="تیم دو‌نفره" emphasis="سایت و سرویس آنلاینی" title="که کسب‌وکار شما لازم دارد" sub="طراحی، ساخت و پشتیبانی، متناسب با نیاز واقعی شما. یک پیشنهاد مشخص، ظرف یک روز کاری." align="center" size="display-1" hint-size="100%,300px"></x-import>
+
+        <div style="display:flex; gap:var(--space-3); flex-wrap:wrap; justify-content:center;">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" as="a" href="./Mitec%20Order%20Builder.dc.html" icon-after="arrow-right" hint-size="200px,52px">ساخت سفارش من</x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" variant="secondary" as="a" href="#work" icon="layout-dashboard" hint-size="190px,52px">دیدن نمونه‌کارها</x-import>
+        </div>
+
+        <div style="display:flex; justify-content:center;">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.GlowRule" dots="{{ true }}" width="420px" hint-size="420px,12px"></x-import>
+        </div>
+
+        <div aria-label="نمای پروژه‌های mitec" style="position:relative; max-width:760px; margin:0 auto; width:100%;">
+          <div aria-hidden="true" style="position:absolute; inset-inline:12%; top:6%; height:70%; background:radial-gradient(ellipse at center, rgba(44,196,134,.34), transparent 68%); filter:blur(46px);"></div>
+
+          <div style="position:relative;">
+            <div style="padding:10px 10px 8px; border-radius:var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs); background:var(--grad-glass); border:var(--border-width) solid var(--border-subtle); box-shadow:var(--shadow-lg), var(--glow-inset);">
+              <div style="border-radius:var(--radius-media); overflow:hidden; border:var(--border-width) solid var(--border-hairline); aspect-ratio:16/10; background:var(--surface-sunken);">
+                <!-- REPLACE: drop a real mitec project screenshot into this slot (dark UI works best) -->
+                <image-slot id="mitec-hero-laptop" shape="rect" fit="cover" placeholder="اسکرین‌شات پروژه — اینجا رها کنید"></image-slot>
+              </div>
+            </div>
+            <div aria-hidden="true" style="width:112%; margin-inline-start:-6%; height:15px; border-radius:0 0 var(--radius-md) var(--radius-md); background:linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path:polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow:var(--shadow-lg);"></div>
+            <div aria-hidden="true" style="width:74%; height:90px; margin:0 auto; background:linear-gradient(180deg, rgba(44,196,134,.3), transparent 72%); filter:blur(20px);"></div>
+
+            <div aria-hidden="true" style="position:absolute; top:13%; inset-inline-start:-5%; width:min(46%, 212px);">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--space-4)" hint-size="212px,110px">
+                <div style="font-size:var(--text-caption); color:var(--text-muted); margin-bottom:var(--space-3);">داشبورد مدیریت</div>
+                <div style="display:flex; align-items:flex-end; gap:6px; height:52px;">
+                  <span style="flex:1; height:36%; background:var(--grad-accent); border-radius:3px; display:block;"></span>
+                  <span style="flex:1; height:58%; background:var(--grad-accent); border-radius:3px; display:block;"></span>
+                  <span style="flex:1; height:46%; background:var(--grad-accent); border-radius:3px; display:block;"></span>
+                  <span style="flex:1; height:82%; background:var(--grad-gold); border-radius:3px; display:block;"></span>
+                  <span style="flex:1; height:66%; background:var(--grad-accent); border-radius:3px; display:block;"></span>
+                </div>
+              </x-import>
+            </div>
+
+            <div style="position:absolute; bottom:12%; inset-inline-start:2%; width:min(20%, 100px);">
+              <div style="border-radius:var(--radius-md); padding:5px; background:var(--grad-glass); border:var(--border-width) solid var(--border-subtle); box-shadow:var(--shadow-lg);">
+                <div style="border-radius:var(--radius-sm); overflow:hidden; aspect-ratio:9/17; background:var(--surface-sunken);">
+                  <!-- REPLACE: mobile screenshot of the same project -->
+                  <image-slot id="mitec-hero-phone" shape="rect" fit="cover" placeholder="موبایل"></image-slot>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:var(--space-4);">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.FeatureCard" icon="layout-dashboard" title="طراحی سایت" skin="ivory" hint-size="100%,180px"></x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.FeatureCard" icon="shield-check" title="سرویس اختصاصی" skin="ivory" hint-size="100%,180px"></x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.FeatureCard" icon="trending-up" title="سئو و هاست" skin="emerald" active-dot="{{ 1 }}" hint-size="100%,180px"></x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.FeatureCard" icon="headset" title="پشتیبانی" skin="ivory" hint-size="100%,180px"></x-import>
+        </div>
+
+        <!-- Stats: real team facts only, mirrored in src/data/site-copy.json. Never invented figures. -->
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.StatBar" stats="{{ stats }}" cta="مشاوره رایگان" on-cta-click="{{ goWhatsapp }}" hint-size="100%,88px"></x-import>
+
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.LogoStrip" label="پروژه‌های ما" names="{{ clientNames }}" hint-size="100%,60px"></x-import>
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.KeywordRail" words="{{ keywords }}" hint-size="100%,40px"></x-import>
+      </section>
+
+      <section id="services" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-8);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="خدمات" emphasis="چه کاری" title="انجام می‌دهیم" sub="چهار سرویس که معمولاً کنار هم سفارش داده می‌شوند. ما برند نمی‌سازیم؛ سایت و سرویس آنلاین می‌سازیم." align="center" size="display-3" hint-size="100%,200px"></x-import>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:var(--space-4);">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,250px">
+            <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-sm);">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="layout-dashboard" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </span>
+              <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">طراحی و ساخت سایت</h3>
+              <p style="margin:0; font-size:var(--text-body); color:var(--text-ink-body); line-height:var(--lh-body);">فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین کافه و رستوران، کاتالوگ و لندینگ. طراحی رابط کاربری بخشی از همین سرویس است.</p>
+              <a href="./Mitec%20Order%20Builder.dc.html" style="font-size:var(--text-body-sm); display:inline-flex; align-items:center; gap:var(--space-2);">شروع سفارش <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="arrow-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></a>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,250px">
+            <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-sm);">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="shield-check" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </span>
+              <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">سرویس‌های اختصاصی</h3>
+              <p style="margin:0; font-size:var(--text-body); color:var(--text-ink-body); line-height:var(--lh-body);">باشگاه مشتریان، نظرات و پیشنهادها، نوبت‌دهی و رزرو، پنل مدیریت محتوا و ثبت سفارش — بر اساس کاری که هر روز انجام می‌دهید.</p>
+              <a href="./Mitec%20Order%20Builder.dc.html" style="font-size:var(--text-body-sm); display:inline-flex; align-items:center; gap:var(--space-2);">شروع سفارش <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="arrow-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></a>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,250px">
+            <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-sm);">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="trending-up" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </span>
+              <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">سئو، هاست و دامنه</h3>
+              <p style="margin:0; font-size:var(--text-body); color:var(--text-ink-body); line-height:var(--lh-body);">سئوی پایه، تهیه و تنظیم دامنه و هاست و SSL. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</p>
+              <a href="#contact" style="font-size:var(--text-body-sm); display:inline-flex; align-items:center; gap:var(--space-2);">سؤال دارم <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="arrow-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></a>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,250px">
+            <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+              <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:var(--radius-circle); background:var(--grad-accent); color:var(--accent-fg); box-shadow:var(--glow-sm);">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="headset" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </span>
+              <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">پشتیبانی بعد از تحویل</h3>
+              <p style="margin:0; font-size:var(--text-body); color:var(--text-ink-body); line-height:var(--lh-body);">یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت رها نمی‌شود.</p>
+              <a href="#faq" style="font-size:var(--text-body-sm); display:inline-flex; align-items:center; gap:var(--space-2);">جزئیات <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="arrow-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></a>
+            </div>
+          </x-import>
+        </div>
+      </section>
+
+      <section id="work" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-7);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="نمونه‌کارها" emphasis="سه پروژه" title="تحویل‌شده" sub="هر پروژه با نیازی که داشت و کاری که برایش انجام دادیم." align="center" size="display-3" hint-size="100%,200px"></x-import>
+
+        <div style="display:flex; justify-content:center;">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Tabs" items="{{ filterItems }}" active="{{ activeFilter }}" on-change="{{ onFilter }}" hint-size="380px,44px"></x-import>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px,1fr)); gap:var(--space-4);">
+          <!-- Seed projects mirror src/data/portfolio.json — REPLACE the placeholder images with real screenshots. -->
+          <div hidden="{{ hideMery }}">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="{{ 0 }}" hint-size="100%,460px">
+              <div style="aspect-ratio:16/10; background:var(--surface-sunken); border-radius:var(--radius-lg) var(--radius-lg) 0 0; overflow:hidden;">
+                <image-slot id="mitec-work-mery" shape="rect" fit="cover" placeholder="اسکرین‌شات Mery Club"></image-slot>
+              </div>
+              <div style="padding:var(--pad-card); display:flex; flex-direction:column; gap:var(--space-4);">
+                <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="accent" hint-size="auto,24px">منوی آنلاین</x-import>
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="accent" hint-size="auto,24px">باشگاه مشتریان</x-import>
+                </div>
+                <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">باشگاه مشتریان کافه مری</h3>
+                <dl style="margin:0; display:grid; gap:var(--space-3); font-size:var(--text-body-sm);">
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نیاز کسب‌وکار</dt><dd style="margin:0; color:var(--text-ink-body);">کافه می‌خواست مشتری‌های همیشگی‌اش را بشناسد و منوی چاپی را کنار بگذارد.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">چه ساختیم</dt><dd style="margin:0; color:var(--text-ink-body);">سایت دوزبانه با منوی آنلاین، باشگاه مشتریان با امتیاز، و بخش نظرات و پیشنهادها.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نتیجه</dt><dd style="margin:0; color:var(--text-ink-body);">مشتری‌های تکرارشونده از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ مجدد به‌روز می‌شود.</dd></div>
+                </dl>
+                <a href="https://meryclub.ir" target="_blank" rel="noopener" style="font-size:var(--text-body-sm); display:inline-flex; align-items:center; gap:var(--space-2);">مشاهده سایت <x-import component-from-global-scope="MitecDesignSystem_43d123.Icon" name="arrow-up-right" size="{{ 16 }}" hint-size="16px,16px"></x-import></a>
+              </div>
+            </x-import>
+          </div>
+
+          <div hidden="{{ hideKaramad }}">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="{{ 0 }}" hint-size="100%,460px">
+              <div style="aspect-ratio:16/10; background:var(--surface-sunken); border-radius:var(--radius-lg) var(--radius-lg) 0 0; overflow:hidden;">
+                <image-slot id="mitec-work-karamad" shape="rect" fit="cover" placeholder="اسکرین‌شات کارآمد"></image-slot>
+              </div>
+              <div style="padding:var(--pad-card); display:flex; flex-direction:column; gap:var(--space-4);">
+                <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="accent" hint-size="auto,24px">فروشگاهی</x-import>
+                </div>
+                <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">فروشگاه تجهیزات پزشکی کارآمد</h3>
+                <dl style="margin:0; display:grid; gap:var(--space-3); font-size:var(--text-body-sm);">
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نیاز کسب‌وکار</dt><dd style="margin:0; color:var(--text-ink-body);">فروش تجهیزات فقط تلفنی انجام می‌شد و مشخصات محصول‌ها جایی ثبت نبود.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">چه ساختیم</dt><dd style="margin:0; color:var(--text-ink-body);">فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نتیجه</dt><dd style="margin:0; color:var(--text-ink-body);">سفارش‌ها بدون تماس تلفنی ثبت می‌شوند و مشخصات هر محصول یک مرجع ثابت دارد.</dd></div>
+                </dl>
+                <span style="font-size:var(--text-body-sm); color:var(--text-muted);">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
+              </div>
+            </x-import>
+          </div>
+
+          <div hidden="{{ hideE2 }}">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="{{ 0 }}" hint-size="100%,460px">
+              <div style="aspect-ratio:16/10; background:var(--surface-sunken); border-radius:var(--radius-lg) var(--radius-lg) 0 0; overflow:hidden;">
+                <image-slot id="mitec-work-e2" shape="rect" fit="cover" placeholder="اسکرین‌شات منوی E2"></image-slot>
+              </div>
+              <div style="padding:var(--pad-card); display:flex; flex-direction:column; gap:var(--space-4);">
+                <div style="display:flex; flex-wrap:wrap; gap:var(--space-2);">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="accent" hint-size="auto,24px">منوی آنلاین</x-import>
+                </div>
+                <h3 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">منوی کافه E2</h3>
+                <dl style="margin:0; display:grid; gap:var(--space-3); font-size:var(--text-body-sm);">
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نیاز کسب‌وکار</dt><dd style="margin:0; color:var(--text-ink-body);">منوی QR لازم بود؛ سریع، سبک و قابل تغییر روزانه.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">چه ساختیم</dt><dd style="margin:0; color:var(--text-ink-body);">منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.</dd></div>
+                  <div><dt style="color:var(--text-accent); font-size:var(--text-caption); font-weight:var(--weight-semibold); letter-spacing:var(--ls-eyebrow); margin-bottom:2px;">نتیجه</dt><dd style="margin:0; color:var(--text-ink-body);">تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.</dd></div>
+                </dl>
+                <span style="font-size:var(--text-body-sm); color:var(--text-muted);">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
+              </div>
+            </x-import>
+          </div>
+        </div>
+        <p hidden="{{ hideEmptyNote }}" style="margin:0; text-align:center; color:var(--text-ink-body);">در این دسته فعلاً نمونه‌کاری منتشر نشده است.</p>
+      </section>
+
+      <section id="process" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-8);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="فرایند کار" emphasis="پنج مرحله" title="مشخص" sub="در هر مرحله می‌دانید کار کجاست." align="center" size="display-3" hint-size="100%,200px"></x-import>
+        <ol style="margin:0; padding:0; list-style:none; display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:var(--space-4);">
+          <sc-for list="{{ processSteps }}" as="p" hint-placeholder-count="5">
+            <li>
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card)" hint-size="100%,170px">
+                <div style="font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-h3); letter-spacing:var(--ls-stat); background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;">{{ p.n }}</div>
+                <h3 style="margin:var(--space-2) 0 var(--space-2); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); letter-spacing:var(--ls-heading); color:var(--text-heading);">{{ p.title }}</h3>
+                <p style="margin:0; font-size:var(--text-body-sm); color:var(--text-ink-body); line-height:var(--lh-body);">{{ p.body }}</p>
+              </x-import>
+            </li>
+          </sc-for>
+        </ol>
+      </section>
+
+      <section id="about" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-8);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="درباره ما" emphasis="ما دو" title="نفریم" sub="کل پروژه را همان دو نفری انجام می‌دهند که با آن‌ها صحبت کرده‌اید." align="center" size="display-3" hint-size="100%,200px"></x-import>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:var(--space-4);">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,190px">
+            <div style="display:flex; gap:var(--space-5); align-items:center;">
+              <div style="flex:0 0 auto; width:96px; height:96px; border-radius:var(--radius-circle); overflow:hidden; border:var(--border-width) solid var(--border-accent); box-shadow:var(--glow-sm);">
+                <image-slot id="mitec-photo-parham" shape="circle" fit="cover" placeholder="عکس"></image-slot>
+              </div>
+              <div>
+                <h3 style="margin:0 0 var(--space-1); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">پرهام موحدی</h3>
+                <p style="margin:0 0 var(--space-2); font-size:var(--text-body-sm); color:var(--text-action);">طراحی رابط کاربری و فرانت‌اند</p>
+                <p style="margin:0; font-size:var(--text-body-sm); color:var(--text-ink-body); line-height:var(--lh-body);">ساختار صفحه‌ها، طراحی UI و پیاده‌سازی سمت کاربر؛ با تمرکز روی سرعت و موبایل.</p>
+              </div>
+            </div>
+          </x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,190px">
+            <div style="display:flex; gap:var(--space-5); align-items:center;">
+              <div style="flex:0 0 auto; width:96px; height:96px; border-radius:var(--radius-circle); overflow:hidden; border:var(--border-width) solid var(--border-accent); box-shadow:var(--glow-sm);">
+                <image-slot id="mitec-photo-sina" shape="circle" fit="cover" placeholder="عکس"></image-slot>
+              </div>
+              <div>
+                <h3 style="margin:0 0 var(--space-1); font-family:var(--font-display); font-weight:var(--weight-bold); font-size:var(--text-h4); color:var(--text-heading);">سینا علیپور</h3>
+                <p style="margin:0 0 var(--space-2); font-size:var(--text-body-sm); color:var(--text-action);">بک‌اند و زیرساخت</p>
+                <p style="margin:0; font-size:var(--text-body-sm); color:var(--text-ink-body); line-height:var(--lh-body);">سرویس‌های اختصاصی، پنل مدیریت، هاست و دامنه و پشتیبانی فنی بعد از تحویل.</p>
+              </div>
+            </div>
+          </x-import>
+        </div>
+      </section>
+
+      <section aria-labelledby="t-title" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-6);">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:var(--space-3);">
+          <h2 id="t-title" style="margin:0; font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-display-3); line-height:var(--lh-display); letter-spacing:var(--ls-display); color:var(--text-heading);">نظر مشتری‌ها</h2>
+          <!-- DEV-ONLY badge: sample content from src/data/testimonials.json. Remove when real quotes arrive. -->
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Badge" tone="bronze" icon="clock" hint-size="auto,26px">نمونه — جایگزین شود</x-import>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:var(--space-4);">
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,170px">
+            <figure style="margin:0;">
+              <blockquote style="margin:0 0 var(--space-4); font-size:var(--text-body-lg); color:var(--text-heading); line-height:var(--lh-body);">«متن نمونه: از اولین جلسه تا تحویل همه‌چیز مشخص بود و بعد از تحویل هم جواب سؤال‌هایمان را گرفتیم.»</blockquote>
+              <figcaption style="font-size:var(--text-body-sm); color:var(--text-muted);">نام مشتری — صاحب کافه</figcaption>
+            </figure>
+          </x-import>
+          <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="var(--pad-card-lg)" hint-size="100%,170px">
+            <figure style="margin:0;">
+              <blockquote style="margin:0 0 var(--space-4); font-size:var(--text-body-lg); color:var(--text-heading); line-height:var(--lh-body);">«متن نمونه: سایت را طوری ساختند که خودمان بتوانیم محصول اضافه و قیمت‌ها را عوض کنیم.»</blockquote>
+              <figcaption style="font-size:var(--text-body-sm); color:var(--text-muted);">نام مشتری — مدیر فروشگاه</figcaption>
+            </figure>
+          </x-import>
+        </div>
+      </section>
+
+      <section id="faq" style="max-width:var(--container-narrow); margin:0 auto; padding:var(--space-10) var(--gutter); display:flex; flex-direction:column; gap:var(--space-7);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="سؤالات متداول" emphasis="جواب" title="سؤال‌های همیشگی" align="center" size="display-3" hint-size="100%,160px"></x-import>
+        <div style="display:grid; gap:var(--space-3);">
+          <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5">
+            <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="{{ 0 }}" hint-size="100%,64px">
+              <h3 style="margin:0;">
+                <button type="button" onClick="{{ q.toggle }}" aria-expanded="{{ q.expanded }}" style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:var(--space-4); background:transparent; border:0; color:var(--text-heading); font-family:var(--font-body); font-size:var(--text-body-lg); font-weight:var(--weight-semibold); text-align:start; padding:var(--space-5) var(--space-6); cursor:pointer;">
+                  <span>{{ q.question }}</span>
+                  <span aria-hidden="true" style="flex:0 0 auto; color:var(--text-action); display:inline-flex;">{{ q.chevron }}</span>
+                </button>
+              </h3>
+              <div hidden="{{ q.closed }}" style="padding:0 var(--space-6) var(--space-5); color:var(--text-ink-body); font-size:var(--text-body);">{{ q.answer }}</div>
+            </x-import>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="contact" style="max-width:var(--container-max); margin:0 auto; padding:var(--space-10) var(--gutter) var(--space-12);">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="emerald" padding="clamp(28px, 5vw, 64px)" hint-size="100%,260px">
+          <div style="display:flex; flex-direction:column; gap:var(--space-7);">
+            <div style="display:flex; align-items:center; gap:var(--space-8); flex-wrap:wrap;">
+              <div style="flex:1 1 420px; display:flex; flex-direction:column; gap:var(--space-4);">
+                <h2 style="margin:0; font-family:var(--font-display); font-weight:var(--weight-black); font-size:var(--text-display-3); line-height:var(--lh-display); letter-spacing:var(--ls-display); color:var(--text-heading);"><span style="background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;">سفارشتان را</span> قدم‌به‌قدم بسازید</h2>
+                <p style="margin:0; font-size:var(--text-body-lg); line-height:var(--lh-body); color:var(--ink-100); max-width:52ch; text-wrap:pretty;">پنج قدم کوتاه، هر قدم یک انتخاب. اگر جایی مطمئن نیستید، گزینه «نمی‌دانم» هست و ما پیشنهاد می‌دهیم.</p>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:var(--space-3);">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" as="a" href="./Mitec%20Order%20Builder.dc.html" icon-after="arrow-right" hint-size="200px,52px">ساخت سفارش من</x-import>
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" variant="secondary" as="a" href="./Mitec%20Track.dc.html" hint-size="160px,52px">پیگیری سفارش</x-import>
+              </div>
+            </div>
+            <div style="border-top:var(--border-width) solid var(--border-hairline); padding-top:var(--space-6); display:flex; flex-wrap:wrap; gap:var(--space-3) var(--space-7); align-items:center;">
+              <span style="color:var(--ink-200); font-size:var(--text-body);">یا مستقیم حرف بزنیم:</span>
+              <a href="https://wa.me/989000000000" target="_blank" rel="noopener" style="font-size:var(--text-body);">واتساپ</a>
+              <a href="https://t.me/mitec_studio" target="_blank" rel="noopener" style="font-size:var(--text-body);">تلگرام</a>
+              <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" style="font-size:var(--text-body); direction:ltr;">@mitec.studio</a>
+            </div>
+          </div>
+        </x-import>
+      </section>
+    </main>
+
+    <footer style="border-top:var(--border-width) solid var(--border-hairline); background:var(--grad-band); padding:var(--space-8) var(--gutter) var(--space-7);">
+      <div style="max-width:var(--container-max); margin:0 auto; display:flex; justify-content:space-between; gap:var(--space-6); flex-wrap:wrap; align-items:center;">
+        <x-import component-from-global-scope="MitecDesignSystem_43d123.Logo" size="{{ 24 }}" dir="ltr" hint-size="120px,28px"></x-import>
+        <nav aria-label="فهرست پایین صفحه" style="display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5); font-size:var(--text-body-sm);">
+          <a href="#services" style="color:var(--text-muted);" style-hover="color:var(--text-accent)">خدمات</a>
+          <a href="#work" style="color:var(--text-muted);" style-hover="color:var(--text-accent)">نمونه‌کارها</a>
+          <a href="./Mitec%20Order%20Builder.dc.html" style="color:var(--text-muted);" style-hover="color:var(--text-accent)">سفارش سایت</a>
+          <a href="./Mitec%20Track.dc.html" style="color:var(--text-muted);" style-hover="color:var(--text-accent)">پیگیری سفارش</a>
+        </nav>
+        <span style="font-size:var(--text-caption); color:var(--text-muted);">© ۱۴۰۵ mitec — طراحی و توسعه وب</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const NAV_TARGETS = {
+  'خانه': '#top', 'خدمات': '#services', 'نمونه‌کارها': '#work',
+  'فرایند': '#process', 'درباره ما': '#about', 'تماس': '#contact'
+};
+
+const FAQS = [
+  { q: 'پروژه چقدر طول می‌کشد؟', a: 'بستگی به نوع سایت دارد: منوی آنلاین یک تا دو هفته، سایت شرکتی دو تا چهار هفته، فروشگاه اینترنتی چهار تا هفت هفته. زمان دقیق بعد از جلسه مشاوره و مشخص شدن محتوا اعلام می‌شود.' },
+  { q: 'پرداخت چطور انجام می‌شود؟', a: 'معمولاً سه قسمت: بخشی در شروع کار، بخشی بعد از تأیید طراحی و بخش آخر هنگام تحویل. جزئیات در قرارداد نوشته می‌شود.' },
+  { q: 'هاست و دامنه را شما تهیه می‌کنید؟', a: 'بله؛ تهیه و تنظیم دامنه، هاست و SSL بخشی از سرویس فنی ماست. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.' },
+  { q: 'بعد از تحویل پشتیبانی دارید؟', a: 'بله. یک دوره پشتیبانی بعد از تحویل بدون هزینه است و بعد از آن به‌صورت ماهانه یا موردی ادامه پیدا می‌کند.' },
+  { q: 'لوگو و برند هم طراحی می‌کنید؟', a: 'نه. کار ما طراحی، ساخت و پشتیبانی سایت و سرویس آنلاین است. اگر لوگو ندارید، با یک نشانه ساده متنی کار را پیش می‌بریم یا شما را به یک طراح معرفی می‌کنیم.' }
+];
+
+const PROCESS = [
+  { n: '۰۱', title: 'مشاوره', body: 'می‌فهمیم کسب‌وکار چه می‌کند و سایت باید چه مشکلی را حل کند.' },
+  { n: '۰۲', title: 'طراحی', body: 'ساختار صفحه‌ها و طراحی رابط کاربری؛ قبل از کدنویسی تأیید می‌شود.' },
+  { n: '۰۳', title: 'توسعه', body: 'ساخت سایت و سرویس‌ها، با نسخه آزمایشی قابل مشاهده در طول کار.' },
+  { n: '۰۴', title: 'تحویل', body: 'راه‌اندازی روی دامنه و هاست خودتان، با SSL و آموزش پنل مدیریت.' },
+  { n: '۰۵', title: 'پشتیبانی', body: 'رفع مشکل، به‌روزرسانی و تغییرهای بعدی؛ سایت بعد از تحویل رها نمی‌شود.' }
+];
+
+const FILTERS = ['همه', 'فروشگاهی', 'منوی آنلاین', 'باشگاه مشتریان'];
+
+class Component extends DCLogic {
+  state = { filter: 'همه', faq: 0 };
+
+  renderVals() {
+    const f = this.state.filter;
+    // Seed data mirrors src/data/portfolio.json
+    const hidden = (tags) => (f === 'همه' || tags.includes(f) ? undefined : true);
+    const hideMery = hidden(['منوی آنلاین', 'باشگاه مشتریان']);
+    const hideKaramad = hidden(['فروشگاهی']);
+    const hideE2 = hidden(['منوی آنلاین']);
+
+    return {
+      navItems: Object.keys(NAV_TARGETS),
+      onNavigate: (item) => { const t = NAV_TARGETS[item]; if (t) location.hash = t; },
+      goOrder: () => { location.href = './Mitec Order Builder.dc.html'; },
+      goWhatsapp: () => window.open('https://wa.me/989000000000', '_blank', 'noopener'),
+
+      // Real, verifiable facts only — see src/data/site-copy.json.
+      stats: [
+        { value: '۳', label: 'پروژه تحویل‌شده', tone: 'bronze' },
+        { value: '۲', label: 'نفر، بدون واسطه', tone: 'bronze' },
+        { value: '۱ روز', label: 'زمان پاسخ کاری', tone: 'bronze' }
+      ],
+      clientNames: ['Mery Coffee Club', 'Karamad MedTech', 'E2 Café'],
+      keywords: ['مدرن', 'سریع', 'امن', 'مقیاس‌پذیر'],
+      processSteps: PROCESS,
+
+      filterItems: FILTERS,
+      activeFilter: f,
+      onFilter: (item) => this.setState({ filter: item }),
+      hideMery, hideKaramad, hideE2,
+      hideEmptyNote: (hideMery && hideKaramad && hideE2) ? undefined : true,
+
+      faqs: FAQS.map((item, i) => {
+        const open = this.state.faq === i;
+        return {
+          question: item.q, answer: item.a,
+          expanded: open ? 'true' : 'false',
+          closed: open ? undefined : true,
+          chevron: open ? '−' : '+',
+          toggle: () => this.setState((s) => ({ faq: s.faq === i ? -1 : i }))
+        };
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

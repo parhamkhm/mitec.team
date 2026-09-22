@@ -1,0 +1,92 @@
+{
+  "_note": "Real, verifiable team facts only. Never replace with invented marketing numbers.",
+  "hero": {
+    "eyebrow": "طراحی سایت حرفه‌ای",
+    "titleGold": "سایت و سرویس آنلاینی",
+    "titleInk": "که کسب‌وکار شما لازم دارد",
+    "subtitle": "طراحی، ساخت و پشتیبانی، متناسب با نیاز واقعی شما",
+    "primaryCta": {
+      "label": "ساخت سفارش من",
+      "href": "/order"
+    },
+    "secondaryCta": {
+      "label": "دیدن نمونه‌کارها",
+      "href": "#work"
+    }
+  },
+  "keywords": [
+    "مدرن",
+    "سریع",
+    "امن",
+    "مقیاس‌پذیر"
+  ],
+  "stats": [
+    {
+      "value": "۳",
+      "label": "پروژه تحویل‌شده"
+    },
+    {
+      "value": "۲",
+      "label": "نفر، بدون واسطه"
+    },
+    {
+      "value": "۱ روز",
+      "label": "زمان پاسخ کاری"
+    }
+  ],
+  "serviceCards": [
+    {
+      "id": "design",
+      "label": "طراحی سایت"
+    },
+    {
+      "id": "custom",
+      "label": "سرویس‌های اختصاصی"
+    },
+    {
+      "id": "seo",
+      "label": "سئو و هاست",
+      "featured": true
+    },
+    {
+      "id": "support",
+      "label": "پشتیبانی بعد از تحویل"
+    }
+  ],
+  "team": [
+    {
+      "name": "پرهام موحدی",
+      "role": "طراحی رابط کاربری و فرانت‌اند",
+      "photo": "/public/images/team/parham.webp",
+      "placeholder": true
+    },
+    {
+      "name": "سینا علیپور",
+      "role": "بک‌اند و زیرساخت",
+      "photo": "/public/images/team/sina.webp",
+      "placeholder": true
+    }
+  ],
+  "process": [
+    {
+      "n": "۰۱",
+      "title": "مشاوره"
+    },
+    {
+      "n": "۰۲",
+      "title": "طراحی"
+    },
+    {
+      "n": "۰۳",
+      "title": "توسعه"
+    },
+    {
+      "n": "۰۴",
+      "title": "تحویل"
+    },
+    {
+      "n": "۰۵",
+      "title": "پشتیبانی"
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="پیگیری سفارش mitec با کد رهگیری.">
+<meta property="og:locale" content="fa_IR">
+<title>پیگیری سفارش — mitec</title>
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css">
+<link rel="stylesheet" href="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/styles.css">
+<script src="_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/_ds_bundle.js"></script>
+<!-- PRODUCTION: serve Vazirmatn from public/fonts (no external CDN — Iran). CDN link is preview-only. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Type substitution, per the design system's own escape hatch (readme §4). */
+  :root { --font-display: 'Vazirmatn', system-ui, sans-serif; --font-body: 'Vazirmatn', system-ui, sans-serif; }
+  /* The DS declares --text-body twice at :root — a colour in colors.css and a
+     font-size in typography.css. Reordering would break the size uses, so body
+     ink gets a non-colliding alias here, with the ivory-card scope preserved. */
+  :root { --text-ink-body: var(--ink-200); }
+  .mt-on-light { --text-ink-body: var(--ink-700); }
+  body { margin: 0; background: var(--bg-page); color: var(--text-ink-body); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); }
+  input, button { font-family: inherit; }
+  *:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sm); }
+  /* Bidi fix: the DS wordmark is built from separate LTR runs. Scoped to the NavBar. */
+  header > span:first-child { direction: ltr; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</helmet>
+<div dir="rtl" lang="fa" style="position:relative; min-height:100vh; background:var(--grad-page); color:var(--text-ink-body); font-family:var(--font-body); line-height:var(--lh-body); overflow:hidden;">
+
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:var(--grad-mesh-line); background-size:64px 100%; -webkit-mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent); mask-image:linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);"></div>
+  <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:radial-gradient(52% 40% at 18% 20%, rgba(44,196,134,.18), transparent 68%);"></div>
+
+  <div style="position:relative;">
+
+    <x-import component-from-global-scope="MitecDesignSystem_43d123.NavBar" sticky="{{ true }}" items="{{ navItems }}" active="پیگیری سفارش" on-navigate="{{ onNavigate }}" cta="سفارش سایت" on-cta="{{ goOrder }}" hint-size="100%,66px"></x-import>
+
+    <main style="max-width:var(--container-narrow); margin:0 auto; padding:var(--space-11) var(--gutter) var(--space-12); display:flex; flex-direction:column; gap:var(--space-7);">
+      <x-import component-from-global-scope="MitecDesignSystem_43d123.SectionHeading" eyebrow="پیگیری سفارش" emphasis="سفارشتان" title="کجاست؟" sub="کد رهگیری را وارد کنید — همان کدی که بعد از ثبت سفارش گرفتید." align="left" size="display-3" hint-size="100%,200px"></x-import>
+
+      <x-import component-from-global-scope="MitecDesignSystem_43d123.Card" skin="glass" padding="clamp(20px, 4vw, 34px)" hint-size="100%,260px">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:var(--space-4);">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="کد رهگیری" hint-size="100%,88px">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" value="{{ code }}" on-change="{{ onCode }}" placeholder="MTC-12345" dir="ltr" hint-size="100%,44px"></x-import>
+              </x-import>
+              <div hidden="{{ phoneHidden }}">
+                <x-import component-from-global-scope="MitecDesignSystem_43d123.Field" label="شماره موبایل" hint-size="100%,88px">
+                  <x-import component-from-global-scope="MitecDesignSystem_43d123.Input" icon="phone" type="tel" inputmode="numeric" value="{{ phone }}" on-change="{{ onPhone }}" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" hint-size="100%,44px"></x-import>
+                </x-import>
+              </div>
+            </div>
+
+            <div style="margin-top:var(--space-5);">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Button" size="lg" icon-after="arrow-right" disabled="{{ busy }}" on-click="{{ lookup }}" hint-size="170px,52px">{{ buttonLabel }}</x-import>
+            </div>
+
+            <div hidden="{{ errorHidden }}" style="margin-top:var(--space-5);">
+              <x-import component-from-global-scope="MitecDesignSystem_43d123.Alert" tone="danger" hint-size="100%,60px">{{ errorMsg }}</x-import>
+            </div>
+
+            <div hidden="{{ resultHidden }}" style="margin-top:var(--space-6); border-top:var(--border-width) solid var(--border-hairline); padding-top:var(--space-6);">
+              <div style="display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-5); align-items:baseline; margin-bottom:var(--space-5);">
+                <span style="font-family:var(--font-mono); font-size:var(--text-h3); direction:ltr; background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;">{{ resultCode }}</span>
+                <span style="font-size:var(--text-body); color:var(--text-ink-body);">ثبت‌شده در {{ resultDate }}</span>
+              </div>
+              <ol style="margin:0; padding:0; list-style:none; display:grid; gap:var(--space-3);">
+                <sc-for list="{{ stages }}" as="st" hint-placeholder-count="5">
+                  <li style="display:flex; gap:var(--space-3); align-items:flex-start; background:var(--surface-sunken); border:var(--border-width) solid var(--border-hairline); border-radius:var(--radius-md); padding:var(--space-4) var(--space-5);">
+                    <span aria-hidden="true" style="position:relative; flex:0 0 auto; width:16px; height:16px; border-radius:var(--radius-circle); border:var(--border-width) solid var(--border-subtle); margin-top:6px;">
+                      <span hidden="{{ st.dotHidden }}" style="position:absolute; inset:2px; border-radius:var(--radius-circle); background:var(--grad-accent); box-shadow:var(--glow-sm);"></span>
+                    </span>
+                    <span>
+                      <span style="display:block; font-size:var(--text-body); color:{{ st.color }}">{{ st.label }}</span>
+                      <span style="display:block; font-size:var(--text-body-sm); color:var(--text-ink-body);">{{ st.note }}</span>
+                    </span>
+                  </li>
+                </sc-for>
+              </ol>
+              <p style="margin:var(--space-5) 0 0; font-size:var(--text-body); color:var(--text-ink-body);">سؤالی دارید؟ در <a href="https://wa.me/989000000000" target="_blank" rel="noopener">واتساپ</a> یا <a href="https://t.me/mitec_studio" target="_blank" rel="noopener">تلگرام</a> بپرسید.</p>
+            </div>
+          </div>
+        </sc-if>
+      </x-import>
+
+      <p style="margin:0 var(--space-2); font-size:var(--text-body-sm); color:var(--text-ink-body);">کد را گم کرده‌اید؟ با شماره‌ای که ثبت کرده‌اید به ما پیام بدهید.</p>
+    </main>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const FLOW = [
+  { id: 'received', label: 'ثبت شده', note: 'سفارش دریافت شد و در نوبت بررسی است.' },
+  { id: 'consult', label: 'مشاوره', note: 'تماس برای مشخص کردن جزئیات.' },
+  { id: 'in_design', label: 'طراحی', note: 'ساختار و رابط کاربری در حال آماده شدن است.' },
+  { id: 'in_dev', label: 'توسعه', note: 'ساخت سایت و سرویس‌ها.' },
+  { id: 'delivered', label: 'تحویل', note: 'راه‌اندازی روی دامنه و هاست شما.' }
+];
+
+const NAV_TARGETS = {
+  'خانه': './Mitec Home.dc.html',
+  'خدمات': './Mitec Home.dc.html#services',
+  'نمونه‌کارها': './Mitec Home.dc.html#work',
+  'سفارش سایت': './Mitec Order Builder.dc.html',
+  'پیگیری سفارش': './Mitec Track.dc.html'
+};
+
+// Jalali date via the browser's own calendar support.
+const faDate = (iso) => {
+  try {
+    return new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(iso));
+  } catch (e) { return ''; }
+};
+
+class Component extends DCLogic {
+  state = { code: '', phone: '', status: 'idle', errorMsg: '', result: null, requirePhone: true };
+
+  async componentDidMount() {
+    try {
+      const mod = await import('./src/config/app.config.js');
+      if (mod?.APP_CONFIG) this.setState({ requirePhone: !!mod.APP_CONFIG.TRACK_REQUIRES_PHONE });
+    } catch (e) { /* default stays true */ }
+  }
+
+  lookup = async () => {
+    const code = this.state.code.trim().toUpperCase();
+    this.setState({ status: 'loading', errorMsg: '', result: null });
+    let res;
+    try {
+      const api = await import('./src/api/client.js');
+      res = await api.trackOrder(code, this.state.phone);
+    } catch (e) {
+      // api layer unreachable in this preview — mirror the mock adapter
+      await new Promise((r) => setTimeout(r, 700));
+      res = /^MTC-\d{5}$/.test(code)
+        ? { ok: true, data: { trackingCode: code, status: 'in_design', createdAt: new Date().toISOString() } }
+        : { ok: false, error: { code: 'NOT_FOUND', message: 'سفارشی با این کد پیدا نشد. کد را دوباره بررسی کنید.' } };
+    }
+    if (res.ok) this.setState({ status: 'done', result: res.data });
+    else this.setState({ status: 'error', errorMsg: res.error?.message || 'پیگیری انجام نشد.' });
+  };
+
+  renderVals() {
+    const s = this.state;
+    const idx = s.result ? Math.max(FLOW.findIndex((f) => f.id === s.result.status), 0) : -1;
+    return {
+      ready: true,
+      navItems: Object.keys(NAV_TARGETS),
+      onNavigate: (item) => { const t = NAV_TARGETS[item]; if (t) location.href = t; },
+      goOrder: () => { location.href = './Mitec Order Builder.dc.html'; },
+
+      code: s.code, phone: s.phone,
+      onCode: (e) => this.setState({ code: e.target.value }),
+      onPhone: (e) => this.setState({ phone: e.target.value }),
+      phoneHidden: s.requirePhone ? undefined : true,
+      lookup: this.lookup,
+      busy: s.status === 'loading' ? true : undefined,
+      buttonLabel: s.status === 'loading' ? 'در حال بررسی…' : 'دیدن وضعیت',
+      errorHidden: s.status === 'error' ? undefined : true,
+      errorMsg: s.errorMsg,
+      resultHidden: s.status === 'done' && s.result ? undefined : true,
+      resultCode: s.result?.trackingCode || '',
+      resultDate: s.result?.createdAt ? faDate(s.result.createdAt) : '—',
+      stages: FLOW.map((f, i) => ({
+        label: f.label, note: f.note,
+        dotHidden: i <= idx ? undefined : true,
+        color: i <= idx ? 'var(--text-heading)' : 'var(--text-ink-body)'
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

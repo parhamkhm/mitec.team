@@ -1,0 +1,14 @@
+:root{
+--space-0:0px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;
+--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;--space-11:80px;--space-12:96px;--space-13:128px;
+
+/* Rhythm */
+--gutter:24px;
+--section-y:clamp(64px,8vw,128px); /* @kind spacing */
+--container-max:1200px;
+--container-narrow:760px;
+--pad-card:24px;
+--pad-card-lg:32px;
+--pad-control-x:20px;
+--pad-control-y:11px;
+}

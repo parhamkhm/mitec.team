@@ -1,0 +1,22 @@
+:root{
+/* Page ground: navy at the edges, a teal-green bloom off-centre. */
+--grad-page:radial-gradient(120% 90% at 22% 38%,#0B3A33 0%,#072433 42%,#06142D 72%,#040F24 100%); /* @kind color */
+--grad-hero:linear-gradient(168deg,#07211F 0%,#0A2A31 38%,#08203A 72%,#06142D 100%); /* @kind color */
+--grad-band:linear-gradient(180deg,#06142D 0%,#041019 100%); /* @kind color */
+
+/* Action */
+--grad-accent:linear-gradient(135deg,#1AA36B 0%,#2CC486 100%); /* @kind color */
+--grad-accent-hover:linear-gradient(135deg,#1FB878 0%,#48D69A 100%); /* @kind color */
+
+/* Emphasis text fill — the bronze headline word. */
+--grad-gold:linear-gradient(96deg,#B98C5F 0%,#E2C6A4 52%,#C9A682 100%); /* @kind color */
+
+/* Glass + scrims */
+--grad-glass:linear-gradient(150deg,rgba(255,255,255,.085) 0%,rgba(255,255,255,.025) 60%,rgba(255,255,255,.01) 100%); /* @kind color */
+--grad-ivory:linear-gradient(160deg,#FFFFFF 0%,#EDF3F0 100%); /* @kind color */
+--grad-emerald-card:linear-gradient(160deg,#0F4C3F 0%,#093349 100%); /* @kind color */
+--grad-scrim-bottom:linear-gradient(180deg,rgba(4,15,36,0) 0%,rgba(4,15,36,.86) 78%,#040F24 100%); /* @kind color */
+--grad-scrim-top:linear-gradient(180deg,rgba(4,15,36,.82) 0%,rgba(4,15,36,0) 100%); /* @kind color */
+--grad-rule:linear-gradient(90deg,rgba(44,196,134,0) 0%,rgba(44,196,134,.55) 50%,rgba(44,196,134,0) 100%); /* @kind color */
+--grad-mesh-line:linear-gradient(90deg,rgba(95,224,172,.16) 1px,transparent 1px); /* @kind color */
+}
