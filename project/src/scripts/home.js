@@ -83,7 +83,9 @@ function initFaq() {
     }
   }
 
-  // Take over from the no-JS default, where closed panels are `hidden`.
+  // Take over from the no-JS default, where every answer is open and readable
+  // (the buttons do nothing without JS). html.js already collapses the panels
+  // in CSS before first paint, so this only syncs state and ARIA.
   for (const item of items) {
     item.querySelector('.faq-item__a').hidden = false;
     setOpen(item, false);

@@ -351,6 +351,7 @@ Inner pages (and any hero that is not the home portal):
 
 - One narrow column of rows split by `--color-border` hairlines — no card per item. `+` / `−` marker in `--color-tonal-text`.
 - Single-open. Panels open with a grid-rows animation (`--dur-slow`); closed panels are `inert`.
+- Without JS every answer is open in the markup (the buttons cannot do anything then); `html.js` collapses them in CSS before first paint.
 
 ### Final CTA band
 
@@ -464,7 +465,7 @@ Inner pages (and any hero that is not the home portal):
 
 Also check:
 - `prefers-reduced-motion`: disable glow/hover transitions, and see §13.
-- `forced-colors: active`: buttons keep a visible border.
+- `forced-colors: active`: buttons keep a visible border. Icons are CSS masks filled with a background colour, which forced colours would blank, so they opt out and take a system colour (`CanvasText`, `LinkText` in links, `ButtonText` in buttons).
 - Status = color + icon + text.
 
 ---

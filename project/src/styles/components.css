@@ -81,6 +81,14 @@ body { caret-color: var(--color-cta); }
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
   -webkit-mask-position: center; mask-position: center;
 }
+/* Forced colours paint every background with the canvas colour, which would
+   blank these mask-drawn glyphs. Opt them out and paint them in the system
+   colour of what they sit in (currentColor would be the unforced brand ink). */
+@media (forced-colors: active) {
+  .icon { forced-color-adjust: none; background-color: CanvasText; }
+  a .icon { background-color: LinkText; }
+  button .icon { background-color: ButtonText; }
+}
 /* Forward/next points LEFT on an RTL page (DESIGN.md §5). */
 .icon-arrow-left       { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); }
 .icon-arrow-up-left    { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); }
