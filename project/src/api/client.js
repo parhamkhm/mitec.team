@@ -55,8 +55,8 @@ export async function getPricing() {
   }
 }
 
-export async function submitOrder(selection, catalog) {
-  const payload = toApiOrder(selection, catalog);
+export async function submitOrder(selection, catalog, pricingVersion) {
+  const payload = toApiOrder(selection, catalog, pricingVersion);
   const res = APP_CONFIG.USE_MOCK ? await mockApi.submitOrder(payload) : await request('submitOrder', { method: 'POST', body: payload });
   return res.ok ? ok(fromApiOrder(res.data)) : res;
 }

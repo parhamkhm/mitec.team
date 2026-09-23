@@ -1,9 +1,14 @@
 // Boundary between the front end's internal shape and the API's shape.
 // If the back end renames or restructures anything, ONLY this file changes.
 
-export function toApiOrder(selection, catalog) {
+// pricingVersion: the pricing document's version the estimate was made with
+// (saved next to the selection by the home page's quick scope).
+export function toApiOrder(selection, catalog, pricingVersion = selection.pricingVersion ?? null) {
   return {
     site_type: selection.siteType || null,
+    pages: Number.isInteger(selection.pages) ? selection.pages : null,
+    addons: [...(selection.addons || [])],
+    pricing_version: pricingVersion,
     template: selection.template || null,
     mixed_description: selection.templateNote || '',
     sections: [...(selection.sections || [])],

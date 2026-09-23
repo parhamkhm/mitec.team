@@ -29,6 +29,9 @@
 ```json
 {
   "site_type": "menu",
+  "pages": 1,
+  "addons": ["loyalty", "seo"],
+  "pricing_version": 3,
   "template": "menu-list",
   "mixed_description": "",
   "sections": ["gallery", "faq"],
@@ -49,6 +52,10 @@
 ```
 
 فیلدهای لازم: `site_type`, `business.name`, `business.phone`.
+
+`pages`، `addons` و `pricing_version` از برآورد سریع صفحه‌ی اصلی می‌آیند (بخش ۵): تعداد صفحه، idهای افزونه‌ها
+از سند قیمت‌گذاری، و `version` همان سندی که برآورد با آن حساب شد — تا اگر قیمت‌ها بعداً عوض شد، معلوم باشد
+مشتری کدام عدد را دیده است. اگر مشتری از برآورد سریع نیامده باشد، این سه فیلد `null` / خالی هستند.
 
 پاسخ پیشنهادی:
 

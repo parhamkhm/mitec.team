@@ -221,67 +221,240 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .testimonial figcaption { font-size: var(--text-body-sm); color: var(--color-text-muted); }
 
 /* ---------------------------------------------------------------- quick scope
-   A form on light, as every form is (DESIGN.md §6): what every project gets
-   on the start side, the choices, live estimate and the one primary on the
-   end side. Selected choices take the tonal pair, never the action green —
-   the action green is kept for the button. Stacks below 1024px. */
-.scope-grid { display: grid; gap: var(--space-4); align-items: start; }
-@media (min-width: 1024px) { .scope-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); } }
-.scope-base { display: flex; flex-direction: column; gap: var(--space-5); }
-.scope-base__list { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-4); }
-.scope-base__list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--color-text-body); line-height: var(--lh-tight); }
+   A pricing calculator on light (a tool, so a form surface, DESIGN.md §6).
+   Tabs pick the site type; the start column is what the base always
+   includes, the end column the page slider and add-on rows; then one total
+   and one full-width CTA. Everything shown is rendered from the pricing
+   document by scope.js. The action green is only on what acts: the slider
+   and the CTA. Hidden without JS — it is a tool, not reading. */
+html:not(.js) .scope { display: none; }
+.scope-head__title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3); }
+.scope-body { display: flex; flex-direction: column; gap: var(--space-7); }
+
+/* Loading skeleton, in the shape of the result so nothing jumps. */
+.skel { display: block; border-radius: var(--radius-sm); background: var(--color-surface-sunken); }
+.skel--eyebrow { width: 88px; height: 14px; }
+.skel--title { width: min(100%, 420px); height: 44px; }
+.skel--sub { width: min(100%, 560px); height: 22px; }
+.skel--badge { width: 180px; height: 30px; border-radius: var(--radius-pill); }
+.skel--tabs { width: min(100%, 640px); height: 52px; border-radius: var(--radius-pill); }
+.skel--link { width: 240px; height: 22px; }
+.skel--heading { width: 40%; height: 28px; }
+.skel--line { height: 58px; }
+.skel--pages { height: 150px; }
+.skel--row { height: 92px; border-radius: var(--radius-md); }
+.skel--total { width: min(100%, 420px); height: 40px; }
+.skel--cta { width: min(100%, 680px); height: 56px; border-radius: var(--radius-pill); }
+.skel--note { width: min(100%, 460px); height: 18px; }
+/* While loading, the columns hold roughly the height of the default view. */
+.scope[aria-busy="true"] .scope-base,
+.scope[aria-busy="true"] .scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
+.scope[aria-busy="true"] .scope-base .skel--heading { align-self: center; }
+
+/* Site-type tabs: one segmented track, centred; the native radio stays for
+   its semantics and keys, the pill is its face. */
+.scope-types { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+.scope-tabs { max-width: 100%; margin: 0; padding: 0; border: 0; min-width: 0; }
+.scope-tabs__track {
+  display: flex;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+}
+.scope-tabs__track::-webkit-scrollbar { display: none; }
+.scope-tab { position: relative; flex: 0 0 auto; scroll-snap-align: center; }
+.scope-tab input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.scope-tab span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.scope-tab:hover span { color: var(--color-text-primary); }
+.scope-tab input:checked + span { background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; box-shadow: var(--shadow-card); }
+.scope-tab input:focus-visible + span { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
+.scope-unsure { font-size: var(--text-body-sm); text-decoration: underline; text-underline-offset: 5px; }
+
+.scope-cols { --stagger: 80ms; display: grid; gap: var(--space-5); align-items: start; }
+@media (min-width: 1024px) { .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+
+/* The base card: what every project of the type includes. */
+.scope-base { display: flex; flex-direction: column; }
+.scope-base__title { font-size: var(--text-h4); text-align: center; }
+.scope-base__sub { margin-top: var(--space-1); color: var(--color-text-secondary); text-align: center; }
+.scope-base__list { display: grid; gap: var(--space-4); margin: var(--space-6) 0 0; padding: var(--space-6) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
+.scope-base__list li { display: flex; align-items: flex-start; gap: var(--space-3); }
 .scope-base__mark {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
+  margin-top: 2px;
   border-radius: var(--radius-sm);
   background: var(--color-tonal);
   color: var(--color-tonal-text);
 }
-.scope-base__mark .icon { width: 16px; height: 16px; }
-.scope-pick { display: flex; flex-direction: column; gap: var(--space-7); }
-.scope-choices { display: flex; flex-direction: column; gap: var(--space-6); }
-.scope-choices[aria-busy="true"] .scope-note { visibility: hidden; } /* no flash of the no-JS note while loading */
-.scope-note { color: var(--color-text-secondary); }
-.scope-group { min-width: 0; margin: 0; padding: 0; border: 0; }
-.scope-group legend { margin-bottom: var(--space-3); padding: 0; font-weight: 700; color: var(--color-text-primary); }
-.scope-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.scope-chip { position: relative; }
-/* The native radio stays for its semantics and keys; the pill is its face. */
-.scope-chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
-.scope-chip span,
-.scope-feat {
+.scope-base__mark .icon { width: 15px; height: 15px; }
+.scope-base__item { display: flex; flex-direction: column; line-height: var(--lh-tight); }
+.scope-base__item strong { color: var(--color-text-primary); }
+.scope-base__desc { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+.scope-base__more {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: center;
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--color-link);
+  font: inherit;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+.scope-base__more .icon { width: 16px; height: 16px; }
+.scope-base__pages { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--color-border); color: var(--color-text-secondary); text-align: center; font-weight: 500; }
+
+/* The end column: pages, then the add-on rows. */
+.scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
+.scope-pages { padding-bottom: var(--space-5); border-bottom: 1px solid var(--color-border); }
+.scope-pages__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.scope-pages__title { font-weight: 700; color: var(--color-text-primary); }
+.scope-pages__value { font-weight: 800; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.scope-pages__desc { margin-top: var(--space-1); font-size: var(--text-body-sm); color: var(--color-text-secondary); }
+
+/* Native range, token-styled. 44px tall for the hit area; the fill runs from
+   the start edge (the right, on this RTL page) to the value. */
+.scope-range {
+  --fill: 0%;
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: var(--space-2) 0 0;
+  background: transparent;
+  cursor: pointer;
+}
+.scope-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(to left, var(--color-cta) var(--fill), var(--color-border) var(--fill));
+}
+.scope-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border: 3px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-cta);
+  box-shadow: 0 0 0 1px var(--color-cta);
+}
+.scope-range::-moz-range-track { height: 4px; border-radius: var(--radius-pill); background: var(--color-border); }
+.scope-range::-moz-range-progress { height: 4px; border-radius: var(--radius-pill); background: var(--color-cta); }
+.scope-range::-moz-range-thumb { width: 18px; height: 18px; border: 3px solid var(--color-surface); border-radius: 50%; background: var(--color-cta); box-shadow: 0 0 0 1px var(--color-cta); }
+.scope-range:focus-visible { outline-offset: 4px; border-radius: var(--radius-sm); }
+
+.scope-addons__title { margin-top: var(--space-2); font-size: var(--text-body-lg); }
+.scope-addons { display: grid; gap: var(--space-3); }
+/* Each row is the toggle. Dashed while off, as in the reference; solid and
+   tonal when on. The state also shows in the +/− and aria-pressed. */
+.scope-addon {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "text price" "text toggle";
+  align-items: start;
+  gap: var(--space-1) var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-body);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+}
+.scope-addon:hover { border-color: var(--color-border-strong); }
+.scope-addon[aria-pressed="true"] { border-style: solid; border-color: var(--color-border-hover); background: var(--color-tonal); }
+.scope-addon__text { grid-area: text; display: flex; flex-direction: column; gap: 2px; line-height: var(--lh-tight); }
+.scope-addon__title { font-weight: 700; color: var(--color-text-primary); }
+.scope-addon__desc { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+.scope-addon__price { grid-area: price; font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); white-space: nowrap; }
+.scope-addon__toggle {
+  grid-area: toggle;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
   background: var(--color-surface);
-  color: var(--color-text-primary);
-  font: inherit;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+  color: var(--color-tonal-text);
 }
-.scope-chip span { padding: 8px 18px; border-radius: var(--radius-pill); }
-.scope-chip:hover span,
-.scope-feat:hover { background: var(--color-surface-sunken); }
-.scope-chip input:checked + span,
-.scope-feat[aria-pressed="true"] { background: var(--color-tonal); border-color: var(--color-tonal-text); color: var(--color-tonal-text); font-weight: 700; }
-.scope-chip input:focus-visible + span { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
-.scope-feats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--space-2); }
-.scope-feat { justify-content: space-between; gap: var(--space-3); width: 100%; padding: 8px 16px; border-radius: var(--radius-sm); text-align: start; }
-.scope-feat .icon { width: 18px; height: 18px; color: var(--color-tonal-text); }
-.scope-result { padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
-.scope-result__line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); font-size: var(--text-body-lg); color: var(--color-text-secondary); }
-/* A figure, not an action: the brand colour, like the stats. The old and new
-   values share one grid cell while they cross-fade. */
-.scope-result__value { display: inline-grid; font-size: var(--text-h4); font-weight: 800; color: var(--color-brand); }
-.scope-result__value > * { grid-area: 1 / 1; }
-.scope-go { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
-.scope-disclaimer { font-size: var(--text-caption); color: var(--color-text-muted); }
+.scope-addon__toggle .icon { width: 16px; height: 16px; }
+.scope-addon[aria-pressed="true"] .scope-addon__toggle { border-color: var(--color-tonal-text); }
+
+/* One total, one CTA, one disclaimer. */
+.scope-foot { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
+.scope-sticky { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); width: 100%; }
+.scope-total { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: var(--space-2) var(--space-3); margin: 0; text-align: center; }
+.scope-total__label { color: var(--color-text-muted); font-size: var(--text-body); }
+.scope-total__price,
+.scope-total__days { display: inline-grid; }
+.scope-total__price > *,
+.scope-total__days > * { grid-area: 1 / 1; }
+.scope-total__price { font-size: var(--text-h3); font-weight: 800; color: var(--color-text-primary); }
+.scope-total__days,
+.scope-total__sep { font-size: var(--text-body-lg); color: var(--color-text-secondary); }
+.scope-cta { width: min(100%, 680px); }
+.scope-disclaimer { font-size: var(--text-caption); color: var(--color-text-muted); text-align: center; }
+.scope-error { color: var(--color-text-secondary); text-align: center; }
+.scope-body > .scope-cta { align-self: center; }
+
+@media (max-width: 759px) {
+  .scope-types { align-items: stretch; }
+  .scope-tabs__track { border-radius: var(--radius-lg); }
+  /* The base list folds after four items behind «show all». */
+  .scope-base__list:not(.is-open) > .is-more { display: none; }
+  .scope-base__more { display: inline-flex; }
+  /* Total + CTA stay at the bottom of the screen while the section is in view.
+     The foot box steps aside (display: contents) so the bar's containing block
+     is the whole calculator, not the short foot. */
+  .scope-foot { display: contents; }
+  .scope-sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    gap: var(--space-3);
+    width: calc(100% + 2 * var(--gutter));
+    margin-inline: calc(-1 * var(--gutter));
+    padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-bg);
+  }
+  .scope-total__price { font-size: var(--text-h4); }
+  .scope-total__sep { display: none; } /* the duration wraps to its own line */
+}
 
 /* ---------------------------------------------------------------- FAQ
    One narrow column of rows split by hairlines — no card per item. */
