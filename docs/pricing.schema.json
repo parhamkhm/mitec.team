@@ -155,7 +155,8 @@
         "id": { "$ref": "#/$defs/id" },
         "title": { "$ref": "#/$defs/text" },
         "desc": { "type": "string" },
-        "price": { "description": "0 shows no price on the row.", "$ref": "#/$defs/toman" },
+        "group": { "description": "Optional heading to group add-ons under. When any offered add-on has one, the calculator shows one heading and grid per group, in order of first appearance; add-ons without a group come first, under section.addonsTitle.", "type": "string" },
+        "price": { "description": "0 shows no price on the tile.", "$ref": "#/$defs/toman" },
         "days": { "$ref": "#/$defs/days" },
         "active": { "description": "false hides the add-on everywhere without deleting it.", "type": "boolean" },
         "order": { "$ref": "#/$defs/order" }

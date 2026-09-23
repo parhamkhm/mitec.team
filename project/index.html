@@ -372,9 +372,11 @@
        A price-and-duration calculator. Everything it shows — packages, items,
        prices, days and every label — comes from the pricing document
        (getPricing(); src/config/pricing.json in mock mode) and is rendered by
-       src/scripts/scope.js. This markup is only the shell, with a loading
-       skeleton in the shape of the result. Without JS the section is hidden:
-       it is a tool, and the order builder asks the same questions. -->
+       src/scripts/scope.js: a summary card (the base, the total and the CTA)
+       beside the page slider and a grid of add-on tiles. This markup is only
+       the shell, with a loading skeleton in the shape of the result. Without
+       JS the section is hidden: it is a tool, and the order builder asks the
+       same questions. -->
   <section id="scope" class="band scope" aria-labelledby="scope-title" aria-busy="true">
     <div class="band__inner">
       <div class="section-heading section-heading--center scope-head" id="scopeHead" data-reveal>
@@ -388,32 +390,24 @@
       <div class="scope-body" id="scopeBody">
         <div class="scope-types" id="scopeTypes"><span class="skel skel--tabs"></span><span class="skel skel--link"></span></div>
         <div class="scope-cols" data-reveal-stagger>
-          <div class="card card--surface card--pad-lg scope-base" id="scopeBase">
+          <div class="card card--surface card--pad-lg scope-summary" id="scopeSummary">
             <span class="skel skel--heading"></span>
+            <span class="skel skel--list"></span>
             <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
-            <span class="skel skel--line"></span>
+            <span class="skel skel--total"></span>
+            <span class="skel skel--cta"></span>
+            <span class="skel skel--note"></span>
           </div>
           <div class="scope-config" id="scopeConfig">
             <span class="skel skel--pages"></span>
             <span class="skel skel--heading"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
-            <span class="skel skel--row"></span>
+            <div class="scope-addons">
+              <span class="skel skel--tile"></span><span class="skel skel--tile"></span><span class="skel skel--tile"></span>
+              <span class="skel skel--tile"></span><span class="skel skel--tile"></span><span class="skel skel--tile"></span>
+              <span class="skel skel--tile"></span><span class="skel skel--tile"></span><span class="skel skel--tile"></span>
+            </div>
           </div>
         </div>
-        <div class="scope-foot" id="scopeFoot"><span class="skel skel--total"></span><span class="skel skel--cta"></span><span class="skel skel--note"></span></div>
       </div>
     </div>
   </section>

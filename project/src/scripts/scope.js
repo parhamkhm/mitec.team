@@ -1,24 +1,35 @@
-// mitec — Quick scope: a price-and-duration calculator in the shape of the
-// reference's pricing section (site-type tabs; a base card of what is always
-// included; a page slider and add-on rows; one total; one CTA). Everything it
-// shows comes from the pricing document (getPricing()): packages, items,
-// prices, days and every label. The maths is the shared estimate() the /order
-// wizard will use too. Nothing is scroll-scrubbed here: it is a tool.
+// mitec — Quick scope: a price-and-duration calculator. Site-type tabs; a
+// summary card (what the base always includes, then the total and the one
+// CTA); the page slider and a grid of add-on tiles. Everything it shows comes
+// from the pricing document (getPricing()): packages, items, prices, days and
+// every label. The maths is the shared estimate() the /order wizard will use
+// too. Nothing is scroll-scrubbed here: it is a tool.
+//
+// Layout (home.css): from 1024px the summary card is the start column and
+// stays in view (sticky) for as long as the whole card fits under the nav.
+// Below that everything stacks and the total + CTA ride in a bar at the
+// bottom of the screen while the calculator is on it. That total + CTA block
+// is a single element moved between the card and the bar, so there is always
+// one live region and one CTA.
 
 import { getPricing } from '../api/client.js';
 import { estimate } from '../utils/estimate.js';
 import { faNumber, fill, formatPrice, formatDuration } from '../utils/format.js';
 
 // The only strings not taken from the pricing document: what shows when it
-// cannot be loaded, and the way out for visitors unsure of their site type.
-const FALLBACK = {
+// cannot be loaded, the way out for visitors unsure of their site type, and
+// the count of chosen add-ons under the total.
+const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
-  unsure: 'مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم'
+  unsure: 'مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم',
+  picked: '{n} امکان انتخاب شده'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
 const MORE_AFTER = 4; // phones show this many base items before «show all»
+const WIDE = '(min-width: 1024px)'; // two columns, sticky summary card
+const STICKY_GAP = 24; // px between the nav and the sticky card
 const root = document.documentElement;
 
 const el = (tag, cls, text) => {
@@ -61,9 +72,8 @@ export async function initScope() {
   const head = $('scopeHead');
   const body = $('scopeBody');
   const typesBox = $('scopeTypes');
-  const baseCard = $('scopeBase');
+  const summary = $('scopeSummary');
   const config = $('scopeConfig');
-  const foot = $('scopeFoot');
 
   let res;
   try {
@@ -79,7 +89,7 @@ export async function initScope() {
   if (!types.length) {
     console.error('[scope] pricing unavailable', res.error || 'no active site types');
     head.replaceChildren();
-    body.replaceChildren(el('p', 'scope-error', FALLBACK.error), cta(FALLBACK.cta));
+    body.replaceChildren(el('p', 'scope-error', COPY.error), cta(COPY.cta));
     return;
   }
 
@@ -115,31 +125,43 @@ export async function initScope() {
     track.append(label);
   }
   group.append(track);
-  const unsure = el('a', 'scope-unsure', FALLBACK.unsure);
+  const unsure = el('a', 'scope-unsure', COPY.unsure);
   unsure.href = ORDER_URL;
   typesBox.replaceChildren(group, unsure);
 
-  // ---- total + CTA (sticky on phones) and the disclaimer
-  const sticky = el('div', 'scope-sticky');
-  const total = el('p', 'scope-total');
-  total.setAttribute('aria-hidden', 'true'); // screen readers get the live line below
+  // ---- the checkout: total, what is picked, the live line and the CTA. It
+  // sits at the foot of the summary card from 1024px, in the bottom bar below.
+  const checkout = el('div', 'scope-checkout');
+  const figures = el('div', 'scope-checkout__figures');
   const priceBox = P.display.showPrice ? el('span', 'scope-total__price') : null;
   const daysBox = P.display.showDuration ? el('span', 'scope-total__days') : null;
-  if (priceBox || daysBox) {
-    total.append(el('span', 'scope-total__label', S.totalLabel));
-    if (priceBox) total.append(priceBox);
-    if (priceBox && daysBox) total.append(el('span', 'scope-total__sep', '·'));
-    if (daysBox) total.append(daysBox);
-    sticky.append(total);
+  const lead = priceBox || daysBox; // the big figure: the price, or the days without prices
+  if (lead) {
+    const total = el('p', 'scope-total');
+    total.setAttribute('aria-hidden', 'true'); // screen readers get the live line below
+    lead.classList.add('scope-total__figure');
+    total.append(el('span', 'scope-total__label', S.totalLabel), lead);
+    figures.append(total);
   }
+  const meta = el('p', 'scope-meta');
+  if (daysBox && daysBox !== lead) {
+    daysBox.setAttribute('aria-hidden', 'true');
+    meta.append(daysBox);
+  }
+  const count = el('span', 'scope-meta__count');
+  meta.append(count);
+  figures.append(meta);
   const live = el('p', 'visually-hidden');
   live.setAttribute('aria-live', 'polite');
-  const go = cta(S.ctaLabel || FALLBACK.cta);
-  sticky.append(live, go);
-  foot.replaceChildren(sticky);
-  if (S.disclaimer) foot.append(el('p', 'scope-disclaimer', S.disclaimer));
+  const go = cta(S.ctaLabel || COPY.cta);
+  checkout.append(figures, live, go);
 
-  // ---- the two columns, rebuilt whenever the type changes
+  // ---- the summary card: the base (rebuilt per type), then the checkout and
+  // the disclaimer
+  const baseBox = el('div', 'scope-summary__base');
+  const note = S.disclaimer ? el('p', 'scope-disclaimer', S.disclaimer) : null;
+  summary.replaceChildren(baseBox, ...(note ? [note] : []));
+
   let slider = null;
   let sliderValue = null;
 
@@ -156,9 +178,10 @@ export async function initScope() {
       li.append(mark, text);
       list.append(li);
     });
-    const parts = [el('h3', 'scope-base__title', t.base.title)];
-    if (t.base.subtitle) parts.push(el('p', 'scope-base__sub', t.base.subtitle));
-    parts.push(list);
+    const top = el('div', 'scope-base__head');
+    top.append(el('h3', 'scope-base__title', t.base.title));
+    if (t.base.subtitle) top.append(el('p', 'scope-base__sub', t.base.subtitle));
+    const parts = [top, list];
     if (t.base.included.length > MORE_AFTER && S.showAll) {
       const more = el('button', 'scope-base__more', S.showAll);
       more.type = 'button';
@@ -173,7 +196,30 @@ export async function initScope() {
       parts.push(more);
     }
     if (S.pagesIncluded) parts.push(el('p', 'scope-base__pages', fill(S.pagesIncluded, { n: faNumber(t.base.pagesIncluded) })));
-    baseCard.replaceChildren(...parts);
+    baseBox.replaceChildren(...parts);
+  }
+
+  // One add-on tile; the whole tile is the toggle. The price line is always
+  // there (empty for a free add-on) so every tile's last line lines up.
+  function tile(a) {
+    const on = state.picked.has(a.id);
+    const b = el('button', 'scope-addon');
+    b.type = 'button';
+    b.dataset.id = a.id;
+    b.setAttribute('aria-pressed', String(on));
+    const top = el('span', 'scope-addon__top');
+    const toggle = el('span', 'scope-addon__toggle');
+    toggle.append(icon(on ? 'minus' : 'plus'));
+    top.append(el('span', 'scope-addon__title', a.title), toggle);
+    b.append(top);
+    if (a.desc) {
+      const desc = el('span', 'scope-addon__desc', a.desc);
+      desc.title = a.desc; // clamped to two lines on screen
+      b.append(desc);
+    }
+    // No price element at all when prices are off.
+    if (P.display.showPrice) b.append(el('span', 'scope-addon__price', a.price > 0 ? price(a.price) : ''));
+    return b;
   }
 
   function renderConfig(t) {
@@ -188,58 +234,55 @@ export async function initScope() {
       sliderValue = el('output', 'scope-pages__value');
       sliderValue.htmlFor = 'scopePages';
       top.append(label, sliderValue);
-      box.append(top);
-      if (S.pagesDesc) {
-        const d = el('p', 'scope-pages__desc', S.pagesDesc);
-        d.id = 'scopePagesDesc';
-        box.append(d);
-      }
       slider = el('input', 'scope-range');
       Object.assign(slider, { type: 'range', id: 'scopePages', min: t.pages.min, max: t.pages.max, step: 1, value: state.pages });
-      if (S.pagesDesc) slider.setAttribute('aria-describedby', 'scopePagesDesc');
       slider.addEventListener('input', () => {
         state.pages = Number(slider.value);
         update(true);
       });
-      box.append(slider);
+      box.append(top, slider);
+      if (S.pagesDesc) {
+        const hint = el('p', 'scope-pages__desc', S.pagesDesc);
+        hint.id = 'scopePagesDesc';
+        slider.setAttribute('aria-describedby', hint.id);
+        box.append(hint);
+      }
       parts.push(box);
     }
 
+    // Tiles in one grid, or — only if the data gives add-ons a `group` — one
+    // small heading and grid per group, in order of first appearance. Add-ons
+    // without a group come first, straight under the section's add-on title.
     const offered = t.addons.map((id) => addons.get(id)).filter(Boolean).sort((x, y) => x.order - y.order);
     if (offered.length) {
       if (S.addonsTitle) parts.push(el('h3', 'scope-addons__title', S.addonsTitle));
-      const list = el('div', 'scope-addons');
+      const groups = new Map([['', []]]);
       for (const a of offered) {
-        const on = state.picked.has(a.id);
-        const b = el('button', 'scope-addon');
-        b.type = 'button';
-        b.dataset.id = a.id;
-        b.setAttribute('aria-pressed', String(on));
-        const text = el('span', 'scope-addon__text');
-        text.append(el('span', 'scope-addon__title', a.title));
-        if (a.desc) text.append(el('span', 'scope-addon__desc', a.desc));
-        b.append(text);
-        // No price element at all when prices are off, or for a free add-on.
-        if (P.display.showPrice && a.price > 0) b.append(el('span', 'scope-addon__price', price(a.price)));
-        const toggle = el('span', 'scope-addon__toggle');
-        toggle.append(icon(on ? 'minus' : 'plus'));
-        b.append(toggle);
-        list.append(b);
+        const g = a.group || '';
+        if (!groups.has(g)) groups.set(g, []);
+        groups.get(g).push(a);
       }
-      list.addEventListener('click', (e) => {
-        const b = e.target.closest('.scope-addon');
-        if (!b) return;
-        const on = !state.picked.has(b.dataset.id);
-        if (on) state.picked.add(b.dataset.id);
-        else state.picked.delete(b.dataset.id);
-        b.setAttribute('aria-pressed', String(on));
-        b.querySelector('.scope-addon__toggle .icon').className = `icon icon-${on ? 'minus' : 'plus'}`;
-        update(true);
-      });
-      parts.push(list);
+      for (const [name, list] of groups) {
+        if (!list.length) continue;
+        if (name) parts.push(el('h4', 'scope-addons__group', name));
+        const grid = el('div', 'scope-addons');
+        grid.append(...list.map(tile));
+        parts.push(grid);
+      }
     }
     config.replaceChildren(...parts);
   }
+
+  config.addEventListener('click', (e) => {
+    const b = e.target.closest('.scope-addon');
+    if (!b) return;
+    const on = !state.picked.has(b.dataset.id);
+    if (on) state.picked.add(b.dataset.id);
+    else state.picked.delete(b.dataset.id);
+    b.setAttribute('aria-pressed', String(on));
+    b.querySelector('.scope-addon__toggle .icon').className = `icon icon-${on ? 'minus' : 'plus'}`;
+    update(true);
+  });
 
   function update(announce) {
     const t = state.type;
@@ -255,6 +298,10 @@ export async function initScope() {
     const daysText = daysBox ? formatDuration(est.days, unit) : '';
     if (priceBox) swap(priceBox, priceText);
     if (daysBox) swap(daysBox, daysText);
+    const n = est.lines.filter((l) => addons.has(l.id)).length;
+    count.textContent = n ? fill(COPY.picked, { n: faNumber(n) }) : '';
+    count.hidden = !n;
+    meta.hidden = !n && !meta.contains(daysBox);
     if (announce) live.textContent = [S.totalLabel, [priceText, daysText].filter(Boolean).join('، ')].filter(Boolean).join(': ');
     return est;
   }
@@ -296,5 +343,48 @@ export async function initScope() {
     }
   });
 
+  // ---- layout: where the checkout lives, and whether the card may stick
+  const wide = matchMedia(WIDE);
+  const nav = document.querySelector('.navbar');
+
+  // From 1024px the checkout is the foot of the summary card; below, it is the
+  // bar after the columns (pinned by CSS while the calculator is on screen).
+  function place() {
+    const inCard = wide.matches;
+    if (inCard === (checkout.parentNode === summary) && checkout.parentNode) return;
+    const focused = checkout.contains(document.activeElement) ? document.activeElement : null;
+    if (inCard) summary.insertBefore(checkout, note);
+    else body.append(checkout);
+    focused?.focus({ preventScroll: true });
+  }
+
+  // The card sticks only while all of it fits between the nav and the bottom
+  // of the screen; a sticky card is never cut off. The included list is two
+  // columns when the card is wide enough (CSS), but goes back to one when even
+  // two would not make the card fit, since it cannot stick then anyway.
+  let queued = false;
+  function fit() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (!wide.matches) return summary.classList.remove('is-sticky', 'is-single');
+      const top = nav ? nav.offsetHeight : 0;
+      sec.style.setProperty('--scope-top', `${top + STICKY_GAP}px`);
+      summary.classList.remove('is-single');
+      const fits = summary.offsetHeight <= innerHeight - top - 2 * STICKY_GAP;
+      summary.classList.toggle('is-single', !fits);
+      summary.classList.toggle('is-sticky', fits);
+    });
+  }
+
   selectType(state.type, false);
+  place();
+  fit();
+  new ResizeObserver(fit).observe(summary);
+  addEventListener('resize', fit);
+  wide.addEventListener('change', () => {
+    place();
+    fit();
+  });
 }

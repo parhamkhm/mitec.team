@@ -50,6 +50,7 @@ export function fromApiPricing(api) {
     id: text(a.id),
     title: text(a.title),
     desc: text(a.desc),
+    group: text(a.group).trim(),
     price: whole(a.price),
     days: whole(a.days),
     active: a.active !== false,

@@ -222,11 +222,15 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 
 /* ---------------------------------------------------------------- quick scope
    A pricing calculator on light (a tool, so a form surface, DESIGN.md §6).
-   Tabs pick the site type; the start column is what the base always
-   includes, the end column the page slider and add-on rows; then one total
-   and one full-width CTA. Everything shown is rendered from the pricing
-   document by scope.js. The action green is only on what acts: the slider
-   and the CTA. Hidden without JS — it is a tool, not reading. */
+   Tabs pick the site type. From 1024px the start column is one summary card
+   — what the base always includes, then the total, the CTA and the
+   disclaimer — held in view while it fits the screen; the end column is the
+   page slider and a grid of equal add-on tiles, tidy for any number of them.
+   Below 1024px it all stacks and the total + CTA ride in a bar at the bottom
+   of the screen while the calculator is on it. Everything shown is rendered
+   from the pricing document by scope.js. The action green is only on what
+   acts: the slider and the CTA. Hidden without JS — it is a tool, not
+   reading. */
 html:not(.js) .scope { display: none; }
 .scope-head__title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3); }
 .scope-body { display: flex; flex-direction: column; gap: var(--space-7); }
@@ -240,16 +244,17 @@ html:not(.js) .scope { display: none; }
 .skel--tabs { width: min(100%, 640px); height: 52px; border-radius: var(--radius-pill); }
 .skel--link { width: 240px; height: 22px; }
 .skel--heading { width: 40%; height: 28px; }
-.skel--line { height: 58px; }
-.skel--pages { height: 150px; }
-.skel--row { height: 92px; border-radius: var(--radius-md); }
-.skel--total { width: min(100%, 420px); height: 40px; }
-.skel--cta { width: min(100%, 680px); height: 56px; border-radius: var(--radius-pill); }
-.skel--note { width: min(100%, 460px); height: 18px; }
+.skel--list { height: 300px; }
+.skel--line { height: 24px; }
+.skel--pages { height: 116px; }
+.skel--tile { min-height: 124px; border-radius: var(--radius-md); }
+.skel--total { height: 76px; }
+.skel--cta { height: 60px; border-radius: var(--radius-pill); }
+.skel--note { height: 40px; }
 /* While loading, the columns hold roughly the height of the default view. */
-.scope[aria-busy="true"] .scope-base,
+.scope[aria-busy="true"] .scope-summary,
 .scope[aria-busy="true"] .scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
-.scope[aria-busy="true"] .scope-base .skel--heading { align-self: center; }
+.scope[aria-busy="true"] .scope-summary .skel--heading { align-self: center; }
 
 /* Site-type tabs: one segmented track, centred; the native radio stays for
    its semantics and keys, the pill is its face. */
@@ -289,35 +294,45 @@ html:not(.js) .scope { display: none; }
 .scope-cols { --stagger: 80ms; display: grid; gap: var(--space-5); align-items: start; }
 @media (min-width: 1024px) { .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
 
-/* The base card: what every project of the type includes. */
-.scope-base { display: flex; flex-direction: column; }
-.scope-base__title { font-size: var(--text-h4); text-align: center; }
-.scope-base__sub { margin-top: var(--space-1); color: var(--color-text-secondary); text-align: center; }
-.scope-base__list { display: grid; gap: var(--space-4); margin: var(--space-6) 0 0; padding: var(--space-6) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
+/* The summary card. scope.js adds .is-sticky only while the whole card fits
+   between the nav and the bottom of the screen, so a stuck card is never cut
+   off; as a grid item it lets go where the columns end. */
+.scope-summary { display: flex; flex-direction: column; gap: var(--space-6); padding: var(--space-7) var(--space-6); }
+.scope-summary.is-sticky { position: sticky; top: var(--scope-top, 92px); }
+.scope-summary__base { display: flex; flex-direction: column; gap: var(--space-5); }
+.scope-base__head { text-align: center; }
+.scope-base__title { font-size: var(--text-h4); }
+.scope-base__sub { margin-top: var(--space-1); color: var(--color-text-secondary); }
+/* What is always included: a compact checklist, two columns wherever the
+   card is wide enough for them. */
+.scope-base__list { display: grid; gap: var(--space-4) var(--space-5); margin: 0; padding: var(--space-5) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
+@media (min-width: 768px) and (max-width: 1023px), (min-width: 1280px) {
+  .scope-base__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.scope-summary.is-single .scope-base__list { grid-template-columns: minmax(0, 1fr); }
 .scope-base__list li { display: flex; align-items: flex-start; gap: var(--space-3); }
 .scope-base__mark {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  margin-top: 2px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-sm);
   background: var(--color-tonal);
   color: var(--color-tonal-text);
 }
-.scope-base__mark .icon { width: 15px; height: 15px; }
-.scope-base__item { display: flex; flex-direction: column; line-height: var(--lh-tight); }
-.scope-base__item strong { color: var(--color-text-primary); }
-.scope-base__desc { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+.scope-base__mark .icon { width: 14px; height: 14px; }
+.scope-base__item { display: flex; flex-direction: column; gap: 2px; min-width: 0; line-height: var(--lh-tight); text-wrap: pretty; }
+.scope-base__item strong { font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-primary); }
+.scope-base__desc { font-size: var(--text-caption); color: var(--color-text-muted); }
 .scope-base__more {
   display: none;
   align-items: center;
   gap: var(--space-2);
   align-self: center;
   min-height: 44px;
-  margin-top: var(--space-2);
+  margin-top: calc(-1 * var(--space-2));
   padding: 0 var(--space-3);
   border: 0;
   background: none;
@@ -328,15 +343,46 @@ html:not(.js) .scope { display: none; }
   cursor: pointer;
 }
 .scope-base__more .icon { width: 16px; height: 16px; }
-.scope-base__pages { margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--color-border); color: var(--color-text-secondary); text-align: center; font-weight: 500; }
+.scope-base__pages { color: var(--color-text-secondary); text-align: center; font-weight: 500; }
 
-/* The end column: pages, then the add-on rows. */
+/* The checkout: total, what is picked, the CTA. At the foot of the card here;
+   the bottom bar below 1024px. */
+.scope-checkout { display: flex; flex-direction: column; gap: var(--space-4); }
+.scope-summary .scope-checkout { padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
+.scope-checkout__figures { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); min-width: 0; text-align: center; }
+.scope-total { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 var(--space-3); margin: 0; }
+.scope-total__label { color: var(--color-text-muted); font-size: var(--text-body); }
+.scope-total__price,
+.scope-total__days { display: inline-grid; }
+.scope-total__price > *,
+.scope-total__days > * { grid-area: 1 / 1; }
+.scope-total__figure { font-size: var(--text-h3); font-weight: 800; line-height: 1.25; color: var(--color-text-primary); }
+.scope-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-2); margin: 0; color: var(--color-text-secondary); }
+.scope-meta[hidden],
+.scope-meta__count[hidden] { display: none; }
+/* A hairline between the duration and the count: a «·» beside Persian
+   digits reads as a zero (۰). */
+.scope-total__days + .scope-meta__count::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: .9em;
+  margin-inline-end: var(--space-2);
+  vertical-align: -.1em;
+  background: var(--color-border-strong);
+}
+.scope-summary .scope-cta { width: 100%; }
+.scope-disclaimer { margin-top: calc(-1 * var(--space-2)); font-size: var(--text-caption); color: var(--color-text-muted); text-align: center; }
+.scope-error { color: var(--color-text-secondary); text-align: center; }
+.scope-body > .scope-cta { align-self: center; }
+
+/* The end column: pages, then the add-on tiles. */
 .scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
-.scope-pages { padding-bottom: var(--space-5); border-bottom: 1px solid var(--color-border); }
+.scope-pages { padding-bottom: var(--space-5); border-bottom: 1px solid var(--color-border); line-height: var(--lh-tight); }
 .scope-pages__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
 .scope-pages__title { font-weight: 700; color: var(--color-text-primary); }
 .scope-pages__value { font-weight: 800; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
-.scope-pages__desc { margin-top: var(--space-1); font-size: var(--text-body-sm); color: var(--color-text-secondary); }
+.scope-pages__desc { font-size: var(--text-body-sm); color: var(--color-text-secondary); }
 
 /* Native range, token-styled. 44px tall for the hit area; the fill runs from
    the start edge (the right, on this RTL page) to the value. */
@@ -347,7 +393,7 @@ html:not(.js) .scope { display: none; }
   display: block;
   width: 100%;
   height: 44px;
-  margin: var(--space-2) 0 0;
+  margin: 0;
   background: transparent;
   cursor: pointer;
 }
@@ -372,35 +418,59 @@ html:not(.js) .scope { display: none; }
 .scope-range:focus-visible { outline-offset: 4px; border-radius: var(--radius-sm); }
 
 .scope-addons__title { margin-top: var(--space-2); font-size: var(--text-body-lg); }
-.scope-addons { display: grid; gap: var(--space-3); }
-/* Each row is the toggle. Dashed while off, as in the reference; solid and
-   tonal when on. The state also shows in the +/− and aria-pressed. */
+.scope-addons__group { margin-top: var(--space-2); font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); }
+/* The tiles: two equal columns, every row as tall as the tallest tile, so the
+   grid stays even for any count. An odd count leaves one tile alone on the
+   last row; it spans both columns. (That needs no :has(): the last child in
+   an odd position is exactly that tile.) One column on phones. */
+.scope-addons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: var(--space-3); }
+.scope-addons > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+/* Each tile is the toggle. Dashed while off, as in the reference; solid and
+   tonal when on. The state also shows in the +/− and aria-pressed. The border
+   width never changes, so toggling never shifts anything. */
 .scope-addon {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "text price" "text toggle";
-  align-items: start;
-  gap: var(--space-1) var(--space-4);
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 124px;
   padding: var(--space-4) var(--space-5);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text-body);
   font: inherit;
+  line-height: var(--lh-tight);
   text-align: start;
   cursor: pointer;
   transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
 }
-.scope-addon:hover { border-color: var(--color-border-strong); }
+.scope-addon:hover { border-color: var(--color-border-hover); }
 .scope-addon[aria-pressed="true"] { border-style: solid; border-color: var(--color-border-hover); background: var(--color-tonal); }
-.scope-addon__text { grid-area: text; display: flex; flex-direction: column; gap: 2px; line-height: var(--lh-tight); }
-.scope-addon__title { font-weight: 700; color: var(--color-text-primary); }
-.scope-addon__desc { font-size: var(--text-body-sm); color: var(--color-text-muted); }
-.scope-addon__price { grid-area: price; font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); white-space: nowrap; }
+.scope-addon__top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.scope-addon__title { padding-top: 4px; font-weight: 700; color: var(--color-text-primary); }
+.scope-addon__desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+/* Pushed to the bottom, and one line tall even when empty (a free add-on),
+   so every tile's last line sits on the same baseline. */
+.scope-addon__price {
+  margin-top: auto;
+  min-height: calc(var(--text-body-sm) * var(--lh-tight));
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
 .scope-addon__toggle {
-  grid-area: toggle;
-  justify-self: end;
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -410,50 +480,55 @@ html:not(.js) .scope { display: none; }
   border-radius: 50%;
   background: var(--color-surface);
   color: var(--color-tonal-text);
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
 }
 .scope-addon__toggle .icon { width: 16px; height: 16px; }
-.scope-addon[aria-pressed="true"] .scope-addon__toggle { border-color: var(--color-tonal-text); }
+.scope-addon[aria-pressed="true"] .scope-addon__toggle { border-color: var(--color-tonal-text); background: var(--color-tonal-text); color: var(--color-surface); }
 
-/* One total, one CTA, one disclaimer. */
-.scope-foot { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
-.scope-sticky { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); width: 100%; }
-.scope-total { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: var(--space-2) var(--space-3); margin: 0; text-align: center; }
-.scope-total__label { color: var(--color-text-muted); font-size: var(--text-body); }
-.scope-total__price,
-.scope-total__days { display: inline-grid; }
-.scope-total__price > *,
-.scope-total__days > * { grid-area: 1 / 1; }
-.scope-total__price { font-size: var(--text-h3); font-weight: 800; color: var(--color-text-primary); }
-.scope-total__days,
-.scope-total__sep { font-size: var(--text-body-lg); color: var(--color-text-secondary); }
-.scope-cta { width: min(100%, 680px); }
-.scope-disclaimer { font-size: var(--text-caption); color: var(--color-text-muted); text-align: center; }
-.scope-error { color: var(--color-text-secondary); text-align: center; }
-.scope-body > .scope-cta { align-self: center; }
-
-@media (max-width: 759px) {
-  .scope-types { align-items: stretch; }
-  .scope-tabs__track { border-radius: var(--radius-lg); }
-  /* The base list folds after four items behind «show all». */
-  .scope-base__list:not(.is-open) > .is-more { display: none; }
-  .scope-base__more { display: inline-flex; }
-  /* Total + CTA stay at the bottom of the screen while the section is in view.
-     The foot box steps aside (display: contents) so the bar's containing block
-     is the whole calculator, not the short foot. */
-  .scope-foot { display: contents; }
-  .scope-sticky {
+/* Below 1024px: one column — summary, pages, tiles — and the checkout is a
+   bar after them. Sticky to the bottom of the screen inside the calculator's
+   box, it shows only while the calculator is on screen and comes to rest in
+   place at its end, so it never covers the footer or the next section. */
+@media (max-width: 1023px) {
+  .scope-body > .scope-checkout {
     position: sticky;
     bottom: 0;
     z-index: 5;
-    gap: var(--space-3);
-    width: calc(100% + 2 * var(--gutter));
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     margin-inline: calc(-1 * var(--gutter));
     padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--color-border-subtle);
-    background: var(--color-bg);
+    background: var(--color-surface);
   }
-  .scope-total__price { font-size: var(--text-h4); }
-  .scope-total__sep { display: none; } /* the duration wraps to its own line */
+  .scope-body > .scope-checkout .scope-checkout__figures { align-items: flex-start; text-align: start; }
+  .scope-body > .scope-checkout .scope-total { justify-content: flex-start; }
+  .scope-body > .scope-checkout .scope-meta { justify-content: flex-start; font-size: var(--text-body-sm); }
+  .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-h4); }
+  .scope-body > .scope-checkout .scope-cta { flex: 0 0 auto; }
+  /* Keyboard focus scrolled into view clears the nav and the bar. */
+  .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more) { scroll-margin: 96px 0 120px; }
+}
+
+@media (max-width: 767px) {
+  .scope-addons { grid-template-columns: minmax(0, 1fr); }
+  /* The base list folds after four items behind «show all». */
+  .scope-base__list:not(.is-open) > .is-more { display: none; }
+  .scope-base__more { display: inline-flex; }
+  /* A phone bar holds the price, the duration and the CTA; the count of
+     picked add-ons is on the tiles themselves. */
+  .scope-body > .scope-checkout { gap: var(--space-3); }
+  .scope-body > .scope-checkout .scope-total__label,
+  .scope-body > .scope-checkout .scope-meta__count { display: none; }
+  .scope-body > .scope-checkout .scope-checkout__figures { flex: 1 1 auto; }
+  .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-body-lg); white-space: nowrap; }
+  .scope-body > .scope-checkout .scope-cta { padding: 12px 16px; font-size: var(--text-body-sm); }
+  .scope-body > .scope-checkout .scope-cta .icon { display: none; }
+}
+@media (max-width: 759px) {
+  .scope-types { align-items: stretch; }
+  .scope-tabs__track { border-radius: var(--radius-lg); }
 }
 
 /* ---------------------------------------------------------------- FAQ
