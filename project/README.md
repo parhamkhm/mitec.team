@@ -93,3 +93,4 @@ API_CONTRACT.md
 - `src/data/testimonials.json` — نظرهای واقعی؛ الان نمونه است و در UI هم «نمونه» برچسب خورده.
 - شماره‌ی واتساپ، آیدی تلگرام و اینستاگرام در `app.config.js` و در `index.html`.
 - اعداد آمار در `src/data/site-copy.json` — فقط واقعیت، بدون عدد ساختگی.
+- favicon هنوز طراحی نشده؛ فعلاً یک آیکون خالی (`data:,`) در `index.html` هست تا مرورگر `/favicon.ico` را درخواست نکند.
