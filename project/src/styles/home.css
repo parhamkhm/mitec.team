@@ -24,8 +24,8 @@
   to   { box-shadow: var(--glow-md), var(--glow-inset); border-color: var(--border-accent); }
 }
 @keyframes lamp-medallion {
-  from { box-shadow: 0 0 0 rgba(44,196,134,0); filter: saturate(.55) brightness(.85); }
-  to   { box-shadow: var(--glow-sm); filter: none; }
+  from { filter: saturate(.55) brightness(.85); }
+  to   { filter: none; }
 }
 @keyframes lamp-node {
   from { box-shadow: 0 0 0 rgba(44,196,134,0); }
@@ -56,17 +56,12 @@ main > section {
 }
 
 /* ---------------------------------------------------------------- page ground
-   The radial teal-green bloom + faint vertical mesh that sit behind the
-   whole page (Mitec Design System readme §4 "Backgrounds"). */
+   The radial teal-green bloom behind the whole page (Mitec Design System
+   readme §4 "Backgrounds"). The vertical mesh that used to sit over it is
+   gone; the bloom alone carries the ground. */
 .page { position: relative; }
 .page-bg { position: absolute; inset: 0; pointer-events: none; }
-.page-bg--mesh {
-  background: var(--grad-mesh-line);
-  background-size: 64px 100%;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);
-  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 72%, transparent);
-}
-.page-bg--glow { background: radial-gradient(52% 40% at 18% 26%, rgba(44,196,134,.22), transparent 68%); }
+.page-bg--glow { background: radial-gradient(52% 40% at 18% 26%, rgba(44,196,134,.12), transparent 68%); }
 .page-content { position: relative; }
 
 /* ---------------------------------------------------------------- section rhythm
@@ -109,13 +104,13 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
    strategy (the ivory service cards), so the two treatments never overlap. */
 .hero .stat-bar {
   background-image:
-    linear-gradient(160deg, rgba(15,76,63,.42) 0%, rgba(9,51,73,.42) 100%),
+    linear-gradient(160deg, color-mix(in oklab, var(--surface-emerald) 22%, transparent) 0%, color-mix(in oklab, var(--navy-800) 22%, transparent) 100%),
     var(--grad-glass);
   border-color: color-mix(in oklab, var(--border-accent) 50%, var(--border-hairline));
 }
 .hero .logo-strip {
   background-color: var(--surface-sunken);
-  background-image: linear-gradient(160deg, rgba(15,76,63,.30) 0%, rgba(9,51,73,.30) 100%);
+  background-image: linear-gradient(160deg, color-mix(in oklab, var(--surface-emerald) 16%, transparent) 0%, color-mix(in oklab, var(--navy-800) 16%, transparent) 100%);
 }
 /* The emerald tint darkens the ground under these bands, and --text-muted was
    already sitting on the palette's 4.6:1 floor. Captions on a tinted band step
@@ -129,7 +124,7 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 
 /* Laptop + phone mockup stage */
 .hero__stage { position: relative; max-width: none; margin-inline: 0; width: 100%; }
-.hero__stage-glow { position: absolute; inset-inline: 12%; top: 6%; height: 70%; background: radial-gradient(ellipse at center, rgba(44,196,134,.34), transparent 68%); filter: blur(46px); pointer-events: none; }
+.hero__stage-glow { position: absolute; inset-inline: 12%; top: 6%; height: 70%; background: radial-gradient(ellipse at center, rgba(44,196,134,.18), transparent 68%); filter: blur(46px); pointer-events: none; }
 .hero__stage-inner { position: relative; }
 
 .hero__laptop-frame { padding: 10px 10px 8px; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs); background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg), var(--glow-inset); }
@@ -137,7 +132,7 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 /* The foot is intentionally wider than the screen, but its overhang is capped
    to the gutter so it can never push the page into horizontal scroll. */
 .hero__laptop-base { width: min(112%, calc(100% + 2 * var(--gutter))); margin-inline-start: max(-6%, calc(-1 * var(--gutter))); height: 15px; border-radius: 0 0 var(--radius-md) var(--radius-md); background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow: var(--shadow-lg); }
-.hero__laptop-shadow { width: 74%; height: 90px; margin: 0 auto; background: linear-gradient(180deg, rgba(44,196,134,.3), transparent 72%); filter: blur(20px); }
+.hero__laptop-shadow { width: 74%; height: 90px; margin: 0 auto; background: linear-gradient(180deg, rgba(3,12,28,.55), transparent 72%); filter: blur(20px); }
 
 .hero__dash-card { position: absolute; top: 13%; inset-inline-start: -3%; width: min(52%, 196px); }
 .hero__dash-card .card { padding: var(--space-4); }
@@ -159,7 +154,7 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 
 /* ---------------------------------------------------------------- services */
 .service-card { display: flex; flex-direction: column; gap: var(--space-4); }
-.service-card__badge { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--radius-circle); background: var(--grad-accent); color: var(--accent-fg); box-shadow: var(--glow-sm); }
+.service-card__badge { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--radius-circle); background: var(--grad-accent); color: var(--accent-fg); }
 .service-card p { font-size: var(--text-body); color: var(--text-ink-body); line-height: var(--lh-body); }
 .service-card__link { font-size: var(--text-body-sm); display: inline-flex; align-items: center; gap: var(--space-2); }
 .service-card__link .icon { width: 16px; height: 16px; }
@@ -184,9 +179,9 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 
 /* ---------------------------------------------------------------- about */
 .about-card { display: flex; gap: var(--space-5); align-items: center; }
-.about-card__photo { flex: 0 0 auto; width: 96px; height: 96px; border-radius: var(--radius-circle); overflow: hidden; border: var(--border-width) solid var(--border-accent); box-shadow: var(--glow-sm); }
+.about-card__photo { flex: 0 0 auto; width: 96px; height: 96px; border-radius: var(--radius-circle); overflow: hidden; border: var(--border-width) solid var(--border-subtle); }
 .about-card h3 { margin: 0 0 var(--space-1); }
-.about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--text-action); }
+.about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--text-muted); }
 .about-card__bio { margin: 0; font-size: var(--text-body-sm); color: var(--text-ink-body); line-height: var(--lh-body); }
 
 /* ---------------------------------------------------------------- testimonials */
@@ -204,7 +199,7 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
   font-size: var(--text-body-lg); font-weight: var(--weight-semibold); text-align: start;
   padding: var(--space-5) var(--space-6); cursor: pointer;
 }
-.faq-item__chevron { flex: 0 0 auto; color: var(--text-action); font-size: 1.1em; line-height: 1; }
+.faq-item__chevron { flex: 0 0 auto; color: var(--text-muted); font-size: 1.1em; line-height: 1; }
 .faq-item__a { padding: 0 var(--space-6) var(--space-5); color: var(--text-ink-body); font-size: var(--text-body); }
 .faq-item__a[hidden] { display: none; }
 
