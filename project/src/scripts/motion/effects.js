@@ -76,18 +76,35 @@ function testimonialsTilt() {
   }];
 }
 
-// Process: a forest rail fills along the steps; each numeral comes up to
-// full strength once the fill has passed it. Across (≥1024px) the fill runs
+// Process: a forest rail fills along the steps and fills each dot it
+// reaches. Across (≥1024px) the fill runs
 // while the steps rise through the viewport; stacked, it follows a reading
 // line at 60% of the viewport. The geometry is measured with or without
 // motion, so the static rail has its length too.
+//
+// The same head position colours the step cards: each fills with
+// --color-step-fill over the stretch of rail leading into its dot (the first
+// over an equal lead-in before the rail starts), and the card whose dot the
+// head reached last is the one forest spotlight. Per frame only transform and
+// opacity change; the spotlight's data-surface flips only when its index does.
 function processRail() {
   const box = document.querySelector('.process-track');
   if (!box) return null;
   const fill = box.querySelector('.process-rail__fill');
   const steps = $$('.process-grid > li', box);
+  const cards = steps.map((li) => {
+    const c = li.querySelector('.process-step');
+    return { c, fill: c.querySelector('.process-step__fill'), line: c.querySelector('.process-step__line'), n: c.querySelector('.process-step__n') };
+  });
   const end = (li) => li.offsetLeft + li.offsetWidth; // the start edge, on this RTL page
-  let across = true, top = 0, from = 0, len = 1, at = [], last = -1;
+  const HYST = 6; // px past a dot, either way, before the spotlight moves: no flicker on the line
+  let across = true, top = 0, from = 0, len = 1, at = [], dots = [], last = null, spot = -1;
+  const setSpot = (s) => {
+    if (s === spot) return;
+    cards[spot]?.c.removeAttribute('data-surface');
+    spot = s;
+    if (s >= 0) cards[s].c.dataset.surface = 'dark';
+  };
   return {
     el: box,
     measure() {
@@ -95,26 +112,45 @@ function processRail() {
       across = steps[1].offsetTop === a.offsetTop;
       len = (across ? end(a) - end(z) : z.offsetTop - a.offsetTop) || 1;
       at = steps.map((li) => (across ? end(a) - end(li) : li.offsetTop - a.offsetTop) / len);
+      dots = at.map((t) => t * len);
       from = a.offsetTop;
       box.style.setProperty('--rail-len', `${len}px`);
       box.style.setProperty('--rail-from', `${from}px`);
       top = docTop(box);
-      last = -1;
+      last = null;
     },
     update() {
       if (!root.classList.contains('motion')) return;
-      const p = across
-        ? seg(view.y, top - 0.85 * view.h, top - 0.35 * view.h)
-        : seg(view.y + 0.6 * view.h, top + from + 33, top + from + 33 + len);
-      if (p === last) return;
-      last = p;
+      // The rail head, in px along the rail from the first dot (negative
+      // before the rail starts). Clamped to the range where anything changes.
+      const lead = dots[1] - dots[0];
+      const raw = across
+        ? ((view.y - top + 0.85 * view.h) / (0.5 * view.h)) * len
+        : view.y + 0.6 * view.h - (top + from + 33);
+      const h = clamp(raw, -lead - 1, len + HYST + 1); // past the last dot's hysteresis band
+      if (h === last) return;
+      last = h;
+      const p = clamp(h / len);
       fill.style.transform = across ? `scaleX(${p})` : `scaleY(${p})`;
       steps.forEach((li, i) => li.classList.toggle('is-reached', p > 0 && p >= at[i] - 0.001));
+      cards.forEach((k, i) => {
+        const from_ = i ? dots[i - 1] : -lead;
+        const f = clamp((h - from_) / (dots[i] - from_));
+        k.fill.style.transform = across ? `scaleX(${f})` : `scaleY(${f})`;
+        k.line.style.opacity = f;
+        k.n.style.opacity = 0.35 + 0.65 * f;
+      });
+      let s = spot;
+      while (s < dots.length - 1 && h >= dots[s + 1] + HYST) s++;
+      while (s >= 0 && h < dots[s] - HYST) s--;
+      setSpot(s);
     },
     reset() {
       fill.removeAttribute('style');
       steps.forEach((li) => li.classList.remove('is-reached'));
-      last = -1;
+      cards.forEach((k) => [k.fill, k.line, k.n].forEach((el) => el.removeAttribute('style')));
+      setSpot(-1);
+      last = null;
     }
   };
 }

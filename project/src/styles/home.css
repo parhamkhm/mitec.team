@@ -150,6 +150,48 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-step__title { margin: var(--space-3) 0 var(--space-2); }
 .process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
 
+/* The step cards take colour from the same progress as the rail (effects.js):
+   a --green-100 fill grows from the start edge as the rail head approaches a
+   step, and the step whose dot the head reached last becomes the one forest
+   "spotlight" card (data-surface="dark", DESIGN.md §5). This resting state —
+   every step filled, no spotlight — is what reduced motion and no-JS see.
+
+   The layers live in one clipped span so the growing fill keeps the card's
+   rounded corners. The card's own fill is pinned to the light surface
+   (--step-base is resolved on the li, outside the card's scope), so going
+   dark never repaints it: only the forest layer fades, and text colours
+   ease across with --dur. */
+.process-grid > li { --step-base: var(--color-surface); }
+.process-step {
+  position: relative;
+  isolation: isolate;
+  background: var(--step-base);
+  transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.process-step > :not(.process-step__bg) { transition: color var(--dur) var(--ease-out); }
+.process-step__bg {
+  position: absolute;
+  z-index: -1;
+  inset: -1px; /* over the card's own border, so the lines below can replace it */
+  overflow: hidden;
+  border-radius: inherit;
+}
+.process-step__bg > * { position: absolute; inset: 0; border-radius: inherit; }
+.process-step__fill { inset: 1px; background: var(--color-step-fill); transform-origin: 50% 0; }
+.process-step__line { border: 1px solid var(--color-step-line); }
+.process-step__spot {
+  background: var(--color-brand);
+  border: 1px solid var(--color-step-spot-line);
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-out);
+}
+@media (min-width: 1024px) {
+  .process-step__fill { transform-origin: 100% 50%; } /* grows from the start edge, like the rail */
+}
+.process-step[data-surface="dark"] { transform: translateY(-6px); box-shadow: none; }
+.process-step[data-surface="dark"] .process-step__spot { opacity: 1; }
+.process-step[data-surface="dark"] .process-step__n { color: var(--color-text-primary); }
+
 /* ---------------------------------------------------------------- about
    A two-line display heading whose lines converge from opposite sides as the
    section scrolls in (effects.js). */

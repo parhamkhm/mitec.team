@@ -118,6 +118,14 @@
   --color-brand:       var(--green-900);
   --color-brand-hover: var(--forest-raised);
 
+  /* Process steps: the fill a reached step takes, its edge, and the edge of
+     the one forest "spotlight" step, whose fill is --color-brand (DESIGN.md
+     §5). Deliberately not remapped on forest, so a step can cross-fade into
+     and out of the spotlight without its layers changing colour mid-fade. */
+  --color-step-fill:      var(--green-100);
+  --color-step-line:      var(--green-300);
+  --color-step-spot-line: var(--forest-line);
+
   --color-cta:        var(--green-600);
   --color-cta-hover:  var(--green-700);
   --color-cta-active: var(--green-800);

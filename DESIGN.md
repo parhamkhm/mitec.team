@@ -300,6 +300,13 @@ Inner pages (and any hero that is not the home portal):
 - Title `--color-text-primary`, description `--color-text-secondary`.
 - Hover: border → `--color-border-hover`, shadow → `--shadow-elevated`.
 
+### Process steps
+
+- White step cards on a rail. As the rail's forest fill (`--color-brand`) reaches a step, the card fills with `--color-step-fill` (`--green-100`) from the start edge, its edge turns `--color-step-line` (`--green-300`), and its numeral comes up to full `--color-brand`. Text keeps its colours: title 13.71:1, secondary 6.02:1 on the fill.
+- **One forest "spotlight" at a time** — the step whose dot the rail reached last. It sets `data-surface="dark"` (text remaps to on-dark), cross-fades a `--color-brand` layer in over `--dur-slow`, lifts 6px, drops its shadow and takes a `--forest-line` edge. This is a documented exception to "never a text-heavy forest card" (§6): one short step, and never more than one.
+- Nothing here is clickable, so nothing here is `--color-cta`.
+- Reduced motion / no JS: every step shows filled, no spotlight.
+
 ### Portfolio cards
 
 - Forest tiles (`data-surface="dark"`) with the screenshot inside. They should read like the Instagram grid.
@@ -337,7 +344,7 @@ Inner pages (and any hero that is not the home portal):
 
 - **Light = read and decide:** services, process, about, pricing, FAQ, testimonials, forms.
 - **Forest = recognize and commit:** hero media tile, portfolio tiles, final CTA band, footer — and the home hero's laptop scene.
-- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The one exception is the home hero scene (§5), which is the hero itself.
+- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The exceptions are the home hero scene (§5), which is the hero itself, and the single Process "spotlight" step (§5).
 - At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section. The home hero scene is not counted in this.
 - No paragraph longer than two lines on forest.
 - Light levels stack in order: `bg` → `bg-alt` → `surface` → `surface-elevated`. A card is always lighter than what it sits on.

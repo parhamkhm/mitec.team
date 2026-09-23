@@ -73,5 +73,8 @@ html.motion .cta-band h2 { --stagger: 90ms; }
 html.motion :is(.work-row__shot, .about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
 html.motion .testimonial { will-change: transform, opacity; }
 html.motion .process-rail__fill { transform: scale(0); }
-html.motion .process-step__n { opacity: .35; transition: opacity var(--dur-slow) var(--ease-out); }
-html.motion .is-reached .process-step__n { opacity: 1; }
+/* Process steps start empty; effects.js scrubs the fill, its edge and the
+   numeral from the rail's progress. */
+html.motion .process-step__fill { transform: scale(0); will-change: transform; }
+html.motion .process-step__line { opacity: 0; will-change: opacity; }
+html.motion .process-step__n { opacity: .35; }
