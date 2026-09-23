@@ -1,62 +1,53 @@
 /* mitec — component styles
    ──────────────────────────────────────────────────────────────────────────
-   Real CSS translation of the Mitec Design System's React components
-   (_ds/mitec-design-system-…/_ds_bundle.js). Values are taken 1:1 from that
-   source, not re-guessed — see its readme.md for the rules behind them.
-   The DS itself ships no reusable CSS (its components are inline-styled
-   React), so this file is the first time these components exist as classes.
+   Every rule here reads semantic --color-* tokens only, so a component drops
+   into a light section or a forest band without knowing which it is. The old
+   `.mt-on-light` scope is gone: dark areas now declare [data-surface="dark"]
+   and the whole token set remaps underneath them (DESIGN.md §3).
    ────────────────────────────────────────────────────────────────────────── */
 
-/* ---------------------------------------------------------------- reset & base
-   Mirrors _ds/…/tokens/base.css, applied here because this page does not use
-   styles.css (an aggregator for the DC-canvas preview) — tokens.css already
-   carries base.css's rules once; these are the page-level additions on top. */
+/* ---------------------------------------------------------------- reset & base */
 *, *::before, *::after { box-sizing: border-box; }
-html { color-scheme: dark; scroll-behavior: smooth; }
 
-/* The DS declares --text-body twice at :root: a colour in tokens/colors.css
-   and a font-size in tokens/typography.css (imported after, so it wins).
-   Body ink gets a non-colliding alias instead of fighting that collision —
-   same fix the approved .dc.html source applies, kept here for real code. */
-:root { --text-ink-body: var(--ink-200); }
-.mt-on-light { --text-ink-body: var(--ink-700); }
-
-/* Contrast fix for text sitting ON the action colour. A white label on
-   --grad-accent measures 3.23:1 at the dark stop and 2.25:1 at the light one.
-   The DS readme (§5) accepts ~3.5:1 by citing WCAG's large-text exception, but
-   that exception needs >=18.66px bold and these labels are 17/15/13.5px, so the
-   normal-text 4.5:1 threshold applies and the current pair fails it.
-   Text-bearing accent surfaces therefore use a deeper pair taken from the
-   system's own emerald ramp (no new colours): 8.2:1 at rest, 5.6:1 on hover.
-   Icon medallions, the nav underline and the chart bars keep --grad-accent —
-   they are non-text graphics, where 3.23:1 clears the 3:1 bar in WCAG 1.4.11. */
-:root {
-  --grad-accent-label: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 100%);
-  --grad-accent-label-hover: linear-gradient(135deg, var(--green-600) 0%, var(--green-600) 100%);
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  scrollbar-color: var(--color-border-strong) transparent;
+  scrollbar-width: thin;
 }
 
 body {
   margin: 0;
-  background: var(--grad-page);
-  color: var(--text-ink-body);
+  background: var(--color-bg);
+  color: var(--color-text-body);
   font-family: var(--font-body);
+  font-size: var(--text-body);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
+
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  color: var(--text-heading);
+  color: var(--color-text-primary);
   font-weight: var(--weight-bold);
   line-height: var(--lh-heading);
   letter-spacing: var(--ls-heading);
   margin: 0;
 }
 p { margin: 0; text-wrap: pretty; }
-a { color: var(--link); text-decoration: none; transition: color var(--dur) var(--ease-out); }
-a:hover { color: var(--link-hover); }
-::selection { background: var(--accent-soft); }
-:focus-visible { outline: none; box-shadow: var(--ring-focus); border-radius: var(--radius-sm); }
+a { color: var(--color-link); text-decoration: none; transition: color var(--dur) var(--ease-out); }
+a:hover { color: var(--color-link-hover); }
+
+/* Browser surfaces belong to the palette too, not to the browser's defaults. */
+::selection { background: var(--color-tonal); color: var(--color-tonal-text); }
+body { caret-color: var(--color-cta); }
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--color-focus-halo);
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -67,9 +58,17 @@ a:hover { color: var(--link-hover); }
 .container { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--gutter); }
 .container--narrow { max-width: var(--container-narrow); }
 
+/* Instagram signature: a fine 28px grid, forest surfaces only (DESIGN.md §8). */
+.texture-grid {
+  background-image:
+    linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
 /* ---------------------------------------------------------------- Icon
-   Lucide glyph as a CSS mask so it always inherits currentColor — the DS's
-   own technique (components/core/Icon.jsx), never hand-drawn SVG paths. */
+   Lucide glyph as a CSS mask so it always inherits currentColor — never a
+   hand-drawn path, never a Unicode glyph standing in for an icon. */
 .icon {
   display: inline-block;
   flex: 0 0 auto;
@@ -80,23 +79,25 @@ a:hover { color: var(--link-hover); }
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
   -webkit-mask-position: center; mask-position: center;
 }
-.icon-arrow-right      { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-right.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-right.svg); }
-.icon-arrow-up-right   { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-right.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-right.svg); }
+/* Forward/next points LEFT on an RTL page (DESIGN.md §5). */
+.icon-arrow-left       { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); }
+.icon-arrow-up-left    { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); }
 .icon-layout-dashboard { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/layout-dashboard.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/layout-dashboard.svg); }
 .icon-shield-check     { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shield-check.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shield-check.svg); }
 .icon-trending-up      { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/trending-up.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/trending-up.svg); }
 .icon-headset          { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/headset.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/headset.svg); }
 .icon-clock            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/clock.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/clock.svg); }
 .icon-image            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/image.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/image.svg); }
-/* Not in the DS's vocabulary — added only for the mobile nav toggle this
-   static build needs (the DS NavBar has no small-screen treatment). Same
-   Lucide set, same mask technique, so it stays visually of a piece. */
-.icon-menu              { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/menu.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/menu.svg); }
-.icon-x                 { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); }
+.icon-menu             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/menu.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/menu.svg); }
+.icon-x                { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); }
+.icon-plus             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); }
+.icon-minus            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); }
 
 /* ---------------------------------------------------------------- Logo
-   No official mark was supplied (see DS readme §9) — the wordmark is set in
-   type: "mi" bronze, "tec" ink, an emerald full stop, ".team" muted. */
+   No official mark was supplied — the wordmark is set in type. The amber
+   full stop is the one place amber appears on light, and it survives the
+   contrast bar as --color-highlight-text (#8C5313, 5.80:1) rather than the
+   raw amber-400, which would fail at 2.07:1. */
 .logo {
   display: inline-flex;
   align-items: baseline;
@@ -105,44 +106,57 @@ a:hover { color: var(--link-hover); }
   font-size: var(--logo-size, 22px);
   line-height: 1;
   letter-spacing: -0.035em;
-  color: var(--ink-0);
-  direction: ltr; /* the wordmark is built from Latin runs; keep it from reordering on an RTL page */
+  color: var(--color-text-primary);
+  direction: ltr; /* the wordmark is Latin runs; keep it from reordering on an RTL page */
 }
-.logo--light { color: var(--ink-900); }
-.logo__mi { color: var(--gold-400); }
-.logo__dot { color: var(--accent); font-weight: 800; }
-.logo__team { color: var(--text-muted); font-weight: 600; font-size: 0.62em; letter-spacing: .02em; margin-inline-start: 1px; }
+.logo:hover { color: var(--color-text-primary); }
+.logo__mi { color: var(--color-cta); }
+.logo__dot { color: var(--color-highlight-text); font-weight: 800; }
+.logo__team { color: var(--color-text-muted); font-weight: 500; font-size: 0.62em; letter-spacing: .02em; margin-inline-start: 1px; }
 
-/* ---------------------------------------------------------------- Button */
+/* ---------------------------------------------------------------- Button
+   Four levels, flat fills only. No gradient, no glow, no coloured shadow.
+   Solid buttons keep a transparent 1px border so they stay visible in
+   forced-colors mode. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
   font-family: var(--font-body);
   font-weight: var(--weight-bold);
   line-height: 1;
   letter-spacing: .005em;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-pill);
   border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  transition: var(--transition-control), transform var(--dur-fast) var(--ease-out);
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
 }
-.btn:active { transform: scale(var(--press-scale)); }
-.btn[disabled] { opacity: .42; cursor: not-allowed; }
+.btn[disabled], .btn[aria-disabled="true"] {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
 .btn--sm { padding: 8px 16px; font-size: var(--text-body-sm); gap: 7px; }
 .btn--sm .icon { width: 15px; height: 15px; }
-.btn--md { padding: var(--pad-control-y) var(--pad-control-x); font-size: var(--text-body); gap: 9px; }
+.btn--md { padding: 11px 20px; font-size: var(--text-body); gap: 9px; }
 .btn--md .icon { width: 17px; height: 17px; }
 .btn--lg { padding: 15px 30px; font-size: var(--text-body-lg); gap: 10px; }
 .btn--lg .icon { width: 19px; height: 19px; }
-.btn--primary { background: var(--grad-accent-label); color: var(--accent-fg); box-shadow: var(--glow-sm), var(--glow-inset); }
-.btn--primary:hover { background: var(--grad-accent-label-hover); box-shadow: var(--glow-md), var(--glow-inset); }
-.btn--secondary { background: var(--surface-card); color: var(--text-heading); border-color: var(--border-subtle); backdrop-filter: blur(var(--blur-glass)); -webkit-backdrop-filter: blur(var(--blur-glass)); }
-.btn--secondary:hover { background: var(--surface-card-hover); border-color: var(--border-strong); }
 
-/* ---------------------------------------------------------------- Badge */
+.btn--primary { background: var(--color-cta); color: var(--color-cta-text); }
+.btn--primary:hover { background: var(--color-cta-hover); color: var(--color-cta-text); }
+.btn--primary:active { background: var(--color-cta-active); }
+
+.btn--tonal { background: var(--color-tonal); color: var(--color-tonal-text); }
+.btn--tonal:hover { background: var(--color-tonal-hover); color: var(--color-tonal-text); }
+
+.btn--outline { background: transparent; color: var(--color-text-primary); border-color: var(--color-border-strong); }
+.btn--outline:hover { background: var(--color-surface-sunken); color: var(--color-text-primary); }
+
+/* ---------------------------------------------------------------- Badge / chip */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -152,143 +166,174 @@ a:hover { color: var(--link-hover); }
   font-family: var(--font-body);
   font-size: var(--text-caption);
   font-weight: var(--weight-bold);
-  letter-spacing: .06em;
-  text-transform: uppercase;
   line-height: 1.4;
   white-space: nowrap;
+  background: var(--color-tonal);
+  color: var(--color-tonal-text);
 }
-.badge .icon { width: 13px; height: 13px; }
-.badge--accent { background: var(--accent-soft); color: var(--text-action); border: 1px solid var(--border-hairline); }
-.badge--bronze { background: var(--emphasis-soft); color: var(--gold-300); border: 1px solid rgba(201,166,130,.35); }
+.badge .icon { width: 14px; height: 14px; }
+.badge--highlight { background: var(--color-highlight-soft); color: var(--color-highlight-text); }
 
 /* ---------------------------------------------------------------- Card
-   One radius, hairline borders, no drop shadow on dark. Four skins in the
-   DS; Home uses three. Hover-lift is the DS's own documented motion rule
-   (readme.md §4 "Hover") applied only where a card wraps real navigation. */
+   Light cards are a real surface with a forest-tinted shadow. Forest tiles
+   carry a --forest-line border because the fill contrast alone is 1.14:1
+   and would otherwise vanish against the band behind it (DESIGN.md §6). */
 .card { border-radius: var(--radius-card); padding: var(--pad-card); }
 .card--pad-lg { padding: var(--pad-card-lg); }
 .card--pad-0 { padding: 0; }
-.card--glass { background: var(--grad-glass); border: 1px solid var(--border-hairline); color: var(--text-ink-body); backdrop-filter: blur(var(--blur-glass)); -webkit-backdrop-filter: blur(var(--blur-glass)); box-shadow: var(--glow-inset); }
-.card--ivory { background: var(--grad-ivory); border: 1px solid rgba(255,255,255,.6); color: var(--ink-700); box-shadow: var(--shadow-ivory); }
-.card--emerald { background: var(--grad-emerald-card); border: 1px solid var(--border-accent); color: var(--ink-100); box-shadow: var(--glow-md), var(--glow-inset); }
-.card--interactive { transition: var(--transition-lift), border-color var(--dur) var(--ease-out), background var(--dur) var(--ease-out); }
-.card--interactive:hover { transform: var(--lift-hover); border-color: var(--border-accent); box-shadow: var(--glow-md), var(--glow-inset); }
-.card--interactive.card--ivory:hover { box-shadow: var(--shadow-lg); }
 
-/* Shared card-title size (h3s inside cards carry no intrinsic font-size). */
-.card-title { font-size: var(--text-h4); letter-spacing: -.018em; }
+.card--surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-body);
+  box-shadow: var(--shadow-card);
+}
+.card--forest {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-body);
+}
+.card--interactive { transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out); }
+.card--surface.card--interactive:hover { border-color: var(--color-border-hover); box-shadow: var(--shadow-elevated); }
+.card--forest.card--interactive:hover { background: var(--color-brand-hover); }
+
+.card-title { font-size: var(--text-h4); letter-spacing: -.018em; color: var(--color-text-primary); }
 
 /* ---------------------------------------------------------------- SectionHeading */
-.section-heading { display: flex; flex-direction: column; gap: var(--space-4); align-items: center; text-align: center; max-width: var(--container-narrow); margin-inline: auto; }
-.section-heading__eyebrow-row { display: flex; align-items: center; gap: var(--space-4); }
-.section-heading__rule { width: 44px; height: 1px; background: var(--border-subtle); }
-.section-heading__eyebrow { font-family: var(--font-body); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--ink-300); }
-.section-heading__kicker { font-family: var(--font-display); font-style: italic; font-weight: 300; font-size: calc(var(--text-display-3) * 0.62); color: var(--text-heading); letter-spacing: -0.01em; line-height: 1.1; }
-.section-heading__title { font-family: var(--font-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); color: var(--text-heading); margin: 0; }
+.section-heading { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; text-align: start; max-width: 62ch; }
+.section-heading--center { align-items: center; text-align: center; margin-inline: auto; }
+.section-heading__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--color-tonal-text);
+}
+.section-heading__title { font-family: var(--font-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); color: var(--color-text-primary); margin: 0; }
 .section-heading__title--display-1 { font-weight: 800; font-size: var(--text-display-1); }
 .section-heading__title--display-3 { font-weight: 700; font-size: var(--text-display-3); }
-/* A deck, not body copy that happens to sit under a title: larger and lighter
-   than running text, tighter leading, and a measure set in ch so it tracks the
-   type ramp in tokens.css rather than a fixed pixel width. */
-.section-heading__sub { font-size: var(--text-lead); font-weight: 300; color: var(--text-ink-body); line-height: 1.5; letter-spacing: -.005em; max-width: 58ch; }
+.section-heading__sub { font-size: var(--text-lead); font-weight: 400; color: var(--color-text-secondary); line-height: var(--lh-tight); max-width: 52ch; }
 
-/* Bronze headline-emphasis fill — reused by SectionHeading, the process
-   step numerals and the contact card's headline. */
-.gold-text { background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* The one amber moment: a highlighter stroke under a single headline phrase.
+   Amber never becomes text on light — it sits behind ink at 13.30:1. */
+.headline-mark {
+  background: linear-gradient(transparent 55%, var(--color-highlight-soft) 55%);
+  padding-inline: .08em;
+}
 
-/* ---------------------------------------------------------------- GlowRule */
-.glow-rule { display: flex; align-items: center; gap: var(--space-3); }
-.glow-rule__line { flex: 1; height: 1px; background: var(--grad-rule); }
-.glow-rule__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); box-shadow: var(--glow-sm); }
-
-/* ---------------------------------------------------------------- KeywordRail */
-.keyword-rail { display: flex; align-items: center; justify-content: center; gap: var(--space-4); flex-wrap: wrap; }
-.keyword-rail__line { width: 60px; height: 1px; background: var(--grad-rule); }
-.keyword-rail__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green-400); box-shadow: var(--glow-sm); }
-.keyword-rail__word { font-family: var(--font-display); font-weight: 600; font-size: var(--text-h4); letter-spacing: .01em; color: var(--ink-50); }
-.keyword-rail__word--alt { color: var(--gold-300); }
-
-/* ---------------------------------------------------------------- LogoStrip */
-.logo-strip { display: flex; align-items: center; gap: var(--space-7); flex-wrap: wrap; padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border-hairline); background: var(--surface-sunken); }
-.logo-strip__label { font-size: var(--text-caption); font-weight: var(--weight-bold); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); max-width: 130px; line-height: 1.4; }
+/* ---------------------------------------------------------------- Client strip */
+.logo-strip { display: flex; align-items: center; gap: var(--space-6) var(--space-7); flex-wrap: wrap; padding: var(--space-5) 0; }
+.logo-strip__label { font-size: var(--text-caption); font-weight: var(--weight-bold); letter-spacing: .08em; color: var(--color-text-muted); }
 .logo-strip__names { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
-.logo-strip__name { font-family: var(--font-display); font-weight: 600; font-size: var(--text-body-lg); color: var(--ink-200); opacity: .85; letter-spacing: -0.01em; }
+.logo-strip__name { font-family: var(--font-display); font-weight: 700; font-size: var(--text-body-lg); color: var(--color-text-muted); letter-spacing: -0.01em; transition: color var(--dur) var(--ease-out); }
+.logo-strip__name:hover { color: var(--color-text-primary); }
 
-/* ---------------------------------------------------------------- StatBlock / StatBar */
-.stat-block { display: flex; flex-direction: column; gap: 2px; align-items: center; }
-.stat-block__value { font-family: var(--font-display); font-weight: 800; font-size: var(--text-stat); letter-spacing: var(--ls-stat); line-height: 1.05; color: var(--gold-400); }
-.stat-block__label { font-family: var(--font-body); font-size: var(--text-body-sm); color: var(--text-muted); letter-spacing: .01em; }
+/* ---------------------------------------------------------------- Stats
+   A white card on the canvas. Numerals carry the brand colour, not the action
+   colour — they are not clickable. No buttons live in here (DESIGN.md §5). */
+.stat-block { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.stat-block__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-stat);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-brand);
+  font-variant-numeric: tabular-nums;
+}
+.stat-block__label { font-family: var(--font-body); font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: 1.4; }
 
-.stat-bar { display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap; padding: 18px var(--space-6); border-radius: var(--radius-lg); background: var(--grad-glass); border: 1px solid var(--border-hairline); backdrop-filter: blur(var(--blur-glass)); -webkit-backdrop-filter: blur(var(--blur-glass)); box-shadow: var(--glow-inset); }
-.stat-bar__stats { display: flex; align-items: center; flex: 1 1 380px; min-width: 0; }
-.stat-bar__divider { width: 1px; align-self: stretch; background: var(--border-hairline); margin: 0 var(--space-3); }
-.stat-bar__item { flex: 1 1 0; min-width: 0; }
-
-/* ---------------------------------------------------------------- FeatureCard */
-.feature-card { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); text-align: center; padding: var(--space-6); }
-.feature-card__badge { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--grad-accent); color: var(--accent-fg); }
-.feature-card__title { font-family: var(--font-display); font-weight: 700; font-size: var(--text-h4); letter-spacing: -.018em; color: var(--ink-0); }
-.feature-card--ivory .feature-card__title { color: var(--ink-900); }
-.feature-card__dots { display: flex; gap: 5px; margin-top: auto; padding-top: var(--space-2); }
-.feature-card__dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.22); }
-.feature-card--ivory .feature-card__dot { background: rgba(14,26,24,.18); }
-.feature-card__dot.is-active { background: var(--green-400); }
+.stat-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-card);
+}
 
 /* ---------------------------------------------------------------- Tabs */
-.tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--radius-pill); background: var(--surface-sunken); border: 1px solid var(--border-hairline); }
-.tabs__btn { padding: 8px 18px; border-radius: var(--radius-pill); border: none; cursor: pointer; font-family: var(--font-body); font-size: var(--text-body-sm); font-weight: 700; background: transparent; color: var(--text-muted); transition: var(--transition-control); }
-.tabs__btn.is-active { background: var(--grad-accent-label); color: var(--accent-fg); box-shadow: var(--glow-sm); }
+.tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--radius-pill); background: var(--color-surface-sunken); }
+.tabs__btn {
+  min-height: 44px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  background: transparent;
+  color: var(--color-text-secondary);
+  transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.tabs__btn:hover { color: var(--color-text-primary); }
+.tabs__btn.is-active { background: var(--color-surface); color: var(--color-text-primary); box-shadow: var(--shadow-card); }
 
 /* ---------------------------------------------------------------- NavBar */
-.navbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: var(--space-8); padding: var(--space-4) var(--space-8); background: rgba(6,20,45,.72); backdrop-filter: blur(var(--blur-scrim)); -webkit-backdrop-filter: blur(var(--blur-scrim)); border-bottom: 1px solid var(--border-hairline); }
+.navbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: var(--space-8);
+  padding: var(--space-3) var(--gutter);
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
 .navbar__menu { display: flex; align-items: center; gap: var(--space-7); margin-inline: auto; }
-.navbar__link { position: relative; padding: 6px 0; font-family: var(--font-body); font-size: var(--text-body); font-weight: 500; color: var(--text-ink-body); }
-.navbar__link:hover { color: var(--text-heading); }
-.navbar__link::after { content: ''; position: absolute; inset-inline: 0; bottom: -2px; height: 2px; border-radius: 2px; background: transparent; }
-.navbar__link.is-active { font-weight: 700; color: var(--text-heading); }
-.navbar__link.is-active::after { background: var(--grad-accent); box-shadow: var(--glow-sm); }
+.navbar__link {
+  position: relative;
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-family: var(--font-body); font-size: var(--text-body); font-weight: 500;
+  color: var(--color-text-secondary);
+}
+.navbar__link:hover { color: var(--color-text-primary); }
+.navbar__link::after { content: ''; position: absolute; inset-inline: 0; bottom: 6px; height: 2px; border-radius: 2px; background: transparent; }
+.navbar__link.is-active { font-weight: 700; color: var(--color-text-primary); }
+.navbar__link.is-active::after { background: var(--color-cta); }
 .navbar__cta { flex: 0 0 auto; }
-.navbar__toggle { display: none; flex: 0 0 auto; align-items: center; justify-content: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-card); color: var(--text-heading); cursor: pointer; }
+.navbar__toggle {
+  display: none; flex: 0 0 auto; align-items: center; justify-content: center;
+  width: 44px; height: 44px; padding: 0;
+  border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm);
+  background: var(--color-surface); color: var(--color-text-primary); cursor: pointer;
+}
 
 /* ---------------------------------------------------------------- Footer */
-.footer { border-top: 1px solid var(--border-hairline); background: var(--grad-band); padding: var(--space-8) var(--gutter) var(--space-7); }
+.footer { padding: var(--space-9) var(--gutter) var(--space-7); }
 .footer__inner { display: flex; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap; align-items: center; }
 .footer__nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--text-body-sm); }
-.footer__nav a { color: var(--text-muted); }
-.footer__nav a:hover { color: var(--text-accent); }
-.footer__copy { font-size: var(--text-caption); color: var(--text-muted); }
+.footer__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text-secondary); }
+.footer__nav a:hover { color: var(--color-text-primary); }
+.footer__copy { font-size: var(--text-caption); color: var(--color-text-muted); }
 
-/* ---------------------------------------------------------------- image-slot placeholder
-   Production stand-in for the design tool's <image-slot> authoring widget
-   (image-slot.js), which only makes sense inside Claude Design itself. This
-   is the visual placeholder it leaves behind: a soft dashed frame with a
-   caption, at the same box the real image will occupy. */
+/* ---------------------------------------------------------------- image placeholder
+   Stand-in for the real screenshots. Inside a forest tile the tokens remap,
+   so it reads correctly on both grounds without a second rule. */
 .img-slot {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px;
-  box-sizing: border-box;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; padding: 12px;
   text-align: center;
-  color: var(--text-muted);
-  background: repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 10px, transparent 10px 20px);
-  border: 1px dashed var(--border-subtle);
+  color: var(--color-text-muted);
+  background: var(--color-surface-sunken);
+  border: 1px dashed var(--color-border-strong);
 }
-.img-slot .icon { width: 26px; height: 26px; opacity: .55; }
-.img-slot__label { font-size: var(--text-caption); max-width: 92%; }
+.img-slot .icon { width: 26px; height: 26px; }
+.img-slot__label { font-size: var(--text-caption); max-width: 92%; line-height: 1.4; }
 .img-slot--circle { border-radius: 50%; }
 
 /* ---------------------------------------------------------------- utilities */
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 .skip-link {
-  position: absolute; inset-inline-start: var(--space-4); top: -48px; z-index: 50;
-  background: var(--green-700); color: var(--accent-fg); font-weight: var(--weight-bold);
-  padding: 10px 16px; border-radius: var(--radius-sm);
+  position: absolute; inset-inline-start: var(--space-4); top: -60px; z-index: 50;
+  background: var(--color-cta); color: var(--color-cta-text); font-weight: var(--weight-bold);
+  padding: 12px 18px; border-radius: var(--radius-sm);
   transition: top var(--dur) var(--ease-out);
 }
+/* The global a:hover would otherwise repaint this label green-on-green (1.3:1),
+   because .skip-link carries a fill but no hover colour of its own. */
+.skip-link:hover { color: var(--color-cta-text); }
 .skip-link:focus { top: var(--space-4); }

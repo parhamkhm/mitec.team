@@ -1,59 +1,69 @@
 /* mitec — design tokens
    ──────────────────────────────────────────────────────────────────────────
-   This file no longer defines tokens. The bound **Mitec Design System** is the
-   single source of truth; importing it here means non-DC pages get the same
-   values the .dc.html designs use.
+   The single source of colour truth for the site. See DESIGN.md at the repo
+   root for the rules these tokens encode.
 
-       _ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/*.css
+   Only the STRUCTURAL scales still come from the bound Mitec Design System —
+   spacing, radii and motion, none of which carry colour. Its colour, gradient
+   and elevation files are deliberately NOT imported: this system is light-first
+   sage and forest green, and the old palette was navy-based, which rule 1 of
+   DESIGN.md now forbids outright.
 
-   Names you will use most (see the design system's readme for the full set):
-     ground     --bg-page  --grad-page  --grad-mesh-line  --surface-sunken
-     surfaces   --surface-card  --border-hairline  --border-subtle  --border-accent
-     text       --text-heading  --text-body  --text-muted  --text-accent  --text-action
-     action     --accent  --grad-accent  --glow-sm/md/lg  --ring-focus
-     emphasis   --emphasis  --grad-gold           (bronze: emphasis only, never a button)
-     shape      --radius-card/-input/-pill  --space-1…13  --container-max
+   Components must use the semantic --color-* tokens only. Primitives live here
+   and nowhere else; a raw hex in a component file is a defect.
    ────────────────────────────────────────────────────────────────────────── */
 
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/fonts.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/colors.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/typography.css");
 @import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css");
 @import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/elevation.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/gradients.css");
 @import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/base.css");
 
-/* Type substitution — the one documented override.
-   Montserrat and Mulish carry no Persian glyphs, so the two font tokens are
-   re-pointed at Vazirmatn. Everything else is used exactly as authored.
-   PRODUCTION: serve Vazirmatn from public/fonts, not a CDN (access from Iran). */
+/* ─── Primitives ─────────────────────────────────────────────── */
 :root {
-  --font-display: 'Vazirmatn', system-ui, sans-serif;
-  --font-body: 'Vazirmatn', system-ui, sans-serif;
+  /* Mitec Green — hue ≈163°, anchored on Instagram #57B79A / #12312A */
+  --green-50:  #EEF6F2;  --green-100: #D8EDE3;  --green-200: #B3DCC9;
+  --green-300: #86C6AC;  --green-400: #57B79A;  --green-500: #2E9478;
+  --green-600: #197358;  --green-700: #13604A;  --green-800: #154738;
+  --green-900: #12312A;  --green-950: #0B211C;
+
+  /* Sage neutrals — 2–3% green bias */
+  --sage-0:   #FFFFFF;  --sage-25:  #F5F7F4;  --sage-50:  #EDF2EE;
+  --sage-100: #E2E9E4;  --sage-200: #D2DBD5;  --sage-300: #B8C5BD;
+  --sage-400: #7F8D86;  --sage-500: #5F6E65;  --sage-600: #4B5951;
+  --sage-700: #34423B;  --sage-800: #22302A;  --sage-900: #13201B;
+
+  /* Amber — Instagram #E0A25C */
+  --amber-50: #FCF3E7;  --amber-100: #F7E2C4;  --amber-300: #EDBF84;
+  --amber-400: #E0A25C; --amber-700: #8C5313;
+
+  /* Forest surfaces + on-dark text */
+  --forest-raised: #173B33;  --forest-elevated: #1E463D;
+  --forest-line:   #2E574C;  --forest-line-strong: #5E8479;
+  --on-dark-1: #F1F5F2;  --on-dark-2: #B9CBC3;  --on-dark-3: #8FA69C;
+  --mint-hover: #72C7AB;
 }
 
-/* Type ramp — the second documented override, on a 1.414 ratio.
-   Two reasons this replaces the system's ramp rather than tuning it locally:
-
-   1. The floor. The system ships 15px body, 13.5px secondary and 12px caption,
-      all under the 16px web body floor. That costs the most in exactly this
-      project's conditions — Persian script, light text, dark ground — so the
-      whole reading ramp moves up.
-   2. Role distance. The original leans on size alone to separate roles. Here the
-      eyebrow goes smaller but tracks much wider, and the sub-heading becomes a
-      real deck (see components.css) instead of body copy under a title, so the
-      roles stay legible from each other without inflating the headings.
-
-   The wider ratio is why display sizes climb: at 1.414 the top of the ramp has
-   to carry the extra distance the bottom gained. */
+/* ─── Type ───────────────────────────────────────────────────────
+   Vazirmatn carries every role; Montserrat/Mulish have no Persian glyphs.
+   The scale is a 1.414 ratio. Its floor honours DESIGN.md §9: body never
+   below 16px, secondary and caption never below 14px, eyebrow never below
+   12px — Persian loses joins and dots faster than Latin does.
+   PRODUCTION: self-host Vazirmatn from public/fonts; Google Fonts can be
+   unreachable from Iran. */
 :root {
-  --text-caption: 12.5px;
-  --text-body-sm: 14px;
+  --font-display: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  --font-body: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+  --weight-black: 800;
+
+  --text-caption: 14px;
+  --text-body-sm: 15px;
   --text-body: 16px;
   --text-body-lg: 18px;
   --text-lead: 23px;
+  --text-eyebrow: 12px;
   --text-h4: 23px;
   --text-h3: 32px;
   --text-h2: 45px;
@@ -61,6 +71,109 @@
   --text-display-3: clamp(30px, 3.8vw, 45px);
   --text-display-2: clamp(36px, 4.8vw, 56px);
   --text-display-1: clamp(42px, 6.2vw, 76px);
-  --text-eyebrow: 11px;
-  --ls-eyebrow: .26em;
+  --text-stat: clamp(30px, 3.2vw, 44px);
+
+  --lh-body: 1.8;      /* DESIGN.md §9 — Persian body needs the extra leading */
+  --lh-tight: 1.5;
+  --lh-heading: 1.2;
+  --lh-display: 1.08;
+  --ls-display: -0.022em;
+  --ls-heading: -0.012em;
+  --ls-eyebrow: 0.16em;
+}
+
+/* ─── Semantic · light (default) ─────────────────────────────── */
+:root {
+  --color-bg:               var(--sage-25);
+  --color-bg-alt:           var(--sage-50);
+  --color-surface:          var(--sage-0);
+  --color-surface-elevated: var(--sage-0);
+  --color-surface-sunken:   var(--sage-100);
+
+  --color-text-primary:   var(--sage-900);
+  --color-text-body:      var(--sage-800);
+  --color-text-secondary: var(--sage-600);
+  --color-text-muted:     var(--sage-500);
+  --color-text-disabled:  var(--sage-400);
+
+  --color-brand:       var(--green-900);
+  --color-brand-hover: var(--forest-raised);
+
+  --color-cta:        var(--green-600);
+  --color-cta-hover:  var(--green-700);
+  --color-cta-active: var(--green-800);
+  --color-cta-text:   #FFFFFF;
+
+  --color-tonal:       var(--green-50);
+  --color-tonal-hover: var(--green-100);
+  --color-tonal-text:  var(--green-700);
+
+  --color-link:       var(--green-600);
+  --color-link-hover: var(--green-700);
+  --color-accent:     var(--green-400);   /* decorative only on light */
+
+  --color-highlight:      var(--amber-400);
+  --color-highlight-soft: var(--amber-100);
+  --color-highlight-text: var(--amber-700);
+
+  --color-border:        var(--sage-300);
+  --color-border-subtle: var(--sage-200);
+  --color-border-strong: var(--sage-400);  /* ≥3:1 — inputs, outline buttons */
+  --color-border-hover:  var(--green-200);
+
+  --color-focus:      var(--green-600);
+  --color-focus-halo: var(--green-100);
+
+  --color-success: #177044;  --color-success-bg: #E6F4EC;
+  --color-warning: #8A5100;  --color-warning-bg: #FFF4DE;
+  --color-error:   #B42318;  --color-error-bg:   #FDECEB;
+  --color-info:    #2459A8;  --color-info-bg:    #EAF1FB;
+
+  --color-overlay:   rgba(11, 33, 28, .72);
+  --color-glow:      rgba(87, 183, 154, .22);
+  --color-grid-line: rgba(18, 49, 42, .05);
+
+  --shadow-card:     0 1px 2px rgba(18,49,42,.06), 0 10px 28px -12px rgba(18,49,42,.14);
+  --shadow-elevated: 0 2px 4px rgba(18,49,42,.06), 0 18px 40px -16px rgba(18,49,42,.22);
+}
+
+/* ─── Semantic · on forest (bands, tiles, footer) ──────────────── */
+[data-surface="dark"] {
+  --color-bg:               var(--green-900);
+  --color-bg-alt:           var(--green-950);
+  --color-surface:          var(--forest-raised);
+  --color-surface-elevated: var(--forest-elevated);
+  --color-surface-sunken:   var(--green-950);
+
+  --color-text-primary:   var(--on-dark-1);
+  --color-text-body:      var(--on-dark-2);
+  --color-text-secondary: var(--on-dark-2);
+  --color-text-muted:     var(--on-dark-3);
+  --color-text-disabled:  var(--forest-line-strong);
+
+  --color-cta:        var(--green-400);
+  --color-cta-hover:  var(--mint-hover);
+  --color-cta-active: var(--green-300);
+  --color-cta-text:   var(--green-950);
+
+  --color-tonal:       rgba(87, 183, 154, .14);
+  --color-tonal-hover: rgba(87, 183, 154, .22);
+  --color-tonal-text:  var(--green-300);
+
+  --color-link:           var(--green-300);
+  --color-link-hover:     var(--on-dark-1);
+  --color-highlight-text: var(--amber-400);
+
+  --color-border:        var(--forest-line);
+  --color-border-subtle: rgba(255, 255, 255, .08);
+  --color-border-strong: var(--forest-line-strong);
+  --color-border-hover:  var(--forest-line-strong);
+
+  --color-focus:      var(--green-400);
+  --color-focus-halo: transparent;
+  --color-grid-line:  rgba(255, 255, 255, .035);
+  --shadow-card: none;
+
+  background-color: var(--color-bg);
+  color: var(--color-text-body);
 }

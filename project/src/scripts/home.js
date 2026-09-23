@@ -78,7 +78,12 @@ function initFaq() {
     const chevron = item.querySelector('.faq-item__chevron');
     btn.setAttribute('aria-expanded', String(isOpen));
     panel.hidden = !isOpen;
-    if (chevron) chevron.textContent = isOpen ? '−' : '+';
+    // The marker is a masked Lucide glyph, not a "+" character, so the open
+    // state swaps the mask class rather than writing text into the span.
+    if (chevron) {
+      chevron.classList.toggle('icon-minus', isOpen);
+      chevron.classList.toggle('icon-plus', !isOpen);
+    }
   }
 
   list.addEventListener('click', (e) => {

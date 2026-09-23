@@ -1,149 +1,88 @@
 /* mitec — home page (/)
-   Layout and section-specific styles for index.html. Component visuals live
-   in components.css; this file is the page composition on top, translated
-   1:1 from the approved "Mitec Home.dc.html" design (its inline styles are
-   already token-based, so the values below are copied, not reinterpreted —
-   only moved from style="" attributes into real classes). */
+   ──────────────────────────────────────────────────────────────────────────
+   Page composition on top of components.css. The surface plan follows
+   DESIGN.md §6: light is where you read and decide, forest is where you
+   recognise and commit. Forest appears in exactly three places on this page —
+   the hero media tile, the portfolio tiles, and the closing CTA band — plus
+   the footer. Everything else alternates bg / bg-alt so sections separate by
+   tone rather than by drawn borders.
 
-/* ---------------------------------------------------------------- entrance motion
-   "The lamp comes on." Nothing travels on entrance — light is the only material
-   that changes, which is the one depth language this system already has (the DS
-   readme's "elevation reads as emerald glow, not shadow"). Sections cross-fade,
-   the single emerald card blooms its glow and warms its border as the row
-   arrives, medallions come up from desaturated, and the beaded rule nodes ignite.
+   There is no entrance animation. The old one was built entirely out of
+   emerald glow, which this system restricts to forest surfaces behind media,
+   and nothing on the page needs motion to be understood.
+   ────────────────────────────────────────────────────────────────────────── */
 
-   Scroll-driven and script-free: `animation-timeline: view()` means no observer
-   to fail and no hidden-until-JS content. Browsers without scroll-driven support
-   ignore the timeline and simply play each entrance once on load; both paths end
-   at the element's natural state, so the page is never left invisible.
-   components.css disables animation wholesale under prefers-reduced-motion, and
-   because every "to" state is the resting state, that path renders correctly. */
-@keyframes lamp-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes lamp-card {
-  from { box-shadow: 0 0 0 rgba(44,196,134,0), var(--glow-inset); border-color: var(--border-hairline); }
-  to   { box-shadow: var(--glow-md), var(--glow-inset); border-color: var(--border-accent); }
+/* ---------------------------------------------------------------- bands */
+.band { padding-block: var(--space-11); background: var(--color-bg); }
+.band--alt { background: var(--color-bg-alt); }
+.band--forest { background: var(--color-bg); }
+.band__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
 }
-@keyframes lamp-medallion {
-  from { filter: saturate(.55) brightness(.85); }
-  to   { filter: none; }
-}
-@keyframes lamp-node {
-  from { box-shadow: 0 0 0 rgba(44,196,134,0); }
-  to   { box-shadow: 0 0 18px rgba(44,196,134,.45); }
-}
+.band__inner--narrow { max-width: var(--container-narrow); }
+section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jumps */
 
-main > section {
-  animation: lamp-fade 520ms var(--ease-entrance) both;
-  animation-timeline: view();
-  animation-range: entry 0% entry 60%;
-}
-.card--emerald {
-  animation: lamp-card 900ms var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 12% entry 78%;
-}
-.feature-card__badge,
-.service-card__badge {
-  animation: lamp-medallion 700ms var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 10% entry 70%;
-}
-.glow-rule__dot,
-.keyword-rail__dot {
-  animation: lamp-node 620ms var(--ease-out) both;
-  animation-timeline: view();
-  animation-range: entry 20% entry 85%;
-}
-
-/* ---------------------------------------------------------------- page ground
-   The radial teal-green bloom behind the whole page (Mitec Design System
-   readme §4 "Backgrounds"). The vertical mesh that used to sit over it is
-   gone; the bloom alone carries the ground. */
-.page { position: relative; }
-.page-bg { position: absolute; inset: 0; pointer-events: none; }
-.page-bg--glow { background: radial-gradient(52% 40% at 18% 26%, rgba(44,196,134,.12), transparent 68%); }
-.page-content { position: relative; }
-
-/* ---------------------------------------------------------------- section rhythm
-   One interval between a heading and its content, everywhere. The sections used
-   to carry seven different gaps (48/40/32/40/40/24/32) with nothing deciding
-   which got which, so tight and generous read as noise rather than cadence.
-   Only genuine exceptions stay per-section: the FAQ's narrow measure and the
-   extra breathing room under the closing CTA. */
-.section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-10) var(--gutter); display: flex; flex-direction: column; gap: var(--space-8); }
-section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jumps */
-
-#faq { max-width: var(--container-narrow); }
-#contact { padding-bottom: var(--space-12); }
-
-/* ---------------------------------------------------------------- hero
-   Split masthead: the copy and the project stage share the first viewport
-   side by side instead of queueing down a single centred column, so the
-   promise and the proof of it are read together. Below 900px the two
-   columns collapse back to one and the stage follows the copy. */
-.hero { max-width: var(--container-max); margin-inline: auto; padding: var(--space-12) var(--gutter) var(--space-10); display: flex; flex-direction: column; gap: var(--space-9); }
-.hero__masthead { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8); align-items: center; }
-.hero__copy { display: flex; flex-direction: column; gap: var(--space-5); text-align: start; align-items: flex-start; }
-/* Display-2 rather than display-1: the headline now shares the row with the
-   stage, so it takes the next step down the ramp instead of a bespoke size.
-   Balanced wrapping keeps the last line from stranding a single word. */
+/* ---------------------------------------------------------------- hero */
+.hero { padding-block: var(--space-11) var(--space-10); }
+.hero__masthead { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-9); align-items: center; }
+.hero__copy { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; }
 .hero__copy .section-heading__title { font-size: var(--text-display-2); text-wrap: balance; }
 .hero__copy .section-heading__sub { max-width: 46ch; }
-.hero__copy .glow-rule { width: 100%; max-width: 320px; }
-.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: flex-start; }
-
-/* Single column: the keyword rail that used to sit beside the clients strip was
-   four adjectives with no figure behind them, which the design system's own
-   proof-over-adjectives rule rejects, so the strip now has the row to itself. */
-.hero__foot { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); align-items: center; }
-.hero__foot .logo-strip { border-top: 0; border-radius: var(--radius-lg); }
-
-/* Hero proof bands carry emerald ground instead of plain glass — the action
-   colour trades a little rarity for territory in the first viewport only.
-   Scoped to .hero on purpose: past the fold the page switches to the ink/ivory
-   strategy (the ivory service cards), so the two treatments never overlap. */
-.hero .stat-bar {
-  background-image:
-    linear-gradient(160deg, color-mix(in oklab, var(--surface-emerald) 22%, transparent) 0%, color-mix(in oklab, var(--navy-800) 22%, transparent) 100%),
-    var(--grad-glass);
-  border-color: color-mix(in oklab, var(--border-accent) 50%, var(--border-hairline));
-}
-.hero .logo-strip {
-  background-color: var(--surface-sunken);
-  background-image: linear-gradient(160deg, color-mix(in oklab, var(--surface-emerald) 16%, transparent) 0%, color-mix(in oklab, var(--navy-800) 16%, transparent) 100%);
-}
-/* The emerald tint darkens the ground under these bands, and --text-muted was
-   already sitting on the palette's 4.6:1 floor. Captions on a tinted band step
-   up to body ink so they stay measurable — a real colour, never faded opacity. */
-.hero .stat-bar .stat-block__label,
-.hero .logo-strip__label { color: var(--ink-200); }
+.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
 
 @media (min-width: 900px) {
-  .hero__masthead { grid-template-columns: minmax(0, 1fr) minmax(0, 46%); }
+  /* Copy on the start (right) side, visual on the end (left) side. */
+  .hero__masthead { grid-template-columns: minmax(0, 1fr) minmax(0, 48%); }
 }
 
-/* Laptop + phone mockup stage */
-.hero__stage { position: relative; max-width: none; margin-inline: 0; width: 100%; }
-.hero__stage-glow { position: absolute; inset-inline: 12%; top: 6%; height: 70%; background: radial-gradient(ellipse at center, rgba(44,196,134,.18), transparent 68%); filter: blur(46px); pointer-events: none; }
+/* The Instagram echo: the mockups sit inside a forest tile with the grid
+   texture and a single mint glow behind them — never behind text. */
+.hero__stage {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-7);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+.hero__stage-glow {
+  position: absolute;
+  inset-inline: 10%;
+  top: 8%;
+  height: 64%;
+  background: radial-gradient(ellipse at center, var(--color-glow), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
 .hero__stage-inner { position: relative; }
 
-.hero__laptop-frame { padding: 10px 10px 8px; border-radius: var(--radius-lg) var(--radius-lg) var(--radius-xs) var(--radius-xs); background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg), var(--glow-inset); }
-.hero__laptop-screen { border-radius: var(--radius-media); overflow: hidden; border: var(--border-width) solid var(--border-hairline); aspect-ratio: 16 / 10; background: var(--surface-sunken); }
+.hero__laptop-frame {
+  padding: 8px 8px 6px;
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-xs);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}
+.hero__laptop-screen { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 16 / 10; background: var(--color-surface-sunken); }
 /* The foot is intentionally wider than the screen, but its overhang is capped
    to the gutter so it can never push the page into horizontal scroll. */
-.hero__laptop-base { width: min(112%, calc(100% + 2 * var(--gutter))); margin-inline-start: max(-6%, calc(-1 * var(--gutter))); height: 15px; border-radius: 0 0 var(--radius-md) var(--radius-md); background: linear-gradient(180deg, var(--ink-100) 0%, var(--ink-300) 55%, var(--ink-500) 100%); clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%); box-shadow: var(--shadow-lg); }
-.hero__laptop-shadow { width: 74%; height: 90px; margin: 0 auto; background: linear-gradient(180deg, rgba(3,12,28,.55), transparent 72%); filter: blur(20px); }
+.hero__laptop-base {
+  width: min(108%, calc(100% + 2 * var(--gutter)));
+  margin-inline-start: max(-4%, calc(-1 * var(--gutter)));
+  height: 12px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: var(--forest-line-strong);
+  clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
+}
 
-.hero__dash-card { position: absolute; top: 13%; inset-inline-start: -3%; width: min(52%, 196px); }
-.hero__dash-card .card { padding: var(--space-4); }
-.hero__dash-label { font-size: var(--text-caption); color: var(--text-muted); margin-bottom: var(--space-3); }
-.hero__dash-bars { display: flex; align-items: flex-end; gap: 6px; height: 52px; }
-.hero__dash-bars span { flex: 1; display: block; border-radius: var(--radius-xs); background: var(--grad-accent); }
-.hero__dash-bars span.is-gold { background: var(--grad-gold); }
-
-.hero__phone { position: absolute; bottom: 12%; inset-inline-start: 2%; width: min(20%, 100px); }
-.hero__phone-frame { border-radius: var(--radius-md); padding: 5px; background: var(--grad-glass); border: var(--border-width) solid var(--border-subtle); box-shadow: var(--shadow-lg); }
-.hero__phone-screen { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 9 / 17; background: var(--surface-sunken); }
+/* Fully inside the tile: .hero__stage clips overflow so the texture and glow
+   stay inside its radius, which would otherwise cut a negatively-offset phone. */
+.hero__phone { position: absolute; bottom: 4%; inset-inline-start: 3%; width: min(22%, 104px); }
+.hero__phone-frame { border-radius: var(--radius-sm); padding: 4px; background: var(--color-surface-elevated); border: 1px solid var(--color-border); }
+.hero__phone-screen { border-radius: 6px; overflow: hidden; aspect-ratio: 9 / 17; background: var(--color-surface-sunken); }
 
 /* ---------------------------------------------------------------- grids */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
@@ -154,98 +93,111 @@ section[id] { scroll-margin-top: 88px; } /* clears the sticky nav on anchor jump
 
 /* ---------------------------------------------------------------- services */
 .service-card { display: flex; flex-direction: column; gap: var(--space-4); }
-.service-card__badge { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--radius-circle); background: var(--grad-accent); color: var(--accent-fg); }
-.service-card p { font-size: var(--text-body); color: var(--text-ink-body); line-height: var(--lh-body); }
-.service-card__link { font-size: var(--text-body-sm); display: inline-flex; align-items: center; gap: var(--space-2); }
+.service-card__badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--radius-md);
+  background: var(--color-tonal); color: var(--color-tonal-text);
+}
+.service-card p { font-size: var(--text-body); color: var(--color-text-secondary); line-height: var(--lh-body); }
+.service-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
 .service-card__link .icon { width: 16px; height: 16px; }
 
-/* ---------------------------------------------------------------- work / portfolio */
-.work-tabs-row { display: flex; justify-content: center; }
-.work-card__media { aspect-ratio: 16 / 10; border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow: hidden; background: var(--surface-sunken); }
+/* ---------------------------------------------------------------- work / portfolio
+   Forest tiles, so the grid reads like the Instagram feed. */
+.work-tabs-row { display: flex; }
+.work-card { overflow: hidden; }
+.work-card__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-surface-sunken); }
 .work-card__body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-4); }
 .work-card__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .work-card dl { margin: 0; display: grid; gap: var(--space-3); font-size: var(--text-body-sm); }
-.work-card dt { color: var(--text-accent); font-size: var(--text-caption); font-weight: var(--weight-semibold); letter-spacing: var(--ls-eyebrow); margin-bottom: 2px; }
-.work-card dd { margin: 0; color: var(--text-ink-body); }
-.work-card__link { font-size: var(--text-body-sm); display: inline-flex; align-items: center; gap: var(--space-2); }
+.work-card dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em; margin-bottom: 2px; }
+.work-card dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
+.work-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
 .work-card__link .icon { width: 16px; height: 16px; }
-.work-card__note { font-size: var(--text-body-sm); color: var(--text-muted); }
-.work-empty { margin: 0; text-align: center; color: var(--text-ink-body); }
+.work-card__note { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+.work-empty { margin: 0; color: var(--color-text-secondary); }
 
-/* ---------------------------------------------------------------- process */
-.process-step__n { font-family: var(--font-display); font-weight: var(--weight-black); font-size: var(--text-h3); letter-spacing: var(--ls-stat); }
-.process-step__title { margin: var(--space-2) 0; }
-.process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--text-ink-body); line-height: var(--lh-body); }
+/* ---------------------------------------------------------------- process
+   The numerals earn their place: the sequence is the information. They carry
+   the brand colour, never the action colour — nothing here is clickable. */
+.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); letter-spacing: -.02em; color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.process-step__title { margin: var(--space-3) 0 var(--space-2); }
+.process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
 
 /* ---------------------------------------------------------------- about */
 .about-card { display: flex; gap: var(--space-5); align-items: center; }
-.about-card__photo { flex: 0 0 auto; width: 96px; height: 96px; border-radius: var(--radius-circle); overflow: hidden; border: var(--border-width) solid var(--border-subtle); }
+.about-card__photo { flex: 0 0 auto; width: 88px; height: 88px; border-radius: 50%; overflow: hidden; border: 1px solid var(--color-border-subtle); }
 .about-card h3 { margin: 0 0 var(--space-1); }
-.about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--text-muted); }
-.about-card__bio { margin: 0; font-size: var(--text-body-sm); color: var(--text-ink-body); line-height: var(--lh-body); }
+.about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--color-tonal-text); font-weight: 500; }
+.about-card__bio { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
 
 /* ---------------------------------------------------------------- testimonials */
-.testimonials__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3); }
-.testimonials__head h2 { font-size: var(--text-display-3); line-height: var(--lh-display); }
-.testimonial blockquote { margin: 0 0 var(--space-4); font-size: var(--text-body-lg); color: var(--text-heading); line-height: var(--lh-body); }
-.testimonial figcaption { font-size: var(--text-body-sm); color: var(--text-muted); }
+.testimonials__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.testimonial { position: relative; }
+.testimonial blockquote { margin: 0 0 var(--space-4); font-size: var(--text-body-lg); color: var(--color-text-primary); line-height: var(--lh-body); }
+/* Decorative quote mark — a typographic flourish, the one amber note past the hero. */
+.testimonial blockquote::before {
+  content: '”';
+  display: block;
+  font-family: var(--font-display);
+  font-size: 56px;
+  line-height: .6;
+  color: var(--amber-300);
+  margin-bottom: var(--space-2);
+}
+.testimonial figcaption { font-size: var(--text-body-sm); color: var(--color-text-muted); }
 
 /* ---------------------------------------------------------------- FAQ */
 .faq-list { display: grid; gap: var(--space-3); }
 .faq-item h3 { margin: 0; }
 .faq-item__q {
   width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
-  background: transparent; border: 0; margin: 0; color: var(--text-heading); font-family: var(--font-body);
-  font-size: var(--text-body-lg); font-weight: var(--weight-semibold); text-align: start;
-  padding: var(--space-5) var(--space-6); cursor: pointer;
+  background: transparent; border: 0; margin: 0; color: var(--color-text-primary);
+  font-family: var(--font-body); font-size: var(--text-body-lg); font-weight: 700; text-align: start;
+  padding: var(--space-5) var(--space-6); cursor: pointer; min-height: 44px;
 }
-.faq-item__chevron { flex: 0 0 auto; color: var(--text-muted); font-size: 1.1em; line-height: 1; }
-.faq-item__a { padding: 0 var(--space-6) var(--space-5); color: var(--text-ink-body); font-size: var(--text-body); }
+.faq-item__chevron { flex: 0 0 auto; width: 18px; height: 18px; color: var(--color-tonal-text); }
+.faq-item__a { padding: 0 var(--space-6) var(--space-5); color: var(--color-text-secondary); font-size: var(--text-body); line-height: var(--lh-body); max-width: 68ch; }
 .faq-item__a[hidden] { display: none; }
 
-/* ---------------------------------------------------------------- contact CTA */
-.contact-card { padding: clamp(28px, 5vw, 64px); display: flex; flex-direction: column; gap: var(--space-7); }
-.contact-card__top { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
-.contact-card__copy { flex: 1 1 420px; display: flex; flex-direction: column; gap: var(--space-4); }
-.contact-card__copy h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
-.contact-card__copy p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--ink-100); max-width: 52ch; }
-.contact-card__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-.contact-card__links { border-top: var(--border-width) solid var(--border-hairline); padding-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); align-items: center; }
-.contact-card__links-label { color: var(--ink-200); font-size: var(--text-body); }
-.contact-card__links a { font-size: var(--text-body); }
-.contact-card__insta { direction: ltr; }
+/* ---------------------------------------------------------------- closing CTA band */
+.cta-band__inner { align-items: flex-start; }
+.cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
+.cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: 52ch; }
+.cta-band__ctas { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.cta-band__links { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-6); width: 100%; }
+.cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+.cta-band__links a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); font-weight: 500; }
+.cta-band__insta { direction: ltr; }
 
-/* ---------------------------------------------------------------- responsive nav
-   The DS's NavBar has no small-screen treatment (it assumes desktop width);
-   below this breakpoint the links collapse into a toggled panel so the page
-   stays usable from 320px with no horizontal scroll. */
+/* ---------------------------------------------------------------- responsive nav */
 @media (max-width: 860px) {
   .navbar__toggle { display: inline-flex; }
   .navbar__menu {
     position: fixed;
-    inset: 64px var(--gutter) auto;
+    inset: 68px var(--gutter) auto;
     margin: 0;
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-1);
     padding: var(--space-4);
     border-radius: var(--radius-lg);
-    background: var(--bg-deep);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    box-shadow: var(--shadow-elevated);
     display: none;
   }
   .navbar__menu.is-open { display: flex; }
-  .navbar__link { padding: var(--space-3) var(--space-2); }
+  .navbar__link { padding-inline: var(--space-2); }
   .navbar__link::after { display: none; }
-  .navbar__link.is-active { background: var(--surface-card); border-radius: var(--radius-sm); }
+  .navbar__link.is-active { background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
   .navbar__cta { margin-top: var(--space-2); justify-content: center; }
 
-  .hero__dash-card { display: none; } /* the floating widget has no room to float at phone widths */
+  .band { padding-block: var(--space-10); }
+  .hero__phone { display: none; } /* no room to float at phone widths */
 }
 
 @media (max-width: 620px) {
-  .contact-card__top { flex-direction: column; align-items: stretch; }
-  .contact-card__ctas { justify-content: stretch; }
-  .contact-card__ctas .btn { flex: 1 1 auto; }
+  .cta-band__ctas { width: 100%; }
+  .cta-band__ctas .btn { flex: 1 1 auto; }
 }

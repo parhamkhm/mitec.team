@@ -1,304 +1,447 @@
----
-name: mitec.team
-description: A dark emerald-and-bronze studio system in Persian RTL, where only emerald acts and only bronze emphasises.
-colors:
-  navy-ground: "#06142D"
-  navy-deep: "#030C1C"
-  navy-raised: "#0C2140"
-  teal-hero: "#07211F"
-  emerald-action: "#1AA36B"
-  emerald-lit: "#2CC486"
-  emerald-speech: "#5FE0AC"
-  emerald-label-dark: "#0E5A3C"
-  emerald-label-hover: "#14764F"
-  bronze-emphasis: "#C9A682"
-  bronze-lifted: "#E2C6A4"
-  bronze-on-light: "#7E5A3E"
-  ink-white: "#FFFFFF"
-  ink-ivory: "#F4F7F6"
-  ink-body: "#C2D2CE"
-  ink-muted: "#7A908D"
-  ink-dark: "#0E1A18"
-  status-danger: "#E0544A"
-  status-warning: "#D9A441"
-  status-info: "#3E9BD4"
-typography:
-  display:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "clamp(44px, 6.4vw, 84px)"
-    fontWeight: 800
-    lineHeight: 1.04
-    letterSpacing: "-0.022em"
-  headline:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "clamp(28px, 3.4vw, 44px)"
-    fontWeight: 700
-    lineHeight: 1.04
-    letterSpacing: "-0.022em"
-  title:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "19px"
-    fontWeight: 700
-    lineHeight: 1.2
-    letterSpacing: "-0.012em"
-  body:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "15px"
-    fontWeight: 400
-    lineHeight: 1.62
-  label:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "12px"
-    fontWeight: 700
-    lineHeight: 1.4
-    letterSpacing: "0.18em"
-  stat:
-    fontFamily: "Vazirmatn, system-ui, sans-serif"
-    fontSize: "clamp(30px, 3.2vw, 44px)"
-    fontWeight: 800
-    lineHeight: 1.05
-    letterSpacing: "-0.02em"
-rounded:
-  xs: "6px"
-  sm: "10px"
-  md: "14px"
-  lg: "20px"
-  xl: "28px"
-  pill: "999px"
-  circle: "50%"
-spacing:
-  1: "4px"
-  2: "8px"
-  3: "12px"
-  4: "16px"
-  5: "20px"
-  6: "24px"
-  7: "32px"
-  8: "40px"
-  9: "48px"
-  10: "64px"
-  11: "80px"
-  12: "96px"
-  13: "128px"
-components:
-  button-primary:
-    backgroundColor: "{colors.emerald-label-dark}"
-    textColor: "{colors.ink-white}"
-    rounded: "{rounded.pill}"
-    padding: "11px 20px"
-    typography: "{typography.body}"
-  button-primary-hover:
-    backgroundColor: "{colors.emerald-label-hover}"
-    textColor: "{colors.ink-white}"
-  button-secondary:
-    backgroundColor: "rgba(255,255,255,.045)"
-    textColor: "{colors.ink-white}"
-    rounded: "{rounded.pill}"
-    padding: "11px 20px"
-  card-glass:
-    backgroundColor: "rgba(255,255,255,.045)"
-    textColor: "{colors.ink-body}"
-    rounded: "{rounded.lg}"
-    padding: "24px"
-  card-ivory:
-    backgroundColor: "{colors.ink-ivory}"
-    textColor: "{colors.ink-dark}"
-    rounded: "{rounded.lg}"
-    padding: "24px"
-  card-emerald:
-    backgroundColor: "#0F4C3F"
-    textColor: "#E4EDEA"
-    rounded: "{rounded.lg}"
-    padding: "24px"
-  input:
-    backgroundColor: "rgba(3,12,28,.55)"
-    textColor: "{colors.ink-body}"
-    rounded: "{rounded.sm}"
-    padding: "11px 20px"
-  badge-accent:
-    backgroundColor: "rgba(26,163,107,.14)"
-    textColor: "{colors.emerald-speech}"
-    rounded: "{rounded.pill}"
-    padding: "5px 12px"
-    typography: "{typography.label}"
-  medallion:
-    backgroundColor: "{colors.emerald-action}"
-    textColor: "{colors.ink-white}"
-    rounded: "{rounded.circle}"
-    size: "48px"
-  nav-link-active:
-    textColor: "{colors.ink-white}"
-    typography: "{typography.body}"
+# DESIGN.md — Mitec (mitec.team)
+
+> Source of truth for all visual work on the Mitec website. Read this before creating or editing any UI.
+> If a request conflicts with this file, follow the user's explicit instruction, then update this file.
+
+## North Star
+
+**Read in daylight, recognize in forest, act on one green — and let amber only ever whisper.**
+
+- Sage-light surfaces carry the **reading**.
+- Deep forest green (the Instagram color) carries the **identity**, in tiles and bands.
+- One action green carries **every clickable primary action and nothing else**.
+- Amber is a rare highlight, never an action.
+
+If a new element makes any of these jobs ambiguous, its color is wrong.
+
 ---
 
-# Design System: mitec.team
+## 1. Context
 
-## Overview
+- Brand: **Mitec (میتک)**, a two-person web design studio. Target market: Iran.
+- Language: **Persian, RTL** (`<html lang="fa" dir="rtl">`). Latin appears only in brand names and the `mitec.team` wordmark.
+- Font: **Vazirmatn** (weights 400 / 500 / 700 / 800). Fallback: `Tahoma, "Segoe UI", sans-serif`.
+- Numerals: use **Persian digits** (۰–۹) in UI copy and stats.
+- Visual link: the site must feel like the same brand as the Instagram page (dark green `#12312A` posts, mint `#57B79A`, amber `#E0A25C`, subtle grid texture, device mockups on green).
 
-**Creative North Star: "The Night Atelier"**
+---
 
-mitec is two people who build the thing themselves, and the interface says so before the copy does. The ground is deep navy with a teal-green bloom sitting off-centre — a room at night, not a corporate slide. Bronze appears where a name or a finished number belongs, the way a warm lamp falls on a nameplate. Emerald appears only where a hand is actually working: the button you press, the card that is live, the field that has focus. Nothing else is permitted to compete for attention, and the restraint is what makes a two-person studio read as deliberate rather than small.
+## 2. Hard rules (never break)
 
-The system is Persian and right-to-left first. Vazirmatn carries every role — display, body, numerals — because the original Montserrat/Mulish pairing has no Persian glyphs, and that substitution is the system's documented entry point for type. Density is generous rather than packed: sections breathe on a `clamp(64px, 8vw, 128px)` rhythm, cards hold 24px of air, and running copy sits at 1.62 leading so long Persian sentences stay readable. Surfaces are glass over that navy bloom — 4.5% white fills, 8% hairlines, an inset top highlight — so the page reads as layered atmosphere rather than stacked boxes.
+1. **No navy or blue** anywhere, except the `info` status token.
+2. **Components use semantic tokens only** (`--color-*`). Primitives (`--green-600`, `--sage-200`…) appear only in the token file.
+3. **One solid primary button per viewport**, and at most one per section.
+4. **Action green (`--color-cta`) is only for clickable things.** Stats, chart bars, decorative icons and headings are never action green.
+5. **Never put mint `#57B79A` or amber `#E0A25C` text on light backgrounds.** They fail contrast (2.43:1 and 2.07:1).
+6. **Never use pure `#FFFFFF`** as the page background or as text on dark. Use `#F5F7F4` for the page and `#F1F5F2` for text on dark.
+7. **Every dark area must set `data-surface="dark"`.** Never hand-pick colors inside a dark area.
+8. **Forms are always on light surfaces.**
+9. **No gradients, glows or amber on buttons.**
+10. **No third accent hue.** The palette is green + sage + amber, plus status colors.
 
-The confirmed anti-reference is the stock-template comp the palette was sampled from: its filled pictograms, its borrowed client logos, and its invented proof numbers are all explicitly rejected. mitec ships three real projects and a two-person team, and the design must stay honest at that scale. Where the reference reached for a photograph, this system renders depth in CSS instead — there is no photography yet, and none should be faked.
+---
 
-**Key Characteristics:**
-- Deep navy ground with an off-centre teal bloom; never a flat fill
-- Emerald is the only action colour; bronze is the only emphasis colour
-- Glass surfaces, hairline borders, emerald glow instead of drop shadow
-- Persian RTL throughout, Vazirmatn across every type role
-- Exactly one lit (emerald) card per row; the rest stay pale
-- Proof over adjectives — every claim carries a real figure or is cut
+## 3. Tokens
 
-## Colors
+Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it before everything else. Do not add new hex values in component files. If a new color is truly needed, add it here as a primitive first, then map a semantic token to it.
 
-Four strictly-roled families over a navy ground: navy builds the room, teal warms the gradients, emerald acts, bronze emphasises, and green-tinted inks carry text.
+```css
+/* ─── Primitives ─────────────────────────────────────────────── */
+:root {
+  /* Mitec Green — hue ≈163°, anchored on Instagram #57B79A / #12312A */
+  --green-50:  #EEF6F2;  --green-100: #D8EDE3;  --green-200: #B3DCC9;
+  --green-300: #86C6AC;  --green-400: #57B79A;  --green-500: #2E9478;
+  --green-600: #197358;  --green-700: #13604A;  --green-800: #154738;
+  --green-900: #12312A;  --green-950: #0B211C;
 
-### Primary
-- **Emerald Action** (`#1AA36B`): the single action colour — buttons, focus rings, active tabs, medallions, success states, the beaded dot on every rule. It is the one hue allowed to mean "press this" or "this is live."
-- **Emerald Lit** (`#2CC486`): the bright stop of the action gradient and the colour of glow. It carries hover states and the 5px glowing nodes on dividers, never a text label.
-- **Emerald Speech** (`#5FE0AC`): emerald as *text* on dark — eyebrows, links, badge labels, the focus halo. Reads at ~9:1 on the navy ground.
-- **Deep Emerald Label** (`#0E5A3C` → `#14764F`): the darker pair reserved for surfaces that carry text on top of the action colour. This exists because white on the standard accent gradient measures 2.25–3.23:1, and this system's button labels (17/15/13.5px) are below WCAG's large-text exception, so the 4.5:1 threshold applies. This pair clears it at 8.25:1 at rest and 5.62:1 on hover, using no colour outside the system's own ramp.
+  /* Sage neutrals — 2–3% green bias */
+  --sage-0:   #FFFFFF;  --sage-25:  #F5F7F4;  --sage-50:  #EDF2EE;
+  --sage-100: #E2E9E4;  --sage-200: #D2DBD5;  --sage-300: #B8C5BD;
+  --sage-400: #7F8D86;  --sage-500: #5F6E65;  --sage-600: #4B5951;
+  --sage-700: #34423B;  --sage-800: #22302A;  --sage-900: #13201B;
 
-### Secondary
-- **Bronze Emphasis** (`#C9A682`): the accent word in a headline, stat numerals, process step numbers. Exactly one bronze run per headline. **Never a button, never a surface, never a border.**
-- **Bronze Lifted** (`#E2C6A4`): the light stop of the gold text-fill gradient and the colour of bronze on a badge.
+  /* Amber — Instagram #E0A25C */
+  --amber-50: #FCF3E7;  --amber-100: #F7E2C4;  --amber-300: #EDBF84;
+  --amber-400: #E0A25C; --amber-700: #8C5313;
 
-### Tertiary
-- **Teal Hero** (`#07211F` → `#15594A`): navy rotated toward green. Appears *only* inside gradients and glows — the page bloom, the hero wash, the emerald card fill. Never a flat fill of its own.
+  /* Forest surfaces + on-dark text */
+  --forest-raised: #173B33;  --forest-elevated: #1E463D;
+  --forest-line:   #2E574C;  --forest-line-strong: #5E8479;
+  --on-dark-1: #F1F5F2;  --on-dark-2: #B9CBC3;  --on-dark-3: #8FA69C;
+  --mint-hover: #72C7AB;
 
-### Neutral
-- **Navy Ground** (`#06142D`): the page. Always delivered as the radial `--grad-page` bloom, never as a flat colour.
-- **Navy Deep** (`#030C1C`): edge darkening, sunken input grounds, shadow tint.
-- **Navy Raised** (`#0C2140`): the opaque panel colour for dense UI where glass would be unreadable.
-- **Ink Body** (`#C2D2CE`): running copy on dark, ~10.5:1 on the ground.
-- **Ink Muted** (`#7A908D`): captions and hints only, ~4.6:1 — the contrast floor. Never running copy.
-- **Ink Ivory** (`#F4F7F6`): the light card surface, which flips the whole text ramp via `.mt-on-light`.
-- **Ink Dark** (`#0E1A18`): text on ivory surfaces.
+/* ─── Semantic · light (default) ─────────────────────────────── */
+  --color-bg:               var(--sage-25);
+  --color-bg-alt:           var(--sage-50);
+  --color-surface:          var(--sage-0);
+  --color-surface-elevated: var(--sage-0);
+  --color-surface-sunken:   var(--sage-100);
 
-Status reuses the family — success *is* emerald, warning shares bronze's hue (`#D9A441`). Only danger (`#E0544A`) and info (`#3E9BD4`) sit outside it, and they appear in `Alert` alone.
+  --color-text-primary:   var(--sage-900);
+  --color-text-body:      var(--sage-800);
+  --color-text-secondary: var(--sage-600);
+  --color-text-muted:     var(--sage-500);
+  --color-text-disabled:  var(--sage-400);
 
-### Named Rules
+  --color-brand:       var(--green-900);
+  --color-brand-hover: var(--forest-raised);
 
-**The Single Actor Rule.** Only emerald acts and only bronze emphasises. If an element is neither pressable nor a point of emphasis, it is navy, glass, or ink. Two competing accents on one surface is a defect, not a choice.
+  --color-cta:        var(--green-600);
+  --color-cta-hover:  var(--green-700);
+  --color-cta-active: var(--green-800);
+  --color-cta-text:   #FFFFFF;
 
-**The One Lit Card Rule.** In any row or grid of cards, exactly one may be emerald. Three pale cards and one lit one is the system's signature move; two lit cards destroys it.
+  --color-tonal:       var(--green-50);
+  --color-tonal-hover: var(--green-100);
+  --color-tonal-text:  var(--green-700);
 
-**The Real Colour Rule.** Body text is never set at reduced opacity. Muted text uses `--text-muted`, an actual colour, so contrast stays measurable rather than inherited.
+  --color-link:       var(--green-600);
+  --color-link-hover: var(--green-700);
+  --color-accent:     var(--green-400);   /* decorative only on light */
 
-**The Label Pair Rule.** Any surface carrying *text* on the action colour uses the deep emerald pair (`#0E5A3C` → `#14764F`), not the standard accent gradient. Icon medallions, the nav underline, and chart bars keep the bright gradient — they are non-text graphics, where 3.23:1 clears WCAG 1.4.11's 3:1 bar.
+  --color-highlight:      var(--amber-400);
+  --color-highlight-soft: var(--amber-100);
+  --color-highlight-text: var(--amber-700);
 
-## Typography
+  --color-border:        var(--sage-300);
+  --color-border-subtle: var(--sage-200);
+  --color-border-strong: var(--sage-400);  /* ≥3:1 — inputs, outline buttons */
+  --color-border-hover:  var(--green-200);
 
-**Display Font:** Vazirmatn (with system-ui, sans-serif)
-**Body Font:** Vazirmatn (with system-ui, sans-serif)
-**Label/Mono Font:** JetBrains Mono — token names and code only
+  --color-focus:      var(--green-600);
+  --color-focus-halo: var(--green-100);
 
-**Character:** One family carries the whole system, separated by weight and tracking rather than by face. At 800 with `-0.022em` tracking and 1.04 leading, Vazirmatn reads geometric and confident; at 400 with 1.62 leading it turns humanist and quiet. The substitution is deliberate and documented: Montserrat and Mulish carry no Persian glyphs, so re-pointing `--font-display` and `--font-body` at Vazirmatn is the system's own sanctioned override point. Persian numerals are used throughout — Latin digits in user-facing copy are a defect.
+  --color-success: #177044;  --color-success-bg: #E6F4EC;
+  --color-warning: #8A5100;  --color-warning-bg: #FFF4DE;
+  --color-error:   #B42318;  --color-error-bg:   #FDECEB;
+  --color-info:    #2459A8;  --color-info-bg:    #EAF1FB;
 
-### Hierarchy
-- **Display** (800, `clamp(44px, 6.4vw, 84px)`, 1.04): hero titles only. One per page.
-- **Headline** (700–800, `clamp(28px, 3.4vw, 44px)`, 1.04): section titles.
-- **Title** (700, 19–23px, 1.2): card titles, feature names.
-- **Body** (400, 15px, 1.62): running copy. Lead paragraphs at 20px, secondary copy at 13.5px.
-- **Label** (700, 12px, `0.18em`, uppercase): eyebrows and micro-labels. Overlines at 11px / `0.24em`.
-- **Stat** (800, `clamp(30px, 3.2vw, 44px)`, `-0.02em`): stat numerals, always bronze.
+  --color-overlay:   rgba(11, 33, 28, .72);
+  --color-glow:      rgba(87, 183, 154, .22);
+  --color-grid-line: rgba(18, 49, 42, .05);
 
-### Named Rules
+  --shadow-card:     0 1px 2px rgba(18,49,42,.06), 0 10px 28px -12px rgba(18,49,42,.14);
+  --shadow-elevated: 0 2px 4px rgba(18,49,42,.06), 0 18px 40px -16px rgba(18,49,42,.22);
+}
 
-**The Three-Part Headline Rule.** A headline stacks: an italic kicker, a bronze subject naming *what it is*, and a white payoff naming *what you get*. Exactly one bronze run per headline.
+/* ─── Semantic · on forest (bands, tiles, footer) ──────────────── */
+[data-surface="dark"] {
+  --color-bg:               var(--green-900);
+  --color-bg-alt:           var(--green-950);
+  --color-surface:          var(--forest-raised);
+  --color-surface-elevated: var(--forest-elevated);
+  --color-surface-sunken:   var(--green-950);
 
-**The No-Emoji Rule.** Never in UI, never in copy, never in headings. Iconography carries that load, and icons are Lucide masks — never inline SVG paths, never Unicode glyphs (▸ ✓ ★) standing in for icons.
+  --color-text-primary:   var(--on-dark-1);
+  --color-text-body:      var(--on-dark-2);
+  --color-text-secondary: var(--on-dark-2);
+  --color-text-muted:     var(--on-dark-3);
+  --color-text-disabled:  var(--forest-line-strong);
 
-**The Persian Numeral Rule.** All user-facing figures render in Persian digits (`۳`, `۱ روز`). `src/utils/persian-digits.js` exists for exactly this; a Latin digit in the UI is a bug.
+  --color-cta:        var(--green-400);
+  --color-cta-hover:  var(--mint-hover);
+  --color-cta-active: var(--green-300);
+  --color-cta-text:   var(--green-950);
 
-## Layout
+  --color-tonal:       rgba(87, 183, 154, .14);
+  --color-tonal-hover: rgba(87, 183, 154, .22);
+  --color-tonal-text:  var(--green-300);
 
-A 4-based scale to 24px, then 32 / 40 / 48 / 64 / 80 / 96 / 128. The container is 1200px with a 24px gutter; the narrow reading column is 760px. Section padding is `clamp(64px, 8vw, 128px)` — the vertical rhythm that makes the page feel unhurried.
+  --color-link:           var(--green-300);
+  --color-link-hover:     var(--on-dark-1);
+  --color-highlight-text: var(--amber-400);
 
-Direction is RTL at the document level, with logical properties (`margin-inline`, `inset-inline`) throughout so the layout mirrors cleanly. The one exception is `.logo`, which is forced to `direction: ltr` because the wordmark is built from Latin runs ("mi" + "tec" + "." + ".team") that would otherwise reorder.
+  --color-border:        var(--forest-line);
+  --color-border-subtle: rgba(255, 255, 255, .08);
+  --color-border-strong: var(--forest-line-strong);
+  --color-border-hover:  var(--forest-line-strong);
 
-Home-page content is centre-aligned — hero, section headings, keyword rail — and inner pages run left-aligned (start-aligned). Feature rows run four across, portfolio grids three across. The navbar is the only fixed element: sticky, translucent navy at 72%, blurred at 40px, with a hairline bottom border. Below the mobile breakpoint the nav menu collapses behind a toggle, which is the one component the source system had no treatment for.
+  --color-focus:      var(--green-400);
+  --color-focus-halo: transparent;
+  --color-grid-line:  rgba(255, 255, 255, .035);
+  --shadow-card: none;
 
-Card padding is 24px, 32px for large cards. Controls sit at 11px × 20px.
+  background-color: var(--color-bg);
+  color: var(--color-text-body);
+}
+```
 
-## Elevation & Depth
+The footer uses `data-surface="dark"` plus `background: var(--color-bg-alt)` (resolves to `#0B211C`).
 
-*Current state, recorded as description rather than law — this system is open to exploring other depth treatments.*
+### Tailwind v4 (if the project uses Tailwind)
 
-On dark grounds depth currently reads as **emerald glow rather than shadow**. A card is separated from the ground by three things: a 1px hairline at 8% white, a `--grad-glass` fill running 8.5% → 1% white, and an inset top highlight at 10% white. Real drop shadows appear in exactly one place — ivory cards and tooltips, where a light surface on a dark ground needs the lift. Blur is used twice: 18px on glass surfaces and 40px on the sticky nav scrim. Text is never blurred, and a whole section is never blurred.
+Map the semantic tokens in `@theme` so utilities pick up the dark-scope remap automatically:
 
-### Shadow Vocabulary
-- **Glow sm** (`0 0 18px rgba(44,196,134,.22)`): resting state on lit elements — medallions, primary buttons, active tabs.
-- **Glow md** (`0 0 38px rgba(44,196,134,.30)`): hover lift and the emerald card's resting state.
-- **Glow lg** (`0 0 80px rgba(44,196,134,.26)`): ambient wash behind a hero element.
-- **Glow inset** (`inset 0 1px 0 rgba(255,255,255,.10)`): the top highlight that makes glass read as a surface.
-- **Ivory shadow** (`0 18px 40px -18px rgba(3,12,28,.45)`): the only true drop shadow on a resting surface.
-- **Focus ring** (`0 0 0 3px rgba(95,224,172,.35)`): always visible, never removed.
+```css
+@theme {
+  --color-bg: var(--color-bg);
+  --color-bg-alt: var(--color-bg-alt);
+  --color-surface: var(--color-surface);
+  --color-ink: var(--color-text-primary);
+  --color-body: var(--color-text-body);
+  --color-secondary: var(--color-text-secondary);
+  --color-muted: var(--color-text-muted);
+  --color-brand: var(--color-brand);
+  --color-cta: var(--color-cta);
+  --color-cta-hover: var(--color-cta-hover);
+  --color-cta-text: var(--color-cta-text);
+  --color-tonal: var(--color-tonal);
+  --color-tonal-text: var(--color-tonal-text);
+  --color-line: var(--color-border);
+  --color-line-subtle: var(--color-border-subtle);
+  --color-line-strong: var(--color-border-strong);
+  --font-sans: "Vazirmatn", Tahoma, "Segoe UI", sans-serif;
+}
+```
 
-## Shapes
+Use `bg-cta text-cta-text`, not `bg-[#197358]`. Arbitrary hex values in class names are not allowed.
 
-Nothing in this system uses a square corner. Cards are 20px, media and inner panels 14px, inputs and selects 10px, checkboxes 6px. Actions and badges are full pills (999px) — **a pill always means "you can press this."** Icon medallions and avatars are perfect circles.
+---
 
-Borders are hairlines, always: 8% white by default, 14% on controls, 26% on hover, and emerald at 45% for focus, active, and the emerald card. On light surfaces the same ladder inverts to ink alphas. No 2px borders. No coloured-left-border-only cards — that pattern is explicitly banned; `Alert` uses a full tinted border instead.
+## 4. Color roles at a glance
 
-There is exactly one divider in the system: an emerald hairline that fades to zero at both ends (`--grad-rule`), optionally beaded with a glowing 5px node. Never a flat grey line.
+| Role | Light | On forest | Use for |
+|---|---|---|---|
+| Page background | `#F5F7F4` | `#12312A` | Canvas |
+| Alt section | `#EDF2EE` | `#0B211C` | Alternating sections, trust strip, footer |
+| Card surface | `#FFFFFF` | `#173B33` | Cards, inputs, stats |
+| Heading text | `#13201B` | `#F1F5F2` | Headings, labels, numbers |
+| Body text | `#22302A` | `#B9CBC3` | Paragraphs |
+| Secondary text | `#4B5951` | `#B9CBC3` | Descriptions, inactive nav |
+| Muted text | `#5F6E65` | `#8FA69C` | Captions, hints, placeholders (≥14px) |
+| Brand | `#12312A` | `#12312A` | Logo, dark tiles/bands, stat numerals |
+| Primary CTA | `#197358` / white | `#57B79A` / `#0B211C` | Main button only |
+| Tonal | `#EEF6F2` / `#13604A` | mint 14% / `#86C6AC` | Secondary conversion, icon chips |
+| Border strong | `#7F8D86` | `#5E8479` | Inputs, outline buttons |
+| Highlight | `#F7E2C4` stroke | `#E0A25C` text | One headline phrase |
 
-## Components
+**Area budget per page:** light neutrals 60–65% · forest 20–25% (max 30%) · ink and lines ~8% · action green 3–5% · mint 1–2% · amber ≤1%.
+If action green goes over ~5%, something that isn't clickable is green. Fix it.
 
-### Buttons
-- **Shape:** full pill (999px)
-- **Primary:** deep emerald gradient (`#0E5A3C` → `#14764F`) with white label, `--glow-sm` plus the inset highlight; 11px × 20px at medium, 15px × 30px at large, 8px × 16px at small
-- **Hover:** gradient brightens to solid `#14764F` and glow steps to `md` — buttons brighten, they never darken, and never fade opacity (that reads as disabled)
-- **Press:** `scale(0.97)` at 140ms, no colour change
-- **Secondary:** glass fill at 4.5% white, 14% border, 18px backdrop blur, white label; hover raises fill to 7.5% and border to 26%
-- **Disabled:** `opacity: 0.42`, `cursor: not-allowed`, nothing else changes
+---
 
-### Cards / Containers
-- **Corner Style:** 20px
-- **Four skins:** `glass` (default on dark — glass gradient, 8% hairline, inset highlight), `ivory` (light card on dark ground, 60%-white border, the system's only resting drop shadow, sets `.mt-on-light` which re-points every text token), `emerald` (the lit one — emerald card gradient, 45% emerald border, `--glow-md`), `solid` (opaque navy for dense UI)
-- **Internal Padding:** 24px, 32px large
-- **Hover (interactive cards only):** lift `translateY(-2px)`, border warms to emerald, glow steps `sm` → `md`
+## 5. Component recipes
 
-### Inputs / Fields
-- **Style:** sunken navy ground at 55%, 10px radius, 14% subtle border, 11px × 20px padding
-- **Focus:** 3px emerald halo at 35% (`--ring-focus`); never removed
-- **Error:** full tinted border, never a left-border-only stripe
+### Buttons (4 levels + disabled)
+
+| Level | Light | On forest | When |
+|---|---|---|---|
+| **Primary** | bg `--color-cta`, text `--color-cta-text`, hover `--color-cta-hover`, active `--color-cta-active` | same tokens (resolve to mint + dark text) | The one main action: «ساخت سفارش من», «ارسال درخواست» |
+| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «سفارش سایت», «مشاوره رایگان» |
+| **Outline** | transparent, 1px `--color-border-strong`, text `--color-text-primary`, hover bg `--color-surface-sunken` | same tokens | Navigation-type actions: «دیدن نمونه‌کارها» |
+| **Text link** | `--color-link`, underline, `text-underline-offset: 5px` | same | Tertiary actions, inline links |
+| **Disabled** | bg `--sage-100`, text `--sage-400` | bg `--forest-raised`, text `--forest-line-strong` | Never pale green |
+
+- Solid buttons get `border: 1px solid transparent` so they stay visible in `forced-colors` mode.
+- Flat fills only: no gradient, glow or colored shadow.
+- RTL arrow icons point **left** (←) for "forward/next".
+- Sticky nav: the nav CTA may switch from tonal to primary **only after** the hero's primary button scrolls out of view.
+
+```css
+.btn-primary { background: var(--color-cta); color: var(--color-cta-text); border: 1px solid transparent; }
+.btn-primary:hover  { background: var(--color-cta-hover); }
+.btn-primary:active { background: var(--color-cta-active); }
+.btn-tonal   { background: var(--color-tonal); color: var(--color-tonal-text); }
+.btn-tonal:hover { background: var(--color-tonal-hover); }
+.btn-outline { background: transparent; color: var(--color-text-primary); border: 1px solid var(--color-border-strong); }
+.btn-outline:hover { background: var(--color-surface-sunken); }
+```
+
+### Focus
+
+```css
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--color-focus-halo);
+}
+```
+Never remove outlines without a replacement.
 
 ### Navigation
-- Sticky, navy at 72%, 40px backdrop blur, hairline bottom border. Links at 15px medium in body ink; active links go bold white with a 2px emerald underline carrying `--glow-sm`. Below the mobile breakpoint the menu collapses behind a 38px bordered toggle.
 
-### Badges
-- Full pill, 12px bold uppercase at `0.06em`. Accent variant: emerald tint at 14% with emerald-speech label and a 45% emerald border. Bronze variant: bronze tint at 14% with `#E2C6A4` label.
+- Background: `--color-bg` at 88% opacity + `backdrop-filter: blur(12px)`; add a `--color-border-subtle` bottom border once scrolled.
+- Links: `--color-text-secondary`. Active link: `--color-text-primary` + 2px `--color-cta` underline.
+- Nav CTA: **tonal**.
 
-### The Medallion (signature)
-The brand's one icon container: a 44–48px perfect circle filled with the bright accent gradient, white glyph, `--glow-sm`. It appears on every feature and service card, and it is the one place the bright gradient is allowed under a foreground element — because a glyph is a graphic, not text.
+### Hero
 
-### The Glow Rule & Keyword Rail (signature)
-A single emerald hairline fading to zero at both ends, beaded with glowing 5px nodes, separating single Title-Case value words (*مدرن · سریع · امن · مقیاس‌پذیر*). Three to five words, no punctuation. This is the system's closing gesture and its most recognisable non-card element.
+- Light canvas. Text on the start (right) side, visual on the end (left) side.
+- Headline in `--color-text-primary`, Vazirmatn 800. Highlight **one** phrase with an amber highlighter stroke:
+  ```css
+  .headline-mark { background: linear-gradient(transparent 55%, var(--color-highlight-soft) 55%); }
+  ```
+- Eyebrow: `--color-tonal-text`, small, weight 700.
+- The visual sits in a **forest tile** (`data-surface="dark"`, radius 16–20px) with the grid texture and one mint glow behind the mockups. This is the Instagram post echo.
+- One primary + one outline button. Nothing else solid.
 
-## Do's and Don'ts
+### Stats / trust bar
 
-### Do:
-- **Do** deliver the page ground as `--grad-page` — a radial teal-green bloom at ~22%/38% over navy, darkening to `#040F24` at the edges.
-- **Do** use the deep emerald pair (`#0E5A3C` → `#14764F`) for any surface carrying text on the action colour; it clears 4.5:1 where the bright gradient does not.
-- **Do** keep exactly one emerald card per row — the lit one marks what is featured or active.
-- **Do** reach for semantic aliases (`--surface-card`, `--text-muted`, `--accent`) rather than the raw ramps.
-- **Do** render every user-facing figure in Persian digits.
-- **Do** attach a real number to every claim, or cut the claim — the three delivered projects, the two-person team, and the one-business-day response are the only proof available, and inventing more is a product-level violation.
-- **Do** draw icons as Lucide CSS masks with `background-color: currentColor`, at 16 / 20 / 22 / 26px.
-- **Do** keep `.logo` at `direction: ltr` so the Latin wordmark holds its order on an RTL page.
+- White surface card on canvas, `--color-border-subtle`.
+- Numerals: `--color-brand`, weight 800, Persian digits, `font-variant-numeric: tabular-nums`.
+- Labels: `--color-text-secondary`.
+- **No buttons inside the stats bar.**
 
-### Don't:
-- **Don't** use bronze as a button, a surface, or a border. It emphasises; it never acts.
-- **Don't** put two accent colours in competition on one surface.
-- **Don't** use a flat background colour anywhere the page ground shows — it is always a gradient.
-- **Don't** set body text at reduced opacity; use `--text-muted`, a real colour.
-- **Don't** use `--text-muted` (`#7A908D`, 4.6:1) for running copy — it is the floor, for captions and hints only.
-- **Don't** use a square corner, a 2px border, a flat grey divider, or a coloured-left-border-only card.
-- **Don't** fade opacity on hover — that reads as disabled. Brighten instead.
-- **Don't** let anything bounce, overshoot, or spin. Cross-fades and 2px translations only, at 220ms on `cubic-bezier(.22,.61,.36,1)`.
-- **Don't** use emoji or Unicode characters as icons, and never hand-write SVG paths.
-- **Don't** reproduce anything from the source reference comp — its "BizNext" branding, its client logos, or its invented figures (`500+ Projects`, `98% Client Satisfaction`). It is an art-direction reference and a confirmed anti-reference for content.
-- **Don't** fabricate photography. There is none yet; depth is rendered in CSS until real images arrive.
+### Service cards
+
+- `--color-surface`, 1px `--color-border-subtle`, `--shadow-card`.
+- Icon in a 36–40px chip: bg `--color-tonal`, icon `--color-tonal-text`.
+- Title `--color-text-primary`, description `--color-text-secondary`.
+- Hover: border → `--color-border-hover`, shadow → `--shadow-elevated`.
+
+### Portfolio cards
+
+- Forest tiles (`data-surface="dark"`) with the screenshot inside. They should read like the Instagram grid.
+- Title `--color-text-primary` (resolves to `#F1F5F2`). Tag chip: text `--green-400`, bg `--forest-raised`, border `--forest-line`.
+- Hover: bg → `--color-brand-hover`, optional mint glow behind the image.
+
+### Client list / testimonials
+
+- Client names/logos monochrome `--color-text-muted` on `--color-bg-alt`; hover → `--color-text-primary`.
+- Testimonials: white card, decorative quote mark in `--amber-300`.
+
+### Forms (always light)
+
+- Container: `--color-surface`, `--color-border-subtle`.
+- Label: `--color-text-primary`, weight 600. Hint: `--color-text-muted`.
+- Input: bg `--color-surface`, 1px `--color-border-strong`, text `--color-text-primary`, placeholder `--color-text-muted`.
+- Focus: border + outline `--color-focus`, halo `--color-focus-halo`.
+- Error: border `--color-error`, message `--color-error` **with icon and text**. Never color alone.
+- Success message: `--color-success` on `--color-success-bg` (hue 145°, deliberately different from brand green).
+- Submit: primary button.
+
+### Final CTA band
+
+- Full width, `data-surface="dark"`, grid texture + one mint glow.
+- Heading `--color-text-primary`, one line of `--color-text-body`, one primary button (mint).
+
+### Footer
+
+- `data-surface="dark"`, background `--color-bg-alt` (`#0B211C`).
+- Links `--color-text-secondary` → hover `--color-text-primary`. Small print `--color-text-muted`.
+
+---
+
+## 6. Surface rules
+
+- **Light = read and decide:** services, process, about, pricing, FAQ, testimonials, forms.
+- **Forest = recognize and commit:** hero media tile, portfolio tiles, final CTA band, footer.
+- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card.
+- At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section.
+- No paragraph longer than two lines on forest.
+- Light levels stack in order: `bg` → `bg-alt` → `surface` → `surface-elevated`. A card is always lighter than what it sits on.
+- Alternate `bg` / `bg-alt` between sections instead of drawing section borders.
+- On forest, raised cards always get a `--forest-line` border. The fill contrast alone (1.14:1) is not enough.
+
+## 7. Borders
+
+- `--color-border-subtle` → card outlines (decorative).
+- `--color-border` → dividers, table rules.
+- `--color-border-strong` → anything interactive whose edge identifies it (inputs, outline buttons, checkboxes). ≥3:1.
+- No colored accent rails or side-borders on cards.
+
+## 8. Glow, gradient, texture, shadow
+
+- **Glow:** forest surfaces only. Radial `--color-glow`, one source per section, behind media, never behind text, never on buttons.
+- **Gradients:** single hue only, e.g. `#12312A → #0E2A24`. Never green→amber, green→blue or navy.
+- **Grid texture** (Instagram signature):
+  ```css
+  .texture-grid {
+    background-image:
+      linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  ```
+  Use on forest bands/tiles; on light only in the hero, if at all.
+- **Shadows:** forest-tinted `rgba(18,49,42,…)` only, never black. None on forest.
+- **Image overlays:** `linear-gradient(to top, var(--color-overlay), transparent)`.
+- **RTL:** CSS gradients aren't direction-aware. Flip directional gradients and glow positions under `[dir="rtl"]`. The light source sits on the text (right) side.
+
+---
+
+## 9. Typography × color
+
+| Level | Token | Vazirmatn weight | Min size |
+|---|---|---|---|
+| Display / H1 | `--color-text-primary` | 800 | — |
+| H2–H4 | `--color-text-primary` | 700 | — |
+| Body | `--color-text-body` | 400 | 16px |
+| Secondary | `--color-text-secondary` | 400–500 | 14px |
+| Caption / hint | `--color-text-muted` | 400 | 14px |
+| Eyebrow | `--color-tonal-text` | 700 | 12px |
+
+- Hierarchy is never color alone. Always pair it with size and weight.
+- Persian: treat **4.5:1 as the minimum even for large text under 24px**. Thin joins and dots lose definition faster than Latin.
+- Line-height ≥ 1.8 for Persian body text.
+
+---
+
+## 10. Accessibility (verified ratios)
+
+| Pair | Ratio |
+|---|---|
+| text-primary `#13201B` on bg `#F5F7F4` | 15.59 |
+| text-body `#22302A` on bg | 12.79 |
+| text-secondary `#4B5951` on bg / bg-alt | 6.85 / 6.51 |
+| text-muted `#5F6E65` on white / bg / bg-alt | 5.38 / 4.99 / 4.75 |
+| white on cta `#197358` | 5.78 |
+| white on cta-hover `#13604A` | 7.50 |
+| cta `#197358` vs bg (shape/link) | 5.36 |
+| tonal-text `#13604A` on tonal `#EEF6F2` | 6.82 |
+| border-strong `#7F8D86` on white / bg | 3.47 / 3.22 |
+| amber-700 `#8C5313` on bg | 5.80 |
+| ink on highlighter `#F7E2C4` | 13.30 |
+| on-dark-1 `#F1F5F2` on forest / raised | 12.74 / 11.16 |
+| on-dark-2 `#B9CBC3` on forest / raised | 8.27 / 7.25 |
+| on-dark-3 `#8FA69C` on forest / raised / footer | 5.41 / 4.74 / 6.49 |
+| mint `#57B79A` text on forest / raised | 5.77 / 5.06 |
+| `#0B211C` on mint CTA / hover | 6.92 / 8.39 |
+| amber `#E0A25C` on forest | 6.33 |
+| forest-line-strong `#5E8479` on forest | 3.37 |
+| success / warning / error / info on their bg | 5.39 / 5.91 / 5.75 / 6.02 |
+| ❌ amber `#E0A25C` on light | 2.07: never text |
+| ❌ mint `#57B79A` on white | 2.43: never text or meaningful icons |
+
+**When adding any new color pair, compute its contrast (WCAG 2.x formula) before shipping.** Targets: text ≥ 4.5:1, UI boundaries ≥ 3:1.
+
+Also check:
+- `prefers-reduced-motion`: disable glow/hover transitions.
+- `forced-colors: active`: buttons keep a visible border.
+- Status = color + icon + text.
+
+---
+
+## 11. Do / Don't
+
+**Do**
+- Use semantic tokens in components; primitives live only in `tokens.css`.
+- Keep one solid primary button per viewport.
+- Put screenshots and mockups on forest tiles.
+- Wrap every dark area in `data-surface="dark"`.
+- Use `#F1F5F2` for text on dark, and Persian digits in stats.
+- Pair every status color with an icon and words.
+
+**Don't**
+- Bring back navy, or any blue besides `info`.
+- Make anything green that can't be clicked (stats, hero chart bars, decorative icons on light).
+- Make buttons amber, or add gradients or glows to buttons.
+- Put mint or amber text on light backgrounds.
+- Use a forest card for paragraphs, or put a form on dark.
+- Add a third accent hue.
+- Use pure `#FFFFFF` as the page background or as text on dark.
+- Write raw hex values or Tailwind arbitrary colors (`bg-[#…]`) in components.
+
+---
+
+## 12. Pre-merge checklist for UI changes
+
+- [ ] No new hex values outside `tokens.css`
+- [ ] Only one solid primary button visible in any viewport
+- [ ] Every dark area has `data-surface="dark"`
+- [ ] No mint/amber text on light surfaces
+- [ ] Forms on light surfaces; errors shown with icon + text
+- [ ] Forest area ≤ ~30% of the page; action green ≤ ~5%
+- [ ] Focus states visible on light and dark
+- [ ] Layout and gradients checked in RTL
+- [ ] Any new color pair's contrast computed and passing

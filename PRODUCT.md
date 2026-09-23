@@ -29,16 +29,16 @@ Every engagement gets a design built specifically for that client's need — not
 ## Capabilities and Constraints
 
 - Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built.
-- Built on the Mitec Design System (`_ds/`) with three documented, intentional deviations: Vazirmatn replaces Montserrat/Mulish (no Persian glyphs), a `direction: ltr` override keeps the Latin-built logo from flipping in RTL, and action-colored text uses a darker green ramp (`green-700 → green-600`) to clear WCAG 4.5:1 contrast that the base accent gradient fails at button-label sizes.
+- The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose colour, gradient and elevation files are no longer imported; only its spacing, radii and motion scales remain. Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
 - No build step; ES modules served over HTTP (not `file://`).
-- Persian language, RTL layout, dark theme — these are load-bearing, not optional.
+- Persian language and RTL layout are load-bearing, not optional. The theme is light-first: forest green appears only as bands, media tiles and the footer.
 - Team size (2 people) and directness of access are facts the design/copy should keep truthful, not inflate.
 
 ## Brand Commitments
 
 - Name: mitec (styled "mitec team" in places).
-- Persian, RTL, dark theme, Vazirmatn typography — binding.
-- Mitec Design System is the visual reference system; component and token usage should stay traceable to it.
+- Persian, RTL, Vazirmatn typography — binding. The palette must match the studio's Instagram presence (forest `#12312A`, mint `#57B79A`, amber `#E0A25C`); navy and blue are excluded outright.
+- DESIGN.md is the visual authority; components read its semantic `--color-*` tokens and never raw hex.
 - Team: Parham Movahedi (UI/frontend), Sina Alipour (backend/infrastructure) — named, real people, currently placeholder photos.
 
 ## Evidence on Hand
@@ -53,5 +53,5 @@ Every engagement gets a design built specifically for that client's need — not
 1. Design to the specific client's need, every time — no visible templating or fixed packages.
 2. Keep the "two people, no middleman" promise legible and truthful in both copy and interaction (e.g. direct contact channels, no fake team scale).
 3. Never fabricate proof — stats, testimonials, and numbers must stay real or explicitly marked as placeholder/sample.
-4. Persian/RTL/dark-theme fidelity is a correctness requirement, not a stylistic option.
+4. Persian and RTL fidelity is a correctness requirement, not a stylistic option — including Persian numerals in all user-facing figures.
 5. The order builder and tracker are functional tools, not marketing decoration — they must stay usable end to end as pages are built out.
