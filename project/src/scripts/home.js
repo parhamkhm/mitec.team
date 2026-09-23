@@ -1,12 +1,13 @@
 // mitec — home page entry.
-// Small, independent behaviours (nav, scroll-spy, FAQ) plus the motion layer
-// under ./motion/. No dependencies, no build step — this loads as a
-// plain ES module straight off the page.
+// Small, independent behaviours (nav, scroll-spy, FAQ, quick scope) plus the
+// motion layer under ./motion/. No dependencies, no build step — this loads
+// as a plain ES module straight off the page.
 
 import { whenMotion } from './motion/engine.js';
 import { initReveal } from './motion/reveal.js';
 import { initPortal } from './motion/portal.js';
 import { initEffects } from './motion/effects.js';
+import { initScope } from './scope.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -103,4 +104,5 @@ initScrollSpy();
 initPortal();
 initEffects();
 initFaq();
+initScope();
 whenMotion(initReveal);

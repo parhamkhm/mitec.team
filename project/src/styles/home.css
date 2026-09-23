@@ -220,6 +220,69 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 }
 .testimonial figcaption { font-size: var(--text-body-sm); color: var(--color-text-muted); }
 
+/* ---------------------------------------------------------------- quick scope
+   A form on light, as every form is (DESIGN.md §6): what every project gets
+   on the start side, the choices, live estimate and the one primary on the
+   end side. Selected choices take the tonal pair, never the action green —
+   the action green is kept for the button. Stacks below 1024px. */
+.scope-grid { display: grid; gap: var(--space-4); align-items: start; }
+@media (min-width: 1024px) { .scope-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); } }
+.scope-base { display: flex; flex-direction: column; gap: var(--space-5); }
+.scope-base__list { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-4); }
+.scope-base__list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--color-text-body); line-height: var(--lh-tight); }
+.scope-base__mark {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--color-tonal);
+  color: var(--color-tonal-text);
+}
+.scope-base__mark .icon { width: 16px; height: 16px; }
+.scope-pick { display: flex; flex-direction: column; gap: var(--space-7); }
+.scope-choices { display: flex; flex-direction: column; gap: var(--space-6); }
+.scope-choices[aria-busy="true"] .scope-note { visibility: hidden; } /* no flash of the no-JS note while loading */
+.scope-note { color: var(--color-text-secondary); }
+.scope-group { min-width: 0; margin: 0; padding: 0; border: 0; }
+.scope-group legend { margin-bottom: var(--space-3); padding: 0; font-weight: 700; color: var(--color-text-primary); }
+.scope-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.scope-chip { position: relative; }
+/* The native radio stays for its semantics and keys; the pill is its face. */
+.scope-chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.scope-chip span,
+.scope-feat {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.scope-chip span { padding: 8px 18px; border-radius: var(--radius-pill); }
+.scope-chip:hover span,
+.scope-feat:hover { background: var(--color-surface-sunken); }
+.scope-chip input:checked + span,
+.scope-feat[aria-pressed="true"] { background: var(--color-tonal); border-color: var(--color-tonal-text); color: var(--color-tonal-text); font-weight: 700; }
+.scope-chip input:focus-visible + span { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
+.scope-feats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--space-2); }
+.scope-feat { justify-content: space-between; gap: var(--space-3); width: 100%; padding: 8px 16px; border-radius: var(--radius-sm); text-align: start; }
+.scope-feat .icon { width: 18px; height: 18px; color: var(--color-tonal-text); }
+.scope-result { padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
+.scope-result__line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); font-size: var(--text-body-lg); color: var(--color-text-secondary); }
+/* A figure, not an action: the brand colour, like the stats. The old and new
+   values share one grid cell while they cross-fade. */
+.scope-result__value { display: inline-grid; font-size: var(--text-h4); font-weight: 800; color: var(--color-brand); }
+.scope-result__value > * { grid-area: 1 / 1; }
+.scope-go { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.scope-disclaimer { font-size: var(--text-caption); color: var(--color-text-muted); }
+
 /* ---------------------------------------------------------------- FAQ
    One narrow column of rows split by hairlines — no card per item. */
 .faq-list { border-top: 1px solid var(--color-border); }

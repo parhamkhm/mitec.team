@@ -94,6 +94,7 @@ body { caret-color: var(--color-cta); }
 .icon-x                { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/x.svg); }
 .icon-plus             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); }
 .icon-minus            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); }
+.icon-check            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/check.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/check.svg); }
 
 /* ---------------------------------------------------------------- Logo
    No official mark was supplied — the wordmark is set in type. The amber

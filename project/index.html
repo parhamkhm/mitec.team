@@ -365,8 +365,45 @@
     </div>
   </section>
 
+  <!-- ============================================================ QUICK SCOPE
+       A light, form-like section: what every project includes, then the
+       site type and features (from getCatalog(), never hard-coded) with a
+       live timeline from src/utils/estimate.js. Price appears only when
+       APP_CONFIG.showPrice is on. Without JS it points to the order builder,
+       which asks the same questions. -->
+  <section id="scope" class="band" aria-labelledby="scope-title">
+    <div class="band__inner">
+      <div class="section-heading section-heading--center" data-reveal>
+        <span class="section-heading__eyebrow">برآورد سریع</span>
+        <h2 id="scope-title" class="section-heading__title section-heading__title--display-3">زمان تقریبی پروژه‌تان</h2>
+        <p class="section-heading__sub">نوع سایت و امکاناتی را که لازم دارید انتخاب کنید.</p>
+      </div>
+
+      <div class="scope-grid" data-reveal-stagger>
+        <div class="card card--surface card--pad-lg scope-base">
+          <h3 class="card-title">همیشه شامل می‌شود</h3>
+          <ul class="scope-base__list">
+            <li><span class="scope-base__mark" aria-hidden="true"><span class="icon icon-check"></span></span>طراحی رابط کاربری اختصاصی</li>
+            <li><span class="scope-base__mark" aria-hidden="true"><span class="icon icon-check"></span></span>راه‌اندازی روی دامنه و هاست خودتان، با SSL</li>
+            <li><span class="scope-base__mark" aria-hidden="true"><span class="icon icon-check"></span></span>یک دوره پشتیبانی بدون هزینه بعد از تحویل</li>
+          </ul>
+        </div>
+
+        <div class="card card--surface card--pad-lg scope-pick">
+          <div class="scope-choices" id="scopeChoices">
+            <p class="scope-note">برای انتخاب نوع سایت و امکانات، سفارش‌ساز را باز کنید.</p>
+          </div>
+          <div class="scope-go">
+            <a class="btn btn--lg btn--primary" id="scopeGo" href="./order/">ادامه در سفارش‌ساز <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+            <p class="scope-disclaimer">زمان دقیق بعد از جلسه مشاوره و مشخص شدن محتوا اعلام می‌شود.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================================================ FAQ -->
-  <section id="faq" class="band">
+  <section id="faq" class="band band--alt">
     <div class="band__inner band__inner--narrow">
       <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">سؤالات متداول</span>
