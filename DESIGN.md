@@ -86,6 +86,11 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --color-brand:       var(--green-900);
   --color-brand-hover: var(--forest-raised);
 
+  /* Process steps (§5) — deliberately not remapped on forest */
+  --color-step-fill:      var(--green-100);
+  --color-step-line:      var(--green-300);
+  --color-step-spot-line: var(--forest-line);
+
   --color-cta:        var(--green-600);
   --color-cta-hover:  var(--green-700);
   --color-cta-active: var(--green-800);
@@ -161,12 +166,17 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --color-grid-line:  rgba(255, 255, 255, .035);
   --shadow-card: none;
 
+  /* Home hero laptop only (§8) */
+  --color-reflection: rgba(241, 245, 242, .06);
+
   background-color: var(--color-bg);
   color: var(--color-text-body);
 }
 ```
 
 The footer uses `data-surface="dark"` plus `background: var(--color-bg-alt)` (resolves to `#0B211C`).
+
+`tokens.css` also holds the non-colour scales: type (`--text-*`, `--lh-*`, and `--ls-*`, which are all 0 — §13), `--section-pad: clamp(96px, 11vw, 176px)` for section padding, and the motion values (`--dur-reveal`, `--dur-media`, `--stagger`, `--reveal-rise`, `--ease-portal`) on top of the design system's `--dur` / `--ease-*` scale. All durations go to 0 under reduced motion.
 
 ### Tailwind v4 (if the project uses Tailwind)
 
@@ -217,6 +227,7 @@ Use `bg-cta text-cta-text`, not `bg-[#197358]`. Arbitrary hex values in class na
 
 **Area budget per page:** light neutrals 60–65% · forest 20–25% (max 30%) · ink and lines ~8% · action green 3–5% · mint 1–2% · amber ≤1%.
 If action green goes over ~5%, something that isn't clickable is green. Fix it.
+The home hero's forest scene (§5) is measured as the hero, not against this budget: it fills the first screen and then leaves.
 
 ---
 
@@ -292,6 +303,7 @@ Inner pages (and any hero that is not the home portal):
 - Numerals: `--color-brand`, weight 800, Persian digits, `font-variant-numeric: tabular-nums`.
 - Labels: `--color-text-secondary`.
 - **No buttons inside the stats bar.**
+- On the home page it lives in the Proof room the portal opens into, with the project-name strip under it. Stats are real facts only (`src/data/site-copy.json`).
 
 ### Service cards
 
@@ -307,11 +319,12 @@ Inner pages (and any hero that is not the home portal):
 - Nothing here is clickable, so nothing here is `--color-cta`.
 - Reduced motion / no JS: every step shows filled, no spotlight.
 
-### Portfolio cards
+### Portfolio rows
 
-- Forest tiles (`data-surface="dark"`) with the screenshot inside. They should read like the Instagram grid.
-- Title `--color-text-primary` (resolves to `#F1F5F2`). Tag chip: text `--green-400`, bg `--forest-raised`, border `--forest-line`.
-- Hover: bg → `--color-brand-hover`, optional mint glow behind the image.
+- One row per project: a forest media tile (`data-surface="dark"`, grid texture, `--radius-xl`, `--forest-line` border, 16:10) beside a light text column. The media column is the wider one; rows alternate sides from 1024px and stack media-then-text below it.
+- The screenshot sits inset in the tile with one mint glow behind it only, never behind text.
+- The text column is on light: tag badges in the tonal pair, title `--color-text-primary`, the need / built / result list (labels `--color-text-muted`), then the site link or the "link after client approval" note.
+- Hover on the tile: bg → `--color-brand-hover`, glow up to full.
 
 ### Client list / testimonials
 
@@ -327,11 +340,19 @@ Inner pages (and any hero that is not the home portal):
 - Error: border `--color-error`, message `--color-error` **with icon and text**. Never color alone.
 - Success message: `--color-success` on `--color-success-bg` (hue 145°, deliberately different from brand green).
 - Submit: primary button.
+- **Choices** (site-type chips, feature toggles — the Quick scope): white with a `--color-border-strong` edge; selected takes the tonal pair (`--color-tonal` fill, `--color-tonal-text` edge and text, 6.82:1), never the action green, which stays with the one primary button. Use native radios for single choice and `aria-pressed` buttons for toggles; keep 44px targets.
+- **Estimates** are figures, not actions: `--color-brand`, Persian digits. Price is shown only when `APP_CONFIG.showPrice` is on — otherwise it is not in the page at all.
+
+### FAQ
+
+- One narrow column of rows split by `--color-border` hairlines — no card per item. `+` / `−` marker in `--color-tonal-text`.
+- Single-open. Panels open with a grid-rows animation (`--dur-slow`); closed panels are `inert`.
 
 ### Final CTA band
 
 - Full width, `data-surface="dark"`, grid texture + one mint glow.
 - Heading `--color-text-primary`, one line of `--color-text-body`, one primary button (mint).
+- Home page: centred. The heading, line and buttons sit on a "screen" framed by a `--color-border` outline echo of the hero laptop; the heading reveals word by word.
 
 ### Footer
 
@@ -393,6 +414,7 @@ Inner pages (and any hero that is not the home portal):
 - Hierarchy is never color alone. Always pair it with size and weight.
 - Persian: treat **4.5:1 as the minimum even for large text under 24px**. Thin joins and dots lose definition faster than Latin.
 - Line-height ≥ 1.8 for Persian body text.
+- **Letter-spacing 0 on Persian text**, headings and eyebrows included (`--ls-*` are 0). Persian is a joined script: any tracking, positive or negative, opens gaps in the joins. Latin wordmarks may keep theirs.
 
 ---
 
@@ -419,13 +441,20 @@ Inner pages (and any hero that is not the home portal):
 | amber `#E0A25C` on forest | 6.33 |
 | forest-line-strong `#5E8479` on forest | 3.37 |
 | success / warning / error / info on their bg | 5.39 / 5.91 / 5.75 / 6.02 |
+| cta `#197358` link on bg-alt `#EDF2EE` | 5.10 |
+| amber `#E0A25C` on the laptop glass (forest-raised) | 5.55 |
+| on-dark-3 `#8FA69C` as the outline-button edge on the glass | 4.74 |
+| nav on the hero at 94% forest over the light room: links / tonal CTA | 6.97 / 4.73 |
+| text-primary / text-secondary on step fill `#D8EDE3` | 13.71 / 6.02 |
+| brand `#12312A` numeral on step fill | 11.44 |
+| ❌ forest-line-strong `#5E8479` on the glass | 2.96: not an outline-button edge there |
 | ❌ amber `#E0A25C` on light | 2.07: never text |
 | ❌ mint `#57B79A` on white | 2.43: never text or meaningful icons |
 
 **When adding any new color pair, compute its contrast (WCAG 2.x formula) before shipping.** Targets: text ≥ 4.5:1, UI boundaries ≥ 3:1.
 
 Also check:
-- `prefers-reduced-motion`: disable glow/hover transitions.
+- `prefers-reduced-motion`: disable glow/hover transitions, and see §13.
 - `forced-colors: active`: buttons keep a visible border.
 - Status = color + icon + text.
 
@@ -464,3 +493,20 @@ Also check:
 - [ ] Focus states visible on light and dark
 - [ ] Layout and gradients checked in RTL
 - [ ] Any new color pair's contrast computed and passing
+- [ ] Motion follows §13: transform/opacity only per frame, reduced motion renders static and complete, no Persian text split below the word, letter-spacing 0
+
+---
+
+## 13. Motion
+
+Motion explains depth and order; nothing on the page needs it to be understood.
+
+- **Opt-in.** Every motion rule is scoped to `html.motion`, set only when the visitor has not asked for reduced motion (and is not in forced colours). Without it — reduced motion, no JS, forced colours — the page is the plain static document with everything visible and complete: no pinning, no scrubbing, no reveals, no smooth scrolling.
+- **Transform and opacity only, per frame.** Scroll-linked effects never animate width/height/position, `clip-path`, masks, filters, shadows or background position per frame. Masks and geometry are set on resize. Class or attribute flips (a nav switching surface, a spotlight moving) happen only when state changes, and their CSS transitions do the rest.
+- **One engine.** One `requestAnimationFrame` loop and one passive scroll listener (`src/scripts/motion/engine.js`) serve every scroll-linked effect; layout is read only in `measure()` (resize, load, font swap), never in the loop. Off-screen effects are skipped.
+- **One pinned scene per page.** On the home page that is the portal hero; everything after it scrolls normally.
+- **Reversible.** Scroll-linked motion is a pure function of scroll position, so scrolling back replays it in reverse. No one-shot triggers inside a scene.
+- **Reveal once, calmly.** Entrances play once as a section arrives: rise 20–28px and fade, 600–700ms `--ease-entrance`, 60–90ms stagger. Content that keyboard focus reaches shows at once.
+- **Words, never characters.** Persian text may reveal by whole words or phrases (ZWNJ-joined words stay whole), never by letter — the letters join.
+- **Letter-spacing 0 on Persian text**, animated or not (§9).
+- **Invisible means unfocusable.** Anything faded out that could take focus is made `inert`; decorative layers are `aria-hidden`.

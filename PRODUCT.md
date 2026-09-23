@@ -23,12 +23,15 @@ Every engagement gets a design built specifically for that client's need — not
 - The order builder wizard (`Mitec Order Builder.dc.html` → `/order`, `/order/success`) is how clients describe their needs and place an order.
 - Order tracking (`Mitec Track.dc.html` → `/track`) lets clients check status on an existing order; requires a phone number (`TRACK_REQUIRES_PHONE: true`).
 - The backend is being built by a teammate; the frontend talks to it only through `src/api/client.js` / `mapper.js`, currently mocked (`USE_MOCK: true`).
-- Pricing is intentionally not shown in the wizard summary (`showPrice: false`) at this stage.
+- Pricing is intentionally not shown (`showPrice: false`) at this stage — not in the wizard summary, and not in the home page's quick scope, where no price element exists at all while the flag is off.
+- The home page's quick scope is a front door to the order builder: it reads the same catalog (`getCatalog()`), quotes the timeline with the same `src/utils/estimate.js` the builder will import, and hands the choice over in the builder's own saved state (`localStorage['mitec.order.v1']`, shape `{ selection, step, unsure }`).
 - Contact channels: WhatsApp, Telegram, Instagram (placeholder values in `app.config.js`, not yet real).
 
 ## Capabilities and Constraints
 
-- Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built.
+- Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built, so every `./order/` and `./track/` link on the home page 404s until they are. The `.dc.html` files are old prototypes, not a visual source; DESIGN.md is.
+- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Testimonials (sample, labelled), Services, Process, About, Quick scope (site type + features → approximate timeline, then on to the order builder), FAQ, closing CTA.
+- Motion is an enhancement, never a requirement: it runs only when the visitor has not asked for reduced motion, and without it (or without JS) the page is the complete static document (DESIGN.md §13). No animation library, no WebGL — a small vanilla engine in `src/scripts/motion/`.
 - The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose colour, gradient and elevation files are no longer imported; only its spacing, radii and motion scales remain. Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
 - No build step; ES modules served over HTTP (not `file://`).
 - Persian language and RTL layout are load-bearing, not optional. The theme is light-first: forest green appears only as bands, media tiles and the footer.
