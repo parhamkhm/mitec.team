@@ -8,3 +8,7 @@ node_modules/
 .impeccable/live/accept-receipts/
 .impeccable/live/roots.json
 .impeccable/live/inject-journal.json
+
+# Generated output from earlier Claude analysis sessions (the specs that came
+# out of it live in docs/prompts/).
+Claude outputs/
