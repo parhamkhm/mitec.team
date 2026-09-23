@@ -41,7 +41,8 @@ python devserver.py 4173
 - `src/scripts/scope.js` — برآورد سریع (قیمت و زمان): همه‌چیز — بسته‌ها، موردها، قیمت‌ها، روزها و متن‌ها — از
   سند قیمت‌گذاری با `getPricing()` می‌آید (`src/config/pricing.json`؛ راهنما: `docs/pricing-guide.md`). محاسبه در
   `src/utils/estimate.js` است (همان تابعی که سفارش‌ساز هم باید import کند؛ تست: `src/utils/estimate.test.html`) و
-  انتخاب از طریق `localStorage['mitec.order.v1']` به سفارش‌ساز می‌رود.
+  انتخاب از طریق `localStorage['mitec.order.v1']` به سفارش‌ساز می‌رود. چیدمان برای هر تعداد افزونه مرتب می‌ماند: کارت
+  خلاصه (پایه + جمع + دکمه) در دسکتاپ sticky است و افزونه‌ها کاشی‌های هم‌ارتفاع در شبکه‌ی دو ستونی‌اند (DESIGN.md §5، Forms).
 
 ## صفحه‌ها
 
@@ -81,7 +82,7 @@ API_CONTRACT.md
 
 ۳. اگر هدر یا توکنی لازم شد، تابع خالی `authHeaders()` در `src/api/client.js` همان‌جاست.
 
-چهار تابع عمومی: `getCatalog()`, `submitOrder()`, `uploadFile()`, `trackOrder()` — همه با شکل ثابت `{ ok, data, error }`.
+پنج تابع عمومی: `getCatalog()`, `getPricing()`, `submitOrder()`, `uploadFile()`, `trackOrder()` — همه با شکل ثابت `{ ok, data, error }`.
 
 ## کارهای باقی‌مانده
 
@@ -92,6 +93,7 @@ API_CONTRACT.md
   کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص).
 - `src/config/pricing.json` — قیمت‌ها و روزهای واقعی؛ الان همه نمونه‌اند (`"placeholder": true`) و روی سایت برچسب «اعداد نمونه» دارند. راهنما: `docs/pricing-guide.md`.
 - `src/data/testimonials.json` — نظرهای واقعی؛ الان نمونه است و در UI هم «نمونه» برچسب خورده.
+- متن‌ها: مشکلاتی که حین ساخت دیده شد و هنوز اصلاح نشده در `docs/copy-todo.md` (در ریشه‌ی مخزن) جمع شده است.
 - شماره‌ی واتساپ، آیدی تلگرام و اینستاگرام در `app.config.js` و در `index.html`.
 - اعداد آمار در `src/data/site-copy.json` — فقط واقعیت، بدون عدد ساختگی.
 - favicon هنوز طراحی نشده؛ فعلاً یک آیکون خالی (`data:,`) در `index.html` هست تا مرورگر `/favicon.ico` را درخواست نکند.

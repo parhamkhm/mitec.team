@@ -451,6 +451,11 @@ Inner pages (and any hero that is not the home portal):
 | nav on the hero at 94% forest over the light room: links / tonal CTA | 6.97 / 4.73 |
 | text-primary / text-secondary on step fill `#D8EDE3` | 13.71 / 6.02 |
 | brand `#12312A` numeral on step fill | 11.44 |
+| text-primary / text-secondary / text-muted on tonal `#EEF6F2` (a chosen add-on tile) | 15.28 / 6.71 / 4.89 |
+| white icon in the tonal-text `#13604A` circle (a chosen add-on) | 7.50 |
+| border-strong `#7F8D86` circle edge on white / tonal (the add-on toggle) | 3.47 / 3.15 |
+| text-secondary `#4B5951` on surface-sunken `#E2E9E4` (an unselected site-type tab) | 5.97 |
+| ℹ add-on tile edges: `--color-border` dashed on white 1.79, `--color-border-hover` on tonal 1.36 | decorative: the tile is identified by its text and the ≥ 3:1 toggle circle |
 | ❌ forest-line-strong `#5E8479` on the glass | 2.96: not an outline-button edge there |
 | ❌ amber `#E0A25C` on light | 2.07: never text |
 | ❌ mint `#57B79A` on white | 2.43: never text or meaningful icons |
@@ -514,3 +519,4 @@ Motion explains depth and order; nothing on the page needs it to be understood.
 - **Words, never characters.** Persian text may reveal by whole words or phrases (ZWNJ-joined words stay whole), never by letter — the letters join.
 - **Letter-spacing 0 on Persian text**, animated or not (§9).
 - **Invisible means unfocusable.** Anything faded out that could take focus is made `inert`; decorative layers are `aria-hidden`.
+- **Tools respond; they don't perform.** In the pricing calculator nothing is scroll-linked: tabs, tiles and toggle circles transition background and border over `--dur`, and a changed figure cross-fades (the old value up and out 8px, the new one in, 220ms; instant without `html.motion`). The sticky summary card and the bottom bar are plain CSS `position: sticky`. Keyboard focus scrolled into view clears the nav and the bar (`scroll-margin`).
