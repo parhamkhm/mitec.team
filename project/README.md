@@ -38,10 +38,10 @@ python devserver.py 4173
 - `src/scripts/motion/engine.js` — تنها حلقه‌ی `requestAnimationFrame` و تنها listener اسکرول صفحه.
   اندازه‌گیری‌ها کش می‌شوند و در هر فریم فقط transform و opacity نوشته می‌شود.
 - `portal.js` هیرو، `effects.js` افکت‌های اسکرول بخش‌ها، `reveal.js` ورود یک‌باره‌ی بخش‌ها.
-- `src/scripts/scope.js` — برآورد سریع: گزینه‌ها از `getCatalog()`، زمان تقریبی از `src/utils/estimate.js`
-  (همان تابعی که سفارش‌ساز هم باید import کند) و انتقال انتخاب به سفارش‌ساز از طریق
-  `localStorage['mitec.order.v1']` با شکل `{ selection, step, unsure }`. قیمت فقط وقتی `showPrice`
-  روشن است در صفحه می‌آید.
+- `src/scripts/scope.js` — برآورد سریع (قیمت و زمان): همه‌چیز — بسته‌ها، موردها، قیمت‌ها، روزها و متن‌ها — از
+  سند قیمت‌گذاری با `getPricing()` می‌آید (`src/config/pricing.json`؛ راهنما: `docs/pricing-guide.md`). محاسبه در
+  `src/utils/estimate.js` است (همان تابعی که سفارش‌ساز هم باید import کند؛ تست: `src/utils/estimate.test.html`) و
+  انتخاب از طریق `localStorage['mitec.order.v1']` به سفارش‌ساز می‌رود.
 
 ## صفحه‌ها
 
@@ -59,11 +59,11 @@ python devserver.py 4173
 
 ```
 src/api/      client.js, endpoints.js, mapper.js, mock.js  ← تنها لایه‌ای که با سرور حرف می‌زند
-src/config/   app.config.js, order-catalog.json
+src/config/   app.config.js, order-catalog.json, pricing.json
 src/data/     portfolio.json, faq.json, testimonials.json, site-copy.json
 src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (engine, easing, portal, effects, reveal)
 src/styles/   tokens.css, components.css, home.css, portal.css, motion.css
-src/utils/    persian-digits.js, validators.js, estimate.js
+src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js
 _ds/…/        سیستم طراحی قبلی؛ فقط spacing، radii و motion آن import می‌شود
 public/       sitemap.xml, robots.txt
 image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
@@ -90,6 +90,7 @@ API_CONTRACT.md
   شود** (دسترسی از ایران). آیکون‌ها هم از CDN لوسید (jsDelivr) mask می‌شوند — همان‌ها را هم لوکال کنید.
 - تصاویر: اسکرین‌شات پروژه‌ها و عکس تیم هنوز `.img-slot` هستند — با `<img>` از `public/images/` جایگزین
   کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص).
+- `src/config/pricing.json` — قیمت‌ها و روزهای واقعی؛ الان همه نمونه‌اند (`"placeholder": true`) و روی سایت برچسب «اعداد نمونه» دارند. راهنما: `docs/pricing-guide.md`.
 - `src/data/testimonials.json` — نظرهای واقعی؛ الان نمونه است و در UI هم «نمونه» برچسب خورده.
 - شماره‌ی واتساپ، آیدی تلگرام و اینستاگرام در `app.config.js` و در `index.html`.
 - اعداد آمار در `src/data/site-copy.json` — فقط واقعیت، بدون عدد ساختگی.

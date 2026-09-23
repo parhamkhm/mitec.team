@@ -340,8 +340,11 @@ Inner pages (and any hero that is not the home portal):
 - Error: border `--color-error`, message `--color-error` **with icon and text**. Never color alone.
 - Success message: `--color-success` on `--color-success-bg` (hue 145°, deliberately different from brand green).
 - Submit: primary button.
-- **Choices** (site-type chips, feature toggles — the Quick scope): white with a `--color-border-strong` edge; selected takes the tonal pair (`--color-tonal` fill, `--color-tonal-text` edge and text, 6.82:1), never the action green, which stays with the one primary button. Use native radios for single choice and `aria-pressed` buttons for toggles; keep 44px targets.
-- **Estimates** are figures, not actions: `--color-brand`, Persian digits. Price is shown only when `APP_CONFIG.showPrice` is on — otherwise it is not in the page at all.
+- **The pricing calculator** (Quick scope) renders everything — packages, items, prices, days, labels — from the pricing document (`docs/pricing-guide.md`); no copy or number lives in its code.
+  - Site-type tabs: one segmented track on `--color-surface-sunken`; the selected tab is `--color-surface` with `--shadow-card`. Native radios, 44px targets.
+  - Add-on rows: the whole row is an `aria-pressed` toggle; 1px dashed `--color-border` while off, solid `--color-border-hover` on `--color-tonal` when on, `+` / `−` in a `--color-border-strong` circle. Price «از X» in `--color-text-secondary` 700; a free add-on shows no price.
+  - The page slider is interactive, so its fill and thumb are `--color-cta`; the track is `--color-border`.
+  - The total is a figure, not an action: price `--text-h3` 800 `--color-text-primary`, duration `--color-text-secondary`, Persian digits. `display.showPrice` / `showDuration` false removes that part from the page entirely. While the document's `placeholder` is true, a `badge--highlight` says the numbers are samples.
 
 ### FAQ
 

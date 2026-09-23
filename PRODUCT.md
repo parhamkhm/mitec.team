@@ -23,14 +23,14 @@ Every engagement gets a design built specifically for that client's need — not
 - The order builder wizard (`Mitec Order Builder.dc.html` → `/order`, `/order/success`) is how clients describe their needs and place an order.
 - Order tracking (`Mitec Track.dc.html` → `/track`) lets clients check status on an existing order; requires a phone number (`TRACK_REQUIRES_PHONE: true`).
 - The backend is being built by a teammate; the frontend talks to it only through `src/api/client.js` / `mapper.js`, currently mocked (`USE_MOCK: true`).
-- Pricing is intentionally not shown (`showPrice: false`) at this stage — not in the wizard summary, and not in the home page's quick scope, where no price element exists at all while the flag is off.
-- The home page's quick scope is a front door to the order builder: it reads the same catalog (`getCatalog()`), quotes the timeline with the same `src/utils/estimate.js` the builder will import, and hands the choice over in the builder's own saved state (`localStorage['mitec.order.v1']`, shape `{ selection, step, unsure }`).
+- The wizard summary still hides prices (`APP_CONFIG.showPrice: false`). The home page's quick scope shows price and working days from the pricing document instead (`display.showPrice` / `showDuration` there).
+- Prices, durations, packages and add-ons live in one pricing document (`src/config/pricing.json` now, `GET /pricing` later, edited by the future admin panel; `docs/pricing-guide.md`, `docs/pricing.schema.json`). The home page's quick scope renders it, prices it with `src/utils/estimate.js` (which the order builder will import too), and hands the choice over in the builder's saved state (`localStorage['mitec.order.v1']`: `{ selection: { siteType, pages, addons }, step, unsure, pricingVersion }`).
 - Contact channels: WhatsApp, Telegram, Instagram (placeholder values in `app.config.js`, not yet real).
 
 ## Capabilities and Constraints
 
 - Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built, so every `./order/` and `./track/` link on the home page 404s until they are. The `.dc.html` files are old prototypes, not a visual source; DESIGN.md is.
-- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Testimonials (sample, labelled), Services, Process, About, Quick scope (site type + features → approximate timeline, then on to the order builder), FAQ, closing CTA.
+- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Testimonials (sample, labelled), Services, Process, About, Quick scope (site type, pages and add-ons → price and working days, then on to the order builder), FAQ, closing CTA.
 - Motion is an enhancement, never a requirement: it runs only when the visitor has not asked for reduced motion, and without it (or without JS) the page is the complete static document (DESIGN.md §13). No animation library, no WebGL — a small vanilla engine in `src/scripts/motion/`.
 - The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose colour, gradient and elevation files are no longer imported; only its spacing, radii and motion scales remain. Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
 - No build step; ES modules served over HTTP (not `file://`).
@@ -49,6 +49,7 @@ Every engagement gets a design built specifically for that client's need — not
 - Real stats (`src/data/site-copy.json`): 3 delivered projects, 2-person team with no middleman, 1 business day response time. No invented numbers are permitted here — the file's own note says so.
 - `src/data/testimonials.json` is currently sample content and is labeled as such in the UI; not real testimonials yet.
 - Team photos are placeholders pending real photos.
+- Every price and duration in the pricing document is a placeholder until the owner enters real ones (`"placeholder": true`, labelled «اعداد نمونه» on the page). The old week-based estimates in `order-catalog.json` are no longer used for quoting: the owner found them unrealistic.
 - Contact info (WhatsApp number, Telegram, Instagram) in `app.config.js` is placeholder/TODO, not the real accounts yet.
 
 ## Product Principles
