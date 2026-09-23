@@ -1,59 +1,51 @@
 /* mitec — portal hero (home)
    ──────────────────────────────────────────────────────────────────────────
-   The visitor lands in a forest scene with one rounded window in it.
-   Scrolling carries the camera through the window into the light room
-   behind — which is the Proof section itself, so the page just continues
-   from there. Forest = recognize, daylight = decide (DESIGN.md §6, hero
-   exception).
+   The visitor lands in a forest scene with a laptop in it, the hero copy on
+   its screen. Scrolling leans in: the copy lifts off, the screen shows a
+   short intro statement while a loading line fills, then the screen "loads"
+   — the glass fades to the light room behind — and the camera flies through
+   the display into it. The room is the Proof section itself, so the page
+   just continues from there. Forest = recognize, daylight = decide
+   (DESIGN.md §5–6, hero exception).
 
    One DOM, two layouts:
    · default (no JS, reduced motion, forced colours): a forest band with the
-     copy centred over a static square outline, then Proof as an ordinary
-     light section;
+     copy, then the statement on the screen of a static laptop outline, then
+     Proof as an ordinary light section;
    · html.motion: the stage pins for --portal-track px of scroll and
      motion/portal.js sets every layer from one progress value.
 
-   Only transform and opacity change per frame. The window is a static mask,
-   sized on resize and never re-rasterised while scrolling.
+   The laptop is DOM + CSS, never a raster mockup, so it stays sharp while it
+   scales. The frame box IS the display: scaling it about its centre flies
+   straight into the screen. Only transform and opacity change per frame;
+   the display-shaped hole is a static mask, sized on resize.
    ────────────────────────────────────────────────────────────────────────── */
 
 .portal {
-  /* Pre-JS geometry; portal.js replaces these with measured px values. */
-  --portal-s: min(62vmin, 600px);
-  --portal-r: calc(var(--portal-s) * .05);
+  /* Pre-JS geometry (the desktop formula); portal.js replaces these with
+     measured px values. 99.2svh = 0.62 × vh × 1.6. */
+  --screen-w: min(70vw, 860px, 99.2svh);
+  --screen-h: calc(var(--screen-w) / 1.6);
+  --screen-r: 10px;
+  --bezel: 14px;
+  --chin: 20px;
+  --base-h: 16px;
   --portal-w: 150vmax;
-  --portal-hole: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='5'/%3E%3C/svg%3E");
+  --copy-max: calc(var(--screen-w) - 96px);
+  --portal-hole: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 100'%3E%3Crect width='160' height='100' rx='1.9'/%3E%3C/svg%3E");
   position: relative;
 }
-@media (min-width: 1024px) and (max-width: 1279px) { .portal { --portal-s: min(58vmin, 520px); } }
-@media (max-width: 759px) { .portal { --portal-s: min(84vw, 420px); } }
 
 /* ---------------------------------------------------------------- copy */
 .portal__copy {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  min-height: min(100svh, 960px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-5);
-  padding: calc(68px + var(--space-10)) var(--gutter) var(--space-12); /* clears the overlaid nav */
+  padding: calc(68px + var(--space-11)) var(--gutter) var(--space-10); /* clears the overlaid nav */
   text-align: center;
-}
-/* Static stand-in for the window: a plain outline behind the copy. */
-.portal__copy::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: var(--portal-s);
-  height: var(--portal-s);
-  margin: auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--portal-r);
-  pointer-events: none;
 }
 .portal__title {
   max-width: 13em;
@@ -72,6 +64,44 @@
 /* The actions sit on the glass (--forest-raised), where the usual outline edge
    is only 2.95:1; muted text is 4.74:1 there and 5.41:1 on the wall. */
 .portal__actions .btn--outline { border-color: var(--color-text-muted); }
+
+/* ---------------------------------------------------------------- intro statement
+   Static: the screen of a plain laptop outline, under the copy. */
+.portal__statement { padding: 0 var(--gutter) calc(var(--space-12) + var(--space-5)); }
+.portal__intro {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  width: min(100%, 760px);
+  aspect-ratio: 16 / 10;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: clamp(24px, 3.2vw, 44px);
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-align: center;
+}
+/* …and its keyboard deck. */
+.portal__intro::after {
+  content: '';
+  position: absolute;
+  inset-inline: -8%;
+  top: calc(100% + var(--space-2));
+  height: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.portal__intro-line { display: block; }
+.portal__intro-line:first-child { font-weight: 700; color: var(--color-text-primary); }
+.portal__intro-line:last-child { font-size: clamp(18px, 2vw, 26px); font-weight: 500; color: var(--color-text-body); }
+/* Whole words and phrases only — never split inside a word or its ZWNJ joins. */
+.portal__intro .w,
+.portal__intro-phrase { display: inline-block; }
+.portal__loader { display: none; }
 
 /* ---------------------------------------------------------------- proof (the room) */
 .proof { padding: var(--section-pad) var(--gutter); background: var(--color-bg); }
@@ -102,30 +132,74 @@
 }
 
 /* ================================================================ the scene */
-html.motion .portal { height: calc(100vh + var(--portal-track, 220vh)); height: calc(100svh + var(--portal-track, 220svh)); }
+html.motion .portal { height: calc(100vh + var(--portal-track, 300vh)); height: calc(100svh + var(--portal-track, 300svh)); }
 html.motion .portal__stage {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
-  /* Light, so the room's own edges never show inside the window while it is
+  perspective: 1600px;
+  /* Light, so the room's own edges never show inside the screen while it is
      scaled down: room and backdrop are the same daylight. */
   background: var(--color-bg);
 }
 
+/* On the screen: centred on the display, as wide as it less 48px a side.
+   Stacked (phones, or when it cannot fit): above the laptop instead. */
 html.motion .portal__copy {
   position: absolute;
   inset: 0;
   z-index: 3;
-  min-height: 0;
-  overflow: visible;
-  padding: 68px var(--gutter);
+  padding: 68px max(var(--gutter), (100% - var(--copy-max)) / 2);
   background: none;
   pointer-events: none;
 }
-html.motion .portal__copy::before { display: none; }
 html.motion .portal__actions { pointer-events: auto; }
+html.motion .portal--stacked .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
+
+/* A viewport-centred layer of its own: it never takes the frame's scale, so it
+   neither balloons nor blurs. */
+html.motion .portal__statement {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 0 var(--gutter);
+  background: none;
+  pointer-events: none;
+  opacity: 0;
+}
+html.motion .portal__intro {
+  width: auto;
+  max-width: min(20em, var(--say-max, 100%));
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+}
+html.motion .portal__intro::after { display: none; }
+html.motion .portal__loader {
+  display: block;
+  position: relative;
+  width: 160px;
+  height: 2px;
+  overflow: hidden;
+  background: var(--color-border);
+  opacity: 0;
+}
+/* Not the CTA colour: nothing here is clickable. Fills from the start edge,
+   which is the right on this RTL page. */
+.portal__loader span {
+  position: absolute;
+  inset: 0;
+  background: var(--color-text-secondary);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+}
 
 html.motion .portal__room {
   position: absolute;
@@ -141,74 +215,130 @@ html.motion .proof { width: 100%; padding: 68px var(--gutter) var(--space-7); ba
    already is the gap before the next section; a full pad on top would double it. */
 html.motion .portal + .band { padding-top: var(--space-9); }
 
-/* One transformed container for every forest layer, so they scale and tilt
-   as a single object. */
+/* ---------------------------------------------------------------- the laptop
+   One transformed container whose box is the display. Its children are
+   flattened into its plane (transform-style: flat), so the masks clip in 2D
+   and the whole thing tilts and scales as one object. */
 html.motion .portal__frame {
   display: block;
   position: absolute;
   inset: 0;
   z-index: 2;
-  width: var(--portal-s);
-  height: var(--portal-s);
+  width: var(--screen-w);
+  height: var(--screen-h);
   margin: auto;
   background: none;
   pointer-events: none;
+  transform: rotateX(10deg);
+  transform-style: flat;
+  backface-visibility: hidden;
 }
 .portal__frame > * { position: absolute; }
 
-/* The window cut: a full layer XOR a rounded square the size of the hole. */
+/* The display cut: a full layer XOR the display's rounded rect. */
 .portal__wall,
-.portal__rim,
-.portal__glow {
-  -webkit-mask: linear-gradient(black 0 0), var(--portal-hole) center / var(--portal-s) var(--portal-s) no-repeat;
+.portal__glow,
+.portal__lid {
+  -webkit-mask: linear-gradient(black 0 0), var(--portal-hole) var(--hole-at, center) / var(--screen-w) var(--screen-h) no-repeat;
   -webkit-mask-composite: xor;
-  mask: linear-gradient(black 0 0), var(--portal-hole) center / var(--portal-s) var(--portal-s) no-repeat;
+  mask: linear-gradient(black 0 0), var(--portal-hole) var(--hole-at, center) / var(--screen-w) var(--screen-h) no-repeat;
   mask-composite: exclude;
 }
 
-/* The wall: forest + grid, ~1.05 viewport diagonals square — enough to cover
-   the screen at any scale ≥ 1 and any tilt. */
+/* The wall: forest + grid, square, big enough to cover the screen at any
+   scale ≥ 1, tilted or (on phones) shifted down under the copy. */
 .portal__wall {
-  z-index: 0;
-  inset: calc((var(--portal-s) - var(--portal-w)) / 2);
+  inset: calc((var(--screen-h) - var(--portal-w)) / 2) calc((var(--screen-w) - var(--portal-w)) / 2);
   background-color: var(--color-bg);
 }
-.portal__glass {
-  inset: 0;
-  border-radius: var(--portal-r);
-  background: var(--color-surface);
-  will-change: opacity;
-}
-/* Daylight spilling out of the window onto the wall — masked off the window
-   itself, so it never lies over the room. */
+/* One mint glow behind the laptop, masked off the display so it never lies
+   over the room. */
 .portal__glow {
-  z-index: 1;
-  inset: calc(var(--portal-s) * -.7);
-  background: radial-gradient(closest-side, var(--color-glow) 42%, transparent);
+  inset: calc(var(--screen-h) * -.7) calc(var(--screen-w) * -.45);
+  background: radial-gradient(closest-side, var(--color-glow) 50%, transparent);
   opacity: .5;
   will-change: opacity;
 }
-/* The lit edge: a 10px ring round the window, lighter at the top. */
-.portal__rim {
-  z-index: 2;
-  inset: -10px;
-  overflow: hidden;
-  border-radius: calc(var(--portal-r) + 10px);
-  background: linear-gradient(var(--color-rim-hi), var(--color-rim-mid), var(--color-rim-lo));
+/* The lid: a bezel ring round the display, deeper at the chin. */
+.portal__lid {
+  --hole-at: var(--bezel) var(--bezel);
+  inset: calc(-1 * var(--bezel)) calc(-1 * var(--bezel)) calc(-1 * var(--chin));
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--screen-r) + var(--bezel));
+  background:
+    linear-gradient(transparent calc(100% - var(--chin) + 1px), var(--color-surface-sunken) 0),
+    var(--color-surface-elevated);
 }
-/* One mint lobe that travels round the ring with progress. */
-.portal__rim::after {
+/* The bezel's inner edge. */
+.portal__lid::before {
   content: '';
   position: absolute;
-  inset: -22%;
-  background: conic-gradient(transparent 0deg, var(--color-sheen) 28deg, transparent 56deg);
-  transform: rotate(var(--sheen, 0deg));
+  inset: calc(var(--bezel) - 4px) calc(var(--bezel) - 4px) calc(var(--chin) - 4px);
+  border: 3px solid var(--color-surface-sunken);
+  border-radius: calc(var(--screen-r) + 3px);
+}
+.portal__camera {
+  position: absolute;
+  top: calc(var(--bezel) / 2 - 4px);
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+/* The screen while it is off / loading. */
+.portal__glass {
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--screen-r);
+  background: var(--color-surface);
+  will-change: opacity;
+}
+/* One soft highlight that slides across the dark screen (start → end). */
+.portal__reflection {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 35%;
+  background: linear-gradient(115deg, transparent, var(--color-reflection), transparent);
+  /* A 115° gradient in a narrow, tall box is not transparent along the box's
+     sides; fade them so the band has no hard vertical edges. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
+  transform: translateX(var(--screen-w));
   will-change: transform;
 }
-.portal--lite .portal__rim::after { display: none; }
+/* The keyboard deck: a single-hue trapezoid with a thumb notch. */
+.portal__base {
+  top: calc(var(--screen-h) + var(--chin));
+  left: calc(50% - (var(--screen-w) + 2 * var(--bezel)) * .58);
+  width: calc((var(--screen-w) + 2 * var(--bezel)) * 1.16);
+  height: var(--base-h);
+  background: linear-gradient(var(--color-border-strong), var(--color-border));
+  clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
+}
+.portal__base::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 42%;
+  width: 16%;
+  height: 35%;
+  border-radius: 0 0 6px 6px;
+  background: var(--color-border);
+}
 
-.portal.is-live .portal__frame,
-.portal.is-live .portal__room,
+/* Phones and low-power devices: no tilt, no reflection. */
+.portal--lite .portal__reflection { display: none; }
+/* Pre-JS stand-ins for the phone layout portal.js computes. */
+@media (max-width: 759px) {
+  .portal { --copy-max: calc(100vw - 48px); }
+  html.motion .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
+  html.motion .portal__frame { transform: translateY(22svh); }
+}
+
+.portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),
 .portal.is-live .portal__copy > * { will-change: transform, opacity; }
 
 /* ---------------------------------------------------------------- scroll hint */
@@ -231,7 +361,8 @@ html.motion .portal__hint {
   cursor: pointer;
   transition: color var(--dur) var(--ease-out);
 }
-html.motion .portal__hint[hidden] { display: none; }
+html.motion .portal__hint[hidden],
+html.motion .portal--tight .portal__hint { display: none; } /* tight: the laptop needs the hint's corner */
 .portal__hint:hover { color: var(--color-text-primary); }
 .portal__hint-line { position: relative; width: 1px; height: 28px; overflow: hidden; background: var(--color-border); }
 .portal__hint-line::after {

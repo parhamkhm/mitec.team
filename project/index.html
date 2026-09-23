@@ -55,11 +55,13 @@
 <main>
 
   <!-- ============================================================ PORTAL HERO
-       A forest scene with one window in it; scrolling carries the visitor
-       through the window into the light room behind, which is the Proof
-       section itself. The default markup is the static version (forest band,
-       then Proof as an ordinary section); under html.motion the stage pins
-       and src/scripts/motion/portal.js scrubs it. -->
+       A forest scene with a laptop in it; scrolling carries the visitor into
+       its screen — past a short intro statement the screen shows while it
+       "loads" — and into the light room behind, which is the Proof section
+       itself. The default markup is the static version (forest band with the
+       statement in a laptop outline, then Proof as an ordinary section);
+       under html.motion the stage pins and src/scripts/motion/portal.js
+       scrubs it. -->
   <section class="portal" id="top" aria-labelledby="hero-title">
     <div class="portal__stage">
       <div class="portal__copy texture-grid" data-surface="dark">
@@ -72,6 +74,21 @@
           <a class="btn btn--lg btn--primary" href="./order/">ساخت سفارش من <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
           <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
         </div>
+      </div>
+
+      <!-- The intro statement the screen shows before it "loads" into the room.
+           Line 1 is split by whole words (never inside a word or its ZWNJ
+           joins), line 2 by phrase, in the markup so the no-JS text is exact. -->
+      <div class="portal__statement texture-grid" data-surface="dark">
+        <p class="portal__intro">
+          <span class="portal__intro-line"><span class="w">آماده‌ای</span> <span class="w">راهکار</span> <span class="w">دیجیتال</span> <span class="w">کسب‌وکارت</span> <span class="w">رو</span> <span class="w">بسازی؟</span></span>
+          <span class="portal__intro-line">
+            <span class="portal__intro-phrase">سایتت.</span>
+            <span class="portal__intro-phrase">سبک خودت.</span>
+            <span class="portal__intro-phrase">انتخاب‌های تو.</span>
+          </span>
+        </p>
+        <div class="portal__loader" aria-hidden="true"><span></span></div>
       </div>
 
       <!-- The room: light, like every section you read in. No buttons in here. -->
@@ -103,13 +120,16 @@
         </section>
       </div>
 
-      <!-- Decorative: the wall with the window cut out of it, the glass that
-           fills the window at first, its lit rim, and one mint glow. -->
+      <!-- Decorative: a laptop, drawn in CSS so it stays sharp at any scale. The
+           frame box is the display itself, so scaling it flies into the screen.
+           The wall has the display cut out of it; the glass fills the display
+           until the screen "loads". -->
       <div class="portal__frame" data-surface="dark" aria-hidden="true">
         <div class="portal__wall texture-grid"></div>
-        <div class="portal__glass"></div>
-        <div class="portal__rim"></div>
         <div class="portal__glow"></div>
+        <div class="portal__lid"><span class="portal__camera"></span></div>
+        <div class="portal__glass"><span class="portal__reflection"></span></div>
+        <div class="portal__base"></div>
       </div>
 
       <button class="portal__hint" type="button" data-surface="dark">

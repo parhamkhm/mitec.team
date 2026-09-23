@@ -263,8 +263,11 @@ Never remove outlines without a replacement.
 - Background: `--color-bg` at 88% opacity + `backdrop-filter: blur(12px)`; add a `--color-border-subtle` bottom border once scrolled.
 - Links: `--color-text-secondary`. Active link: `--color-text-primary` + 2px `--color-cta` underline.
 - Nav CTA: **tonal**.
+- Home page: the nav overlays the hero (fixed). It uses the forest variant (`data-surface="dark"`, **94%** fill, no bottom border) over the hero scene and switches to light once the visitor is inside the room. 94% rather than a see-through 70%, because late in the scene it is the light room that shows through, and the tonal CTA needs 94% to stay at 4.73:1 on it.
 
 ### Hero
+
+Inner pages (and any hero that is not the home portal):
 
 - Light canvas. Text on the start (right) side, visual on the end (left) side.
 - Headline in `--color-text-primary`, Vazirmatn 800. Highlight **one** phrase with an amber highlighter stroke:
@@ -274,6 +277,14 @@ Never remove outlines without a replacement.
 - Eyebrow: `--color-tonal-text`, small, weight 700.
 - The visual sits in a **forest tile** (`data-surface="dark"`, radius 16–20px) with the grid texture and one mint glow behind the mockups. This is the Instagram post echo.
 - One primary + one outline button. Nothing else solid.
+
+**Home: the laptop portal (hero exception).** The home hero is a full-viewport forest *scene*, not a light canvas, and it does not count as the one forest band allowed between hero and footer (§6).
+
+- **The device.** A laptop drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). Display 16:10. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
+- **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (40px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(40px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
+- **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌ای راهکار دیجیتال کسب‌وکارت رو بسازی؟» / «سایتت. سبک خودت. انتخاب‌های تو.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
+- **Readability.** Light text only ever sits on forest: the statement reaches opacity 0 before the glass starts to fade, and the copy is gone before the statement starts.
+- **Without motion** (reduced motion, no JS, forced colours): a forest band with the copy, then the statement on the screen of a static laptop outline, then Proof as an ordinary light section.
 
 ### Stats / trust bar
 
@@ -325,9 +336,9 @@ Never remove outlines without a replacement.
 ## 6. Surface rules
 
 - **Light = read and decide:** services, process, about, pricing, FAQ, testimonials, forms.
-- **Forest = recognize and commit:** hero media tile, portfolio tiles, final CTA band, footer.
-- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card.
-- At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section.
+- **Forest = recognize and commit:** hero media tile, portfolio tiles, final CTA band, footer — and the home hero's laptop scene.
+- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The one exception is the home hero scene (§5), which is the hero itself.
+- At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section. The home hero scene is not counted in this.
 - No paragraph longer than two lines on forest.
 - Light levels stack in order: `bg` → `bg-alt` → `surface` → `surface-elevated`. A card is always lighter than what it sits on.
 - Alternate `bg` / `bg-alt` between sections instead of drawing section borders.
@@ -343,6 +354,7 @@ Never remove outlines without a replacement.
 ## 8. Glow, gradient, texture, shadow
 
 - **Glow:** forest surfaces only. Radial `--color-glow`, one source per section, behind media, never behind text, never on buttons.
+- **Home hero laptop:** its one glow sits behind the device and is masked off the display, so it never lies over the light room. The only other light on it is `--color-reflection` (`--on-dark-1` at 6%): a soft band that slides once across the dark screen. There is no rim or sheen.
 - **Gradients:** single hue only, e.g. `#12312A → #0E2A24`. Never green→amber, green→blue or navy.
 - **Grid texture** (Instagram signature):
   ```css
