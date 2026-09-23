@@ -1,11 +1,12 @@
 // mitec — home page entry.
-// Small, independent behaviours (nav, portfolio filter, FAQ) plus the motion
-// layer under ./motion/. No dependencies, no build step — this loads as a
+// Small, independent behaviours (nav, scroll-spy, FAQ) plus the motion layer
+// under ./motion/. No dependencies, no build step — this loads as a
 // plain ES module straight off the page.
 
 import { whenMotion } from './motion/engine.js';
 import { initReveal } from './motion/reveal.js';
 import { initPortal } from './motion/portal.js';
+import { initEffects } from './motion/effects.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -59,38 +60,6 @@ function initScrollSpy() {
   sections.forEach((s) => io.observe(s));
 }
 
-function initWorkFilter() {
-  const tabs = document.getElementById('workTabs');
-  const grid = document.getElementById('workGrid');
-  const emptyNote = document.getElementById('workEmpty');
-  if (!tabs || !grid) return;
-
-  const cards = Array.from(grid.querySelectorAll('.work-card'));
-  const buttons = Array.from(tabs.querySelectorAll('.tabs__btn'));
-
-  function applyFilter(filter) {
-    let visible = 0;
-    for (const card of cards) {
-      const tags = (card.dataset.tags || '').split('|');
-      const show = filter === 'همه' || tags.includes(filter);
-      card.hidden = !show;
-      if (show) visible += 1;
-    }
-    if (emptyNote) emptyNote.hidden = visible !== 0;
-  }
-
-  tabs.addEventListener('click', (e) => {
-    const btn = e.target.closest('.tabs__btn');
-    if (!btn) return;
-    for (const b of buttons) {
-      const active = b === btn;
-      b.classList.toggle('is-active', active);
-      b.setAttribute('aria-selected', String(active));
-    }
-    applyFilter(btn.dataset.filter);
-  });
-}
-
 function initFaq() {
   const list = document.getElementById('faqList');
   if (!list) return;
@@ -123,6 +92,6 @@ function initFaq() {
 initNav();
 initScrollSpy();
 initPortal();
-initWorkFilter();
+initEffects();
 initFaq();
 whenMotion(initReveal);

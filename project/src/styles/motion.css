@@ -22,3 +22,15 @@ html.motion [data-reveal-stagger].is-revealed > * {
   animation: var(--reveal, reveal-rise) var(--dur-reveal) var(--ease-entrance) backwards;
   animation-delay: calc(var(--i, 0) * var(--stagger));
 }
+
+/* Media tiles open from a clipped, slightly small frame instead of fading:
+   they are visible (clipped) before they reveal, never blank. */
+@keyframes reveal-media {
+  from { clip-path: inset(10% round 20px); transform: scale(.96); }
+  to { clip-path: inset(0 round 20px); transform: none; }
+}
+html.motion [data-reveal="media"] { --reveal: reveal-media; --dur-reveal: var(--dur-media); }
+html.motion [data-reveal="media"]:not(.is-revealed) { opacity: 1; clip-path: inset(10% round 20px); transform: scale(.96); }
+
+/* Scroll-linked layers (motion/effects.js) get their own compositor layer. */
+html.motion .work-row__shot { will-change: transform; }

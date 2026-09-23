@@ -140,32 +140,27 @@
   </section>
 
 
-  <!-- ============================================================ WORK / PORTFOLIO -->
+  <!-- ============================================================ WORK / PORTFOLIO
+       Three zig-zag rows: a forest media tile beside a light text column.
+       The heading drops the sub it used to have — the room above says it. -->
   <section id="work" class="band band--alt">
     <div class="band__inner">
-      <div class="section-heading">
+      <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">نمونه‌کارها</span>
         <h2 class="section-heading__title section-heading__title--display-3">سه پروژه تحویل‌شده</h2>
-        <p class="section-heading__sub">هر پروژه با نیازی که داشت و کاری که برایش انجام دادیم.</p>
-      </div>
-
-      <div class="work-tabs-row">
-        <div class="tabs" id="workTabs" role="tablist" aria-label="فیلتر نمونه‌کارها">
-          <button type="button" class="tabs__btn is-active" role="tab" aria-selected="true" data-filter="همه">همه</button>
-          <button type="button" class="tabs__btn" role="tab" aria-selected="false" data-filter="فروشگاهی">فروشگاهی</button>
-          <button type="button" class="tabs__btn" role="tab" aria-selected="false" data-filter="منوی آنلاین">منوی آنلاین</button>
-          <button type="button" class="tabs__btn" role="tab" aria-selected="false" data-filter="باشگاه مشتریان">باشگاه مشتریان</button>
-        </div>
       </div>
 
       <!-- Seed projects mirror src/data/portfolio.json — REPLACE the placeholder images with real screenshots. -->
-      <div class="work-grid" id="workGrid">
-        <div class="card card--forest card--pad-0 card--interactive work-card texture-grid" data-surface="dark" data-tags="منوی آنلاین|باشگاه مشتریان">
-          <div class="work-card__media">
-            <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات Mery Club</span></div>
+      <div class="work-list">
+        <article class="work-row">
+          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"></div>
+            <div class="work-row__shot">
+              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات Mery Club</span></div>
+            </div>
           </div>
-          <div class="work-card__body">
-            <div class="work-card__badges">
+          <div class="work-row__text" data-reveal-stagger>
+            <div class="work-row__badges">
               <span class="badge">منوی آنلاین</span>
               <span class="badge">باشگاه مشتریان</span>
             </div>
@@ -175,16 +170,19 @@
               <div><dt>چه ساختیم</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان با امتیاز، و بخش نظرات و پیشنهادها.</dd></div>
               <div><dt>نتیجه</dt><dd>مشتری‌های تکرارشونده از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ مجدد به‌روز می‌شود.</dd></div>
             </dl>
-            <a class="work-card__link" href="https://meryclub.ir" target="_blank" rel="noopener">مشاهده سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
+            <a class="work-row__link" href="https://meryclub.ir" target="_blank" rel="noopener">مشاهده سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
           </div>
-        </div>
+        </article>
 
-        <div class="card card--forest card--pad-0 card--interactive work-card texture-grid" data-surface="dark" data-tags="فروشگاهی">
-          <div class="work-card__media">
-            <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات کارآمد</span></div>
+        <article class="work-row">
+          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"></div>
+            <div class="work-row__shot">
+              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات کارآمد</span></div>
+            </div>
           </div>
-          <div class="work-card__body">
-            <div class="work-card__badges">
+          <div class="work-row__text" data-reveal-stagger>
+            <div class="work-row__badges">
               <span class="badge">فروشگاهی</span>
             </div>
             <h3 class="card-title">فروشگاه تجهیزات پزشکی کارآمد</h3>
@@ -193,16 +191,19 @@
               <div><dt>چه ساختیم</dt><dd>فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.</dd></div>
               <div><dt>نتیجه</dt><dd>سفارش‌ها بدون تماس تلفنی ثبت می‌شوند و مشخصات هر محصول یک مرجع ثابت دارد.</dd></div>
             </dl>
-            <span class="work-card__note">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
+            <span class="work-row__note">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
           </div>
-        </div>
+        </article>
 
-        <div class="card card--forest card--pad-0 card--interactive work-card texture-grid" data-surface="dark" data-tags="منوی آنلاین">
-          <div class="work-card__media">
-            <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات منوی E2</span></div>
+        <article class="work-row">
+          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"></div>
+            <div class="work-row__shot">
+              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات منوی E2</span></div>
+            </div>
           </div>
-          <div class="work-card__body">
-            <div class="work-card__badges">
+          <div class="work-row__text" data-reveal-stagger>
+            <div class="work-row__badges">
               <span class="badge">منوی آنلاین</span>
             </div>
             <h3 class="card-title">منوی کافه E2</h3>
@@ -211,11 +212,10 @@
               <div><dt>چه ساختیم</dt><dd>منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.</dd></div>
               <div><dt>نتیجه</dt><dd>تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.</dd></div>
             </dl>
-            <span class="work-card__note">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
+            <span class="work-row__note">لینک سایت پس از تأیید مشتری اضافه می‌شود.</span>
           </div>
-        </div>
+        </article>
       </div>
-      <p class="work-empty" id="workEmpty" hidden>در این دسته فعلاً نمونه‌کاری منتشر نشده است.</p>
     </div>
   </section>
 

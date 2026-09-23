@@ -48,7 +48,6 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 
 /* ---------------------------------------------------------------- grids */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
-.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: var(--space-4); }
 .process-grid { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-4); }
 .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
 .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
@@ -65,20 +64,54 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 .service-card__link .icon { width: 16px; height: 16px; }
 
 /* ---------------------------------------------------------------- work / portfolio
-   Forest tiles, so the grid reads like the Instagram feed. */
-.work-tabs-row { display: flex; }
-.work-tabs-row .tabs { max-width: 100%; overflow-x: auto; } /* interim: the tab row goes with the Work rebuild */
-.work-card { overflow: hidden; }
-.work-card__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-surface-sunken); }
-.work-card__body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-4); }
-.work-card__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.work-card dl { margin: 0; display: grid; gap: var(--space-3); font-size: var(--text-body-sm); }
-.work-card dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; margin-bottom: 2px; }
-.work-card dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
-.work-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
-.work-card__link .icon { width: 16px; height: 16px; }
-.work-card__note { font-size: var(--text-body-sm); color: var(--color-text-muted); }
-.work-empty { margin: 0; color: var(--color-text-secondary); }
+   Three zig-zag rows. The media is a forest tile — the Instagram echo — with
+   one mint glow behind the screenshot only; the text reads on light beside
+   it. The media column is the wider one in every row; rows swap sides. */
+.work-list { display: grid; gap: clamp(64px, 8vw, 128px); }
+.work-row { display: grid; gap: var(--space-7); align-items: center; } /* stacked: media, then text */
+@media (min-width: 1024px) {
+  .work-row { gap: var(--space-9); grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); grid-template-areas: "text media"; }
+  .work-row:nth-child(even) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); grid-template-areas: "media text"; }
+  .work-row__media { grid-area: media; }
+  .work-row__text { grid-area: text; }
+}
+.work-row__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  transition: background-color var(--dur) var(--ease-out);
+}
+.work-row__media:hover { background-color: var(--color-brand-hover); }
+/* Lies behind the screenshot and spills out round its edges as a halo. */
+.work-row__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(closest-side, var(--color-glow) 70%, transparent);
+  opacity: .6;
+  transition: opacity var(--dur) var(--ease-out);
+  pointer-events: none;
+}
+.work-row__media:hover .work-row__glow { opacity: 1; }
+/* The screenshot, inset in the tile so its scroll parallax (±4%) never
+   reaches the tile's edge. */
+.work-row__shot {
+  position: absolute;
+  inset: 9% 8%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.work-row__shot .img-slot { border: 0; }
+.work-row__text { --stagger: 60ms; --reveal-rise: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+.work-row__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.work-row dl { margin: 0; display: grid; gap: var(--space-4); }
+.work-row dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; margin-bottom: 2px; }
+.work-row dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
+.work-row__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
+.work-row__link .icon { width: 16px; height: 16px; }
+.work-row__note { font-size: var(--text-body-sm); color: var(--color-text-muted); }
 
 /* ---------------------------------------------------------------- process
    The numerals earn their place: the sequence is the information. They carry
