@@ -65,9 +65,13 @@ export function kick() {
 
 function measure() {
   pending = 0;
-  view.w = innerWidth;
-  view.h = innerHeight;
+  const w = innerWidth;
+  const h = innerHeight;
   view.coarse = coarse.matches;
+  // A phone's URL bar changes the height by ~50–110px as it slides in and
+  // out; re-laying the scene out for that would make it jump mid-scroll.
+  if (!view.coarse || w !== view.w || Math.abs(h - view.h) >= 120) view.h = h;
+  view.w = w;
   for (const t of tracks) {
     t.parked = false;
     t.measure?.();
@@ -129,12 +133,7 @@ noReduce.addEventListener('change', applyMode);
 forced.addEventListener('change', applyMode);
 
 addEventListener('scroll', kick, { passive: true });
-addEventListener('resize', () => {
-  // A phone's URL bar changes the height by ~50–110px as it slides in and
-  // out; re-laying the scene out for that would make it jump mid-scroll.
-  if (view.coarse && innerWidth === view.w && Math.abs(innerHeight - view.h) < 120) return;
-  remeasure();
-});
+addEventListener('resize', remeasure);
 addEventListener('load', remeasure);
 document.fonts?.ready.then(remeasure);
 new ResizeObserver(remeasure).observe(document.body);

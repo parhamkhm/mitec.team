@@ -193,6 +193,13 @@
   --color-grid-line:  rgba(255, 255, 255, .035);
   --shadow-card: none;
 
+  /* Portal hero only: the lit rim of the window and the mint sheen that
+     travels round it (DESIGN.md §8 exception — a forest object, behind no text). */
+  --color-rim-hi:  var(--forest-line-strong);
+  --color-rim-mid: rgba(87, 183, 154, .20);
+  --color-rim-lo:  var(--forest-line);
+  --color-sheen:   rgba(87, 183, 154, .35);
+
   background-color: var(--color-bg);
   color: var(--color-text-body);
 }

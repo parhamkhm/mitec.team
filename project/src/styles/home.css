@@ -2,15 +2,34 @@
    ──────────────────────────────────────────────────────────────────────────
    Page composition on top of components.css. The surface plan follows
    DESIGN.md §6: light is where you read and decide, forest is where you
-   recognise and commit. Forest appears in exactly three places on this page —
-   the hero media tile, the portfolio tiles, and the closing CTA band — plus
-   the footer. Everything else alternates bg / bg-alt so sections separate by
-   tone rather than by drawn borders.
+   recognise and commit. Forest appears as the portal hero scene (portal.css),
+   the portfolio tiles and the closing CTA band, plus the footer. Everything
+   else alternates bg / bg-alt so sections separate by tone rather than by
+   drawn borders.
 
-   There is no entrance animation. The old one was built entirely out of
-   emerald glow, which this system restricts to forest surfaces behind media,
-   and nothing on the page needs motion to be understood.
+   Motion lives in portal.css and motion.css, scoped to html.motion; nothing
+   here needs motion to be understood.
    ────────────────────────────────────────────────────────────────────────── */
+
+/* ---------------------------------------------------------------- nav
+   Overlays the portal instead of taking a row above it. It starts in the
+   forest variant and portal.js switches it to light once the visitor is
+   inside the room. The forest fill is 94%, not a see-through 70%: from about
+   halfway through the scene it is the room's daylight that shows through,
+   and the tonal CTA text needs 94% to stay over 4.5:1 on it (4.73:1). */
+.navbar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 30;
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+}
+.navbar[data-surface="dark"] { background: color-mix(in srgb, var(--color-bg) 94%, transparent); border-bottom-color: transparent; }
+.navbar .logo span,
+.navbar__toggle { transition: color var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out); }
+/* No JS: nothing can switch it to light, so it rides on the forest band and
+   scrolls away with it rather than sitting dark over light sections. */
+html:not(.js) .navbar { position: absolute; }
 
 /* ---------------------------------------------------------------- bands */
 .band { padding-block: var(--section-pad); background: var(--color-bg); }
@@ -25,64 +44,7 @@
   gap: var(--space-8);
 }
 .band__inner--narrow { max-width: var(--container-narrow); }
-section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jumps */
-
-/* ---------------------------------------------------------------- hero */
-.hero { padding-block: var(--space-11) var(--space-10); }
-.hero__masthead { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-9); align-items: center; }
-.hero__copy { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; }
-.hero__copy .section-heading__title { font-size: var(--text-display-2); text-wrap: balance; }
-.hero__copy .section-heading__sub { max-width: 46ch; }
-.hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-
-@media (min-width: 900px) {
-  /* Copy on the start (right) side, visual on the end (left) side. */
-  .hero__masthead { grid-template-columns: minmax(0, 1fr) minmax(0, 48%); }
-}
-
-/* The Instagram echo: the mockups sit inside a forest tile with the grid
-   texture and a single mint glow behind them — never behind text. */
-.hero__stage {
-  position: relative;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8) var(--space-7);
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-}
-.hero__stage-glow {
-  position: absolute;
-  inset-inline: 10%;
-  top: 8%;
-  height: 64%;
-  background: radial-gradient(ellipse at center, var(--color-glow), transparent 70%);
-  filter: blur(40px);
-  pointer-events: none;
-}
-.hero__stage-inner { position: relative; }
-
-.hero__laptop-frame {
-  padding: 8px 8px 6px;
-  border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-xs);
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-}
-.hero__laptop-screen { border-radius: var(--radius-sm); overflow: hidden; aspect-ratio: 16 / 10; background: var(--color-surface-sunken); }
-/* The foot is intentionally wider than the screen, but its overhang is capped
-   to the gutter so it can never push the page into horizontal scroll. */
-.hero__laptop-base {
-  width: min(108%, calc(100% + 2 * var(--gutter)));
-  margin-inline-start: max(-4%, calc(-1 * var(--gutter)));
-  height: 12px;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  background: var(--forest-line-strong);
-  clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
-}
-
-/* Fully inside the tile: .hero__stage clips overflow so the texture and glow
-   stay inside its radius, which would otherwise cut a negatively-offset phone. */
-.hero__phone { position: absolute; bottom: 4%; inset-inline-start: 3%; width: min(22%, 104px); }
-.hero__phone-frame { border-radius: var(--radius-sm); padding: 4px; background: var(--color-surface-elevated); border: 1px solid var(--color-border); }
-.hero__phone-screen { border-radius: 6px; overflow: hidden; aspect-ratio: 9 / 17; background: var(--color-surface-sunken); }
+section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps */
 
 /* ---------------------------------------------------------------- grids */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
@@ -105,6 +67,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jump
 /* ---------------------------------------------------------------- work / portfolio
    Forest tiles, so the grid reads like the Instagram feed. */
 .work-tabs-row { display: flex; }
+.work-tabs-row .tabs { max-width: 100%; overflow-x: auto; } /* interim: the tab row goes with the Work rebuild */
 .work-card { overflow: hidden; }
 .work-card__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-surface-sunken); }
 .work-card__body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-4); }
@@ -192,8 +155,8 @@ section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jump
   .navbar__link::after { display: none; }
   .navbar__link.is-active { background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
   .navbar__cta { margin-top: var(--space-2); justify-content: center; }
-
-  .hero__phone { display: none; } /* no room to float at phone widths */
+  /* DESIGN.md §8: no shadows on forest. */
+  .navbar[data-surface="dark"] .navbar__menu { box-shadow: none; border-color: var(--color-border); }
 }
 
 @media (max-width: 620px) {

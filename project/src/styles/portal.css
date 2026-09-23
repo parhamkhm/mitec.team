@@ -1,0 +1,248 @@
+/* mitec — portal hero (home)
+   ──────────────────────────────────────────────────────────────────────────
+   The visitor lands in a forest scene with one rounded window in it.
+   Scrolling carries the camera through the window into the light room
+   behind — which is the Proof section itself, so the page just continues
+   from there. Forest = recognize, daylight = decide (DESIGN.md §6, hero
+   exception).
+
+   One DOM, two layouts:
+   · default (no JS, reduced motion, forced colours): a forest band with the
+     copy centred over a static square outline, then Proof as an ordinary
+     light section;
+   · html.motion: the stage pins for --portal-track px of scroll and
+     motion/portal.js sets every layer from one progress value.
+
+   Only transform and opacity change per frame. The window is a static mask,
+   sized on resize and never re-rasterised while scrolling.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.portal {
+  /* Pre-JS geometry; portal.js replaces these with measured px values. */
+  --portal-s: min(62vmin, 600px);
+  --portal-r: calc(var(--portal-s) * .05);
+  --portal-w: 150vmax;
+  --portal-hole: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='5'/%3E%3C/svg%3E");
+  position: relative;
+}
+@media (min-width: 1024px) and (max-width: 1279px) { .portal { --portal-s: min(58vmin, 520px); } }
+@media (max-width: 759px) { .portal { --portal-s: min(84vw, 420px); } }
+
+/* ---------------------------------------------------------------- copy */
+.portal__copy {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: min(100svh, 960px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: calc(68px + var(--space-10)) var(--gutter) var(--space-12); /* clears the overlaid nav */
+  text-align: center;
+}
+/* Static stand-in for the window: a plain outline behind the copy. */
+.portal__copy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: var(--portal-s);
+  height: var(--portal-s);
+  margin: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--portal-r);
+  pointer-events: none;
+}
+.portal__title {
+  max-width: 13em;
+  font-size: clamp(40px, 5.4vw, 76px);
+  font-weight: 800;
+  line-height: var(--lh-display);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+/* On forest the highlight is the text colour itself (amber-400: 6.33:1 on
+   forest, 5.55:1 on the glass). The light-surface highlighter stroke would
+   put pale paper behind light text. */
+.portal__title .headline-mark { background: none; padding: 0; color: var(--color-highlight-text); }
+.portal__sub { max-width: 46ch; }
+.portal__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
+/* The actions sit on the glass (--forest-raised), where the usual outline edge
+   is only 2.95:1; muted text is 4.74:1 there and 5.41:1 on the wall. */
+.portal__actions .btn--outline { border-color: var(--color-text-muted); }
+
+/* ---------------------------------------------------------------- proof (the room) */
+.proof { padding: var(--section-pad) var(--gutter); background: var(--color-bg); }
+.proof__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+}
+.proof .stat-bar { width: 100%; max-width: 760px; }
+.proof .stat-block { align-items: center; text-align: center; }
+.proof .logo-strip { justify-content: center; padding: 0; }
+.proof .logo-strip__names { justify-content: center; gap: var(--space-3) var(--space-8); }
+
+.portal__frame,
+.portal__hint { display: none; }
+
+@media (max-width: 759px) {
+  .portal__actions { flex-direction: column; align-self: stretch; }
+  .proof__inner { gap: var(--space-6); }
+  .proof .stat-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); padding: var(--space-5) var(--space-3); }
+  .proof .stat-block__value { font-size: var(--text-h4); }
+  .proof .stat-block__label { font-size: var(--text-caption); }
+  .proof .logo-strip { gap: var(--space-2); flex-direction: column; }
+  .proof .logo-strip__name { font-size: var(--text-body); }
+}
+
+/* ================================================================ the scene */
+html.motion .portal { height: calc(100vh + var(--portal-track, 220vh)); height: calc(100svh + var(--portal-track, 220svh)); }
+html.motion .portal__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  /* Light, so the room's own edges never show inside the window while it is
+     scaled down: room and backdrop are the same daylight. */
+  background: var(--color-bg);
+}
+
+html.motion .portal__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  min-height: 0;
+  overflow: visible;
+  padding: 68px var(--gutter);
+  background: none;
+  pointer-events: none;
+}
+html.motion .portal__copy::before { display: none; }
+html.motion .portal__actions { pointer-events: auto; }
+
+html.motion .portal__room {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg);
+  transform: scale(.42);
+}
+html.motion .proof { width: 100%; padding: 68px var(--gutter) var(--space-7); background: none; }
+/* The room is a full screen with its content centred, so its lower half
+   already is the gap before the next section; a full pad on top would double it. */
+html.motion .portal + .band { padding-top: var(--space-9); }
+
+/* One transformed container for every forest layer, so they scale and tilt
+   as a single object. */
+html.motion .portal__frame {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: var(--portal-s);
+  height: var(--portal-s);
+  margin: auto;
+  background: none;
+  pointer-events: none;
+}
+.portal__frame > * { position: absolute; }
+
+/* The window cut: a full layer XOR a rounded square the size of the hole. */
+.portal__wall,
+.portal__rim,
+.portal__glow {
+  -webkit-mask: linear-gradient(black 0 0), var(--portal-hole) center / var(--portal-s) var(--portal-s) no-repeat;
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0), var(--portal-hole) center / var(--portal-s) var(--portal-s) no-repeat;
+  mask-composite: exclude;
+}
+
+/* The wall: forest + grid, ~1.05 viewport diagonals square — enough to cover
+   the screen at any scale ≥ 1 and any tilt. */
+.portal__wall {
+  z-index: 0;
+  inset: calc((var(--portal-s) - var(--portal-w)) / 2);
+  background-color: var(--color-bg);
+}
+.portal__glass {
+  inset: 0;
+  border-radius: var(--portal-r);
+  background: var(--color-surface);
+  will-change: opacity;
+}
+/* Daylight spilling out of the window onto the wall — masked off the window
+   itself, so it never lies over the room. */
+.portal__glow {
+  z-index: 1;
+  inset: calc(var(--portal-s) * -.7);
+  background: radial-gradient(closest-side, var(--color-glow) 42%, transparent);
+  opacity: .5;
+  will-change: opacity;
+}
+/* The lit edge: a 10px ring round the window, lighter at the top. */
+.portal__rim {
+  z-index: 2;
+  inset: -10px;
+  overflow: hidden;
+  border-radius: calc(var(--portal-r) + 10px);
+  background: linear-gradient(var(--color-rim-hi), var(--color-rim-mid), var(--color-rim-lo));
+}
+/* One mint lobe that travels round the ring with progress. */
+.portal__rim::after {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  background: conic-gradient(transparent 0deg, var(--color-sheen) 28deg, transparent 56deg);
+  transform: rotate(var(--sheen, 0deg));
+  will-change: transform;
+}
+.portal--lite .portal__rim::after { display: none; }
+
+.portal.is-live .portal__frame,
+.portal.is-live .portal__room,
+.portal.is-live .portal__copy > * { will-change: transform, opacity; }
+
+/* ---------------------------------------------------------------- scroll hint */
+html.motion .portal__hint {
+  position: absolute;
+  z-index: 4;
+  bottom: var(--space-6);
+  inset-inline-start: var(--gutter);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--text-caption);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease-out);
+}
+html.motion .portal__hint[hidden] { display: none; }
+.portal__hint:hover { color: var(--color-text-primary); }
+.portal__hint-line { position: relative; width: 1px; height: 28px; overflow: hidden; background: var(--color-border); }
+.portal__hint-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-text-muted);
+  transform: translateY(-100%);
+  animation: portal-hint 1.8s var(--ease-in-out) infinite;
+}
+@keyframes portal-hint {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(100%); }
+}

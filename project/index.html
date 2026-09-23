@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/components.css">
 <link rel="stylesheet" href="src/styles/home.css">
+<link rel="stylesheet" href="src/styles/portal.css">
 <link rel="stylesheet" href="src/styles/motion.css">
 <script>
   // Decided before first paint so the pinned hero never flashes in its static
@@ -29,7 +30,9 @@
 <body>
 <a class="skip-link" href="#top">پرش به محتوای اصلی</a>
 
-<header class="navbar">
+<!-- Overlays the portal. Starts on forest; motion/portal.js drops data-surface
+     once the visitor is inside the light room. -->
+<header class="navbar" data-surface="dark">
   <a class="logo" href="#top" style="--logo-size:21px" aria-label="mitec — صفحه اصلی">
     <span class="logo__mi">mi</span><span>tec</span><span class="logo__dot">.</span><span class="logo__team">team</span>
   </a>
@@ -40,8 +43,8 @@
 
   <nav class="navbar__menu" id="navMenu" aria-label="فهرست اصلی">
     <a href="#top" class="navbar__link is-active" aria-current="page">خانه</a>
-    <a href="#services" class="navbar__link">خدمات</a>
     <a href="#work" class="navbar__link">نمونه‌کارها</a>
+    <a href="#services" class="navbar__link">خدمات</a>
     <a href="#process" class="navbar__link">فرایند</a>
     <a href="#about" class="navbar__link">درباره ما</a>
     <a href="#contact" class="navbar__link">تماس</a>
@@ -49,112 +52,76 @@
   </nav>
 </header>
 
-<main id="top">
+<main>
 
-  <!-- ============================================================ HERO -->
-  <section class="band hero">
-    <div class="band__inner">
-      <div class="hero__masthead">
-        <div class="hero__copy">
-          <span class="section-heading__eyebrow">تیم دو‌نفره · طراحی سایت حرفه‌ای</span>
-          <h1 class="section-heading__title section-heading__title--display-1">
-            <span class="headline-mark">سایت و سرویس آنلاینی</span> که کسب‌وکار شما لازم دارد
-          </h1>
-          <p class="section-heading__sub">طراحی، ساخت و پشتیبانی، متناسب با نیاز واقعی شما. یک پیشنهاد مشخص، ظرف یک روز کاری.</p>
-          <div class="hero__actions">
-            <a class="btn btn--lg btn--primary" href="./order/">ساخت سفارش من <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-            <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
-          </div>
+  <!-- ============================================================ PORTAL HERO
+       A forest scene with one window in it; scrolling carries the visitor
+       through the window into the light room behind, which is the Proof
+       section itself. The default markup is the static version (forest band,
+       then Proof as an ordinary section); under html.motion the stage pins
+       and src/scripts/motion/portal.js scrubs it. -->
+  <section class="portal" id="top" aria-labelledby="hero-title">
+    <div class="portal__stage">
+      <div class="portal__copy texture-grid" data-surface="dark">
+        <span class="section-heading__eyebrow">تیم دو‌نفره · طراحی سایت حرفه‌ای</span>
+        <h1 id="hero-title" class="portal__title">
+          <span class="headline-mark">سایت و سرویس آنلاینی</span> که کسب‌وکار شما لازم دارد
+        </h1>
+        <p class="section-heading__sub portal__sub">طراحی، ساخت و پشتیبانی، متناسب با نیاز واقعی شما. یک پیشنهاد مشخص، ظرف یک روز کاری.</p>
+        <div class="portal__actions">
+          <a class="btn btn--lg btn--primary" href="./order/">ساخت سفارش من <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
         </div>
+      </div>
 
-        <!-- The Instagram echo: mockups on a forest tile, grid texture, one mint glow. -->
-        <div class="hero__stage texture-grid" data-surface="dark" aria-label="نمای پروژه‌های mitec">
-          <div class="hero__stage-glow" aria-hidden="true"></div>
-          <div class="hero__stage-inner">
-            <div class="hero__laptop-frame">
-              <div class="hero__laptop-screen">
-                <!-- REPLACE: drop a real mitec project screenshot into this slot -->
-                <div class="img-slot">
-                  <span class="icon icon-image" aria-hidden="true"></span>
-                  <span class="img-slot__label">اسکرین‌شات پروژه — اینجا رها کنید</span>
-                </div>
+      <!-- The room: light, like every section you read in. No buttons in here. -->
+      <div class="portal__room">
+        <section class="proof" id="proof" aria-labelledby="proof-title">
+          <div class="proof__inner">
+            <div class="section-heading section-heading--center">
+              <span class="section-heading__eyebrow">نمونه‌کارها</span>
+              <h2 id="proof-title" class="section-heading__title section-heading__title--display-3">خودتان ببینید</h2>
+              <p class="section-heading__sub">هر پروژه با نیازی که داشت و کاری که برایش انجام دادیم.</p>
+            </div>
+
+            <!-- Stats: real team facts only, mirrored in src/data/site-copy.json. Never invented figures. -->
+            <div class="stat-bar">
+              <div class="stat-block"><div class="stat-block__value">۳</div><div class="stat-block__label">پروژه تحویل‌شده</div></div>
+              <div class="stat-block"><div class="stat-block__value">۲</div><div class="stat-block__label">نفر، بدون واسطه</div></div>
+              <div class="stat-block"><div class="stat-block__value">۱ روز</div><div class="stat-block__label">زمان پاسخ کاری</div></div>
+            </div>
+
+            <div class="logo-strip">
+              <span class="logo-strip__label">پروژه‌های ما</span>
+              <div class="logo-strip__names">
+                <span class="logo-strip__name">Mery Coffee Club</span>
+                <span class="logo-strip__name">Karamad MedTech</span>
+                <span class="logo-strip__name">E2 Café</span>
               </div>
             </div>
-            <div class="hero__laptop-base" aria-hidden="true"></div>
-
-            <div class="hero__phone">
-              <div class="hero__phone-frame">
-                <div class="hero__phone-screen">
-                  <!-- REPLACE: mobile screenshot of the same project -->
-                  <div class="img-slot">
-                    <span class="icon icon-image" aria-hidden="true"></span>
-                    <span class="img-slot__label">موبایل</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
+        </section>
       </div>
 
-      <!-- Stats: real team facts only, mirrored in src/data/site-copy.json. Never invented figures. -->
-      <div class="stat-bar">
-        <div class="stat-block"><div class="stat-block__value">۳</div><div class="stat-block__label">پروژه تحویل‌شده</div></div>
-        <div class="stat-block"><div class="stat-block__value">۲</div><div class="stat-block__label">نفر، بدون واسطه</div></div>
-        <div class="stat-block"><div class="stat-block__value">۱ روز</div><div class="stat-block__label">زمان پاسخ کاری</div></div>
+      <!-- Decorative: the wall with the window cut out of it, the glass that
+           fills the window at first, its lit rim, and one mint glow. -->
+      <div class="portal__frame" data-surface="dark" aria-hidden="true">
+        <div class="portal__wall texture-grid"></div>
+        <div class="portal__glass"></div>
+        <div class="portal__rim"></div>
+        <div class="portal__glow"></div>
       </div>
 
-      <div class="logo-strip">
-        <span class="logo-strip__label">پروژه‌های ما</span>
-        <div class="logo-strip__names">
-          <span class="logo-strip__name">Mery Coffee Club</span>
-          <span class="logo-strip__name">Karamad MedTech</span>
-          <span class="logo-strip__name">E2 Café</span>
-        </div>
-      </div>
+      <button class="portal__hint" type="button" data-surface="dark">
+        <span class="portal__hint-line" aria-hidden="true"></span>
+        برای دیدن، اسکرول کنید
+      </button>
     </div>
   </section>
 
-  <!-- ============================================================ SERVICES -->
-  <section id="services" class="band band--alt">
-    <div class="band__inner">
-      <div class="section-heading">
-        <span class="section-heading__eyebrow">خدمات</span>
-        <h2 class="section-heading__title section-heading__title--display-3">چه کاری انجام می‌دهیم</h2>
-        <p class="section-heading__sub">چهار سرویس که معمولاً کنار هم سفارش داده می‌شوند. ما برند نمی‌سازیم؛ سایت و سرویس آنلاین می‌سازیم.</p>
-      </div>
-
-      <div class="services-grid">
-        <div class="card card--surface card--pad-lg card--interactive service-card">
-          <span class="service-card__badge"><span class="icon icon-layout-dashboard" aria-hidden="true"></span></span>
-          <h3 class="card-title">طراحی و ساخت سایت</h3>
-          <p>فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین کافه و رستوران، کاتالوگ و لندینگ. طراحی رابط کاربری بخشی از همین سرویس است.</p>
-          <a class="service-card__link" href="./order/">شروع سفارش <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-        </div>
-        <div class="card card--surface card--pad-lg card--interactive service-card">
-          <span class="service-card__badge"><span class="icon icon-shield-check" aria-hidden="true"></span></span>
-          <h3 class="card-title">سرویس‌های اختصاصی</h3>
-          <p>باشگاه مشتریان، نظرات و پیشنهادها، نوبت‌دهی و رزرو، پنل مدیریت محتوا و ثبت سفارش — بر اساس کاری که هر روز انجام می‌دهید.</p>
-          <a class="service-card__link" href="./order/">شروع سفارش <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-        </div>
-        <div class="card card--surface card--pad-lg card--interactive service-card">
-          <span class="service-card__badge"><span class="icon icon-trending-up" aria-hidden="true"></span></span>
-          <h3 class="card-title">سئو، هاست و دامنه</h3>
-          <p>سئوی پایه، تهیه و تنظیم دامنه و هاست و SSL. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</p>
-          <a class="service-card__link" href="#contact">سؤال دارم <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-        </div>
-        <div class="card card--surface card--pad-lg card--interactive service-card">
-          <span class="service-card__badge"><span class="icon icon-headset" aria-hidden="true"></span></span>
-          <h3 class="card-title">پشتیبانی بعد از تحویل</h3>
-          <p>یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت رها نمی‌شود.</p>
-          <a class="service-card__link" href="#faq">جزئیات <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============================================================ WORK / PORTFOLIO -->
-  <section id="work" class="band">
+  <section id="work" class="band band--alt">
     <div class="band__inner">
       <div class="section-heading">
         <span class="section-heading__eyebrow">نمونه‌کارها</span>
@@ -232,8 +199,71 @@
     </div>
   </section>
 
+  <!-- ============================================================ TESTIMONIALS -->
+  <section id="testimonials" class="band testimonials" aria-labelledby="t-title">
+    <div class="band__inner">
+      <div class="testimonials__head">
+        <h2 id="t-title" class="section-heading__title section-heading__title--display-3">نظر مشتری‌ها</h2>
+        <!-- DEV-ONLY badge: sample content from src/data/testimonials.json. Remove when real quotes arrive. -->
+        <span class="badge badge--highlight"><span class="icon icon-clock" aria-hidden="true"></span>نمونه — جایگزین شود</span>
+      </div>
+      <div class="testimonials-grid">
+        <div class="card card--surface card--pad-lg testimonial">
+          <figure>
+            <blockquote>«متن نمونه: از اولین جلسه تا تحویل همه‌چیز مشخص بود و بعد از تحویل هم جواب سؤال‌هایمان را گرفتیم.»</blockquote>
+            <figcaption>نام مشتری — صاحب کافه</figcaption>
+          </figure>
+        </div>
+        <div class="card card--surface card--pad-lg testimonial">
+          <figure>
+            <blockquote>«متن نمونه: سایت را طوری ساختند که خودمان بتوانیم محصول اضافه و قیمت‌ها را عوض کنیم.»</blockquote>
+            <figcaption>نام مشتری — مدیر فروشگاه</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SERVICES -->
+  <section id="services" class="band band--alt">
+    <div class="band__inner">
+      <div class="section-heading">
+        <span class="section-heading__eyebrow">خدمات</span>
+        <h2 class="section-heading__title section-heading__title--display-3">چه کاری انجام می‌دهیم</h2>
+        <p class="section-heading__sub">چهار سرویس که معمولاً کنار هم سفارش داده می‌شوند. ما برند نمی‌سازیم؛ سایت و سرویس آنلاین می‌سازیم.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="card card--surface card--pad-lg card--interactive service-card">
+          <span class="service-card__badge"><span class="icon icon-layout-dashboard" aria-hidden="true"></span></span>
+          <h3 class="card-title">طراحی و ساخت سایت</h3>
+          <p>فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین کافه و رستوران، کاتالوگ و لندینگ. طراحی رابط کاربری بخشی از همین سرویس است.</p>
+          <a class="service-card__link" href="./order/">شروع سفارش <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+        </div>
+        <div class="card card--surface card--pad-lg card--interactive service-card">
+          <span class="service-card__badge"><span class="icon icon-shield-check" aria-hidden="true"></span></span>
+          <h3 class="card-title">سرویس‌های اختصاصی</h3>
+          <p>باشگاه مشتریان، نظرات و پیشنهادها، نوبت‌دهی و رزرو، پنل مدیریت محتوا و ثبت سفارش — بر اساس کاری که هر روز انجام می‌دهید.</p>
+          <a class="service-card__link" href="./order/">شروع سفارش <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+        </div>
+        <div class="card card--surface card--pad-lg card--interactive service-card">
+          <span class="service-card__badge"><span class="icon icon-trending-up" aria-hidden="true"></span></span>
+          <h3 class="card-title">سئو، هاست و دامنه</h3>
+          <p>سئوی پایه، تهیه و تنظیم دامنه و هاست و SSL. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</p>
+          <a class="service-card__link" href="#contact">سؤال دارم <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+        </div>
+        <div class="card card--surface card--pad-lg card--interactive service-card">
+          <span class="service-card__badge"><span class="icon icon-headset" aria-hidden="true"></span></span>
+          <h3 class="card-title">پشتیبانی بعد از تحویل</h3>
+          <p>یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت رها نمی‌شود.</p>
+          <a class="service-card__link" href="#faq">جزئیات <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================================================ PROCESS -->
-  <section id="process" class="band band--alt">
+  <section id="process" class="band">
     <div class="band__inner">
       <div class="section-heading">
         <span class="section-heading__eyebrow">فرایند کار</span>
@@ -272,7 +302,7 @@
   </section>
 
   <!-- ============================================================ ABOUT -->
-  <section id="about" class="band">
+  <section id="about" class="band band--alt">
     <div class="band__inner">
       <div class="section-heading">
         <span class="section-heading__eyebrow">درباره ما</span>
@@ -302,31 +332,6 @@
             <p class="about-card__role">بک‌اند و زیرساخت</p>
             <p class="about-card__bio">سرویس‌های اختصاصی، پنل مدیریت، هاست و دامنه و پشتیبانی فنی بعد از تحویل.</p>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ TESTIMONIALS -->
-  <section class="band band--alt testimonials" aria-labelledby="t-title">
-    <div class="band__inner">
-      <div class="testimonials__head">
-        <h2 id="t-title" class="section-heading__title section-heading__title--display-3">نظر مشتری‌ها</h2>
-        <!-- DEV-ONLY badge: sample content from src/data/testimonials.json. Remove when real quotes arrive. -->
-        <span class="badge badge--highlight"><span class="icon icon-clock" aria-hidden="true"></span>نمونه — جایگزین شود</span>
-      </div>
-      <div class="testimonials-grid">
-        <div class="card card--surface card--pad-lg testimonial">
-          <figure>
-            <blockquote>«متن نمونه: از اولین جلسه تا تحویل همه‌چیز مشخص بود و بعد از تحویل هم جواب سؤال‌هایمان را گرفتیم.»</blockquote>
-            <figcaption>نام مشتری — صاحب کافه</figcaption>
-          </figure>
-        </div>
-        <div class="card card--surface card--pad-lg testimonial">
-          <figure>
-            <blockquote>«متن نمونه: سایت را طوری ساختند که خودمان بتوانیم محصول اضافه و قیمت‌ها را عوض کنیم.»</blockquote>
-            <figcaption>نام مشتری — مدیر فروشگاه</figcaption>
-          </figure>
         </div>
       </div>
     </div>

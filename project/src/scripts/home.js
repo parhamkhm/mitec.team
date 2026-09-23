@@ -5,6 +5,7 @@
 
 import { whenMotion } from './motion/engine.js';
 import { initReveal } from './motion/reveal.js';
+import { initPortal } from './motion/portal.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -36,6 +37,26 @@ function initNav() {
   window.addEventListener('resize', () => {
     if (window.innerWidth > 860) close();
   });
+}
+
+// The nav marks the section under a thin band at ~45% of the viewport.
+// Sections without a nav link (testimonials, FAQ) clear the mark rather than
+// leave a stale one claiming to be current.
+function initScrollSpy() {
+  const links = [...document.querySelectorAll('.navbar__link')];
+  const sections = document.querySelectorAll('main > section[id]');
+  const set = (id) => {
+    for (const a of links) {
+      const on = a.hash === `#${id}`;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+  };
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) set(e.target.id);
+  }, { rootMargin: '-45% 0px -54% 0px' });
+  sections.forEach((s) => io.observe(s));
 }
 
 function initWorkFilter() {
@@ -100,6 +121,8 @@ function initFaq() {
 }
 
 initNav();
+initScrollSpy();
+initPortal();
 initWorkFilter();
 initFaq();
 whenMotion(initReveal);
