@@ -70,13 +70,22 @@ function initFaq() {
     const panel = item.querySelector('.faq-item__a');
     const chevron = item.querySelector('.faq-item__chevron');
     btn.setAttribute('aria-expanded', String(isOpen));
-    panel.hidden = !isOpen;
+    item.classList.toggle('is-open', isOpen);
+    // A closed panel stays in the layout at zero height, so opening can
+    // animate (home.css), but inert: nothing in it can take focus or be read.
+    panel.inert = !isOpen;
     // The marker is a masked Lucide glyph, not a "+" character, so the open
     // state swaps the mask class rather than writing text into the span.
     if (chevron) {
       chevron.classList.toggle('icon-minus', isOpen);
       chevron.classList.toggle('icon-plus', !isOpen);
     }
+  }
+
+  // Take over from the no-JS default, where closed panels are `hidden`.
+  for (const item of items) {
+    item.querySelector('.faq-item__a').hidden = false;
+    setOpen(item, false);
   }
 
   list.addEventListener('click', (e) => {

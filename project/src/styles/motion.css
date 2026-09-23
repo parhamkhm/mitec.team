@@ -23,6 +23,11 @@ html.motion [data-reveal-stagger].is-revealed > * {
   animation-delay: calc(var(--i, 0) * var(--stagger));
 }
 
+/* Focus never lands on something invisible: if keyboard focus reaches content
+   that has not revealed yet (or is mid-reveal), it shows at once. */
+html.motion [data-reveal]:focus-within,
+html.motion [data-reveal-stagger] > :focus-within { opacity: 1; animation: none; }
+
 /* Media tiles open from a clipped, slightly small frame instead of fading:
    they are visible (clipped) before they reveal, never blank. */
 @keyframes reveal-media {
@@ -32,5 +37,41 @@ html.motion [data-reveal-stagger].is-revealed > * {
 html.motion [data-reveal="media"] { --reveal: reveal-media; --dur-reveal: var(--dur-media); }
 html.motion [data-reveal="media"]:not(.is-revealed) { opacity: 1; clip-path: inset(10% round 20px); transform: scale(.96); }
 
+@keyframes reveal-pop {
+  from { opacity: 0; transform: scale(var(--pop-from, .8)); }
+}
+@keyframes reveal-fade {
+  from { opacity: 0; }
+}
+
+/* Services: each icon chip pops in 100ms after its card rises. */
+html.motion .services-grid.is-revealed .service-card__badge {
+  animation: reveal-pop var(--dur-reveal) var(--ease-entrance) backwards;
+  animation-delay: calc(var(--i, 0) * var(--stagger) + 100ms);
+}
+
+/* About: the cards fade in, each photo pops (.9 → 1), then its text rises in. */
+html.motion .about-grid { --reveal: reveal-fade; }
+html.motion .about-card:nth-child(2) { --i: 1; }
+html.motion .about-card__text > :nth-child(2) { --k: 1; }
+html.motion .about-card__text > :nth-child(3) { --k: 2; }
+html.motion .about-grid.is-revealed .about-card__photo {
+  --pop-from: .9;
+  animation: reveal-pop var(--dur-reveal) var(--ease-entrance) backwards;
+  animation-delay: calc(var(--i, 0) * 120ms + 80ms);
+}
+html.motion .about-grid.is-revealed .about-card__text > * {
+  --reveal-rise: 16px;
+  animation: reveal-rise var(--dur-reveal) var(--ease-entrance) backwards;
+  animation-delay: calc(var(--i, 0) * 120ms + 160ms + var(--k, 0) * 60ms);
+}
+
+/* CTA heading: word by word — never by letter, Persian letters join. */
+html.motion .cta-band h2 { --stagger: 90ms; }
+
 /* Scroll-linked layers (motion/effects.js) get their own compositor layer. */
-html.motion .work-row__shot { will-change: transform; }
+html.motion :is(.work-row__shot, .about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
+html.motion .testimonial { will-change: transform, opacity; }
+html.motion .process-rail__fill { transform: scale(0); }
+html.motion .process-step__n { opacity: .35; transition: opacity var(--dur-slow) var(--ease-out); }
+html.motion .is-reached .process-step__n { opacity: 1; }
