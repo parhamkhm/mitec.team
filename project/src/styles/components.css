@@ -24,7 +24,9 @@ body {
   font-size: var(--text-body);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes a scroll container, which would break the
+     portal's position: sticky stage. */
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4 {
@@ -126,7 +128,6 @@ body { caret-color: var(--color-cta); }
   font-family: var(--font-body);
   font-weight: var(--weight-bold);
   line-height: 1;
-  letter-spacing: .005em;
   border-radius: var(--radius-pill);
   border: 1px solid transparent;
   cursor: pointer;
@@ -197,7 +198,7 @@ body { caret-color: var(--color-cta); }
 .card--surface.card--interactive:hover { border-color: var(--color-border-hover); box-shadow: var(--shadow-elevated); }
 .card--forest.card--interactive:hover { background: var(--color-brand-hover); }
 
-.card-title { font-size: var(--text-h4); letter-spacing: -.018em; color: var(--color-text-primary); }
+.card-title { font-size: var(--text-h4); color: var(--color-text-primary); }
 
 /* ---------------------------------------------------------------- SectionHeading */
 .section-heading { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; text-align: start; max-width: 62ch; }
@@ -223,7 +224,7 @@ body { caret-color: var(--color-cta); }
 
 /* ---------------------------------------------------------------- Client strip */
 .logo-strip { display: flex; align-items: center; gap: var(--space-6) var(--space-7); flex-wrap: wrap; padding: var(--space-5) 0; }
-.logo-strip__label { font-size: var(--text-caption); font-weight: var(--weight-bold); letter-spacing: .08em; color: var(--color-text-muted); }
+.logo-strip__label { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--color-text-muted); }
 .logo-strip__names { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
 .logo-strip__name { font-family: var(--font-display); font-weight: 700; font-size: var(--text-body-lg); color: var(--color-text-muted); letter-spacing: -0.01em; transition: color var(--dur) var(--ease-out); }
 .logo-strip__name:hover { color: var(--color-text-primary); }
@@ -236,7 +237,6 @@ body { caret-color: var(--color-cta); }
   font-family: var(--font-display);
   font-weight: 800;
   font-size: var(--text-stat);
-  letter-spacing: -0.02em;
   line-height: 1.05;
   color: var(--color-brand);
   font-variant-numeric: tabular-nums;

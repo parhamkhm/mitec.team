@@ -1,7 +1,10 @@
-// mitec — home page interactivity.
-// Three independent, small behaviours: mobile nav toggle, portfolio tab
-// filter, and the FAQ accordion. No dependencies, no build step — this
-// loads as a plain ES module straight off the page.
+// mitec — home page entry.
+// Small, independent behaviours (nav, portfolio filter, FAQ) plus the motion
+// layer under ./motion/. No dependencies, no build step — this loads as a
+// plain ES module straight off the page.
+
+import { whenMotion } from './motion/engine.js';
+import { initReveal } from './motion/reveal.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -99,3 +102,4 @@ function initFaq() {
 initNav();
 initWorkFilter();
 initFaq();
+whenMotion(initReveal);

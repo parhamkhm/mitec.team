@@ -1,0 +1,24 @@
+/* mitec — motion layer
+   ──────────────────────────────────────────────────────────────────────────
+   Every rule here is scoped to html.motion, which JS sets only when the
+   visitor hasn't asked for reduced motion (motion/engine.js). Without it —
+   reduced motion, no JS, forced colours — none of this applies and the page
+   is the plain static document with everything visible.
+
+   Only transform and opacity move. Reveals are CSS animations with
+   fill-mode `backwards`, so once one ends the element is back on its own
+   styles and its hover transitions are untouched.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@keyframes reveal-rise {
+  from { opacity: 0; transform: translateY(var(--reveal-rise)); }
+}
+
+html.motion [data-reveal]:not(.is-revealed),
+html.motion [data-reveal-stagger]:not(.is-revealed) > * { opacity: 0; }
+
+html.motion [data-reveal].is-revealed,
+html.motion [data-reveal-stagger].is-revealed > * {
+  animation: var(--reveal, reveal-rise) var(--dur-reveal) var(--ease-entrance) backwards;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}

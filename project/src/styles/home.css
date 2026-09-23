@@ -13,7 +13,7 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 /* ---------------------------------------------------------------- bands */
-.band { padding-block: var(--space-11); background: var(--color-bg); }
+.band { padding-block: var(--section-pad); background: var(--color-bg); }
 .band--alt { background: var(--color-bg-alt); }
 .band--forest { background: var(--color-bg); }
 .band__inner {
@@ -110,7 +110,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jump
 .work-card__body { padding: var(--pad-card); display: flex; flex-direction: column; gap: var(--space-4); }
 .work-card__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .work-card dl { margin: 0; display: grid; gap: var(--space-3); font-size: var(--text-body-sm); }
-.work-card dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em; margin-bottom: 2px; }
+.work-card dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; margin-bottom: 2px; }
 .work-card dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
 .work-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
 .work-card__link .icon { width: 16px; height: 16px; }
@@ -120,7 +120,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jump
 /* ---------------------------------------------------------------- process
    The numerals earn their place: the sequence is the information. They carry
    the brand colour, never the action colour — nothing here is clickable. */
-.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); letter-spacing: -.02em; color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .process-step__title { margin: var(--space-3) 0 var(--space-2); }
 .process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
 
@@ -193,7 +193,6 @@ section[id] { scroll-margin-top: 80px; } /* clears the sticky nav on anchor jump
   .navbar__link.is-active { background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
   .navbar__cta { margin-top: var(--space-2); justify-content: center; }
 
-  .band { padding-block: var(--space-10); }
   .hero__phone { display: none; } /* no room to float at phone widths */
 }
 

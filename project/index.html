@@ -16,6 +16,15 @@
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/components.css">
 <link rel="stylesheet" href="src/styles/home.css">
+<link rel="stylesheet" href="src/styles/motion.css">
+<script>
+  // Decided before first paint so the pinned hero never flashes in its static
+  // layout first. Motion is opt-in; motion/engine.js keeps this in sync after.
+  (function (d) {
+    d.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: no-preference)').matches && !matchMedia('(forced-colors: active)').matches) d.classList.add('motion');
+  })(document.documentElement);
+</script>
 </head>
 <body>
 <a class="skip-link" href="#top">پرش به محتوای اصلی</a>
@@ -415,6 +424,7 @@
   </div>
 </footer>
 
-<script type="module" src="src/scripts/home.js"></script>
+<!-- If the module can't load, fall back to the static, fully visible page. -->
+<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion')"></script>
 </body>
 </html>

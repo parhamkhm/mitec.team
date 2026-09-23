@@ -77,9 +77,28 @@
   --lh-tight: 1.5;
   --lh-heading: 1.2;
   --lh-display: 1.08;
-  --ls-display: -0.022em;
-  --ls-heading: -0.012em;
-  --ls-eyebrow: 0.16em;
+  /* Zero, not tight: Persian is a joined script, and any tracking — negative
+     or positive — opens gaps in the joins (DESIGN.md §13). */
+  --ls-display: 0;
+  --ls-heading: 0;
+  --ls-eyebrow: 0;
+}
+
+/* ─── Rhythm + motion ────────────────────────────────────────────
+   One idea per viewport: sections breathe on a large fluid pad. The motion
+   values extend the system's --dur / --ease scale for the scroll scene and
+   reveals, and zero out with it under reduced motion. */
+:root {
+  --section-pad: clamp(96px, 11vw, 176px);
+
+  --ease-portal: cubic-bezier(.65, 0, .35, 1);
+  --dur-reveal: 600ms;
+  --dur-media: 700ms;
+  --stagger: 70ms;
+  --reveal-rise: 28px;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-reveal: 0ms; --dur-media: 0ms; --stagger: 0ms; }
 }
 
 /* ─── Semantic · light (default) ─────────────────────────────── */
