@@ -14,6 +14,17 @@ export const mockApi = {
     return ok(await res.json());
   },
 
+  async getPricing() {
+    await wait(300);
+    try {
+      const res = await fetch(new URL('../config/pricing.json', import.meta.url));
+      if (!res.ok) return fail(`HTTP_${res.status}`, 'برآورد در دسترس نیست.');
+      return ok(await res.json());
+    } catch (e) {
+      return fail('NETWORK_ERROR', 'برآورد در دسترس نیست.');
+    }
+  },
+
   async submitOrder(payload) {
     await wait(900);
     if (!payload?.business?.phone) {

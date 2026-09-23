@@ -7,6 +7,7 @@ export const APP_CONFIG = {
 
   endpoints: {
     catalog: '/catalog',         // optional; falls back to src/config/order-catalog.json
+    pricing: '/pricing',         // the quick-scope pricing document (src/config/pricing.json in mock mode)
     submitOrder: '/orders',
     uploadFile: '/uploads',
     trackOrder: '/orders/track'  // proposal only — see API_CONTRACT.md

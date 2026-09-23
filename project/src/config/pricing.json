@@ -1,0 +1,190 @@
+{
+  "version": 3,
+  "updatedAt": "2026-09-23T00:00:00Z",
+  "placeholder": true,
+  "currency": { "unit": "تومان", "divisor": 1000000, "suffix": "میلیون تومان", "from": "از" },
+  "display": {
+    "showPrice": true,
+    "showDuration": true,
+    "durationUnit": "workday",
+    "durationLabel": "روز کاری",
+    "durationPrefix": "حدود"
+  },
+
+  "section": {
+    "eyebrow": "برآورد سریع",
+    "title": "هزینه و زمان سایت شما",
+    "subtitle": "هر پروژه متفاوت است. این محاسبه یک برآورد اولیه است؛ قیمت دقیق در گفت‌وگو مشخص می‌شود.",
+    "ctaLabel": "ادامه در سفارش‌ساز",
+    "disclaimer": "همه‌ی اعداد تقریبی‌اند. بعد از جلسه‌ی اولیه، پیشنهاد دقیق برایتان ارسال می‌شود.",
+    "placeholderBadge": "اعداد نمونه — جایگزین شود",
+    "typesLabel": "نوع سایت",
+    "pagesIncluded": "شامل {n} صفحه",
+    "pagesTitle": "تعداد صفحه‌ها",
+    "pagesDesc": "صفحه‌های بیشتر از تعداد پایه جداگانه حساب می‌شوند.",
+    "pagesValue": "{n} صفحه",
+    "addonsTitle": "امکانات بیشتر",
+    "showAll": "همه‌ی موارد",
+    "totalLabel": "جمع"
+  },
+
+  "siteTypes": [
+    {
+      "id": "corporate",
+      "label": "سایت شرکتی",
+      "active": true,
+      "order": 1,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 10000000,
+        "days": 10,
+        "pagesIncluded": 1,
+        "included": [
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "home-page", "title": "صفحه‌ی اصلی", "desc": "اولین برداشت از کسب‌وکار شما" },
+          { "id": "legal-pages", "title": "صفحه‌های قوانین", "desc": "قوانین و حریم خصوصی" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": true, "min": 1, "max": 20, "pricePerExtra": 1000000, "daysPerExtra": 1 },
+      "addons": ["contact-form", "cms", "i18n", "seo", "auth", "payment", "booking", "loyalty", "chat"]
+    },
+    {
+      "id": "ecommerce",
+      "label": "فروشگاه اینترنتی",
+      "active": true,
+      "order": 2,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 20000000,
+        "days": 20,
+        "pagesIncluded": 3,
+        "included": [
+          { "id": "shop", "title": "فروشگاه اینترنتی", "desc": "فروش محصول، سبد خرید و پرداخت آنلاین" },
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "home-page", "title": "صفحه‌ی اصلی", "desc": "اولین برداشت از کسب‌وکار شما" },
+          { "id": "legal-pages", "title": "صفحه‌های قوانین", "desc": "قوانین و حریم خصوصی" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": true, "min": 1, "max": 30, "pricePerExtra": 1000000, "daysPerExtra": 1 },
+      "addons": ["contact-form", "cms", "i18n", "seo", "auth", "loyalty", "chat"]
+    },
+    {
+      "id": "menu",
+      "label": "منوی آنلاین",
+      "active": true,
+      "order": 3,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 5000000,
+        "days": 5,
+        "pagesIncluded": 1,
+        "included": [
+          { "id": "qr-menu", "title": "منوی آنلاین", "desc": "منوی کافه و رستوران با QR" },
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": false, "min": 1, "max": 1, "pricePerExtra": 0, "daysPerExtra": 0 },
+      "addons": ["contact-form", "cms", "i18n", "seo", "booking", "loyalty", "chat"]
+    },
+    {
+      "id": "catalog",
+      "label": "کاتالوگ و نمونه‌کار",
+      "active": true,
+      "order": 4,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 10000000,
+        "days": 10,
+        "pagesIncluded": 3,
+        "included": [
+          { "id": "showcase", "title": "کاتالوگ و نمونه‌کار", "desc": "نمایش محصولات یا پروژه‌ها بدون فروش" },
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "home-page", "title": "صفحه‌ی اصلی", "desc": "اولین برداشت از کسب‌وکار شما" },
+          { "id": "legal-pages", "title": "صفحه‌های قوانین", "desc": "قوانین و حریم خصوصی" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": true, "min": 1, "max": 30, "pricePerExtra": 1000000, "daysPerExtra": 1 },
+      "addons": ["contact-form", "cms", "i18n", "seo", "chat"]
+    },
+    {
+      "id": "landing",
+      "label": "لندینگ پیج",
+      "active": true,
+      "order": 5,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 5000000,
+        "days": 5,
+        "pagesIncluded": 1,
+        "included": [
+          { "id": "landing-page", "title": "لندینگ پیج", "desc": "یک صفحه برای یک کمپین یا یک محصول" },
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": false, "min": 1, "max": 1, "pricePerExtra": 0, "daysPerExtra": 0 },
+      "addons": ["contact-form", "i18n", "seo", "chat"]
+    },
+    {
+      "id": "custom",
+      "label": "سرویس اختصاصی",
+      "active": true,
+      "order": 6,
+      "base": {
+        "title": "پایه",
+        "subtitle": "پایه‌ی هر سایت",
+        "price": 30000000,
+        "days": 30,
+        "pagesIncluded": 1,
+        "included": [
+          { "id": "custom-service", "title": "سرویس اختصاصی", "desc": "باشگاه مشتریان، رزرو، پنل مدیریت و مشابه" },
+          { "id": "custom-design", "title": "طراحی اختصاصی", "desc": "متناسب با برند و مخاطب شما" },
+          { "id": "responsive", "title": "بهینه برای همه‌ی دستگاه‌ها", "desc": "موبایل، تبلت و دسکتاپ" },
+          { "id": "motion", "title": "انیمیشن و تعامل", "desc": "سایتی که حس زنده بودن دارد" },
+          { "id": "home-page", "title": "صفحه‌ی اصلی", "desc": "اولین برداشت از کسب‌وکار شما" },
+          { "id": "legal-pages", "title": "صفحه‌های قوانین", "desc": "قوانین و حریم خصوصی" },
+          { "id": "hosting-setup", "title": "راه‌اندازی روی دامنه و هاست", "desc": "به نام خودتان، با SSL" },
+          { "id": "support", "title": "پشتیبانی بعد از تحویل", "desc": "یک دوره بدون هزینه" }
+        ]
+      },
+      "pages": { "enabled": true, "min": 1, "max": 20, "pricePerExtra": 1000000, "daysPerExtra": 1 },
+      "addons": ["contact-form", "cms", "i18n", "seo", "auth", "payment", "booking", "loyalty", "chat"]
+    }
+  ],
+
+  "addons": [
+    { "id": "contact-form", "title": "فرم تماس", "desc": "تا مشتری‌ها مستقیم با شما در ارتباط باشند", "price": 0, "days": 0, "active": true, "order": 1 },
+    { "id": "cms", "title": "پنل مدیریت محتوا", "desc": "محتوا را خودتان و بدون دانش فنی تغییر دهید", "price": 5000000, "days": 5, "active": true, "order": 2 },
+    { "id": "i18n", "title": "چندزبانه", "desc": "هر بازدیدکننده سایت را به زبان خودش ببیند", "price": 5000000, "days": 5, "active": true, "order": 3 },
+    { "id": "seo", "title": "سئوی پایه", "desc": "ساختار و تنظیمات پایه برای دیده شدن در جست‌وجو", "price": 2000000, "days": 2, "active": true, "order": 4 },
+    { "id": "auth", "title": "ثبت‌نام و ورود", "desc": "حساب کاربری برای مشتری‌ها", "price": 3000000, "days": 3, "active": true, "order": 5 },
+    { "id": "payment", "title": "پرداخت آنلاین", "desc": "اتصال سایت به درگاه پرداخت", "price": 5000000, "days": 5, "active": true, "order": 6 },
+    { "id": "booking", "title": "نوبت‌دهی و رزرو", "desc": "رزرو وقت یا میز به‌صورت آنلاین", "price": 5000000, "days": 5, "active": true, "order": 7 },
+    { "id": "loyalty", "title": "باشگاه مشتریان", "desc": "امتیاز و پیگیری مشتری‌های همیشگی", "price": 10000000, "days": 10, "active": true, "order": 8 },
+    { "id": "chat", "title": "چت آنلاین", "desc": "گفت‌وگوی مستقیم با بازدیدکننده‌ها", "price": 1000000, "days": 1, "active": true, "order": 9 }
+  ]
+}

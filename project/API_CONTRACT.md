@@ -78,6 +78,33 @@
 { "tracking_code": "MTC-48213", "status": "in_design", "status_label": "در مرحله طراحی", "created_at": "…", "estimate_weeks": 3, "notes": "" }
 ```
 
+## 5. GET /pricing — the pricing document (public)
+
+سند قیمت‌گذاری که بخش «برآورد سریع» صفحه‌ی اصلی (و بعداً سفارش‌ساز) فقط آن را نمایش می‌دهد؛ هیچ عدد،
+برچسب یا توضیحی در کد فرانت‌اند نیست. بدون احراز هویت.
+
+- پاسخ: خود سند، دقیقاً به شکل `src/config/pricing.json` (در حالت mock همین فایل خوانده می‌شود).
+- ساختار و قواعد: `docs/pricing.schema.json` (JSON Schema draft 2020-12). سه قاعده در JSON Schema
+  قابل بیان نیست و باید در کد بک‌اند بررسی شود: یکتا بودن idها، `pages.min <= pages.max`، و اینکه هر id در
+  `siteTypes[].addons` در `addons[]` وجود داشته باشد (بخش `x-rules` در همان فایل).
+- فرانت‌اند سند را در `fromApiPricing()` (`src/api/mapper.js`) نرمال می‌کند؛ اگر نام فیلدها فرق داشت، فقط همان‌جا عوض می‌شود.
+- پیشنهاد: `Cache-Control: public, max-age=300` — سند کم تغییر می‌کند.
+
+## 6. Admin — GET / PUT /admin/pricing (proposal)
+
+این بخش هم **پیشنهاد** است؛ پنل ادمین را بعداً توسعه‌دهنده‌ی بک‌اند می‌سازد. احراز هویت و نقش‌ها کاملاً با بک‌اند است.
+
+- `GET /admin/pricing` — همان سند، برای ویرایش در پنل.
+- `PUT /admin/pricing` — **جایگزینی کل سند**. بدنه: سند کامل، با همان `version` که پنل هنگام باز کردن گرفته است.
+  - سرور سند را با `docs/pricing.schema.json` و سه قاعده‌ی بالا اعتبارسنجی می‌کند؛ خطا → `422` با
+    `{ "error": { "code": "VALIDATION_ERROR", "message": "…", "fieldErrors": { "/siteTypes/0/pages/max": "…" } } }`
+    (کلید `fieldErrors` یک JSON Pointer به فیلد است).
+  - اگر `version` بدنه با نسخه‌ی فعلی سرور یکی نباشد (کس دیگری در این فاصله ذخیره کرده) → `409`
+    `{ "error": { "code": "VERSION_CONFLICT", "message": "…", "currentVersion": 7 } }`؛ پنل باید سند تازه را دوباره بگیرد.
+  - در موفقیت سرور `version` را یکی زیاد می‌کند، `updatedAt` را می‌گذارد و سند ذخیره‌شده را برمی‌گرداند (`200`).
+- پیشنهاد: هر نسخه‌ی ذخیره‌شده نگه داشته شود؛ سفارش‌ها `pricing_version` را می‌فرستند (بخش ۲) تا معلوم باشد
+  برآورد مشتری با کدام نسخه حساب شده است.
+
 ## Error codes the UI already handles
 
 | code | UI behaviour |

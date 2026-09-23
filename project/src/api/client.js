@@ -1,7 +1,7 @@
 import { APP_CONFIG } from '../config/app.config.js';
 import { url } from './endpoints.js';
 import { mockApi } from './mock.js';
-import { toApiOrder, fromApiOrder } from './mapper.js';
+import { toApiOrder, fromApiOrder, fromApiPricing } from './mapper.js';
 
 // ---- documented hook, intentionally empty -------------------------------
 // If the back end ever needs a token/header, fill this in. Nothing else in
@@ -40,6 +40,19 @@ async function request(name, { method = 'GET', body, isForm = false } = {}) {
 export async function getCatalog() {
   if (APP_CONFIG.USE_MOCK) return mockApi.getCatalog();
   return request('catalog');
+}
+
+// The pricing document behind the quick-scope calculator (and, later, the
+// order wizard). Normalised by the mapper, so a malformed document becomes an
+// error here rather than a crash in the UI.
+export async function getPricing() {
+  const res = APP_CONFIG.USE_MOCK ? await mockApi.getPricing() : await request('pricing');
+  if (!res.ok) return res;
+  try {
+    return ok(fromApiPricing(res.data));
+  } catch (e) {
+    return fail('INVALID_PRICING', 'برآورد در دسترس نیست.');
+  }
 }
 
 export async function submitOrder(selection, catalog) {
