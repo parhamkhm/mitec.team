@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>estimate() tests</title>
+<link rel="icon" href="data:,">
+<!-- Open over HTTP (python devserver.py 4173 → /src/utils/estimate.test.html).
+     Results print to the console and to this page. -->
+<link rel="stylesheet" href="../styles/tokens.css">
+<style>
+  body { margin: 24px; font: 14px/1.6 system-ui, sans-serif; background: var(--color-bg); color: var(--color-text-body); }
+  .pass { color: var(--color-success); }
+  .fail { color: var(--color-error); font-weight: 700; }
+  pre { white-space: pre-wrap; margin: 0 0 4px; }
+</style>
+</head>
+<body>
+<h1>estimate() / formatPrice() / formatDuration()</h1>
+<div id="out"></div>
+<script type="module">
+import { estimate } from './estimate.js';
+import { formatPrice, formatDuration } from './format.js';
+
+// A small fixture shaped like the normalised pricing document.
+const doc = {
+  section: { pagesTitle: 'Pages' },
+  siteTypes: [
+    { id: 'site', active: true, base: { title: 'Base', price: 10000000, days: 10, pagesIncluded: 2 },
+      pages: { enabled: true, min: 1, max: 10, pricePerExtra: 1000000, daysPerExtra: 1 },
+      addons: ['cms', 'seo', 'old'] },
+    { id: 'onepage', active: true, base: { title: 'Base', price: 4000000, days: 4, pagesIncluded: 1 },
+      pages: { enabled: false, min: 1, max: 1, pricePerExtra: 9, daysPerExtra: 9 },
+      addons: ['cms'] },
+    { id: 'retired', active: false, base: { title: 'Base', price: 1, days: 1, pagesIncluded: 1 },
+      pages: { enabled: false, min: 1, max: 1, pricePerExtra: 0, daysPerExtra: 0 }, addons: [] }
+  ],
+  addons: [
+    { id: 'cms', title: 'CMS', price: 5000000, days: 5, active: true },
+    { id: 'seo', title: 'SEO', price: 2000000, days: 2, active: true },
+    { id: 'old', title: 'Old', price: 7000000, days: 7, active: false },
+    { id: 'payment', title: 'Payment', price: 3000000, days: 3, active: true }
+  ]
+};
+const pick = (r) => ({ price: r.price, days: r.days, extraPages: r.extraPages, pages: r.pages, lines: r.lines.map((l) => l.id) });
+
+const cases = [
+  ['base only', pick(estimate(doc, { siteTypeId: 'site' })),
+    { price: 10000000, days: 10, extraPages: 0, pages: 2, lines: ['base'] }],
+  ['extra pages (5 pages, 2 included)', pick(estimate(doc, { siteTypeId: 'site', pages: 5 })),
+    { price: 13000000, days: 13, extraPages: 3, pages: 5, lines: ['base', 'extra-pages'] }],
+  ['add-ons', pick(estimate(doc, { siteTypeId: 'site', pages: 2, addonIds: ['seo', 'cms'] })),
+    { price: 17000000, days: 17, extraPages: 0, pages: 2, lines: ['base', 'cms', 'seo'] }],
+  ['clamping: pages above max', pick(estimate(doc, { siteTypeId: 'site', pages: 99 })),
+    { price: 18000000, days: 18, extraPages: 8, pages: 10, lines: ['base', 'extra-pages'] }],
+  ['clamping: pages below min', pick(estimate(doc, { siteTypeId: 'site', pages: -3 })),
+    { price: 10000000, days: 10, extraPages: 0, pages: 1, lines: ['base'] }],
+  ['inactive add-on is ignored', pick(estimate(doc, { siteTypeId: 'site', addonIds: ['old'] })),
+    { price: 10000000, days: 10, extraPages: 0, pages: 2, lines: ['base'] }],
+  ['unknown add-on id is ignored', pick(estimate(doc, { siteTypeId: 'site', addonIds: ['ghost'] })),
+    { price: 10000000, days: 10, extraPages: 0, pages: 2, lines: ['base'] }],
+  ['add-on not offered for the type is ignored', pick(estimate(doc, { siteTypeId: 'site', addonIds: ['payment'] })),
+    { price: 10000000, days: 10, extraPages: 0, pages: 2, lines: ['base'] }],
+  ['duplicate add-on ids count once', pick(estimate(doc, { siteTypeId: 'site', addonIds: ['cms', 'cms'] })),
+    { price: 15000000, days: 15, extraPages: 0, pages: 2, lines: ['base', 'cms'] }],
+  ['pages disabled: the page count is ignored', pick(estimate(doc, { siteTypeId: 'onepage', pages: 9 })),
+    { price: 4000000, days: 4, extraPages: 0, pages: 1, lines: ['base'] }],
+  ['unknown or inactive site type: empty', [pick(estimate(doc, { siteTypeId: 'nope' })), pick(estimate(doc, { siteTypeId: 'retired' }))],
+    [{ price: 0, days: 0, extraPages: 0, pages: 0, lines: [] }, { price: 0, days: 0, extraPages: 0, pages: 0, lines: [] }]],
+  ['line items carry title, price and days', estimate(doc, { siteTypeId: 'site', pages: 3, addonIds: ['seo'] }).lines,
+    [{ id: 'base', title: 'Base', price: 10000000, days: 10 },
+     { id: 'extra-pages', title: 'Pages', qty: 1, price: 1000000, days: 1 },
+     { id: 'seo', title: 'SEO', price: 2000000, days: 2 }]]
+];
+
+const currency = { unit: 'تومان', divisor: 1000000, suffix: 'میلیون تومان', from: 'از' };
+const unit = { prefix: 'حدود', label: 'روز کاری' };
+cases.push(
+  ['formatPrice: millions', formatPrice(24000000, currency), 'از ۲۴ میلیون تومان'],
+  ['formatPrice: one decimal', formatPrice(2500000, currency), 'از ۲٫۵ میلیون تومان'],
+  ['formatPrice: below one divisor, in full', formatPrice(850000, currency), 'از ۸۵۰٬۰۰۰ تومان'],
+  ['formatDuration', formatDuration(12, unit), 'حدود ۱۲ روز کاری']
+);
+
+const out = document.getElementById('out');
+let passed = 0;
+for (const [name, got, want] of cases) {
+  const ok = JSON.stringify(got) === JSON.stringify(want);
+  if (ok) passed++;
+  const msg = `${ok ? 'PASS' : 'FAIL'}  ${name}` + (ok ? '' : `\n  got:  ${JSON.stringify(got)}\n  want: ${JSON.stringify(want)}`);
+  (ok ? console.log : console.error)(msg);
+  const pre = document.createElement('pre');
+  pre.className = ok ? 'pass' : 'fail';
+  pre.textContent = msg;
+  out.append(pre);
+}
+const summary = `${passed}/${cases.length} passed`;
+console.info(summary);
+const p = document.createElement('p');
+p.className = passed === cases.length ? 'pass' : 'fail';
+p.textContent = summary;
+out.append(p);
+</script>
+</body>
+</html>

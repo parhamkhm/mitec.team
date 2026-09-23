@@ -6,8 +6,23 @@
 
 import { getCatalog } from '../api/client.js';
 import { APP_CONFIG } from '../config/app.config.js';
-import { estimate } from '../utils/estimate.js';
 import { toFa } from '../utils/persian-digits.js';
+
+// Interim, for one commit: the shared estimate() is now the day-based pricing
+// calculation, so this (soon replaced) week-based UI keeps its old maths here.
+function estimate(catalog, selection = {}) {
+  const base = catalog?.estimates?.[selection.siteType] || catalog?.estimates?.unsure || { weeks: [2, 6], price: [15000000, 60000000] };
+  const weeks = [...base.weeks];
+  const price = [...base.price];
+  for (const id of selection.features || []) {
+    const cost = catalog?.featureCost?.[id];
+    if (!cost) continue;
+    price[0] += cost[0];
+    price[1] += Math.round(cost[0] * 1.6);
+    weeks[1] += cost[1];
+  }
+  return { weeks, price };
+}
 
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
 const root = document.documentElement;
