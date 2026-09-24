@@ -1,6 +1,6 @@
 # Demo report — home-page redesign, pricing v3/v4, docs and QA
 
-Branch `feature/portal-hero`, not pushed and not merged. Everything below was built and checked locally with
+Written on branch `feature/portal-hero` before it was merged; for where things stand now (merge, push, what is left), see `docs/NEXT_SESSION.md`. Everything below was built and checked locally with
 headless Chrome (Playwright) plus Firefox for one earlier check. No real phone, real screen reader or DevTools
 session on your machine was used, so the report says where a check needs your eyes.
 
