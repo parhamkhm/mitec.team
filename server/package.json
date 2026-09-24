@@ -12,7 +12,8 @@
     "dev": "node --watch src/index.js",
     "migrate": "node src/db/migrate.js",
     "seed:admin": "node src/seed/seedAdmin.js",
-    "seed:pricing": "node src/seed/seedPricing.js"
+    "seed:pricing": "node src/seed/seedPricing.js",
+    "test:contract": "node test/contract.test.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
