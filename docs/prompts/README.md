@@ -12,6 +12,7 @@ what was built, and that wins.
 | 3 | *Process spotlight* (given in chat, not saved as a file) | Scroll-linked step fill and one forest "spotlight" step in Process | Master §6.6. Documented in `DESIGN.md` §5, "Process steps" |
 | 4 | `CLAUDE_CODE_PROMPT_V3_PRICING.md` | Quick scope as a price-and-duration calculator driven by one pricing document | Master §6.8 and §8: prices and working days instead of the catalog's week ranges; page slider and add-ons; data in `src/config/pricing.json` (`docs/pricing-guide.md`) |
 | 5 | `CLAUDE_CODE_PROMPT_V4_PRICING_LAYOUT.md` | The calculator's layout: sticky summary card, equal add-on tiles, bottom bar on small screens | V3's layout only; V3's data model and maths are unchanged |
+| 6 | `CLAUDE_CODE_PROMPT_V5_PRICING_BALANCE.md` | The calculator rebalanced for 12+ add-ons: 3 tiles per row from 1280px, compact tiles, an always-sticky summary whose list scrolls, long lists folded after 9 (6 below 1024px) | V4's layout from 1024px (column split, sticky rule, tile height, two-column checklist); adds two optional `section` labels and text-length limits to the schema |
 
 Approved and frozen (do not change without the owner's go-ahead): the hero, the laptop, the intro
 statement, the motion engine, the Process spotlight and the pricing data model.

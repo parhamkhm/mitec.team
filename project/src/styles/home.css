@@ -226,8 +226,9 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
    A pricing calculator on light (a tool, so a form surface, DESIGN.md §6).
    Tabs pick the site type. From 1024px the start column is one summary card
    — what the base always includes, then the total, the CTA and the
-   disclaimer — held in view while it fits the screen; the end column is the
-   page slider and a grid of equal add-on tiles, tidy for any number of them.
+   disclaimer — always held in view and never taller than the screen; the end
+   column is the page slider and a grid of equal add-on tiles (three per row
+   from 1280px), tidy for any number of them, a long list folded after nine.
    Below 1024px it all stacks and the total + CTA ride in a bar at the bottom
    of the screen while the calculator is on it. Everything shown is rendered
    from the pricing document by scope.js. The action green is only on what
@@ -295,23 +296,54 @@ html:not(.js) .scope { display: none; }
 
 .scope-cols { --stagger: 80ms; display: grid; gap: var(--space-5); align-items: start; }
 @media (min-width: 1024px) { .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+@media (min-width: 1280px) { .scope-cols { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
 
-/* The summary card. scope.js adds .is-sticky only while the whole card fits
-   between the nav and the bottom of the screen, so a stuck card is never cut
-   off; as a grid item it lets go where the columns end. */
+/* The summary card. From 1024px it is always sticky and never taller than
+   the screen: the head, the pages line and the checkout keep their size, and
+   only the list of included items gives way, scrolling inside the card (with
+   a fade at its foot while there is more). As a grid item it lets go where
+   the columns end. */
 .scope-summary { display: flex; flex-direction: column; gap: var(--space-6); padding: var(--space-7) var(--space-6); }
-.scope-summary.is-sticky { position: sticky; top: var(--scope-top, 92px); }
 .scope-summary__base { display: flex; flex-direction: column; gap: var(--space-5); }
 .scope-base__head { text-align: center; }
 .scope-base__title { font-size: var(--text-h4); }
 .scope-base__sub { margin-top: var(--space-1); color: var(--color-text-secondary); }
-/* What is always included: a compact checklist, two columns wherever the
-   card is wide enough for them. */
+/* What is always included: a compact checklist; two columns where the card is
+   full width (768–1023px), one in the sticky card. */
+.scope-base__box { position: relative; display: flex; flex-direction: column; }
+.scope-base__box::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 40px;
+  background: linear-gradient(transparent, var(--color-surface));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-out);
+}
+.scope-base__box.has-more::after { opacity: 1; }
 .scope-base__list { display: grid; gap: var(--space-4) var(--space-5); margin: 0; padding: var(--space-5) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
-@media (min-width: 768px) and (max-width: 1023px), (min-width: 1280px) {
+@media (min-width: 768px) and (max-width: 1023px) {
   .scope-base__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.scope-summary.is-single .scope-base__list { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) {
+  .scope-summary {
+    position: sticky;
+    top: var(--scope-top, 92px);
+    max-height: calc(100vh - var(--scope-top, 92px) - 24px);
+    max-height: calc(100dvh - var(--scope-top, 92px) - 24px);
+    overflow-y: auto; /* only on screens too short even for a few items */
+  }
+  .scope-summary > *,
+  .scope-summary__base > * { flex: none; }
+  .scope-summary > .scope-summary__base,
+  .scope-summary__base > .scope-base__box { flex: 0 1 auto; min-height: 0; }
+  .scope-summary__base > .scope-base__box { min-height: 7.5rem; }
+  .scope-base__list { flex: 0 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  /* Titles only, unless the whole list fits with its descriptions (scope.js). */
+  .scope-summary:not(.has-desc) .scope-base__desc { display: none; }
+}
 .scope-base__list li { display: flex; align-items: flex-start; gap: var(--space-3); }
 .scope-base__mark {
   flex: 0 0 auto;
@@ -421,22 +453,57 @@ html:not(.js) .scope { display: none; }
 
 .scope-addons__title { margin-top: var(--space-2); font-size: var(--text-body-lg); }
 .scope-addons__group { margin-top: var(--space-2); font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); }
-/* The tiles: two equal columns, every row as tall as the tallest tile, so the
-   grid stays even for any count. An odd count leaves one tile alone on the
-   last row; it spans both columns. (That needs no :has(): the last child in
-   an odd position is exactly that tile.) One column on phones. */
+/* The tiles: equal columns, every row as tall as the tallest tile, so the grid
+   stays even for any count. Tiles size to their content (no height floor).
+   Two per row up to 1279px: an odd count leaves one tile alone on the last
+   row, and it spans both columns (no :has() needed: the last child in an odd
+   position is exactly that tile). One column on phones. From 1280px, three
+   per row on six tracks, so a remainder spreads out: one last tile spans the
+   row, two last tiles take half each (without :has() they simply stay at a
+   third). Folded tiles are not in the DOM (scope.js), so these rules count
+   only the tiles on screen. */
+.scope-addons-box { display: flex; flex-direction: column; gap: var(--space-4); }
+.scope-addons-box:empty { display: none; }
 .scope-addons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: var(--space-3); }
-.scope-addons > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (max-width: 1279px) {
+  .scope-addons > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (min-width: 1280px) {
+  .scope-addons { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .scope-addons > * { grid-column: span 2; }
+  .scope-addons > :last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .scope-addons:has(> :last-child:nth-child(3n + 2)) > :nth-last-child(-n + 2) { grid-column: span 3; }
+}
+/* «Show all add-ons (n)» / «show fewer» under a long list. */
+.scope-addons__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-link);
+  font: inherit;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  cursor: pointer;
+  scroll-margin: 96px 0 120px;
+}
+.scope-addons__more:hover { color: var(--color-link-hover); }
+.scope-addons__more .icon { width: 16px; height: 16px; }
 /* Each tile is the toggle. Dashed while off, as in the reference; solid and
    tonal when on. The state also shows in the +/− and aria-pressed. The border
    width never changes, so toggling never shifts anything. */
 .scope-addon {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
   min-width: 0;
-  min-height: 124px;
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-4);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
@@ -450,7 +517,17 @@ html:not(.js) .scope { display: none; }
 .scope-addon:hover { border-color: var(--color-border-hover); }
 .scope-addon[aria-pressed="true"] { border-style: solid; border-color: var(--color-border-hover); background: var(--color-tonal); }
 .scope-addon__top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
-.scope-addon__title { padding-top: 4px; font-weight: 700; color: var(--color-text-primary); }
+.scope-addon__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-width: 0;
+  padding-top: 4px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
 .scope-addon__desc {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -465,7 +542,8 @@ html:not(.js) .scope { display: none; }
    so every tile's last line sits on the same baseline. */
 .scope-addon__price {
   margin-top: auto;
-  min-height: calc(var(--text-body-sm) * var(--lh-tight));
+  padding-top: var(--space-2);
+  min-height: calc(var(--text-body-sm) * var(--lh-tight) + var(--space-2));
   font-size: var(--text-body-sm);
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -510,7 +588,7 @@ html:not(.js) .scope { display: none; }
   .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-h4); }
   .scope-body > .scope-checkout .scope-cta { flex: 0 0 auto; }
   /* Keyboard focus scrolled into view clears the nav and the bar. */
-  .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more) { scroll-margin: 96px 0 120px; }
+  .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 120px; }
 }
 
 @media (max-width: 767px) {

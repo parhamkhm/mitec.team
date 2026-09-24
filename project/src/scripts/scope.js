@@ -5,31 +5,38 @@
 // every label. The maths is the shared estimate() the /order wizard will use
 // too. Nothing is scroll-scrubbed here: it is a tool.
 //
-// Layout (home.css): from 1024px the summary card is the start column and
-// stays in view (sticky) for as long as the whole card fits under the nav.
-// Below that everything stacks and the total + CTA ride in a bar at the
-// bottom of the screen while the calculator is on it. That total + CTA block
-// is a single element moved between the card and the bar, so there is always
-// one live region and one CTA.
+// Layout (home.css): from 1024px the summary card is the start column and is
+// always in view (sticky), never taller than the screen: only its list of
+// included items gives way, scrolling inside the card, and it shows the
+// items' descriptions only when the whole list fits without that. Below
+// 1024px everything stacks and the total + CTA ride in a bar at the bottom
+// of the screen while the calculator is on it. That total + CTA block is a
+// single element moved between the card and the bar, so there is always one
+// live region and one CTA. Long add-on lists show their first few tiles and
+// a button for the rest.
 
 import { getPricing } from '../api/client.js';
 import { estimate } from '../utils/estimate.js';
 import { faNumber, fill, formatPrice, formatDuration } from '../utils/format.js';
 
 // The only strings not taken from the pricing document: what shows when it
-// cannot be loaded, the way out for visitors unsure of their site type, and
-// the count of chosen add-ons under the total.
+// cannot be loaded, the way out for visitors unsure of their site type, the
+// count of chosen add-ons under the total, and the defaults for the two
+// optional section fields that fold a long add-on list.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
   unsure: 'مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم',
-  picked: '{n} امکان انتخاب شده'
+  picked: '{n} امکان انتخاب شده',
+  showAllAddons: 'نمایش همه‌ی امکانات ({n})',
+  showFewerAddons: 'نمایش کمتر'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
 const MORE_AFTER = 4; // phones show this many base items before «show all»
 const WIDE = '(min-width: 1024px)'; // two columns, sticky summary card
 const STICKY_GAP = 24; // px between the nav and the sticky card
+const ADDONS_SHOWN = { wide: 9, narrow: 6 }; // tiles shown before «show all add-ons»
 const root = document.documentElement;
 
 const el = (tag, cls, text) => {
@@ -164,10 +171,31 @@ export async function initScope() {
 
   let slider = null;
   let sliderValue = null;
+  let list = null; // the included items; scrolls inside the sticky card when it must
+  let listBox = null;
+
+  // The fade at the list's foot shows only while there is more below.
+  function listEdge() {
+    if (!list) return;
+    const scrolls = list.scrollHeight > list.clientHeight + 1;
+    listBox.classList.toggle('has-more', scrolls && list.scrollTop + list.clientHeight < list.scrollHeight - 1);
+    // A list that scrolls must be reachable by keyboard to be scrolled.
+    if (scrolls === list.hasAttribute('tabindex')) return;
+    if (scrolls) {
+      list.tabIndex = 0;
+      list.setAttribute('aria-label', state.type.base.title);
+    } else {
+      list.removeAttribute('tabindex');
+      list.removeAttribute('aria-label');
+    }
+  }
 
   function renderBase(t) {
-    const list = el('ul', 'scope-base__list');
+    list = el('ul', 'scope-base__list');
     list.id = 'scopeIncluded';
+    list.addEventListener('scroll', listEdge, { passive: true });
+    listBox = el('div', 'scope-base__box');
+    listBox.append(list);
     t.base.included.forEach((item, i) => {
       const li = el('li', i >= MORE_AFTER ? 'is-more' : null);
       const mark = el('span', 'scope-base__mark');
@@ -181,7 +209,7 @@ export async function initScope() {
     const top = el('div', 'scope-base__head');
     top.append(el('h3', 'scope-base__title', t.base.title));
     if (t.base.subtitle) top.append(el('p', 'scope-base__sub', t.base.subtitle));
-    const parts = [top, list];
+    const parts = [top, listBox];
     if (t.base.included.length > MORE_AFTER && S.showAll) {
       const more = el('button', 'scope-base__more', S.showAll);
       more.type = 'button';
@@ -210,7 +238,9 @@ export async function initScope() {
     const top = el('span', 'scope-addon__top');
     const toggle = el('span', 'scope-addon__toggle');
     toggle.append(icon(on ? 'minus' : 'plus'));
-    top.append(el('span', 'scope-addon__title', a.title), toggle);
+    const name = el('span', 'scope-addon__title', a.title);
+    name.title = a.title; // clamped to two lines on screen
+    top.append(name, toggle);
     b.append(top);
     if (a.desc) {
       const desc = el('span', 'scope-addon__desc', a.desc);
@@ -250,27 +280,76 @@ export async function initScope() {
       parts.push(box);
     }
 
-    // Tiles in one grid, or — only if the data gives add-ons a `group` — one
-    // small heading and grid per group, in order of first appearance. Add-ons
-    // without a group come first, straight under the section's add-on title.
-    const offered = t.addons.map((id) => addons.get(id)).filter(Boolean).sort((x, y) => x.order - y.order);
-    if (offered.length) {
-      if (S.addonsTitle) parts.push(el('h3', 'scope-addons__title', S.addonsTitle));
-      const groups = new Map([['', []]]);
-      for (const a of offered) {
-        const g = a.group || '';
-        if (!groups.has(g)) groups.set(g, []);
-        groups.get(g).push(a);
-      }
-      for (const [name, list] of groups) {
-        if (!list.length) continue;
-        if (name) parts.push(el('h4', 'scope-addons__group', name));
-        const grid = el('div', 'scope-addons');
-        grid.append(...list.map(tile));
-        parts.push(grid);
-      }
-    }
+    addonsBox = el('div', 'scope-addons-box');
+    addonsBox.id = 'scopeAddons';
+    parts.push(addonsBox);
     config.replaceChildren(...parts);
+    renderAddons(t);
+  }
+
+  // Tiles in one grid, or — only if the data gives add-ons a `group` — one
+  // small heading and grid per group, in order of first appearance. Add-ons
+  // without a group come first, straight under the section's add-on title.
+  //
+  // A long list shows its first few tiles and a button for the rest. A chosen
+  // add-on is never folded away: it stays in view past the limit. The limit
+  // is applied when the list is drawn, not on each toggle, so a tile never
+  // vanishes from under the pointer. Folded tiles are left out of the DOM, so
+  // the grids' last-row rules count only the tiles on screen.
+  let addonsBox = null;
+  let expanded = false;
+
+  // `focus`: after «show all», the ids that were already on screen (focus
+  // goes to the first new tile); after «show fewer», 'more' (focus stays on
+  // the button). Nothing moves focus otherwise.
+  function renderAddons(t, focus) {
+    const offered = t.addons.map((id) => addons.get(id)).filter(Boolean).sort((x, y) => x.order - y.order);
+    const groups = new Map([['', []]]);
+    for (const a of offered) {
+      const g = a.group || '';
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g).push(a);
+    }
+    const all = [...groups.values()].flat(); // display order
+    const limit = wide.matches ? ADDONS_SHOWN.wide : ADDONS_SHOWN.narrow;
+    const folds = all.length > limit;
+    const shown = new Set(all.filter((a, i) => !folds || expanded || i < limit || state.picked.has(a.id)));
+
+    const parts = [];
+    if (all.length && S.addonsTitle) parts.push(el('h3', 'scope-addons__title', S.addonsTitle));
+    for (const [name, members] of groups) {
+      const seen = members.filter((a) => shown.has(a));
+      if (!seen.length) continue;
+      if (name) parts.push(el('h4', 'scope-addons__group', name));
+      const grid = el('div', 'scope-addons');
+      grid.append(...seen.map(tile));
+      parts.push(grid);
+    }
+    let more = null;
+    if (folds) {
+      const label = expanded
+        ? S.showFewerAddons || COPY.showFewerAddons
+        : fill(S.showAllAddons || COPY.showAllAddons, { n: faNumber(all.length) });
+      more = el('button', 'scope-addons__more', label);
+      more.type = 'button';
+      more.setAttribute('aria-expanded', String(expanded));
+      more.setAttribute('aria-controls', addonsBox.id);
+      more.append(icon(expanded ? 'minus' : 'plus'));
+      more.addEventListener('click', () => {
+        const before = new Set([...addonsBox.querySelectorAll('.scope-addon')].map((b) => b.dataset.id));
+        expanded = !expanded;
+        renderAddons(state.type, expanded ? before : 'more');
+      });
+      parts.push(more);
+    }
+    addonsBox.replaceChildren(...parts);
+
+    if (focus instanceof Set) {
+      [...addonsBox.querySelectorAll('.scope-addon')].find((b) => !focus.has(b.dataset.id))?.focus();
+    } else if (focus === 'more' && more) {
+      more.focus({ preventScroll: true });
+      more.scrollIntoView({ block: 'nearest' });
+    }
   }
 
   config.addEventListener('click', (e) => {
@@ -343,7 +422,7 @@ export async function initScope() {
     }
   });
 
-  // ---- layout: where the checkout lives, and whether the card may stick
+  // ---- layout: where the checkout lives, and how much of the card's list shows
   const wide = matchMedia(WIDE);
   const nav = document.querySelector('.navbar');
 
@@ -358,23 +437,22 @@ export async function initScope() {
     focused?.focus({ preventScroll: true });
   }
 
-  // The card sticks only while all of it fits between the nav and the bottom
-  // of the screen; a sticky card is never cut off. The included list is two
-  // columns when the card is wide enough (CSS), but goes back to one when even
-  // two would not make the card fit, since it cannot stick then anyway.
+  // From 1024px the card is always sticky and never taller than the screen
+  // (CSS): when it would be, only the included list gives way and scrolls.
+  // The items' descriptions show only while the whole list fits without
+  // scrolling — measured with them, dropped if it does not. This runs on
+  // resize and when the card's content changes, never on scroll.
   let queued = false;
   function fit() {
     if (queued) return;
     queued = true;
     requestAnimationFrame(() => {
       queued = false;
-      if (!wide.matches) return summary.classList.remove('is-sticky', 'is-single');
       const top = nav ? nav.offsetHeight : 0;
       sec.style.setProperty('--scope-top', `${top + STICKY_GAP}px`);
-      summary.classList.remove('is-single');
-      const fits = summary.offsetHeight <= innerHeight - top - 2 * STICKY_GAP;
-      summary.classList.toggle('is-single', !fits);
-      summary.classList.toggle('is-sticky', fits);
+      summary.classList.add('has-desc');
+      if (wide.matches && list) summary.classList.toggle('has-desc', list.scrollHeight <= list.clientHeight + 1);
+      listEdge();
     });
   }
 
@@ -385,6 +463,7 @@ export async function initScope() {
   addEventListener('resize', fit);
   wide.addEventListener('change', () => {
     place();
+    renderAddons(state.type); // the folding limit differs by width
     fit();
   });
 }

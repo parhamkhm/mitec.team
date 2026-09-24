@@ -61,7 +61,9 @@
         "pagesValue": { "description": "The slider's value, e.g. «{n} صفحه».", "$ref": "#/$defs/template" },
         "addonsTitle": { "$ref": "#/$defs/text" },
         "showAll": { "description": "Phone-only button that expands the base items.", "$ref": "#/$defs/text" },
-        "totalLabel": { "$ref": "#/$defs/text" }
+        "totalLabel": { "$ref": "#/$defs/text" },
+        "showAllAddons": { "description": "Optional. Button under a long add-on list (more than 9 from 1024px, 6 below) that shows the rest; {n} is the number of add-ons.", "$ref": "#/$defs/template", "default": "نمایش همه‌ی امکانات ({n})" },
+        "showFewerAddons": { "description": "Optional. The same button once the list is open.", "$ref": "#/$defs/text", "default": "نمایش کمتر" }
       }
     },
     "siteTypes": {
@@ -153,8 +155,8 @@
       "required": ["id", "title", "price", "days", "active", "order"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "title": { "$ref": "#/$defs/text" },
-        "desc": { "type": "string" },
+        "title": { "description": "At most 28 characters, so a tile title stays within two lines.", "$ref": "#/$defs/text", "maxLength": 28 },
+        "desc": { "description": "At most 48 characters, so a tile description stays within two lines.", "type": "string", "maxLength": 48 },
         "group": { "description": "Optional heading to group add-ons under. When any offered add-on has one, the calculator shows one heading and grid per group, in order of first appearance; add-ons without a group come first, under section.addonsTitle.", "type": "string" },
         "price": { "description": "0 shows no price on the tile.", "$ref": "#/$defs/toman" },
         "days": { "$ref": "#/$defs/days" },
