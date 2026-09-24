@@ -93,6 +93,8 @@ body { caret-color: var(--color-cta); }
 .icon-arrow-left       { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-left.svg); }
 .icon-arrow-up-left    { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/arrow-up-left.svg); }
 .icon-layout-dashboard { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/layout-dashboard.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/layout-dashboard.svg); }
+.icon-blocks           { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/blocks.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/blocks.svg); }
+.icon-users            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/users.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/users.svg); }
 .icon-shield-check     { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shield-check.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shield-check.svg); }
 .icon-trending-up      { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/trending-up.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/trending-up.svg); }
 .icon-headset          { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/headset.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/headset.svg); }

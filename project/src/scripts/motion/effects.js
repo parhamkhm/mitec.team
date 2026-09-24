@@ -43,7 +43,7 @@ const workParallax = () => $$('.work-row__media').map((tile) => {
 // top travels from the viewport's bottom to 35% down it.
 function testimonialsTilt() {
   const sec = document.querySelector('.testimonials');
-  if (!sec) return [];
+  if (!sec || sec.hidden) return []; // hidden until real quotes exist
   const grid = sec.querySelector('.testimonials-grid');
   const cards = $$('.testimonial', sec);
   const span = 1 - 0.08 * (cards.length - 1);

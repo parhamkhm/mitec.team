@@ -49,7 +49,7 @@
 }
 .portal__title {
   max-width: 13em;
-  font-size: clamp(40px, 5.4vw, 76px);
+  font-size: clamp(36px, 5.4vw, 76px);
   font-weight: 800;
   line-height: var(--lh-display);
   letter-spacing: 0;

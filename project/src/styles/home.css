@@ -47,9 +47,11 @@ html:not(.js) .navbar { position: absolute; }
 section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps */
 
 /* ---------------------------------------------------------------- grids */
-.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); }
+/* Services: six cards, 3 / 2 / 1 columns. */
+.services-grid { display: grid; gap: var(--space-4); }
 .about-grid { display: grid; gap: var(--space-4); }
-@media (min-width: 760px) { .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 760px) { .services-grid, .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 /* The perspective is for the cards' tilt-and-settle entrance (effects.js). */
 .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); perspective: 1200px; }
 
@@ -599,7 +601,6 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
 .cta-band__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-7); align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-6); width: 100%; }
 .cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
 .cta-band__links a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); font-weight: 500; }
-.cta-band__insta { direction: ltr; }
 
 /* ---------------------------------------------------------------- responsive nav */
 @media (max-width: 860px) {

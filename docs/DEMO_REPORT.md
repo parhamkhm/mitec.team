@@ -37,7 +37,7 @@ Best viewed first at a laptop size (1440×900), then with the window narrowed to
 5. **Services.** Four cards that rise in once.
 6. **Process** (approved, unchanged). The rail fills as you scroll. Each step it reaches fills in, and one forest
    "spotlight" step moves along with you, then back in reverse.
-7. **About.** The two team cards come together.
+7. **About.** The team cards come together.
 8. **Quick scope, the pricing calculator** (new layout, V4). Things to try:
    - Switch the site-type tabs. Watch the summary card (the start column): what is always included, «شامل N صفحه»,
      the total, the CTA.
@@ -250,6 +250,9 @@ the real ones are in, set `"placeholder": false` to remove the «اعداد نم
 | نوبت‌دهی و رزرو (booking) | 5,000,000 | 5 |
 | باشگاه مشتریان (loyalty) | 10,000,000 | 10 |
 | چت آنلاین (chat) | 1,000,000 | 1 |
+| CRM و مدیریت مشتری (crm), added in the copy pass | 15,000,000 | 15 |
+| اتوماسیون فرایندها (automation), added in the copy pass | 10,000,000 | 10 |
+| داشبورد و گزارش تحلیلی (analytics), added in the copy pass | 8,000,000 | 8 |
 
-Which add-ons each type offers is also a placeholder (§4, item 21), and so are the six add-on descriptions I drafted
-(`docs/copy-todo.md`).
+Which add-ons each type offers is also a placeholder (§4, item 21); the three added in the copy pass are offered by
+every type for now. The add-on descriptions are final (`docs/copy-final.md`).

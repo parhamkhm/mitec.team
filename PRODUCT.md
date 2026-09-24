@@ -12,11 +12,22 @@ Two roughly-equal audiences, both Iranian: (1) small businesses that don't yet h
 
 ## Product Purpose
 
-mitec designs, builds, and supports websites and custom online services for clients in Iran. The site itself is the studio's portfolio and the entry point into an order-builder wizard that scopes each engagement to the client's real need, plus an order-tracking flow for work in progress.
+mitec designs, builds, and supports the digital side of a business in Iran — more than a website: from the first idea to the business's growth. The site itself is the studio's portfolio and the entry point into an order-builder wizard (the «سفارش‌ساز») that scopes each engagement to the client's real need, plus an order-tracking flow for work in progress.
+
+Services (the home page's six Services cards, in this order):
+
+1. **Website design and build** — online shops, company sites, online menus, catalogues and landing pages, with a custom interface, not a template.
+2. **Custom online services** — customer clubs, booking and reservations, content management, ordering and online payment.
+3. **CRM and management systems** — customers, sales, orders and the team's work in one panel, fitted to the client's own workflow.
+4. **Automation and data analytics** — automating repetitive work, and reports and dashboards that show where the business grows.
+5. **SEO, security and optimisation** — basic SEO, speed, security and SSL, and buying and setting up the domain and hosting in the client's name.
+6. **Ongoing support and development** — one free support period after delivery, then monthly or per request, with new features added along the way.
+
+mitec does not design logos or brands (FAQ).
 
 ## Positioning
 
-Every engagement gets a design built specifically for that client's need — not a template or fixed package — combined with direct, unmediated access to the two people who actually build and support it (no account manager, no outsourcing). The order builder is the mechanism that makes per-client custom scoping practical instead of a sales-call luxury.
+Every engagement gets a design built specifically for that client's need — not a template or fixed package — with direct access to the team, no middleman, no outsourcing: the people the client talks to are the people who build and support it. The order builder is the mechanism that makes per-client custom scoping practical instead of a sales-call luxury.
 
 ## Operating Context
 
@@ -30,24 +41,25 @@ Every engagement gets a design built specifically for that client's need — not
 ## Capabilities and Constraints
 
 - Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built, so every `./order/` and `./track/` link on the home page 404s until they are. The `.dc.html` files are old prototypes, not a visual source; DESIGN.md is.
-- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Testimonials (sample, labelled), Services, Process, About, Quick scope (site type, pages and add-ons → price and working days, then on to the order builder), FAQ, closing CTA.
+- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Services (six cards), Process, About, Quick scope (site type, pages and add-ons → price and working days, then on to the order builder), FAQ, closing CTA. A Testimonials section sits between Work and Services in the markup but is hidden until real quotes exist.
+- Copy conventions (`docs/copy-final.md`): formal «شما» everywhere; ezafe after a final «ه» always written «ه‌ی»; the order builder is always «سفارش‌ساز», buttons that lead to it say «شروع پروژه» (except the calculator's «ادامه در سفارش‌ساز»), and the tracking page is «پیگیری سفارش».
 - Motion is an enhancement, never a requirement: it runs only when the visitor has not asked for reduced motion, and without it (or without JS) the page is the complete static document (DESIGN.md §13). No animation library, no WebGL — a small vanilla engine in `src/scripts/motion/`.
 - The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose colour, gradient and elevation files are no longer imported; only its spacing, radii and motion scales remain. Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
 - No build step; ES modules served over HTTP (not `file://`).
 - Persian language and RTL layout are load-bearing, not optional. The theme is light-first: forest green appears only as bands, media tiles and the footer.
-- Team size (2 people) and directness of access are facts the design/copy should keep truthful, not inflate.
+- Directness of access is a fact the design and copy must keep truthful. The copy never states the team's size: the team may grow, so the promise is direct access, not a head count.
 
 ## Brand Commitments
 
 - Name: mitec (styled "mitec team" in places).
 - Persian, RTL, Vazirmatn typography — binding. The palette must match the studio's Instagram presence (forest `#12312A`, mint `#57B79A`, amber `#E0A25C`); navy and blue are excluded outright.
 - DESIGN.md is the visual authority; components read its semantic `--color-*` tokens and never raw hex.
-- Team: Parham Movahedi (UI/frontend), Sina Alipour (backend/infrastructure) — named, real people, currently placeholder photos.
+- Team members shown in About: Parham Movahedi (UI/frontend), Sina Alipour (backend/infrastructure) — named, real people, currently placeholder photos. Each member has their own card.
 
 ## Evidence on Hand
 
-- Real stats (`src/data/site-copy.json`): 3 delivered projects, 2-person team with no middleman, 1 business day response time. No invented numbers are permitted here — the file's own note says so.
-- `src/data/testimonials.json` is currently sample content and is labeled as such in the UI; not real testimonials yet.
+- Real stats (`src/data/site-copy.json`): 3 delivered projects, 0 middlemen between the client and the team, 1 business day to respond to a request. No invented numbers are permitted here — the file's own note says so.
+- `src/data/testimonials.json` is currently sample content; the Testimonials section is hidden until real quotes replace it.
 - Team photos are placeholders pending real photos.
 - Every price and duration in the pricing document is a placeholder until the owner enters real ones (`"placeholder": true`, labelled «اعداد نمونه» on the page). The old week-based estimates in `order-catalog.json` are no longer used for quoting: the owner found them unrealistic.
 - Contact info (WhatsApp number, Telegram, Instagram) in `app.config.js` is placeholder/TODO, not the real accounts yet.
@@ -55,7 +67,7 @@ Every engagement gets a design built specifically for that client's need — not
 ## Product Principles
 
 1. Design to the specific client's need, every time — no visible templating or fixed packages.
-2. Keep the "two people, no middleman" promise legible and truthful in both copy and interaction (e.g. direct contact channels, no fake team scale).
+2. Keep the "direct access to the team, no middleman, no outsourcing" promise legible and truthful in both copy and interaction (e.g. direct contact channels, no fake team scale, and no stated team size).
 3. Never fabricate proof — stats, testimonials, and numbers must stay real or explicitly marked as placeholder/sample.
 4. Persian and RTL fidelity is a correctness requirement, not a stylistic option — including Persian numerals in all user-facing figures.
 5. The order builder and tracker are functional tools, not marketing decoration — they must stay usable end to end as pages are built out.

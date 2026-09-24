@@ -1,39 +1,56 @@
 # Copy to-do
 
-Copy and translation problems noticed while building the redesign. **Nothing here has been changed**: the
-site-wide copy pass is a separate, later task. Each item says where the text lives, what is wrong and a
-suggestion, so the pass can go through them in one sitting.
+The site copy now follows **`docs/copy-final.md`**, the owner's final text, applied in the final copy pass
+(branch `copy/final-pass`). That document is the source for every visible string on the home page; this file
+lists what is still open, then what the pass resolved.
 
 Where copy lives: section copy in `project/index.html` and `project/src/data/*.json`; everything in the
 pricing calculator in `project/src/config/pricing.json` (`section`, `siteTypes`, `addons`), except the three
 fallback strings and the chosen-add-on count in `COPY` at the top of `project/src/scripts/scope.js`.
 
-## Pricing calculator (Quick scope)
+Conventions every new string follows (from `copy-final.md`):
+
+- Formal register, «شما», everywhere.
+- Ezafe after a final «ه» is always written «ه‌ی» (صفحه‌ی، جلسه‌ی، نسخه‌ی).
+- The order builder is «سفارش‌ساز». Buttons that lead to it say «شروع پروژه»; the one exception is the
+  calculator's «ادامه در سفارش‌ساز». The tracking page is «پیگیری سفارش».
+- Never state the team's size (it may grow). The promise is direct access to the team: no middleman, no
+  outsourcing.
+
+## Still open
 
 | Where | Text | Problem | Suggestion |
 |---|---|---|---|
-| `pricing.json` → every `siteTypes[].base` | «پایه» / «پایه‌ی هر سایت» | The subtitle only repeats the title, so the card says «پایه» twice. | Title «پایه‌ی {نوع}» or a subtitle that says what the base is for, e.g. «آنچه در هر سایت هست». |
-| `pricing.json` → `section.subtitle` and `section.disclaimer` | «…یک برآورد اولیه است؛ قیمت دقیق در گفت‌وگو مشخص می‌شود.» / «همه‌ی اعداد تقریبی‌اند…» | Both say the same thing; the disclaimer now sits right under the CTA. | Keep one idea per place: subtitle about what the tool does, disclaimer about the next step (the proposal). |
-| `pricing.json` → `section.placeholderBadge` | «اعداد نمونه — جایگزین شود» | «جایگزین شود» is an instruction to the owner, but visitors read it. | «اعداد نمونه» only (it disappears once `placeholder` is false anyway). |
-| `pricing.json` → `currency.from` on the total | «جمع: از ۲۷ میلیون تومان» | «از» ("from") on a sum can read oddly next to «جمع». | Consider «جمع: حدود ۲۷ میلیون تومان» or drop the label «جمع». Changing it means a data field for the total's prefix (a data-model change, so not done here). |
-| `pricing.json` → six add-on `desc` | e.g. «امتیاز و پیگیری مشتری‌های همیشگی» | Drafts written for V3 (the spec gave only three). | Owner to review; keep each under ~45 characters so it fits one line on a 1440px screen (two lines are shown at most). |
-| `pricing.json` → type-specific first `included` item of ecommerce, menu, catalog, landing, custom | e.g. «فروشگاه اینترنتی / فروش محصول، سبد خرید و پرداخت آنلاین» | Reused from the order catalog; not reviewed as calculator copy. | Owner to review. |
-| `scope.js` → `COPY.picked` | «{n} امکان انتخاب شده» | Lives in code because V4 allowed no data change other than `group`. | Move to `section` in `pricing.json` with the next data-model change. |
-| `scope.js` → `COPY.unsure` | «مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم» | Fine, but it and the CTA both say «سفارش‌ساز», a word visitors may not know. | Consider «فرم سفارش» or explain once. |
+| `app.config.js` / `index.html` → contact links | WhatsApp `989000000000`, Telegram `mitec_studio`, Instagram `mitec.studio` | Placeholder numbers and handles (the link texts are final: «واتساپ · تلگرام · اینستاگرام»). | Real number and handles. |
+| `index.html` → Testimonials (hidden) and `testimonials.json` | Two sample quotes starting «متن نمونه:» | The section is hidden until real quotes exist. | When real quotes arrive: put them in, remove `hidden` and the «نمونه» badge, and swap `band` / `band--alt` on the sections after it (see the comment in `index.html`). |
+| `pricing.json` → first `included` item of ecommerce, menu, catalog, landing, custom | e.g. «فروشگاه اینترنتی / فروش محصول، سبد خرید و پرداخت آنلاین» | Not covered by `copy-final.md`; reused from the order catalog. | Owner to review. |
+| `scope.js` → `COPY.picked` | «{n} امکان انتخاب شده» | Final text, but it lives in code because V4 allowed no data change other than `group`. | Move to `section` in `pricing.json` with the next data-model change. |
+| `scope.js` → `COPY.error` | «برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید» | Not in `copy-final.md` (only shows when the pricing document cannot load). Already follows the naming convention. | Owner to confirm. |
+| `index.html` → CTA band | «در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید…» | Describes the order builder, which is not built yet (`/order` is a 404). | Recheck against the builder when it exists. |
+| `portfolio.json` → `name` | «Mery Coffee Club»، «Karamad MedTech»، «E2 Café» | Latin names kept as data; the page shows only the Persian names («کافه مری»، «تجهیزات پزشکی کارآمد»، «کافه E2»). | Keep as the clients' Latin brand names, or align when the portfolio is rendered from data. |
+| `order-catalog.json` (for the future `/order` builder) | Feature and section labels | Written before `copy-final.md`; not reviewed against its conventions. | Review when the builder is built. |
+| Proof room stats at 360px | «۱ روز کاری» | At 360px wide the value wraps to two lines, so its label sits one line lower than the other two. Fine from 390px. | Accept, or give the stat values `white-space: nowrap` with a smaller size below ~380px. |
 
-## Rest of the home page
+## Resolved in the final pass
 
-| Where | Text | Problem | Suggestion |
-|---|---|---|---|
-| `index.html` → FAQ «پروژه چقدر طول می‌کشد؟» | «منوی آنلاین یک تا دو هفته، سایت شرکتی دو تا چهار هفته، فروشگاه اینترنتی چهار تا هفت هفته» | Week ranges from the old catalog, which the owner found unrealistic; they also disagree with the calculator's day-based figures a few sections above. | Once real numbers are in `pricing.json`, rewrite this answer to point at the calculator («با برآورد سریع بالای همین صفحه…») or quote the same days. |
-| `index.html` → intro statement on the laptop screen (approved, frozen) | «آماده‌ای راهکار دیجیتال کسب‌وکارت رو بسازی؟ / سایتت. سبک خودت. انتخاب‌های تو.» | Informal register («رو»، «تو») while every other line on the site addresses the visitor as «شما». | Decide one register site-wide; the statement is frozen, so this needs the owner's go-ahead. |
-| `index.html` → Proof room and Work headings | eyebrow «نمونه‌کارها» twice in a row (Proof room «خودتان ببینید», then Work «سه پروژه تحویل‌شده») | The same eyebrow on two consecutive sections. | Proof room eyebrow e.g. «کارنامه» or «به عدد». |
-| `index.html` and `src/data/site-copy.json` → third stat | «۱ روز» / «زمان پاسخ کاری» | «زمان پاسخ کاری» is awkward; the hero already says «ظرف یک روز کاری». | «۱ روز کاری» / «زمان پاسخ». |
-| `index.html` → Work, first project | «اسکرین‌شات Mery Club», «Mery Coffee Club», «باشگاه مشتریان کافه مری» | Three names for one client. | One name, e.g. «کافه مری (Mery Coffee Club)». |
-| `index.html` → Work tags | «منوی آنلاین»، «باشگاه مشتریان»، «فروشگاهی» | «فروشگاهی» is an adjective among nouns. | «فروشگاه اینترنتی». |
-| Site-wide | «صفحه‌ی اصلی»، «جلسه‌ی اولیه»، «همه‌ی» vs «جلسه مشاوره»، «نسخه آزمایشی»، «مشاهده سایت» | Ezafe after a final «ه» is written two ways (the newer pricing copy uses «‌ی», older copy does not). | Pick one convention (Farhangestan: «‌ی» optional) and apply it everywhere. |
-| Nav, hero, CTA band, calculator | «سفارش سایت»، «ساخت سفارش من»، «ادامه در سفارش‌ساز»، «سفارش‌ساز» | Four names for the same destination (`/order`). | One noun for the builder and verbs that match it. |
-| `index.html` → Services card 2 vs calculator add-ons | «ثبت سفارش»، «نظرات و پیشنهادها» vs add-ons «پرداخت آنلاین»، no reviews add-on | The services list and the add-on list name overlapping features differently. | Align names once the add-on list is final. |
-| `index.html` → Testimonials badge | «نمونه — جایگزین شود» and «متن نمونه:» inside the quotes | Owner instructions visible to visitors (same as the pricing badge). | «نمونه» only; remove «متن نمونه:» when real quotes arrive. |
-| `index.html` → CTA band | «پنج قدم کوتاه، هر قدم یک انتخاب…» | Describes the order builder, which is not built yet (`/order` is a 404). | Recheck against the builder when it exists. |
-| `app.config.js` / `index.html` → Instagram | «@mitec.studio» | Placeholder handle; the domain is mitec.team. | Real handle. |
+| Was | Now |
+|---|---|
+| Four names for `/order` («سفارش سایت»، «ساخت سفارش من»، «سفارش‌ساز»، «شروع سفارش») | «سفارش‌ساز» for the tool, «شروع پروژه» on every button to it (calculator: «ادامه در سفارش‌ساز»). |
+| Intro statement on the laptop in the informal register («رو»، «تو») | «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» (owner's go-ahead to change the frozen text; same word/phrase reveal). |
+| Ezafe written two ways | «ه‌ی» everywhere. |
+| Hero eyebrow and a Proof stat that stated the team's size | «تیم متخصص · طراحی سایت و راهکارهای دیجیتال»; stat «۰ — واسطه بین شما و تیم». No team size anywhere. |
+| Same eyebrow «نمونه‌کارها» on the Proof room and Work | Proof room: «کارنامه‌ی ما». |
+| Third stat «۱ روز» / «زمان پاسخ کاری» | «۱ روز کاری» / «زمان پاسخ به درخواست». |
+| Three names for one client (Mery) | «کافه مری» on the page (title «کافه مری؛ منوی آنلاین و باشگاه مشتریان»). |
+| Work heading «سه پروژه تحویل‌شده» | «پروژه‌هایی که تحویل داده‌ایم», plus a subtitle. |
+| Work tag «فروشگاهی» | «فروشگاه اینترنتی». |
+| FAQ week ranges contradicting the calculator | The answer points to «برآورد سریع»; two new questions (internal systems, editing content yourself). |
+| Services card 2 vs add-on names | Services now six cards; card 2 lists «باشگاه مشتریان، نوبت‌دهی و رزرو، پنل مدیریت محتوا، ثبت سفارش و پرداخت آنلاین», matching the add-ons. |
+| Testimonials badge «نمونه — جایگزین شود» visible to visitors | Section hidden; badge «نمونه» for when it returns. |
+| Calculator: «پایه» / «پایه‌ی هر سایت» | «همیشه شامل می‌شود» / «بدون هزینه‌ی اضافه». |
+| Calculator: subtitle and disclaimer saying the same thing | Subtitle says what the tool does; the disclaimer says what happens next. |
+| Calculator badge «اعداد نمونه — جایگزین شود» | «اعداد نمونه». |
+| Calculator total «جمع: از ۲۷ میلیون تومان» | «برآورد: از …». The «از» stays (changing it would need a data field). |
+| Six drafted add-on descriptions | Final text for all twelve add-ons, including the new CRM, automation and analytics add-ons. |
+| «سفارش‌ساز» a word visitors may not know | Kept on purpose as the tool's one name; the CTA band introduces it. |
+| Instagram link shown as «@mitec.studio» | Link text «اینستاگرام» (the URL is still a placeholder, above). |

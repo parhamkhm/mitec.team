@@ -16,7 +16,7 @@ import { track, view, whenMotion } from './engine.js';
 import { clamp, seg, lerp, damp, inCubic, outCubic, inOutSine, inOutCubic } from './easing.js';
 
 const px = (n) => `${n}px`;
-const H1_MIN = 40; // the lower bound of the H1's own clamp()
+const H1_MIN = 36; // the lower bound of the H1's own clamp()
 
 export function initPortal() {
   const portal = document.querySelector('.portal');

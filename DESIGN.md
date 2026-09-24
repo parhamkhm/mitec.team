@@ -18,7 +18,7 @@ If a new element makes any of these jobs ambiguous, its color is wrong.
 
 ## 1. Context
 
-- Brand: **Mitec (میتک)**, a two-person web design studio. Target market: Iran.
+- Brand: **Mitec (میتک)**, a studio for websites and digital solutions (online services, CRM, automation, data analytics, support). Target market: Iran.
 - Language: **Persian, RTL** (`<html lang="fa" dir="rtl">`). Latin appears only in brand names and the `mitec.team` wordmark.
 - Font: **Vazirmatn** (weights 400 / 500 / 700 / 800). Fallback: `Tahoma, "Segoe UI", sans-serif`.
 - Numerals: use **Persian digits** (۰–۹) in UI copy and stats.
@@ -237,8 +237,8 @@ The home hero's forest scene (§5) is measured as the hero, not against this bud
 
 | Level | Light | On forest | When |
 |---|---|---|---|
-| **Primary** | bg `--color-cta`, text `--color-cta-text`, hover `--color-cta-hover`, active `--color-cta-active` | same tokens (resolve to mint + dark text) | The one main action: «ساخت سفارش من», «ارسال درخواست» |
-| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «سفارش سایت», «مشاوره رایگان» |
+| **Primary** | bg `--color-cta`, text `--color-cta-text`, hover `--color-cta-hover`, active `--color-cta-active` | same tokens (resolve to mint + dark text) | The one main action: «شروع پروژه», «ارسال درخواست» |
+| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «شروع پروژه», «مشاوره رایگان» |
 | **Outline** | transparent, 1px `--color-border-strong`, text `--color-text-primary`, hover bg `--color-surface-sunken` | same tokens | Navigation-type actions: «دیدن نمونه‌کارها» |
 | **Text link** | `--color-link`, underline, `text-underline-offset: 5px` | same | Tertiary actions, inline links |
 | **Disabled** | bg `--sage-100`, text `--sage-400` | bg `--forest-raised`, text `--forest-line-strong` | Never pale green |
@@ -292,8 +292,8 @@ Inner pages (and any hero that is not the home portal):
 **Home: the laptop portal (hero exception).** The home hero is a full-viewport forest *scene*, not a light canvas, and it does not count as the one forest band allowed between hero and footer (§6).
 
 - **The device.** A laptop drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). Display 16:10. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
-- **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (40px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(40px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
-- **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌ای راهکار دیجیتال کسب‌وکارت رو بسازی؟» / «سایتت. سبک خودت. انتخاب‌های تو.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
+- **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (36px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(36px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
+- **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
 - **Readability.** Light text only ever sits on forest: the statement reaches opacity 0 before the glass starts to fade, and the copy is gone before the statement starts.
 - **Without motion** (reduced motion, no JS, forced colours): a forest band with the copy, then the statement on the screen of a static laptop outline, then Proof as an ordinary light section.
 
@@ -307,6 +307,7 @@ Inner pages (and any hero that is not the home portal):
 
 ### Service cards
 
+- Home: six cards in a grid of 3 columns from 1024px, 2 from 760px, 1 below.
 - `--color-surface`, 1px `--color-border-subtle`, `--shadow-card`.
 - Icon in a 36–40px chip: bg `--color-tonal`, icon `--color-tonal-text`.
 - Title `--color-text-primary`, description `--color-text-secondary`.
@@ -329,7 +330,7 @@ Inner pages (and any hero that is not the home portal):
 ### Client list / testimonials
 
 - Client names/logos monochrome `--color-text-muted` on `--color-bg-alt`; hover → `--color-text-primary`.
-- Testimonials: white card, decorative quote mark in `--amber-300`.
+- Testimonials: white card, decorative quote mark in `--amber-300`. On the home page the section is `hidden` until real quotes exist; when it returns, swap `band` / `band--alt` on the sections after it so the backgrounds keep alternating.
 
 ### Forms (always light)
 
