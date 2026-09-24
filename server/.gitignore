@@ -3,3 +3,7 @@ node_modules/
 uploads/*
 !uploads/.gitkeep
 *.log
+
+# Real admin credentials in plain text. Never commit — the repository copy of
+# the account list is .env.example, which holds placeholders only.
+ADMIN_CREDENTIALS.md
