@@ -28,7 +28,8 @@ Conventions every new string follows (from `copy-final.md`):
 | `scope.js` → `COPY.error` | «برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید» | Not in `copy-final.md` (only shows when the pricing document cannot load). Already follows the naming convention. | Owner to confirm. |
 | `scope.js` → `COPY.showAllAddons` / `COPY.showFewerAddons` (defaults for the optional `section.showAllAddons` / `showFewerAddons`) | «نمایش همه‌ی امکانات ({n})» / «نمایش کمتر» | New in the V5 calculator layout; the wording comes from that spec, not from `copy-final.md`. Follows the conventions. | Owner to confirm; to change it, set the two fields in `pricing.json`. |
 | `index.html` → CTA band | «در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید…» | Describes the order builder, which is not built yet (`/order` is a 404). | Recheck against the builder when it exists. |
-| `portfolio.json` → `name` | «Mery Coffee Club»، «Karamad MedTech»، «E2 Café» | Latin names kept as data; the page shows only the Persian names («کافه مری»، «تجهیزات پزشکی کارآمد»، «کافه E2»). | Keep as the clients' Latin brand names, or align when the portfolio is rendered from data. |
+| `portfolio.json` → `name` | «Mery Coffee Club»، «Karamad MedTech»، «E2 Café» | Latin names kept as data; the page shows only the Persian project titles in Work. | Keep as the clients' Latin brand names, or align when the portfolio is rendered from data. |
+| `index.html` → Work | Three project rows written by hand | The Proof stat now counts `portfolio.json`, but the Work rows are still static markup mirroring it: a new project needs an entry in `portfolio.json` **and** a row in `index.html`. | Render Work from `portfolio.json` when the list grows. |
 | `order-catalog.json` (for the future `/order` builder) | Feature and section labels | Written before `copy-final.md`; not reviewed against its conventions. | Review when the builder is built. |
 | Proof room stats at 360px | «۱ روز کاری» | At 360px wide the value wraps to two lines, so its label sits one line lower than the other two. Fine from 390px. | Accept, or give the stat values `white-space: nowrap` with a smaller size below ~380px. |
 
@@ -43,6 +44,7 @@ Conventions every new string follows (from `copy-final.md`):
 | Same eyebrow «نمونه‌کارها» on the Proof room and Work | Proof room: «کارنامه‌ی ما». |
 | Third stat «۱ روز» / «زمان پاسخ کاری» | «۱ روز کاری» / «زمان پاسخ به درخواست». |
 | Three names for one client (Mery) | «کافه مری» on the page (title «کافه مری؛ منوی آنلاین و باشگاه مشتریان»). |
+| Project-name strip in the Proof room («پروژه‌های ما: کافه مری · تجهیزات پزشکی کارآمد · کافه E2») | Removed: a hand-kept list of names goes stale as projects are added, and Work is where projects live. The «پروژه‌ی تحویل‌شده» figure is now the number of projects in `portfolio.json`. |
 | Work heading «سه پروژه تحویل‌شده» | «پروژه‌هایی که تحویل داده‌ایم», plus a subtitle. |
 | Work tag «فروشگاهی» | «فروشگاه اینترنتی». |
 | FAQ week ranges contradicting the calculator | The answer points to «برآورد سریع»; two new questions (internal systems, editing content yourself). |

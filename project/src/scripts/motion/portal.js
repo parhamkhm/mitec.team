@@ -43,13 +43,12 @@ export function initPortal() {
   const base = q('.portal__base');
   const hint = q('.portal__hint');
   const card = q('.stat-bar');
-  const strip = q('.logo-strip');
   const stats = qa('.stat-block');
   // The copy lifts off top-down: eyebrow, title, sub, actions — all gone
   // before the statement starts at .16.
   const lift = [...copy.children].map((el, i) => [el, [0, 0.015, 0.03, 0.045][i], [0.1, 0.12, 0.14, 0.15][i]]);
   const reveal = [...words, ...phrases, ...lines];
-  const styled = [hint, room, frame, glass, shine, glow, base, say, loader, fill, card, strip, ...stats, ...reveal, ...lift.map(([el]) => el)];
+  const styled = [hint, room, frame, glass, shine, glow, base, say, loader, fill, card, ...stats, ...reveal, ...lift.map(([el]) => el)];
 
   let light = null;
   const setNav = (on) => {
@@ -140,7 +139,6 @@ export function initPortal() {
     room.style.transform = rs === 1 ? 'none' : `scale(${rs})`;
     card.style.opacity = outCubic(seg(p, 0.74, 0.8)); // arrives with its first stat, never empty
     stagger(stats, p, 0.74, 0.88, 0.06, 24);
-    show(strip, outCubic(seg(p, 0.82, 0.94)), 24);
 
     // Hysteresis keeps the nav from flickering at the line.
     setNav(light ? p >= 0.84 : p >= 0.86);

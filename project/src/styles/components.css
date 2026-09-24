@@ -233,13 +233,6 @@ body { caret-color: var(--color-cta); }
   padding-inline: .08em;
 }
 
-/* ---------------------------------------------------------------- Client strip */
-.logo-strip { display: flex; align-items: center; gap: var(--space-6) var(--space-7); flex-wrap: wrap; padding: var(--space-5) 0; }
-.logo-strip__label { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--color-text-muted); }
-.logo-strip__names { display: flex; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
-.logo-strip__name { font-family: var(--font-display); font-weight: 700; font-size: var(--text-body-lg); color: var(--color-text-muted); letter-spacing: -0.01em; transition: color var(--dur) var(--ease-out); }
-.logo-strip__name:hover { color: var(--color-text-primary); }
-
 /* ---------------------------------------------------------------- Stats
    A white card on the canvas. Numerals carry the brand colour, not the action
    colour — they are not clickable. No buttons live in here (DESIGN.md §5). */

@@ -58,7 +58,7 @@ Every engagement gets a design built specifically for that client's need — not
 
 ## Evidence on Hand
 
-- Real stats (`src/data/site-copy.json`): 3 delivered projects, 0 middlemen between the client and the team, 1 business day to respond to a request. No invented numbers are permitted here — the file's own note says so.
+- Real stats: delivered projects (the number of projects in `src/data/portfolio.json`, 3 today, so it grows as projects are added), 0 middlemen between the client and the team, and 1 business day to respond to a request (the last two in `src/data/site-copy.json`). No invented numbers are permitted — the file's own note says so.
 - `src/data/testimonials.json` is currently sample content; the Testimonials section is hidden until real quotes replace it.
 - Team photos are placeholders pending real photos.
 - Every price and duration in the pricing document is a placeholder until the owner enters real ones (`"placeholder": true`, labelled «اعداد نمونه» on the page). The old week-based estimates in `order-catalog.json` are no longer used for quoting: the owner found them unrealistic.

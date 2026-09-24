@@ -1,13 +1,14 @@
 // mitec — home page entry.
-// Small, independent behaviours (nav, scroll-spy, FAQ, quick scope) plus the
-// motion layer under ./motion/. No dependencies, no build step — this loads
-// as a plain ES module straight off the page.
+// Small, independent behaviours (nav, scroll-spy, the project count, FAQ,
+// quick scope) plus the motion layer under ./motion/. No dependencies, no
+// build step — this loads as a plain ES module straight off the page.
 
 import { whenMotion } from './motion/engine.js';
 import { initReveal } from './motion/reveal.js';
 import { initPortal } from './motion/portal.js';
 import { initEffects } from './motion/effects.js';
 import { initScope } from './scope.js';
+import { faNumber } from '../utils/format.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -101,8 +102,25 @@ function initFaq() {
   });
 }
 
+// The Proof room's «projects delivered» figure is the number of projects in
+// src/data/portfolio.json, so adding one there updates it. The markup holds
+// the count as last written, for visitors without JS or if the list fails.
+async function initProjectCount() {
+  const value = document.querySelector('[data-stat="projects"]');
+  if (!value) return;
+  try {
+    const res = await fetch(new URL('../data/portfolio.json', import.meta.url));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const projects = await res.json();
+    if (Array.isArray(projects) && projects.length) value.textContent = faNumber(projects.length);
+  } catch (e) {
+    console.warn('[proof] project count unavailable; keeping the figure in the markup', e);
+  }
+}
+
 initNav();
 initScrollSpy();
+initProjectCount();
 initPortal();
 initEffects();
 initFaq();

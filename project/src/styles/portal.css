@@ -115,8 +115,6 @@
 }
 .proof .stat-bar { width: 100%; max-width: 760px; }
 .proof .stat-block { align-items: center; text-align: center; }
-.proof .logo-strip { justify-content: center; padding: 0; }
-.proof .logo-strip__names { justify-content: center; gap: var(--space-3) var(--space-8); }
 
 .portal__frame,
 .portal__hint { display: none; }
@@ -127,8 +125,6 @@
   .proof .stat-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); padding: var(--space-5) var(--space-3); }
   .proof .stat-block__value { font-size: var(--text-h4); }
   .proof .stat-block__label { font-size: var(--text-caption); }
-  .proof .logo-strip { gap: var(--space-2); flex-direction: column; }
-  .proof .logo-strip__name { font-size: var(--text-body); }
 }
 
 /* ================================================================ the scene */

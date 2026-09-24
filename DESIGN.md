@@ -303,7 +303,7 @@ Inner pages (and any hero that is not the home portal):
 - Numerals: `--color-brand`, weight 800, Persian digits, `font-variant-numeric: tabular-nums`.
 - Labels: `--color-text-secondary`.
 - **No buttons inside the stats bar.**
-- On the home page it lives in the Proof room the portal opens into, with the project-name strip under it. Stats are real facts only (`src/data/site-copy.json`).
+- On the home page it lives in the Proof room the portal opens into: eyebrow, heading, one line, then the stat card, nothing else (no project-name list: projects live in Work). Stats are real facts only (`src/data/site-copy.json`); the delivered-projects figure is the number of projects in `src/data/portfolio.json`.
 
 ### Service cards
 
