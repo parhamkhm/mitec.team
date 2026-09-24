@@ -21,6 +21,10 @@ npm run seed:admin     # حساب‌های ADMIN_SEED_ACCOUNTS در .env را م
 npm run dev            # http://127.0.0.1:4000
 ```
 
+رمزهای حساب‌های ادمین این ماشین در `server/ADMIN_CREDENTIALS.md` است — فایلی که در `.gitignore` است و
+در مخزن نیست. اگر آن فایل را ندارید (مثلاً تازه مخزن را clone کرده‌اید)، `ADMIN_SEED_ACCOUNTS` را در `.env`
+خودتان بگذارید و `npm run seed:admin` را اجرا کنید؛ همان دستور رمز کاربرِ موجود را هم به‌روز می‌کند.
+
 سلامت سرویس: `GET /health`.
 
 ## وصل کردن فرانت‌اند
