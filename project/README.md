@@ -93,7 +93,8 @@ API_CONTRACT.md
 - `public/fonts/` — فایل‌های لوکال وزیرمتن. فونت فعلاً از Google Fonts لود می‌شود؛ **برای انتشار باید لوکال
   شود** (دسترسی از ایران). آیکون‌ها هم از CDN لوسید (jsDelivr) mask می‌شوند — همان‌ها را هم لوکال کنید.
 - تصاویر: اسکرین‌شات پروژه‌ها و عکس تیم هنوز `.img-slot` هستند — با `<img>` از `public/images/` جایگزین
-  کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص).
+  کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص). تصویرهای تزئینی کارت‌های خدمات در
+  `public/images/services/` هستند (`service-N-768.webp` و `-1536.webp`؛ PNGهای اصلی در git نیستند).
 - `src/config/pricing.json` — قیمت‌ها و روزهای واقعی؛ الان همه نمونه‌اند (`"placeholder": true`) و روی سایت برچسب «اعداد نمونه» دارند. راهنما: `docs/pricing-guide.md`.
 - `src/data/testimonials.json` — نظرهای واقعی؛ الان نمونه است و بخش نظرها تا آن موقع پنهان است.
 - متن‌ها: متن نهایی سایت در `docs/copy-final.md` است؛ کارهای باقی‌مانده‌ی متن در `docs/copy-todo.md` (هر دو در ریشه‌ی مخزن).

@@ -312,6 +312,7 @@ Inner pages (and any hero that is not the home portal):
 - Icon in a 36–40px chip: bg `--color-tonal`, icon `--color-tonal-text`.
 - Title `--color-text-primary`, description `--color-text-secondary`.
 - Hover: border → `--color-border-hover`, shadow → `--shadow-elevated`.
+- Home: each card carries a decorative illustration (`public/images/services/service-N-768.webp` / `-1536.webp`, transparent; `alt=""`, `aria-hidden`, lazy, `srcset` + `sizes`), absolutely positioned in the end-bottom corner (bottom left in RTL): 75% of the card's width (60% below 760px), `object-fit: contain` anchored left bottom, and below 1200px held to 42% of the card's height so a wide, short card never puts it behind the paragraph. Between it and the content sits a single-hue fade, `--color-surface` on the start side (to 25%) to transparent (80%), so the chip, the title and the first lines stay on near-solid surface. Opacity .35; on hover or focus-within .6 with a 4px lift and `scale(1.03)` over `--dur-slow` (opacity only under reduced motion). Hidden in forced colours. The card keeps its radius, border and shadow with `overflow: hidden`; the image is out of flow, so it never shifts the layout.
 
 ### Process steps
 
@@ -457,6 +458,7 @@ Inner pages (and any hero that is not the home portal):
 | white icon in the tonal-text `#13604A` circle (a chosen add-on) | 7.50 |
 | border-strong `#7F8D86` circle edge on white / tonal (the add-on toggle) | 3.47 / 3.15 |
 | text-secondary `#4B5951` on surface-sunken `#E2E9E4` (an unselected site-type tab) | 5.97 |
+| Services card text over its illustration, at the darkest pixel under any line (measured 360–1920px): paragraph at rest / on hover; title; link | ≥ 7.04 / ≥ 4.96; 16.8; 5.78 |
 | ℹ add-on tile edges: `--color-border` dashed on white 1.79, `--color-border-hover` on tonal 1.36 | decorative: the tile is identified by its text and the ≥ 3:1 toggle circle |
 | ❌ forest-line-strong `#5E8479` on the glass | 2.96: not an outline-button edge there |
 | ❌ amber `#E0A25C` on light | 2.07: never text |

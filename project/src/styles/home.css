@@ -57,6 +57,60 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 
 /* ---------------------------------------------------------------- services */
 .service-card { display: flex; flex-direction: column; gap: var(--space-4); }
+/* A decorative illustration in each card's end-bottom corner (bottom left on
+   this RTL page), under a fade from the card's surface on the start side, so
+   the chip, the title and the first lines always sit on near-solid surface.
+   Layers: the image, then the fade (::after), then the content (z-index 1).
+   The image box is 75% of the card's width (60% on phones). Below 1200px it
+   is also held to 42% of the card's height: a wide, short card (large phones,
+   the two-column tablet grid, the narrow three-column grid) would otherwise
+   put the art behind the paragraph; contained and anchored bottom-left, it
+   just gets smaller there. Measured from 360 to 1920px, every text line keeps
+   at least 4.96:1 at the darkest pixel under it on hover (7.04:1 at rest).
+   The image is out of flow, so it can never shift the layout while it loads. */
+.service-card {
+  --art-width: 75%;
+  --art-opacity: .35;
+  --art-opacity-on: .6;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.service-card > :not(.service-card__art) { position: relative; z-index: 1; }
+.service-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Single hue: the surface fading out towards the end (left) side. */
+  background: linear-gradient(to left, var(--color-surface) 25%, transparent 80%);
+  pointer-events: none;
+}
+.service-card__art {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  width: var(--art-width);
+  height: auto;
+  object-fit: contain;
+  object-position: left bottom;
+  opacity: var(--art-opacity);
+  transform-origin: left bottom;
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+.service-card:is(:hover, :focus-within) .service-card__art { opacity: var(--art-opacity-on); }
+@media (prefers-reduced-motion: no-preference) {
+  .service-card:is(:hover, :focus-within) .service-card__art { transform: translateY(-4px) scale(1.03); }
+}
+@media (max-width: 1199px) {
+  .service-card__art { max-height: 42%; }
+}
+@media (max-width: 759px) {
+  .service-card { --art-width: 60%; }
+}
+@media (forced-colors: active) {
+  .service-card__art { display: none; }
+}
 .service-card__badge {
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: var(--radius-md);
