@@ -134,6 +134,8 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 }
 .work-row__media {
   position: relative;
+  display: grid;
+  place-items: center;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border: 1px solid var(--color-border);
@@ -141,7 +143,8 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   transition: background-color var(--dur) var(--ease-out);
 }
 .work-row__media:hover { background-color: var(--color-brand-hover); }
-/* Lies behind the screenshot and spills out round its edges as a halo. */
+/* Lies behind the browser frame and spills out round its edges as a halo;
+   full strength on hover. */
 .work-row__glow {
   position: absolute;
   inset: 0;
@@ -151,16 +154,49 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   pointer-events: none;
 }
 .work-row__media:hover .work-row__glow { opacity: 1; }
-/* The screenshot, inset in the tile so its scroll parallax (±4%) never
-   reaches the tile's edge. */
-.work-row__shot {
-  position: absolute;
-  inset: 9% 8%;
+/* The screenshot in a plain browser frame, centred in the tile at 88% of its
+   width. The screenshots are about 2.08:1, so the frame is well short of the
+   16:10 tile: the parallax on .work-row__shot (±4% of its height, effects.js)
+   and the hover lift on .work-frame never bring it near the tile's edges.
+   The image keeps its own aspect ratio (width/height attributes), never
+   cropped or stretched. */
+.work-row__shot { position: relative; width: 88%; }
+.work-frame {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: transform var(--dur-slow) var(--ease-out);
 }
-.work-row__shot .img-slot { border: 0; }
+.work-frame__bar {
+  display: flex;
+  justify-content: flex-end; /* the dots at the physical left, as on a real window */
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding-inline: 10px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+.work-frame__bar span { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-strong); }
+.work-frame__img { display: block; width: 100%; height: auto; background: var(--color-surface); }
+/* A project without a screenshot yet: the frame's surface at the same
+   aspect ratio, with a quiet «soon». */
+.work-frame__soon {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1920 / 922;
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .work-row__media:hover .work-frame { transform: translateY(-4px); }
+}
+@media (max-width: 759px) {
+  .work-frame__bar { gap: 5px; height: 16px; padding-inline: 8px; }
+  .work-frame__bar span { width: 5px; height: 5px; }
+}
 .work-row__text { --stagger: 60ms; --reveal-rise: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
 .work-row__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .work-row dl { margin: 0; display: grid; gap: var(--space-4); }

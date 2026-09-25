@@ -146,13 +146,17 @@
         <p class="section-heading__sub">هر پروژه با یک نیاز مشخص شروع شد و با یک راهکار مشخص به نتیجه رسید.</p>
       </div>
 
-      <!-- Seed projects mirror src/data/portfolio.json — REPLACE the placeholder images with real screenshots. -->
+      <!-- Projects mirror src/data/portfolio.json (keep the two in sync, image paths included). Each
+           screenshot sits in a browser frame at its own aspect ratio, never cropped. -->
       <div class="work-list">
         <article class="work-row">
           <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
             <div class="work-row__glow" aria-hidden="true"></div>
             <div class="work-row__shot">
-              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات کافه مری</span></div>
+              <div class="work-frame">
+                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                <img class="work-frame__img" src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(min-width: 1248px) 558px, (min-width: 1024px) calc((100vw - 96px) * .51), calc(88vw - 42px)" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
+              </div>
             </div>
           </div>
           <div class="work-row__text" data-reveal-stagger>
@@ -174,7 +178,10 @@
           <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
             <div class="work-row__glow" aria-hidden="true"></div>
             <div class="work-row__shot">
-              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات کارآمد</span></div>
+              <div class="work-frame">
+                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                <img class="work-frame__img" src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(min-width: 1248px) 558px, (min-width: 1024px) calc((100vw - 96px) * .51), calc(88vw - 42px)" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
+              </div>
             </div>
           </div>
           <div class="work-row__text" data-reveal-stagger>
@@ -195,7 +202,13 @@
           <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
             <div class="work-row__glow" aria-hidden="true"></div>
             <div class="work-row__shot">
-              <div class="img-slot"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">اسکرین‌شات کافه E2</span></div>
+              <div class="work-frame">
+                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+                <!-- REPLACE: E2's screenshot, as in the rows above — public/images/work/e2-home-960.webp and
+                     -1920.webp as an <img class="work-frame__img"> with srcset, sizes, width/height and alt,
+                     and its image field in src/data/portfolio.json. -->
+                <div class="work-frame__soon" role="img" aria-label="تصویر سایت کافه E2 به‌زودی">به‌زودی</div>
+              </div>
             </div>
           </div>
           <div class="work-row__text" data-reveal-stagger>

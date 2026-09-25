@@ -32,7 +32,7 @@ function passing(el, render) {
   };
 }
 
-// Work: the screenshot drifts inside its tile, +4% → −4% of its height.
+// Work: the browser frame drifts inside its tile, +4% → −4% of its height.
 const workParallax = () => $$('.work-row__media').map((tile) => {
   const shot = tile.querySelector('.work-row__shot');
   return passing(tile, (t) => { shot.style.transform = `translateY(${lerp(4, -4, t)}%)`; });

@@ -324,7 +324,7 @@ Inner pages (and any hero that is not the home portal):
 ### Portfolio rows
 
 - One row per project: a forest media tile (`data-surface="dark"`, grid texture, `--radius-xl`, `--forest-line` border, 16:10) beside a light text column. The media column is the wider one; rows alternate sides from 1024px and stack media-then-text below it.
-- The screenshot sits inset in the tile with one mint glow behind it only, never behind text.
+- The screenshot sits in a plain browser frame centred in the tile at 88% of its width, with one mint glow behind it only, never behind text. Frame: `--radius-md`, 1px `--color-border`, a top bar on `--color-surface-elevated` with three 7px dots in `--color-border-strong` (5px on phones) and a `--color-border` hairline under it. The screenshot keeps its own aspect ratio (about 2.08:1; `width`/`height` set, `srcset` 960w / 1920w): never cropped, never stretched. The frame carries the scroll parallax (±4% of its height; it stays at least 17px from the tile's edges at 360px, 40px on desktop); on hover of the tile it lifts 4px and the glow goes to full (no lift under reduced motion). A project without a screenshot shows the same frame with «به‌زودی» in `--color-text-muted` on `--color-surface` (4.74:1), at the same aspect ratio.
 - The text column is on light: tag badges in the tonal pair, title `--color-text-primary`, the need / built / result list (labels `--color-text-muted`), then the site link or the "link after client approval" note.
 - Hover on the tile: bg → `--color-brand-hover`, glow up to full.
 

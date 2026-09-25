@@ -92,7 +92,8 @@ API_CONTRACT.md
 - صفحه‌های `/order` و `/track` (و ۴۰۴) هنوز ساخته نشده‌اند.
 - `public/fonts/` — فایل‌های لوکال وزیرمتن. فونت فعلاً از Google Fonts لود می‌شود؛ **برای انتشار باید لوکال
   شود** (دسترسی از ایران). آیکون‌ها هم از CDN لوسید (jsDelivr) mask می‌شوند — همان‌ها را هم لوکال کنید.
-- تصاویر: اسکرین‌شات پروژه‌ها و عکس تیم هنوز `.img-slot` هستند — با `<img>` از `public/images/` جایگزین
+- تصاویر: اسکرین‌شات کافه مری و کارآمد در `public/images/work/` است (مسیرها در `src/data/portfolio.json` هم ثبت
+  شده)؛ کافه E2 هنوز «به‌زودی» است (یادداشت REPLACE در `index.html`). عکس تیم هنوز `.img-slot` است — با `<img>` از `public/images/` جایگزین
   کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص). تصویرهای تزئینی کارت‌های خدمات در
   `public/images/services/` هستند (`service-N-768.webp` و `-1536.webp`؛ PNGهای اصلی در git نیستند).
 - `src/config/pricing.json` — قیمت‌ها و روزهای واقعی؛ الان همه نمونه‌اند (`"placeholder": true`) و روی سایت برچسب «اعداد نمونه» دارند. راهنما: `docs/pricing-guide.md`.

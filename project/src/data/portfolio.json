@@ -11,8 +11,14 @@
     "built": "سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.",
     "result": "مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.",
     "url": "https://meryclub.ir",
-    "image": "/public/images/portfolio/mery-club.webp",
-    "placeholder": true
+    "image": {
+      "src960": "public/images/work/mery-home-960.webp",
+      "src1920": "public/images/work/mery-home-1920.webp",
+      "width": 1920,
+      "height": 922,
+      "alt": "صفحه‌ی اصلی سایت کافه مری"
+    },
+    "placeholder": false
   },
   {
     "id": "karamad",
@@ -25,8 +31,14 @@
     "built": "فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.",
     "result": "سفارش‌ها بدون تماس تلفنی ثبت می‌شوند و مشخصات هر محصول یک مرجع ثابت دارد.",
     "url": "#",
-    "image": "/public/images/portfolio/karamad.webp",
-    "placeholder": true
+    "image": {
+      "src960": "public/images/work/karamad-home-960.webp",
+      "src1920": "public/images/work/karamad-home-1920.webp",
+      "width": 1920,
+      "height": 925,
+      "alt": "صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد"
+    },
+    "placeholder": false
   },
   {
     "id": "e2",
@@ -39,7 +51,7 @@
     "built": "منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.",
     "result": "تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.",
     "url": "#",
-    "image": "/public/images/portfolio/e2.webp",
+    "image": null,
     "placeholder": true
   }
 ]
