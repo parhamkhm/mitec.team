@@ -42,6 +42,7 @@ git push --tags
    - **Copy pass:** `docs/copy-todo.md`.
    - **Pricing numbers:** `docs/pricing-guide.md` and `docs/pricing.schema.json`.
    - **`/order` and `/track`:** `project/API_CONTRACT.md` and `project/src/api/*`.
+   - **The back end:** `server/README.md` — how to run it and what it decided.
 8. The specs, for history and for what not to undo:
    - `docs/prompts/CLAUDE_CODE_MASTER_PROMPT.md`
    - `docs/prompts/CLAUDE_CODE_PROMPT_V2_LAPTOP.md`
@@ -113,7 +114,33 @@ There are **no remaining phases** in the master prompt or in V2–V4. What is le
    - make the fonts (Google Fonts) and icons (jsDelivr) local, because of access from Iran;
    - replace the placeholder images, testimonials and contact links (WhatsApp, Telegram, Instagram);
    - add a favicon;
-   - add the backend's `GET /pricing` and admin panel (`project/API_CONTRACT.md` §5–6, teammate).
+   - deploy the back end and point the front end at it (see below).
+
+---
+
+## The back end
+
+`server/` implements every endpoint `project/API_CONTRACT.md` proposed — Node.js + Express + PostgreSQL.
+Setup, the route map and the decisions behind it are in **`server/README.md`**.
+
+Nothing in the front end has been changed for it. To run the two together, edit
+`project/src/config/app.config.js`: set `USE_MOCK: false` and point `API_BASE_URL` at the service
+(`http://127.0.0.1:4000` locally). The `endpoints` paths already match, and `mapper.js` needs no edits —
+that was checked by running live responses through the front end's own `mapper.js` and `estimate.js`.
+
+Still to do on the back end:
+
+- a real PostgreSQL instance and a filled-in `.env` for production (locally it runs in Docker);
+- HTTPS in front of it, with `COOKIE_SECURE=true` so the admin cookie is safe;
+- real `SMTP_*` and `MAIL_TO` values — without them new orders are still saved, but the team is only
+  notified in the server log;
+- the admin panel's UI. The API it needs is already there and versioned: `GET`/`PUT /admin/pricing`
+  reject a stale save with `409` and the current version, and every saved version is kept, so an order's
+  `pricing_version` can always be resolved back to the numbers the customer actually saw.
+
+Note that `server/` holds the **live** pricing document once it is running: `GET /pricing` serves the
+newest row in `pricing_versions`, seeded from `project/src/config/pricing.json`. After that, prices are
+edited through the admin API, not by editing the JSON file.
 
 ## Working rules the owner has set
 
