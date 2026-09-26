@@ -48,6 +48,8 @@ git push --tags
    - `docs/prompts/CLAUDE_CODE_PROMPT_V2_LAPTOP.md`
    - `docs/prompts/CLAUDE_CODE_PROMPT_V3_PRICING.md`
    - `docs/prompts/CLAUDE_CODE_PROMPT_V4_PRICING_LAYOUT.md`
+   - `docs/prompts/CLAUDE_CODE_PROMPT_V5_PRICING_BALANCE.md`
+   - `docs/prompts/CLAUDE_CODE_PROMPT_V6_WORK_COVERFLOW.md` (Work)
 
 Run the site with `python devserver.py 4173` from the repository root, then open <http://127.0.0.1:4173/>.
 

@@ -3,7 +3,7 @@
    Page composition on top of components.css. The surface plan follows
    DESIGN.md §6: light is where you read and decide, forest is where you
    recognise and commit. Forest appears as the portal hero scene (portal.css),
-   the brand laptops in Work and the closing CTA band, plus the footer. Everything
+   the Work band and the closing CTA band, plus the footer. Everything
    else alternates bg / bg-alt so sections separate by tone rather than by
    drawn borders.
 
@@ -121,86 +121,356 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 .service-card__link .icon { width: 16px; height: 16px; }
 
 /* ---------------------------------------------------------------- work / portfolio
-   Three zig-zag rows on light. Each screenshot sits in the brand laptop
-   (components.css) with an ambient glow behind it made from that same
-   screenshot, and the text reads beside it. The media column is the wider
-   one in every row; rows swap sides from 1024px and stack media-then-text
-   below. A client's own colours appear only in its screenshot and its glow,
-   never in a token (DESIGN.md §5). */
-/* The glows reach past the columns, and on narrow screens past the screen's
-   edge, where they are already transparent. Clipped here, at the band's
-   full-width edges: body's own clip goes to the viewport, which would then
-   hold scrollable overflow that focus or scrollIntoView could shift sideways. */
-#work { overflow-x: clip; }
-.work-list { display: grid; gap: clamp(64px, 8vw, 128px); }
-.work-row { display: grid; gap: var(--space-7); align-items: center; } /* stacked: media, then text */
-@media (min-width: 1024px) {
-  .work-row { gap: var(--space-9); grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); grid-template-areas: "text media"; }
-  .work-row:nth-child(even) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); grid-template-areas: "media text"; }
-  .work-row__media { grid-area: media; }
-  .work-row__text { grid-area: text; }
-}
-/* The media box is the whole device, lid top to deck bottom, as wide as its
-   column: the deck is the widest part, so the laptop never leaves the column
-   (at 390px the display is about 280px). The box is the query container the
-   laptop's proportions come from, the hero's own ratios: the display is about
-   86% of it, the bezel ~1.6% of the display, the chin 1.4 bezels. */
-.work-row__media {
-  --screen-r: clamp(6px, 1.1cqi, 12px);
-  --bezel: clamp(8px, 1.4cqi, 16px);
-  --chin: calc(1.4 * var(--bezel));
-  --base-h: clamp(8px, 1.7cqi, 16px);
-  position: relative;
-  container-type: inline-size;
-}
-.work-row__device {
-  position: relative;
-  padding: var(--bezel) 0 calc(var(--chin) + var(--base-h));
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-/* Display width so that the deck, 1.16× the lid, is exactly the column. */
-.work-row__device .laptop { width: calc(100% / 1.16 - 2 * var(--bezel)); margin-inline: auto; }
+   A forest band: a documented exception to the one-forest-band rule, next to
+   the hero and the CTA (DESIGN.md §6). The projects turn on a 3D coverflow
+   (src/scripts/work.js, built from src/data/portfolio.json) whose centre card
+   opens a detail dialog. Behind the stage, the active project's pre-blurred
+   screenshot tints the middle of the band under a radial forest overlay, so
+   the band always reads as mitec forest: a client's colours appear only in
+   its screenshots and this glow, never in a token.
 
-/* Ambient light: the project's own screenshot, pre-blurred (-ambient.webp, a
-   480px file; no CSS blur), stretched over ~120% of the device and centred a
-   little below the display. A radial mask fades it out well inside its own
-   ellipse, so no edge or rectangle ever shows: the visible light ends within
-   the gap to the text column, never behind text, and past the screen's edge
-   at 390px (body clips the rest). Its opacity is split so hover and scroll
-   never fight: the wrapper takes hover (.75 → 1), the image takes the scroll
-   (motion/effects.js: .27 → .6) — .45 at rest, .2 as a row enters, .6 on
-   hover. Static and reduced motion: .45. */
-.work-row__glow {
-  position: absolute;
-  inset: -9% -10% -13%;
-  opacity: .75;
-  transition: opacity var(--dur-slow) var(--ease-out);
-  pointer-events: none;
+   Without JS (or if the data cannot load: .work--static) .work-list is the
+   section instead: a scroll-snap row of the same cards with every detail
+   under each card. */
+.work {
+  --ease-coverflow: cubic-bezier(.25, 1, .5, 1);
+  --ambient-o: .55;
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip; /* side cards reach past the viewport on narrow screens */
 }
-.work-row__glow img {
-  display: block;
+.work.is-detail-open { --ambient-o: .75; }
+
+/* Two full-bleed layers crossfade (700ms) to the active project's ambient
+   file. The files are pre-blurred; no CSS blur. The overlay is forest at the
+   edges and lets the client's light through only in the middle, behind the
+   stage, so the heading always sits on near-solid forest. */
+.work__ambient { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.work__ambient-layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+.work__ambient-layer.is-on { opacity: var(--ambient-o); }
+.work__ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 46% at 50% 62%, color-mix(in srgb, var(--color-bg) 30%, transparent), var(--color-bg) 100%);
+}
+@media (forced-colors: active) { .work__ambient { display: none; } }
+
+/* ---- the card (carousel slot and no-JS item alike)
+   Portrait, the screenshot full-bleed and cropped from the right, where these
+   RTL sites put their headline. Over it, a readability gradient: clear for
+   the top 30%, near-solid forest from the middle down, so the title and
+   summary never sit on the bare screenshot (contrast: DESIGN.md §14). */
+.work-card {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+.work-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+.work-card__face {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-5);
+}
+.work-card__face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom,
+    transparent 30%,
+    color-mix(in srgb, var(--color-bg) 74%, transparent) 40%,
+    color-mix(in srgb, var(--color-bg) 93%, transparent) 50%,
+    color-mix(in srgb, var(--color-bg) 97%, transparent) 66%,
+    var(--color-bg) 100%);
+}
+/* On the screenshot, so they carry a solid forest chip of their own. */
+.work-card__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.work-card__tag {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-tonal-text);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.work-card__body { position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); text-align: center; }
+/* Tied to the text, not the card: however many lines the title takes (a
+   260px card at 768px wraps it to three), it starts on near-solid forest. */
+.work-card__body::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -56px calc(-1 * var(--space-5)) calc(-1 * var(--space-5));
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-bg) 92%, transparent) 56px);
+}
+.work-card__title { font-size: clamp(19px, 1.6vw, 23px); font-weight: 800; line-height: 1.4; text-wrap: balance; }
+.work-card__rule { width: 32px; height: 2px; border-radius: 2px; background: var(--color-accent); }
+.work-card__summary { font-size: var(--text-body-sm); line-height: 1.7; color: var(--color-text-body); text-wrap: balance; }
+.work-card__more { margin-top: var(--space-1); }
+/* Side cards dim under a forest layer, never a CSS filter. */
+.work-card__dim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--color-bg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- details (the no-JS items and the dialog) */
+.work-facts { display: grid; gap: var(--space-4); margin: 0; }
+.work-facts dt { margin-bottom: 2px; color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; }
+.work-facts dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
+.work-note { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+
+/* ---- no JS: a scroll-snap row, everything readable */
+.work-list {
+  display: flex;
+  justify-content: safe center;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.work-item { flex: 0 0 min(340px, 80vw); display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-5); scroll-snap-align: center; }
+.work-item .work-card { align-self: stretch; }
+html.js .work:not(.work--static) .work-list { display: none; }
+
+/* ---- the carousel (work.js) */
+.work-carousel {
+  --card-w: clamp(260px, 26vw, 340px);
+  --stage-h: clamp(420px, 56vw, 560px);
+  position: relative;
+}
+html:not(.js) .work-carousel,
+.work--static .work-carousel { display: none; }
+/* Until work.js fills it: the stage's and the controls' height, so nothing shifts. */
+.work-carousel:empty { min-height: calc(var(--stage-h) + var(--space-6) + 44px); }
+@media (max-width: 759px) {
+  /* 72vw, held to 360px so a large phone's card still fits its stage. */
+  .work-carousel { --card-w: min(72vw, 360px); --stage-h: calc(var(--card-w) * 1.25 + 48px); }
+}
+
+/* The stage's perspective lights the whole-stage tilt; the track's own
+   perspective projects each card, and the track stays flat, so the cards
+   stack by z-index (30 / 20 / 10 / 0) rather than by depth. */
+.work-stage { position: relative; height: var(--stage-h); perspective: 1400px; touch-action: pan-y; }
+.work-stage__track { position: absolute; inset: 0; perspective: 1400px; }
+.work-stage .work-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--card-w);
+  margin: calc(var(--card-w) * -.625) 0 0 calc(var(--card-w) / -2);
+  cursor: pointer;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  transition: transform 800ms var(--ease-coverflow), opacity 800ms var(--ease-coverflow);
+}
+.work-stage .work-card.is-teleport { transition: none; }
+.work-stage .work-card[data-pos="0"] { cursor: zoom-in; }
+.work-stage .work-card__dim { transition: opacity 800ms var(--ease-coverflow); }
+/* Only the active card shows its face; side cards are just the screenshot. */
+.work-stage .work-card__face { opacity: 0; pointer-events: none; transition: opacity 500ms var(--ease-out); }
+.work-stage .work-card__face > * { transform: translateY(16px); transition: transform 500ms var(--ease-out); }
+.work-stage .work-card.is-active .work-card__face { opacity: 1; pointer-events: auto; transition-delay: 150ms; }
+.work-stage .work-card.is-active .work-card__face > * { transform: none; transition-delay: 150ms; }
+html.motion .work-stage__track { will-change: transform; }
+
+/* Arrows at the stage's edges; forward is on the LEFT on this RTL page. */
+.work-arrow {
+  position: absolute;
+  top: calc(var(--stage-h) / 2 - 22px);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
   border-radius: 50%;
-  opacity: .6;
-  -webkit-mask-image: radial-gradient(closest-side, black 55%, transparent 88%);
-  mask-image: radial-gradient(closest-side, black 55%, transparent 88%);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
 }
-.work-row__media:hover .work-row__glow { opacity: 1; }
-@media (prefers-reduced-motion: no-preference) {
-  .work-row__media:hover .work-row__device { transform: translateY(-4px); }
+.work-arrow:hover { background: var(--color-surface-elevated); border-color: var(--color-text-muted); }
+.work-arrow[disabled] { opacity: .4; cursor: default; }
+.work-arrow--next { left: 0; }
+.work-arrow--prev { right: 0; }
+@media (max-width: 759px) { .work-arrow { display: none; } }
+
+.work-controls { display: flex; align-items: center; justify-content: center; gap: var(--space-4); min-height: 44px; margin-top: var(--space-6); }
+.work-dots { display: flex; align-items: center; }
+.work-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  cursor: pointer;
+  transition: width var(--dur) var(--ease-out);
 }
-/* Forced colours keep the device's outline and the screenshot; a glow is
-   decoration only. */
-@media (forced-colors: active) { .work-row__glow { display: none; } }
-.work-row__text { --stagger: 60ms; --reveal-rise: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
-.work-row__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.work-row dl { margin: 0; display: grid; gap: var(--space-4); }
-.work-row dt { color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; margin-bottom: 2px; }
-.work-row dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
-.work-row__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
-.work-row__link .icon { width: 16px; height: 16px; }
-.work-row__note { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+.work-dot::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  inset-inline: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+  transition: background-color var(--dur) var(--ease-out);
+}
+/* 44 − 2 × 8: the active dot is a 28px pill. */
+.work-dot[aria-current="true"] { width: 44px; }
+.work-dot[aria-current="true"]::before { background: var(--color-accent); }
+.work-counter { display: flex; align-items: center; gap: var(--space-3); color: var(--color-text-secondary); font-size: var(--text-caption); font-variant-numeric: tabular-nums; }
+.work-progress { position: relative; width: 120px; height: 2px; overflow: hidden; border-radius: 2px; background: var(--color-border); }
+.work-progress span {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform-origin: 100% 50%; /* fills from the start edge, the right */
+  transition: transform 800ms var(--ease-coverflow);
+}
+.work-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out);
+}
+.work-toggle:hover { background: var(--color-surface-sunken); }
+.work-toggle .icon { width: 16px; height: 16px; }
+html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing turns by itself */
+
+/* Reduced motion: no 3D and no travel (work.js lays the cards out flat); a
+   slide change is a short crossfade. */
+@media (prefers-reduced-motion: reduce) {
+  .work-stage .work-card,
+  .work-stage .work-card__dim,
+  .work-stage .work-card__face { transition: opacity 250ms linear !important; }
+  .work-stage .work-card__face > * { transform: none; }
+  .work__ambient-layer { transition: opacity 700ms linear !important; }
+}
+
+/* ---- the detail dialog (a native <dialog>, opened modal by work.js)
+   It covers the screen; its veil dims the band behind (the side cards drop
+   to .2 and the ambient brightens) and a click on it closes. The panel is a
+   raised forest surface, two columns from 900px, a bottom sheet below 760px. */
+html:has(.work-detail[open]) { overflow: hidden; scrollbar-gutter: stable; }
+.work-detail[open] {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: var(--space-5);
+  border: 0;
+  background: none;
+  color: var(--color-text-body);
+  overflow: hidden;
+}
+.work-detail::backdrop { background: none; }
+.work-detail__veil { position: absolute; inset: 0; background: color-mix(in srgb, var(--color-bg-alt) 62%, transparent); }
+.work-detail__panel {
+  position: relative;
+  display: flex;
+  width: min(960px, 92vw);
+  max-height: 86vh;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+.work-detail__scroll {
+  display: grid;
+  gap: var(--space-7);
+  width: 100%;
+  padding: 68px var(--space-8) var(--space-8);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* Two columns from 900px: the text on the start (right) side, the
+   screenshot at the end, as in every hero (DESIGN.md §5); stacked, the
+   screenshot comes first. */
+@media (min-width: 900px) {
+  .work-detail__scroll { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "text media"; align-items: start; }
+  .work-detail__media { grid-area: media; }
+  .work-detail__text { grid-area: text; }
+}
+.work-detail__media { margin: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-alt); }
+.work-detail__media img { display: block; width: 100%; height: auto; }
+.work-detail__text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+.work-detail__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.work-detail__title { font-size: var(--text-h4); font-weight: 800; line-height: 1.4; }
+.work-detail__close {
+  position: absolute;
+  top: var(--space-3);
+  inset-inline-start: var(--space-3);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-text-muted);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out);
+}
+.work-detail__close:hover { background: var(--color-surface-elevated); }
+/* On the raised panel --color-border-strong is only 2.96:1; a control's edge
+   there uses the muted text colour (4.74:1), as on the hero's glass. */
+.work-detail .btn--outline { border-color: var(--color-text-muted); }
+@media (max-width: 759px) {
+  .work-detail[open] { place-items: end stretch; padding: 0; }
+  .work-detail__panel { width: 100%; max-height: 88vh; border-bottom: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+  .work-detail__scroll { gap: var(--space-5); padding: 68px var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); }
+}
 
 /* ---------------------------------------------------------------- process
    The numerals earn their place: the sequence is the information. They carry

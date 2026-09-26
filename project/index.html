@@ -138,101 +138,87 @@
 
 
   <!-- ============================================================ WORK / PORTFOLIO
-       Three zig-zag rows: a screenshot in the brand laptop, with an ambient glow
-       made from that screenshot, beside a light text column. -->
-  <section id="work" class="band band--alt">
+       A forest band (DESIGN.md §6 exception). With JS, src/scripts/work.js builds
+       a 3D coverflow from src/data/portfolio.json into .work-carousel: the centre
+       card opens a detail dialog, and the active project's pre-blurred
+       screenshot tints the middle of the band (.work__ambient). Without JS, or
+       if the data cannot load, the list below is the section: a scroll-snap row
+       of cards with every detail under each card. Keep it in sync with
+       portfolio.json (images, tags, summary, texts, link). -->
+  <section id="work" class="band work" data-surface="dark" data-autoplay="true" data-autoplay-delay="4500" aria-labelledby="work-title">
+    <div class="work__ambient" aria-hidden="true">
+      <img class="work__ambient-layer is-on" src="public/images/work/mery-home-ambient.webp" width="480" height="230" alt="" decoding="async">
+      <img class="work__ambient-layer" width="480" height="230" alt="" decoding="async">
+    </div>
     <div class="band__inner">
       <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">نمونه‌کارها</span>
-        <h2 class="section-heading__title section-heading__title--display-3">پروژه‌هایی که تحویل داده‌ایم</h2>
+        <h2 id="work-title" class="section-heading__title section-heading__title--display-3">پروژه‌هایی که تحویل داده‌ایم</h2>
         <p class="section-heading__sub">هر پروژه با یک نیاز مشخص شروع شد و با یک راهکار مشخص به نتیجه رسید.</p>
       </div>
 
-      <!-- Projects mirror src/data/portfolio.json (keep the two in sync, image and ambient paths
-           included). The display takes each screenshot's own aspect ratio, never cropped. -->
-      <div class="work-list">
-        <article class="work-row">
-          <div class="work-row__media" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/mery-home-ambient.webp" width="480" height="230" alt="" loading="lazy" decoding="async"></div>
-            <div class="work-row__device">
-              <div class="laptop" data-surface="dark">
-                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
-                <div class="laptop__display">
-                  <img src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
-                </div>
-                <div class="laptop__base" aria-hidden="true"></div>
-              </div>
-            </div>
-          </div>
-          <div class="work-row__text" data-reveal-stagger>
-            <div class="work-row__badges">
-              <span class="badge">منوی آنلاین</span>
-              <span class="badge">باشگاه مشتریان</span>
-            </div>
-            <h3 class="card-title">کافه مری؛ منوی آنلاین و باشگاه مشتریان</h3>
-            <dl>
-              <div><dt>نیاز کسب‌وکار</dt><dd>کافه می‌خواست مشتری‌های همیشگی‌اش را بشناسد و منوی چاپی را کنار بگذارد.</dd></div>
-              <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
-              <div><dt>نتیجه</dt><dd>مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.</dd></div>
-            </dl>
-            <a class="work-row__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
-          </div>
-        </article>
+      <!-- Filled by work.js; the stage and controls keep their height before it runs. -->
+      <div class="work-carousel" aria-roledescription="carousel" aria-label="نمونه‌کارها" data-reveal></div>
 
-        <article class="work-row">
-          <div class="work-row__media" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/karamad-home-ambient.webp" width="480" height="232" alt="" loading="lazy" decoding="async"></div>
-            <div class="work-row__device">
-              <div class="laptop" data-surface="dark">
-                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
-                <div class="laptop__display">
-                  <img src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
-                </div>
-                <div class="laptop__base" aria-hidden="true"></div>
+      <ul class="work-list" role="list">
+        <li class="work-item">
+          <article class="work-card" aria-labelledby="work-mery-club-title">
+            <img class="work-card__img" src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
+            <div class="work-card__face">
+              <div class="work-card__tags"><span class="work-card__tag">منوی آنلاین</span><span class="work-card__tag">باشگاه مشتریان</span></div>
+              <div class="work-card__body">
+                <h3 class="work-card__title" id="work-mery-club-title">کافه مری؛ منوی آنلاین و باشگاه مشتریان</h3>
+                <span class="work-card__rule" aria-hidden="true"></span>
+                <p class="work-card__summary">منوی آنلاین دوزبانه و باشگاه مشتریان امتیازی</p>
               </div>
             </div>
-          </div>
-          <div class="work-row__text" data-reveal-stagger>
-            <div class="work-row__badges">
-              <span class="badge">فروشگاه اینترنتی</span>
-            </div>
-            <h3 class="card-title">فروشگاه تجهیزات پزشکی کارآمد</h3>
-            <dl>
-              <div><dt>نیاز کسب‌وکار</dt><dd>فروش تجهیزات فقط تلفنی انجام می‌شد و مشخصات محصول‌ها جایی ثبت نبود.</dd></div>
-              <div><dt>راهکار ما</dt><dd>فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.</dd></div>
-              <div><dt>نتیجه</dt><dd>سفارش‌ها بدون تماس تلفنی ثبت می‌شوند و مشخصات هر محصول یک مرجع ثابت دارد.</dd></div>
-            </dl>
-            <span class="work-row__note">لینک سایت بعد از تأیید مشتری منتشر می‌شود.</span>
-          </div>
-        </article>
-
-        <article class="work-row">
-          <div class="work-row__media" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/e2-home-ambient.webp" width="480" height="238" alt="" loading="lazy" decoding="async"></div>
-            <div class="work-row__device">
-              <div class="laptop" data-surface="dark">
-                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
-                <div class="laptop__display">
-                  <img src="public/images/work/e2-home-960.webp" srcset="public/images/work/e2-home-960.webp 960w, public/images/work/e2-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="951" alt="صفحه‌ی اصلی منوی آنلاین کافه E2" loading="lazy" decoding="async">
-                </div>
-                <div class="laptop__base" aria-hidden="true"></div>
+          </article>
+          <dl class="work-facts">
+            <div><dt>نیاز کسب‌وکار</dt><dd>کافه می‌خواست مشتری‌های همیشگی‌اش را بشناسد و منوی چاپی را کنار بگذارد.</dd></div>
+            <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
+            <div><dt>نتیجه</dt><dd>مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.</dd></div>
+          </dl>
+          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
+        </li>
+        <li class="work-item">
+          <article class="work-card" aria-labelledby="work-karamad-title">
+            <img class="work-card__img" src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
+            <div class="work-card__face">
+              <div class="work-card__tags"><span class="work-card__tag">فروشگاه اینترنتی</span></div>
+              <div class="work-card__body">
+                <h3 class="work-card__title" id="work-karamad-title">فروشگاه تجهیزات پزشکی کارآمد</h3>
+                <span class="work-card__rule" aria-hidden="true"></span>
+                <p class="work-card__summary">فروشگاه اینترنتی با دسته‌بندی فنی و پنل مدیریت</p>
               </div>
             </div>
-          </div>
-          <div class="work-row__text" data-reveal-stagger>
-            <div class="work-row__badges">
-              <span class="badge">منوی آنلاین</span>
+          </article>
+          <dl class="work-facts">
+            <div><dt>نیاز کسب‌وکار</dt><dd>فروش تجهیزات فقط تلفنی انجام می‌شد و مشخصات محصول‌ها جایی ثبت نبود.</dd></div>
+            <div><dt>راهکار ما</dt><dd>فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.</dd></div>
+            <div><dt>نتیجه</dt><dd>سفارش‌ها بدون تماس تلفنی ثبت می‌شوند و مشخصات هر محصول یک مرجع ثابت دارد.</dd></div>
+          </dl>
+          <p class="work-note">لینک سایت بعد از تأیید مشتری منتشر می‌شود.</p>
+        </li>
+        <li class="work-item">
+          <article class="work-card" aria-labelledby="work-e2-title">
+            <img class="work-card__img" src="public/images/work/e2-home-960.webp" srcset="public/images/work/e2-home-960.webp 960w, public/images/work/e2-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="951" alt="صفحه‌ی اصلی منوی آنلاین کافه E2" loading="lazy" decoding="async">
+            <div class="work-card__face">
+              <div class="work-card__tags"><span class="work-card__tag">منوی آنلاین</span></div>
+              <div class="work-card__body">
+                <h3 class="work-card__title" id="work-e2-title">منوی آنلاین کافه E2</h3>
+                <span class="work-card__rule" aria-hidden="true"></span>
+                <p class="work-card__summary">منوی QR سبک و سریع، بهینه برای موبایل</p>
+              </div>
             </div>
-            <h3 class="card-title">منوی آنلاین کافه E2</h3>
-            <dl>
-              <div><dt>نیاز کسب‌وکار</dt><dd>منوی QR لازم بود؛ سریع، سبک و قابل تغییر روزانه.</dd></div>
-              <div><dt>راهکار ما</dt><dd>منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.</dd></div>
-              <div><dt>نتیجه</dt><dd>تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.</dd></div>
-            </dl>
-            <span class="work-row__note">لینک سایت بعد از تأیید مشتری منتشر می‌شود.</span>
-          </div>
-        </article>
-      </div>
+          </article>
+          <dl class="work-facts">
+            <div><dt>نیاز کسب‌وکار</dt><dd>منوی QR لازم بود؛ سریع، سبک و قابل تغییر روزانه.</dd></div>
+            <div><dt>راهکار ما</dt><dd>منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.</dd></div>
+            <div><dt>نتیجه</dt><dd>تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.</dd></div>
+          </dl>
+          <p class="work-note">لینک سایت بعد از تأیید مشتری منتشر می‌شود.</p>
+        </li>
+      </ul>
     </div>
   </section>
 

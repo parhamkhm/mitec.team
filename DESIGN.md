@@ -28,7 +28,7 @@ If a new element makes any of these jobs ambiguous, its color is wrong.
 
 ## 2. Hard rules (never break)
 
-1. **No navy or blue** anywhere, except the `info` status token. Client content is not UI: a project's screenshot, and in Work the ambient glow made from it, keep the client's own colours (E2's blue). Those colours never become a token or touch anything we draw.
+1. **No navy or blue** anywhere, except the `info` status token. Client content is not UI: a project's screenshots, and in Work the ambient backdrop made from them, keep the client's own colours (E2's blue). Those colours never become a token or touch anything we draw.
 2. **Components use semantic tokens only** (`--color-*`). Primitives (`--green-600`, `--sage-200`…) appear only in the token file.
 3. **One solid primary button per viewport**, and at most one per section.
 4. **Action green (`--color-cta`) is only for clickable things.** Stats, chart bars, decorative icons and headings are never action green.
@@ -291,7 +291,7 @@ Inner pages (and any hero that is not the home portal):
 
 **Home: the laptop portal (hero exception).** The home hero is a full-viewport forest *scene*, not a light canvas, and it does not count as the one forest band allowed between hero and footer (§6).
 
-- **The device.** The brand laptop: drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). One component, `.laptop` in `components.css` (lid, camera, display, deck), shared with Work; the hero draws its lid and deck from those parts on its own frame and cuts the display out of the lid. Display 16:10 here. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
+- **The device.** The brand laptop: drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). One component, `.laptop` in `components.css` (lid, camera, display, deck); the hero draws its lid and deck from those parts on its own frame and cuts the display out of the lid. Display 16:10 here. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
 - **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (36px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(36px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
 - **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
 - **Readability.** Light text only ever sits on forest: the statement reaches opacity 0 before the glass starts to fade, and the copy is gone before the statement starts.
@@ -321,15 +321,20 @@ Inner pages (and any hero that is not the home portal):
 - Nothing here is clickable, so nothing here is `--color-cta`.
 - Reduced motion / no JS: every step shows filled, no spotlight.
 
-### Portfolio rows
+### Work coverflow
 
-- **Screenshots in the brand laptop with ambient glow** (this replaces the forest tiles with a browser frame in them). One row per project on the section's light ground: the laptop beside a light text column. The media column is the wider one; rows alternate sides from 1024px and stack media-then-text below it, the laptop at the full column width.
-- **The laptop** is the hero's device (`.laptop`, `data-surface="dark"`), sized from its column (container units): the keyboard deck, its widest part, is exactly the column, so the display is about 86% of it (~530px at 1440, ~280px at 390) and nothing leaves the column. Bezel ~1.6% of the display (8–16px), chin 1.4 bezels, display radius 6–12px, all in the hero's own ratios. No browser frame, no dots, no tile, no grid texture, no mint glow.
-- **The display takes the screenshot's own aspect ratio** (about 2.02–2.08:1): `width`/`height` set, `srcset` 960w / 1920w, `sizes` for the display width, lazy, `decoding="async"`, Persian `alt`. Never cropped, never stretched, never letterboxed.
-- **Ambient glow.** Behind each laptop, that project's own screenshot, pre-blurred as a small file (`public/images/work/{id}-home-ambient.webp`, 480px; no CSS blur). An absolutely positioned layer ~120% of the device (a little taller below), centred slightly below the display, `border-radius: 50%`, and a radial mask (solid to 55% of its radius, transparent by 88%) so it fades out well inside its own edge: no rectangle ever shows, and its visible light ends in the gap before the text column (behind no text) and inside the screen at 390px. Opacity .45 at rest. The client's colours appear only here and in the screenshot (§2 rule 1). Hidden in forced colours.
-- **Motion** (scroll-linked, `motion/effects.js`; transform and opacity only): each laptop enters tilted — `perspective(1400px) rotateX(14deg) rotateY(±10deg)`, ±6deg when stacked — turned so its screen faces the text (the sign follows the side the media sits on; stacked rows alternate), and flattens to 0 as the media's centre reaches the viewport's centre, damped like the portal. The glow goes from .2 to .45 on the same progress. The media still reveals once on entry (clipped frame, 700ms). Hover on the media: the laptop lifts 4px and the glow goes to .6. Reduced motion, no JS: a flat laptop, glow .45, no hover movement (the glow still brightens).
-- The text column is on light: tag badges in the tonal pair, title `--color-text-primary`, the need / built / result list (labels `--color-text-muted`), then the site link or the "link after client approval" note.
-- The rows mirror `src/data/portfolio.json` (image, ambient and alt included); a new project needs an entry there and a row in `index.html`.
+- **A forest band** (`data-surface="dark"`, `--section-pad`): a documented exception, next to the hero scene and the CTA band (§6). This replaces the laptop rows. The centred heading (eyebrow «نمونه‌کارها», title, one line), then the stage, then the controls.
+- **Ambient backdrop.** Two full-bleed layers of the active project's pre-blurred screenshot (`public/images/work/{id}-home-ambient.webp`; no CSS blur) crossfade over 700ms when the slide changes, at opacity .55 (.75 while the detail dialog is open). A radial overlay above them runs from 30% forest in the middle, behind the stage, to solid `--color-bg` at the edges, so the band always reads as mitec forest and the heading sits on near-solid forest (12.74 / 8.04 over the lightest file). The client's colours appear only here and in screenshots (§2 rule 1). Only the first file is in the markup; the others load when needed. Hidden in forced colours.
+- **Cards**, rendered from `src/data/portfolio.json` by `src/scripts/work.js`: portrait 4:5, `clamp(260px, 26vw, 340px)` wide (`min(72vw, 360px)` below 760px; the cap keeps a large phone's card inside its stage), `--radius-xl`, 1px `--color-border`. The screenshot fills the card (`object-fit: cover`, `object-position: right center`, because these RTL sites put their headline on the right; `srcset` 960w / 1920w, the active card eager, the others lazy). A readability gradient runs from clear (top 30%) to near-solid forest; a second one, tied to the text block, puts the title on at least 92% forest however many lines it takes. Top-start: the tags as solid chips (`--color-surface`, `--color-tonal-text`, 6.25:1). Bottom, centred: the title (800), a 32px `--color-accent` rule, the `summary` in `--color-text-body`, and a tonal «جزئیات پروژه» button, never primary. Measured at the worst pixel under each line from 390 to 1920px: title ≥ 10.86, summary ≥ 8.16, button 5.52.
+- **Coverflow.** Stage `perspective: 1400px`, `clamp(420px, 56vw, 560px)` tall. Offsets 0 / ±1 / ±2: translateX 0 / 86% / 155% of the card, scale 1 / .84 / .68, rotateY 0 / 24 / 38deg (each side card turned to face the centre), opacity 1 / .65 / .38, z 30 / 20 / 10. Below 760px the side cards peek at ±62%, 18deg, scale .86. Side cards dim under a forest layer (.45 / .6), never a CSS filter, and show only the screenshot; the active card's face fades in (opacity and a 16px rise, 500ms). Transform and opacity only, 800ms `cubic-bezier(.25, 1, .5, 1)`.
+- **Endless, for any number of projects.** A fixed pool of seven cards sits at offsets −3 … +3 of an unbounded index (±3 invisible and `inert`); each shows `projects[mod(index, N)]`, so a short list repeats as clones on screen. A card pushed past ±3 jumps, invisible, to the other end and swaps its project there, so no card ever crosses the stage (checked frame by frame through rapid clicks and dot jumps). A card leaving for ±3 fades out in 380ms, which frees its slot quickly; faster input queues. With one project its clones fill the stage and there are no controls. Adding projects to `portfolio.json` needs no code change.
+- **RTL.** Next is the card on the LEFT: ArrowLeft, the left arrow and a swipe to the right go forward; ArrowRight, the right arrow and a swipe to the left go back. Keys work only while focus is inside the carousel. Swipes (touch, 45px) run on a `touch-action: pan-y` stage, so the page still scrolls vertically.
+- **Controls.** Two 44px round arrows at the stage's edges (on-dark outline: `--color-border-strong` edge, 3.37:1; a 72% forest fill), hidden below 760px. Dots: the active one a 28px `--color-accent` pill (5.77:1), the rest 8px in `--color-border-strong`, each a 24px target. With more than 7 projects the dots become «۳ از ۱۲» and a thin progress bar. A 36px pause/play toggle («توقف چرخش» / «ادامه‌ی چرخش»). Every control has a Persian `aria-label`.
+- **Autoplay.** Forward every `data-autoplay-delay` ms (4500 on the section), forever. It pauses on hover, on keyboard focus inside, while the dialog is open, off screen and in a background tab, and for 8s after any manual move. `data-autoplay="false"` starts it paused until play is pressed; reduced motion turns it off (and hides the toggle). Manual changes are announced in a polite live region; autoplay's are not.
+- **Stage tilt.** On a fine pointer the whole stage turns up to ±3deg toward the pointer, damped on the shared engine. Never on touch or under reduced motion.
+- **Detail dialog.** The active card, or its button, opens a native modal `<dialog>` (`aria-modal`, labelled by the project title): `min(960px, 92vw)`, at most 86vh with its own scroll, a raised forest panel (`--color-surface`, `--forest-line` edge, `--radius-xl`). From 900px the text is at the start (right) and the full screenshot at the end, in a rounded frame (natural ratio, never cropped, `srcset` 960w / 1920w). Below that the screenshot comes first, and below 760px the panel is a bottom sheet (full width, at most 88vh). Tags, title, need / built / result, then «دیدن سایت» (outline, new tab) or the "link after client approval" note; a 44px × at the top start. Its × and outline edges use `--color-text-muted` (4.74:1), since `--color-border-strong` is only 2.96:1 on the raised surface. It grows from the card's own rect (FLIP, 350ms `--ease-out`), slides up as a sheet on phones, and fades under reduced motion. Behind its veil the side cards drop to .2 and the ambient brightens. Focus starts on ×, stays in the panel (Tab wraps, and the scroll area joins when it overflows) and returns to the card's button on close (Esc, ×, or a click on the veil). The page behind is `inert` and does not scroll, and the arrows are disabled.
+- **No JS** (or if the data cannot load): `.work-list` is a scroll-snap row of the same cards, each with its need / built / result and its link underneath, so nothing is hidden. This row is written in `index.html` by hand and must mirror `portfolio.json`.
+- **Reduced motion:** a flat row (no rotateY, no scale); a slide change is a 250ms crossfade, with no autoplay and no tilt; the dialog fades.
 
 ### Client list / testimonials
 
@@ -374,10 +379,10 @@ Inner pages (and any hero that is not the home portal):
 ## 6. Surface rules
 
 - **Light = read and decide:** services, process, about, pricing, FAQ, testimonials, forms.
-- **Forest = recognize and commit:** hero media tile, final CTA band, footer — and the brand laptop: the home hero's scene and the devices in Work (a forest object on light, not a tile).
-- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The exceptions are the home hero scene (§5), which is the hero itself, and the single Process "spotlight" step (§5).
-- At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section. The home hero scene is not counted in this.
-- No paragraph longer than two lines on forest.
+- **Forest = recognize and commit:** hero media tile, the Work band, final CTA band, footer — and the home hero's laptop scene.
+- Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The exceptions are the home hero scene (§5), which is the hero itself, the single Process "spotlight" step (§5), and Work's detail dialog (§5), a raised forest panel that holds one project's texts.
+- At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section. The home hero scene is not counted in this, and Work is a documented second exception: its screenshots and their ambient light need the dark ground (§5 Work coverflow). The CTA band stays the only other one.
+- No paragraph longer than two lines on forest. Work's detail dialog is the one exception (its need / built / result, on the raised panel at 7.25:1).
 - Light levels stack in order: `bg` → `bg-alt` → `surface` → `surface-elevated`. A card is always lighter than what it sits on.
 - Alternate `bg` / `bg-alt` between sections instead of drawing section borders.
 - On forest, raised cards always get a `--forest-line` border. The fill contrast alone (1.14:1) is not enough.
@@ -392,7 +397,7 @@ Inner pages (and any hero that is not the home portal):
 ## 8. Glow, gradient, texture, shadow
 
 - **Glow:** forest surfaces only. Radial `--color-glow`, one source per section, behind media, never behind text, never on buttons.
-- **Work's ambient glow** is the one glow on light: each laptop's own screenshot, pre-blurred, behind the device only, masked to fade out well inside its ellipse (§5 Portfolio rows). It is client light, not `--color-glow`, and it never falls behind text.
+- **Work's ambient backdrop** is client light, not `--color-glow`: the active project's own screenshot, pre-blurred, full-bleed behind the stage, under a radial overlay that is solid forest at the band's edges, so the heading and controls always sit on forest (§5 Work coverflow).
 - **Home hero laptop:** its one glow sits behind the device and is masked off the display, so it never lies over the light room. The only other light on it is `--color-reflection` (`--on-dark-1` at 6%): a soft band that slides once across the dark screen. There is no rim or sheen.
 - **Gradients:** single hue only, e.g. `#12312A → #0E2A24`. Never green→amber, green→blue or navy.
 - **Grid texture** (Instagram signature):
@@ -462,6 +467,12 @@ Inner pages (and any hero that is not the home portal):
 | white icon in the tonal-text `#13604A` circle (a chosen add-on) | 7.50 |
 | border-strong `#7F8D86` circle edge on white / tonal (the add-on toggle) | 3.47 / 3.15 |
 | text-secondary `#4B5951` on surface-sunken `#E2E9E4` (an unselected site-type tab) | 5.97 |
+| Work card over its screenshot, at the worst pixel under each line (measured 390–1920px): title / summary / tonal button | ≥ 10.86 / ≥ 8.16 / 5.52 |
+| tonal-text `#86C6AC` on a Work tag chip (forest-raised) | 6.25 |
+| tonal-text on tonal over forest-raised (a badge in the Work dialog) | 4.92 |
+| on-dark-3 `#8FA69C` as the × and outline edges in the Work dialog (raised) | 4.74 |
+| Work heading over the ambient backdrop, lightest file: title / sub | 12.74 / 8.04 |
+| accent `#57B79A` active dot / border-strong `#5E8479` dots and arrow edges on forest | 5.77 / 3.37 |
 | Services card text over its illustration, at the darkest pixel under any line (measured 360–1920px): paragraph at rest / on hover; title; link | ≥ 7.04 / ≥ 4.96; 16.8; 5.78 |
 | ℹ add-on tile edges: `--color-border` dashed on white 1.79, `--color-border-hover` on tonal 1.36 | decorative: the tile is identified by its text and the ≥ 3:1 toggle circle |
 | ❌ forest-line-strong `#5E8479` on the glass | 2.96: not an outline-button edge there |
@@ -482,7 +493,7 @@ Also check:
 **Do**
 - Use semantic tokens in components; primitives live only in `tokens.css`.
 - Keep one solid primary button per viewport.
-- Put project screenshots in the brand laptop (Work), and other mockups on forest tiles.
+- Put project screenshots on the Work coverflow cards, and other mockups on forest tiles.
 - Wrap every dark area in `data-surface="dark"`.
 - Use `#F1F5F2` for text on dark, and Persian digits in stats.
 - Pair every status color with an icon and words.
@@ -527,4 +538,5 @@ Motion explains depth and order; nothing on the page needs it to be understood.
 - **Words, never characters.** Persian text may reveal by whole words or phrases (ZWNJ-joined words stay whole), never by letter — the letters join.
 - **Letter-spacing 0 on Persian text**, animated or not (§9).
 - **Invisible means unfocusable.** Anything faded out that could take focus is made `inert`; decorative layers are `aria-hidden`.
+- **Anything that moves by itself can be stopped.** The Work carousel is the one element that moves on its own: it pauses on hover, keyboard focus, off screen and with its dialog open, carries a pause/play toggle, and never moves by itself under reduced motion. Its slide changes are CSS transitions of transform and opacity, written once per step; only its optional pointer tilt runs on the engine.
 - **Tools respond; they don't perform.** In the pricing calculator nothing is scroll-linked: tabs, tiles and toggle circles transition background and border over `--dur`, and a changed figure cross-fades (the old value up and out 8px, the new one in, 220ms; instant without `html.motion`). The sticky summary card and the bottom bar are plain CSS `position: sticky`. Keyboard focus scrolled into view clears the nav and the bar (`scroll-margin`).

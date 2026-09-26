@@ -5,7 +5,7 @@
 // screen. Reveal-once motion lives in reveal.js + motion.css, not here.
 
 import { track, view, whenMotion } from './engine.js';
-import { clamp, seg, lerp, damp, outCubic, inOutSine } from './easing.js';
+import { clamp, seg, lerp, outCubic } from './easing.js';
 
 const root = document.documentElement;
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -30,50 +30,6 @@ function passing(el, render) {
       if (t !== last) render((last = t));
     }
   };
-}
-
-// Work: each laptop enters tilted back and turned so its screen faces the
-// text — perspective(1400px) rotateX(14deg) rotateY(±10deg), ±6deg when the
-// row is stacked — and flattens as the row's media reaches the viewport's
-// centre, while its ambient glow comes up from .2 to .45 on the same
-// progress (the glow's wrapper holds .75, so the image runs .27 → .6 and
-// hover can still lift it; home.css). Damped like the portal, so a wheel's
-// steps glide instead of jumping. The side is measured, not assumed: rows
-// swap sides from 1024px; stacked rows alternate.
-function workTilt() {
-  return $$('.work-row__media').map((media, i) => {
-    const laptop = media.querySelector('.laptop');
-    const glow = media.querySelector('.work-row__glow img');
-    const text = media.parentElement.querySelector('.work-row__text');
-    let from = 0, to = 1, ry = 10, ps = -1, drawn = -1;
-    const render = (p) => {
-      drawn = p;
-      const k = 1 - inOutSine(p); // 1 = fully tilted, 0 = flat
-      laptop.style.transform = k ? `perspective(1400px) rotateX(${14 * k}deg) rotateY(${ry * k}deg)` : '';
-      glow.style.opacity = k ? lerp(0.45, 0.2, k) / 0.75 : '';
-    };
-    return {
-      el: media,
-      measure() {
-        const top = docTop(media);
-        from = top - view.h;                                 // its top meets the viewport's bottom
-        to = top + media.offsetHeight / 2 - view.h / 2;      // its centre meets the viewport's centre
-        const m = media.getBoundingClientRect();
-        const t = text.getBoundingClientRect();
-        const d = t.left + t.width / 2 - (m.left + m.width / 2);
-        // rotateY(+) turns the screen to face the right.
-        ry = Math.abs(d) < 8 ? (i % 2 ? -6 : 6) : 10 * Math.sign(d);
-        drawn = -1;
-      },
-      update(dt, snap) {
-        const p = seg(view.y, from, to);
-        ps = snap || ps < 0 ? p : damp(ps, p, dt, 70);
-        if (Math.abs(p - ps) < 0.001) ps = p;
-        if (ps !== drawn) render(ps);
-        return ps !== p;
-      }
-    };
-  });
 }
 
 // Testimonials: the cards rise from below, tilted back and fanned in toward
@@ -217,11 +173,11 @@ export function initEffects() {
   const rail = processRail();
   if (rail) track(rail);
   whenMotion(() => {
-    const offs = [...workTilt(), ...testimonialsTilt(), ...aboutConverge(), ...ctaEcho()].map(track);
+    const offs = [...testimonialsTilt(), ...aboutConverge(), ...ctaEcho()].map(track);
     return () => {
       offs.forEach((off) => off());
       rail?.reset();
-      $$('.work-row .laptop, .work-row__glow img, .testimonial, .about-title__line, .cta-band__echo').forEach((el) => el.removeAttribute('style'));
+      $$('.testimonial, .about-title__line, .cta-band__echo').forEach((el) => el.removeAttribute('style'));
     };
   });
 }

@@ -105,6 +105,10 @@ body { caret-color: var(--color-cta); }
 .icon-plus             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/plus.svg); }
 .icon-minus            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/minus.svg); }
 .icon-check            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/check.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/check.svg); }
+.icon-chevron-left     { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-left.svg); }
+.icon-chevron-right    { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-right.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-right.svg); }
+.icon-pause            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/pause.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/pause.svg); }
+.icon-play             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/play.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/play.svg); }
 
 /* ---------------------------------------------------------------- Logo
    No official mark was supplied — the wordmark is set in type. The amber

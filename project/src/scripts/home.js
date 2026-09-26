@@ -8,6 +8,7 @@ import { initReveal } from './motion/reveal.js';
 import { initPortal } from './motion/portal.js';
 import { initEffects } from './motion/effects.js';
 import { initScope } from './scope.js';
+import { initWork } from './work.js';
 import { faNumber } from '../utils/format.js';
 
 function initNav() {
@@ -125,4 +126,5 @@ initPortal();
 initEffects();
 initFaq();
 initScope();
+initWork();
 whenMotion(initReveal);
