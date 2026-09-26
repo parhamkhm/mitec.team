@@ -16,7 +16,8 @@
       "src1920": "public/images/work/mery-home-1920.webp",
       "width": 1920,
       "height": 922,
-      "alt": "صفحه‌ی اصلی سایت کافه مری"
+      "alt": "صفحه‌ی اصلی سایت کافه مری",
+      "ambient": "public/images/work/mery-home-ambient.webp"
     },
     "placeholder": false
   },
@@ -36,7 +37,8 @@
       "src1920": "public/images/work/karamad-home-1920.webp",
       "width": 1920,
       "height": 925,
-      "alt": "صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد"
+      "alt": "صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد",
+      "ambient": "public/images/work/karamad-home-ambient.webp"
     },
     "placeholder": false
   },
@@ -51,7 +53,14 @@
     "built": "منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.",
     "result": "تغییر قیمت و آیتم در چند دقیقه انجام می‌شود، بدون چاپ دوباره.",
     "url": "#",
-    "image": null,
-    "placeholder": true
+    "image": {
+      "src960": "public/images/work/e2-home-960.webp",
+      "src1920": "public/images/work/e2-home-1920.webp",
+      "width": 1920,
+      "height": 951,
+      "alt": "صفحه‌ی اصلی منوی آنلاین کافه E2",
+      "ambient": "public/images/work/e2-home-ambient.webp"
+    },
+    "placeholder": false
   }
 ]

@@ -3,7 +3,7 @@
    Page composition on top of components.css. The surface plan follows
    DESIGN.md §6: light is where you read and decide, forest is where you
    recognise and commit. Forest appears as the portal hero scene (portal.css),
-   the portfolio tiles and the closing CTA band, plus the footer. Everything
+   the brand laptops in Work and the closing CTA band, plus the footer. Everything
    else alternates bg / bg-alt so sections separate by tone rather than by
    drawn borders.
 
@@ -121,9 +121,17 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 .service-card__link .icon { width: 16px; height: 16px; }
 
 /* ---------------------------------------------------------------- work / portfolio
-   Three zig-zag rows. The media is a forest tile — the Instagram echo — with
-   one mint glow behind the screenshot only; the text reads on light beside
-   it. The media column is the wider one in every row; rows swap sides. */
+   Three zig-zag rows on light. Each screenshot sits in the brand laptop
+   (components.css) with an ambient glow behind it made from that same
+   screenshot, and the text reads beside it. The media column is the wider
+   one in every row; rows swap sides from 1024px and stack media-then-text
+   below. A client's own colours appear only in its screenshot and its glow,
+   never in a token (DESIGN.md §5). */
+/* The glows reach past the columns, and on narrow screens past the screen's
+   edge, where they are already transparent. Clipped here, at the band's
+   full-width edges: body's own clip goes to the viewport, which would then
+   hold scrollable overflow that focus or scrollIntoView could shift sideways. */
+#work { overflow-x: clip; }
 .work-list { display: grid; gap: clamp(64px, 8vw, 128px); }
 .work-row { display: grid; gap: var(--space-7); align-items: center; } /* stacked: media, then text */
 @media (min-width: 1024px) {
@@ -132,71 +140,59 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   .work-row__media { grid-area: media; }
   .work-row__text { grid-area: text; }
 }
+/* The media box is the whole device, lid top to deck bottom, as wide as its
+   column: the deck is the widest part, so the laptop never leaves the column
+   (at 390px the display is about 280px). The box is the query container the
+   laptop's proportions come from, the hero's own ratios: the display is about
+   86% of it, the bezel ~1.6% of the display, the chin 1.4 bezels. */
 .work-row__media {
+  --screen-r: clamp(6px, 1.1cqi, 12px);
+  --bezel: clamp(8px, 1.4cqi, 16px);
+  --chin: calc(1.4 * var(--bezel));
+  --base-h: clamp(8px, 1.7cqi, 16px);
   position: relative;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  transition: background-color var(--dur) var(--ease-out);
+  container-type: inline-size;
 }
-.work-row__media:hover { background-color: var(--color-brand-hover); }
-/* Lies behind the browser frame and spills out round its edges as a halo;
-   full strength on hover. */
-.work-row__glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(closest-side, var(--color-glow) 70%, transparent);
-  opacity: .6;
-  transition: opacity var(--dur) var(--ease-out);
-  pointer-events: none;
-}
-.work-row__media:hover .work-row__glow { opacity: 1; }
-/* The screenshot in a plain browser frame, centred in the tile at 88% of its
-   width. The screenshots are about 2.08:1, so the frame is well short of the
-   16:10 tile: the parallax on .work-row__shot (±4% of its height, effects.js)
-   and the hover lift on .work-frame never bring it near the tile's edges.
-   The image keeps its own aspect ratio (width/height attributes), never
-   cropped or stretched. */
-.work-row__shot { position: relative; width: 88%; }
-.work-frame {
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
+.work-row__device {
+  position: relative;
+  padding: var(--bezel) 0 calc(var(--chin) + var(--base-h));
   transition: transform var(--dur-slow) var(--ease-out);
 }
-.work-frame__bar {
-  display: flex;
-  justify-content: flex-end; /* the dots at the physical left, as on a real window */
-  align-items: center;
-  gap: 6px;
-  height: 22px;
-  padding-inline: 10px;
-  background: var(--color-surface-elevated);
-  border-bottom: 1px solid var(--color-border);
+/* Display width so that the deck, 1.16× the lid, is exactly the column. */
+.work-row__device .laptop { width: calc(100% / 1.16 - 2 * var(--bezel)); margin-inline: auto; }
+
+/* Ambient light: the project's own screenshot, pre-blurred (-ambient.webp, a
+   480px file; no CSS blur), stretched over ~120% of the device and centred a
+   little below the display. A radial mask fades it out well inside its own
+   ellipse, so no edge or rectangle ever shows: the visible light ends within
+   the gap to the text column, never behind text, and past the screen's edge
+   at 390px (body clips the rest). Its opacity is split so hover and scroll
+   never fight: the wrapper takes hover (.75 → 1), the image takes the scroll
+   (motion/effects.js: .27 → .6) — .45 at rest, .2 as a row enters, .6 on
+   hover. Static and reduced motion: .45. */
+.work-row__glow {
+  position: absolute;
+  inset: -9% -10% -13%;
+  opacity: .75;
+  transition: opacity var(--dur-slow) var(--ease-out);
+  pointer-events: none;
 }
-.work-frame__bar span { width: 7px; height: 7px; border-radius: 50%; background: var(--color-border-strong); }
-.work-frame__img { display: block; width: 100%; height: auto; background: var(--color-surface); }
-/* A project without a screenshot yet: the frame's surface at the same
-   aspect ratio, with a quiet «soon». */
-.work-frame__soon {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1920 / 922;
-  color: var(--color-text-muted);
-  font-size: var(--text-body-sm);
-  font-weight: 500;
+.work-row__glow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  opacity: .6;
+  -webkit-mask-image: radial-gradient(closest-side, black 55%, transparent 88%);
+  mask-image: radial-gradient(closest-side, black 55%, transparent 88%);
 }
+.work-row__media:hover .work-row__glow { opacity: 1; }
 @media (prefers-reduced-motion: no-preference) {
-  .work-row__media:hover .work-frame { transform: translateY(-4px); }
+  .work-row__media:hover .work-row__device { transform: translateY(-4px); }
 }
-@media (max-width: 759px) {
-  .work-frame__bar { gap: 5px; height: 16px; padding-inline: 8px; }
-  .work-frame__bar span { width: 5px; height: 5px; }
-}
+/* Forced colours keep the device's outline and the screenshot; a glow is
+   decoration only. */
+@media (forced-colors: active) { .work-row__glow { display: none; } }
 .work-row__text { --stagger: 60ms; --reveal-rise: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
 .work-row__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .work-row dl { margin: 0; display: grid; gap: var(--space-4); }

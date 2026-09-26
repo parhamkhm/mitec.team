@@ -28,7 +28,7 @@ If a new element makes any of these jobs ambiguous, its color is wrong.
 
 ## 2. Hard rules (never break)
 
-1. **No navy or blue** anywhere, except the `info` status token.
+1. **No navy or blue** anywhere, except the `info` status token. Client content is not UI: a project's screenshot, and in Work the ambient glow made from it, keep the client's own colours (E2's blue). Those colours never become a token or touch anything we draw.
 2. **Components use semantic tokens only** (`--color-*`). Primitives (`--green-600`, `--sage-200`…) appear only in the token file.
 3. **One solid primary button per viewport**, and at most one per section.
 4. **Action green (`--color-cta`) is only for clickable things.** Stats, chart bars, decorative icons and headings are never action green.
@@ -291,7 +291,7 @@ Inner pages (and any hero that is not the home portal):
 
 **Home: the laptop portal (hero exception).** The home hero is a full-viewport forest *scene*, not a light canvas, and it does not count as the one forest band allowed between hero and footer (§6).
 
-- **The device.** A laptop drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). Display 16:10. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
+- **The device.** The brand laptop: drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). One component, `.laptop` in `components.css` (lid, camera, display, deck), shared with Work; the hero draws its lid and deck from those parts on its own frame and cuts the display out of the lid. Display 16:10 here. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
 - **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (36px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(36px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
 - **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
 - **Readability.** Light text only ever sits on forest: the statement reaches opacity 0 before the glass starts to fade, and the copy is gone before the statement starts.
@@ -323,10 +323,13 @@ Inner pages (and any hero that is not the home portal):
 
 ### Portfolio rows
 
-- One row per project: a forest media tile (`data-surface="dark"`, grid texture, `--radius-xl`, `--forest-line` border, 16:10) beside a light text column. The media column is the wider one; rows alternate sides from 1024px and stack media-then-text below it.
-- The screenshot sits in a plain browser frame centred in the tile at 88% of its width, with one mint glow behind it only, never behind text. Frame: `--radius-md`, 1px `--color-border`, a top bar on `--color-surface-elevated` with three 7px dots in `--color-border-strong` (5px on phones) and a `--color-border` hairline under it. The screenshot keeps its own aspect ratio (about 2.08:1; `width`/`height` set, `srcset` 960w / 1920w): never cropped, never stretched. The frame carries the scroll parallax (±4% of its height; it stays at least 17px from the tile's edges at 360px, 40px on desktop); on hover of the tile it lifts 4px and the glow goes to full (no lift under reduced motion). A project without a screenshot shows the same frame with «به‌زودی» in `--color-text-muted` on `--color-surface` (4.74:1), at the same aspect ratio.
+- **Screenshots in the brand laptop with ambient glow** (this replaces the forest tiles with a browser frame in them). One row per project on the section's light ground: the laptop beside a light text column. The media column is the wider one; rows alternate sides from 1024px and stack media-then-text below it, the laptop at the full column width.
+- **The laptop** is the hero's device (`.laptop`, `data-surface="dark"`), sized from its column (container units): the keyboard deck, its widest part, is exactly the column, so the display is about 86% of it (~530px at 1440, ~280px at 390) and nothing leaves the column. Bezel ~1.6% of the display (8–16px), chin 1.4 bezels, display radius 6–12px, all in the hero's own ratios. No browser frame, no dots, no tile, no grid texture, no mint glow.
+- **The display takes the screenshot's own aspect ratio** (about 2.02–2.08:1): `width`/`height` set, `srcset` 960w / 1920w, `sizes` for the display width, lazy, `decoding="async"`, Persian `alt`. Never cropped, never stretched, never letterboxed.
+- **Ambient glow.** Behind each laptop, that project's own screenshot, pre-blurred as a small file (`public/images/work/{id}-home-ambient.webp`, 480px; no CSS blur). An absolutely positioned layer ~120% of the device (a little taller below), centred slightly below the display, `border-radius: 50%`, and a radial mask (solid to 55% of its radius, transparent by 88%) so it fades out well inside its own edge: no rectangle ever shows, and its visible light ends in the gap before the text column (behind no text) and inside the screen at 390px. Opacity .45 at rest. The client's colours appear only here and in the screenshot (§2 rule 1). Hidden in forced colours.
+- **Motion** (scroll-linked, `motion/effects.js`; transform and opacity only): each laptop enters tilted — `perspective(1400px) rotateX(14deg) rotateY(±10deg)`, ±6deg when stacked — turned so its screen faces the text (the sign follows the side the media sits on; stacked rows alternate), and flattens to 0 as the media's centre reaches the viewport's centre, damped like the portal. The glow goes from .2 to .45 on the same progress. The media still reveals once on entry (clipped frame, 700ms). Hover on the media: the laptop lifts 4px and the glow goes to .6. Reduced motion, no JS: a flat laptop, glow .45, no hover movement (the glow still brightens).
 - The text column is on light: tag badges in the tonal pair, title `--color-text-primary`, the need / built / result list (labels `--color-text-muted`), then the site link or the "link after client approval" note.
-- Hover on the tile: bg → `--color-brand-hover`, glow up to full.
+- The rows mirror `src/data/portfolio.json` (image, ambient and alt included); a new project needs an entry there and a row in `index.html`.
 
 ### Client list / testimonials
 
@@ -371,7 +374,7 @@ Inner pages (and any hero that is not the home portal):
 ## 6. Surface rules
 
 - **Light = read and decide:** services, process, about, pricing, FAQ, testimonials, forms.
-- **Forest = recognize and commit:** hero media tile, portfolio tiles, final CTA band, footer — and the home hero's laptop scene.
+- **Forest = recognize and commit:** hero media tile, final CTA band, footer — and the brand laptop: the home hero's scene and the devices in Work (a forest object on light, not a tile).
 - Forest appears in only two shapes: **full-width bands** or **media tiles**. Never a text-heavy card. The exceptions are the home hero scene (§5), which is the hero itself, and the single Process "spotlight" step (§5).
 - At most **one** full-width forest band between the hero and the footer. Don't alternate dark/light every section. The home hero scene is not counted in this.
 - No paragraph longer than two lines on forest.
@@ -389,6 +392,7 @@ Inner pages (and any hero that is not the home portal):
 ## 8. Glow, gradient, texture, shadow
 
 - **Glow:** forest surfaces only. Radial `--color-glow`, one source per section, behind media, never behind text, never on buttons.
+- **Work's ambient glow** is the one glow on light: each laptop's own screenshot, pre-blurred, behind the device only, masked to fade out well inside its ellipse (§5 Portfolio rows). It is client light, not `--color-glow`, and it never falls behind text.
 - **Home hero laptop:** its one glow sits behind the device and is masked off the display, so it never lies over the light room. The only other light on it is `--color-reflection` (`--on-dark-1` at 6%): a soft band that slides once across the dark screen. There is no rim or sheen.
 - **Gradients:** single hue only, e.g. `#12312A → #0E2A24`. Never green→amber, green→blue or navy.
 - **Grid texture** (Instagram signature):
@@ -478,7 +482,7 @@ Also check:
 **Do**
 - Use semantic tokens in components; primitives live only in `tokens.css`.
 - Keep one solid primary button per viewport.
-- Put screenshots and mockups on forest tiles.
+- Put project screenshots in the brand laptop (Work), and other mockups on forest tiles.
 - Wrap every dark area in `data-surface="dark"`.
 - Use `#F1F5F2` for text on dark, and Persian digits in stats.
 - Pair every status color with an icon and words.

@@ -116,16 +116,17 @@
         </section>
       </div>
 
-      <!-- Decorative: a laptop, drawn in CSS so it stays sharp at any scale. The
+      <!-- Decorative: the brand laptop (lid, camera, deck: .laptop__* in
+           components.css), drawn in CSS so it stays sharp at any scale. The
            frame box is the display itself, so scaling it flies into the screen.
-           The wall has the display cut out of it; the glass fills the display
-           until the screen "loads". -->
+           The wall and the lid have the display cut out of them; the glass fills
+           the display until the screen "loads". -->
       <div class="portal__frame" data-surface="dark" aria-hidden="true">
         <div class="portal__wall texture-grid"></div>
         <div class="portal__glow"></div>
-        <div class="portal__lid"><span class="portal__camera"></span></div>
+        <div class="laptop__lid portal__lid"><span class="laptop__camera"></span></div>
         <div class="portal__glass"><span class="portal__reflection"></span></div>
-        <div class="portal__base"></div>
+        <div class="laptop__base portal__base"></div>
       </div>
 
       <button class="portal__hint" type="button" data-surface="dark">
@@ -137,7 +138,8 @@
 
 
   <!-- ============================================================ WORK / PORTFOLIO
-       Three zig-zag rows: a forest media tile beside a light text column. -->
+       Three zig-zag rows: a screenshot in the brand laptop, with an ambient glow
+       made from that screenshot, beside a light text column. -->
   <section id="work" class="band band--alt">
     <div class="band__inner">
       <div class="section-heading section-heading--center" data-reveal>
@@ -146,16 +148,19 @@
         <p class="section-heading__sub">هر پروژه با یک نیاز مشخص شروع شد و با یک راهکار مشخص به نتیجه رسید.</p>
       </div>
 
-      <!-- Projects mirror src/data/portfolio.json (keep the two in sync, image paths included). Each
-           screenshot sits in a browser frame at its own aspect ratio, never cropped. -->
+      <!-- Projects mirror src/data/portfolio.json (keep the two in sync, image and ambient paths
+           included). The display takes each screenshot's own aspect ratio, never cropped. -->
       <div class="work-list">
         <article class="work-row">
-          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"></div>
-            <div class="work-row__shot">
-              <div class="work-frame">
-                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                <img class="work-frame__img" src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(min-width: 1248px) 558px, (min-width: 1024px) calc((100vw - 96px) * .51), calc(88vw - 42px)" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
+          <div class="work-row__media" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/mery-home-ambient.webp" width="480" height="230" alt="" loading="lazy" decoding="async"></div>
+            <div class="work-row__device">
+              <div class="laptop" data-surface="dark">
+                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
+                <div class="laptop__display">
+                  <img src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
+                </div>
+                <div class="laptop__base" aria-hidden="true"></div>
               </div>
             </div>
           </div>
@@ -175,12 +180,15 @@
         </article>
 
         <article class="work-row">
-          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"></div>
-            <div class="work-row__shot">
-              <div class="work-frame">
-                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                <img class="work-frame__img" src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(min-width: 1248px) 558px, (min-width: 1024px) calc((100vw - 96px) * .51), calc(88vw - 42px)" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
+          <div class="work-row__media" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/karamad-home-ambient.webp" width="480" height="232" alt="" loading="lazy" decoding="async"></div>
+            <div class="work-row__device">
+              <div class="laptop" data-surface="dark">
+                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
+                <div class="laptop__display">
+                  <img src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
+                </div>
+                <div class="laptop__base" aria-hidden="true"></div>
               </div>
             </div>
           </div>
@@ -199,15 +207,15 @@
         </article>
 
         <article class="work-row">
-          <div class="work-row__media texture-grid" data-surface="dark" data-reveal="media">
-            <div class="work-row__glow" aria-hidden="true"></div>
-            <div class="work-row__shot">
-              <div class="work-frame">
-                <div class="work-frame__bar" aria-hidden="true"><span></span><span></span><span></span></div>
-                <!-- REPLACE: E2's screenshot, as in the rows above — public/images/work/e2-home-960.webp and
-                     -1920.webp as an <img class="work-frame__img"> with srcset, sizes, width/height and alt,
-                     and its image field in src/data/portfolio.json. -->
-                <div class="work-frame__soon" role="img" aria-label="تصویر سایت کافه E2 به‌زودی">به‌زودی</div>
+          <div class="work-row__media" data-reveal="media">
+            <div class="work-row__glow" aria-hidden="true"><img src="public/images/work/e2-home-ambient.webp" width="480" height="238" alt="" loading="lazy" decoding="async"></div>
+            <div class="work-row__device">
+              <div class="laptop" data-surface="dark">
+                <div class="laptop__lid" aria-hidden="true"><span class="laptop__camera"></span></div>
+                <div class="laptop__display">
+                  <img src="public/images/work/e2-home-960.webp" srcset="public/images/work/e2-home-960.webp 960w, public/images/work/e2-home-1920.webp 1920w" sizes="(min-width: 1248px) 529px, (min-width: 1024px) calc((100vw - 96px) * .48), calc(83vw - 40px)" width="1920" height="951" alt="صفحه‌ی اصلی منوی آنلاین کافه E2" loading="lazy" decoding="async">
+                </div>
+                <div class="laptop__base" aria-hidden="true"></div>
               </div>
             </div>
           </div>

@@ -312,6 +312,82 @@ body { caret-color: var(--color-cta); }
 .footer__nav a:hover { color: var(--color-text-primary); }
 .footer__copy { font-size: var(--text-caption); color: var(--color-text-muted); }
 
+/* ---------------------------------------------------------------- Laptop
+   The brand laptop (DESIGN.md §5), drawn in CSS so it stays sharp at any
+   scale: a lid with a bezel ring that is deeper at the chin, a camera dot,
+   the display, and a single-hue keyboard deck with a thumb notch. It is a
+   forest object, so the element carrying it sets data-surface="dark".
+
+   The box is the display; the lid and the deck are drawn outside it, so the
+   caller leaves room round it: --bezel above and at the sides, --chin +
+   --base-h below, and the deck is 1.16× as wide as the lid. The caller sets
+   the geometry: --screen-r, --bezel, --chin, --base-h, and --screen-w /
+   --screen-h where the display is not simply this box (100% by default).
+   The portal hero sets them in measured px and draws its lid and deck from
+   these parts on its own frame; Work derives them from its column.
+
+     <div class="laptop" data-surface="dark">
+       <div class="laptop__lid"><span class="laptop__camera"></span></div>
+       <div class="laptop__display"><img …></div>
+       <div class="laptop__base"></div>
+     </div> */
+.laptop { position: relative; background: none; }
+.laptop__lid {
+  position: absolute;
+  inset: calc(-1 * var(--bezel)) calc(-1 * var(--bezel)) calc(-1 * var(--chin));
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--screen-r) + var(--bezel));
+  background:
+    linear-gradient(transparent calc(100% - var(--chin) + 1px), var(--color-surface-sunken) 0),
+    var(--color-surface-elevated);
+}
+/* The bezel's inner edge. */
+.laptop__lid::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--bezel) - 4px) calc(var(--bezel) - 4px) calc(var(--chin) - 4px);
+  border: 3px solid var(--color-surface-sunken);
+  border-radius: calc(var(--screen-r) + 3px);
+}
+.laptop__camera {
+  position: absolute;
+  top: calc(var(--bezel) / 2 - 4px);
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+/* After the lid in the markup, so it paints over it. Its content keeps its
+   own aspect ratio: the display takes the height of what is on it. */
+.laptop__display {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--screen-r);
+  background: var(--color-surface);
+}
+.laptop__display > img { display: block; width: 100%; height: auto; }
+/* The keyboard deck: a single-hue trapezoid with a thumb notch. */
+.laptop__base {
+  position: absolute;
+  top: calc(var(--screen-h, 100%) + var(--chin));
+  left: calc(50% - (var(--screen-w, 100%) + 2 * var(--bezel)) * .58);
+  width: calc((var(--screen-w, 100%) + 2 * var(--bezel)) * 1.16);
+  height: var(--base-h);
+  background: linear-gradient(var(--color-border-strong), var(--color-border));
+  clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
+}
+.laptop__base::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 42%;
+  width: 16%;
+  height: 35%;
+  border-radius: 0 0 6px 6px;
+  background: var(--color-border);
+}
+
 /* ---------------------------------------------------------------- image placeholder
    Stand-in for the real screenshots. Inside a forest tile the tokens remap,
    so it reads correctly on both grounds without a second rule. */

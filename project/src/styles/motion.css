@@ -28,11 +28,14 @@ html.motion [data-reveal-stagger].is-revealed > * {
 html.motion [data-reveal]:focus-within,
 html.motion [data-reveal-stagger] > :focus-within { opacity: 1; animation: none; }
 
-/* Media tiles open from a clipped, slightly small frame instead of fading:
-   they are visible (clipped) before they reveal, never blank. */
+/* Media (Work's laptops) open from a clipped, slightly small frame instead of
+   fading: visible (clipped) before they reveal, never blank. The clip opens
+   6% past the media box, not just to it: a laptop that is still tilted pokes
+   up to ~3% out of its box, and the glow is transparent by then, so nothing
+   is still clipped when the animation lets go of the clip at the end. */
 @keyframes reveal-media {
   from { clip-path: inset(10% round 20px); transform: scale(.96); }
-  to { clip-path: inset(0 round 20px); transform: none; }
+  to { clip-path: inset(-6% round 20px); transform: none; }
 }
 html.motion [data-reveal="media"] { --reveal: reveal-media; --dur-reveal: var(--dur-media); }
 html.motion [data-reveal="media"]:not(.is-revealed) { opacity: 1; clip-path: inset(10% round 20px); transform: scale(.96); }
@@ -70,7 +73,8 @@ html.motion .about-grid.is-revealed .about-card__text > * {
 html.motion .cta-band h2 { --stagger: 90ms; }
 
 /* Scroll-linked layers (motion/effects.js) get their own compositor layer. */
-html.motion :is(.work-row__shot, .about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
+html.motion :is(.work-row .laptop, .about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
+html.motion .work-row__glow img { will-change: opacity; }
 html.motion .testimonial { will-change: transform, opacity; }
 html.motion .process-rail__fill { transform: scale(0); }
 /* Process steps start empty; effects.js scrubs the fill, its edge and the

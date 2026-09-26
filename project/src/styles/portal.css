@@ -255,33 +255,11 @@ html.motion .portal__frame {
   opacity: .5;
   will-change: opacity;
 }
-/* The lid: a bezel ring round the display, deeper at the chin. */
-.portal__lid {
-  --hole-at: var(--bezel) var(--bezel);
-  inset: calc(-1 * var(--bezel)) calc(-1 * var(--bezel)) calc(-1 * var(--chin));
-  border: 1px solid var(--color-border);
-  border-radius: calc(var(--screen-r) + var(--bezel));
-  background:
-    linear-gradient(transparent calc(100% - var(--chin) + 1px), var(--color-surface-sunken) 0),
-    var(--color-surface-elevated);
-}
-/* The bezel's inner edge. */
-.portal__lid::before {
-  content: '';
-  position: absolute;
-  inset: calc(var(--bezel) - 4px) calc(var(--bezel) - 4px) calc(var(--chin) - 4px);
-  border: 3px solid var(--color-surface-sunken);
-  border-radius: calc(var(--screen-r) + 3px);
-}
-.portal__camera {
-  position: absolute;
-  top: calc(var(--bezel) / 2 - 4px);
-  left: calc(50% - 3px);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-border-strong);
-}
+/* The lid, camera and keyboard deck are the shared brand laptop
+   (components.css: .laptop__lid, .laptop__camera, .laptop__base), sized by
+   the --screen-* / --bezel / --chin / --base-h that portal.js measures. Here
+   the lid only gets the display cut out of it, so the room shows through. */
+.portal__lid { --hole-at: var(--bezel) var(--bezel); }
 /* The screen while it is off / loading. */
 .portal__glass {
   inset: 0;
@@ -305,26 +283,6 @@ html.motion .portal__frame {
   transform: translateX(var(--screen-w));
   will-change: transform;
 }
-/* The keyboard deck: a single-hue trapezoid with a thumb notch. */
-.portal__base {
-  top: calc(var(--screen-h) + var(--chin));
-  left: calc(50% - (var(--screen-w) + 2 * var(--bezel)) * .58);
-  width: calc((var(--screen-w) + 2 * var(--bezel)) * 1.16);
-  height: var(--base-h);
-  background: linear-gradient(var(--color-border-strong), var(--color-border));
-  clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
-}
-.portal__base::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 42%;
-  width: 16%;
-  height: 35%;
-  border-radius: 0 0 6px 6px;
-  background: var(--color-border);
-}
-
 /* Phones and low-power devices: no tilt, no reflection. */
 .portal--lite .portal__reflection { display: none; }
 /* Pre-JS stand-ins for the phone layout portal.js computes. */
