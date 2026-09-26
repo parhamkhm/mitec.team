@@ -1,5 +1,6 @@
-// mitec — Work: a 3D coverflow of the projects in src/data/portfolio.json,
-// whose centre card opens a detail dialog (DESIGN.md §5, "Work coverflow").
+// mitec — Work: a 3D coverflow of the projects in src/data/portfolio.json.
+// The centre card flips over, in place, to its details (DESIGN.md §5,
+// "Work coverflow").
 //
 // Recycled slots. A fixed pool of seven cards sits at offsets −3 … +3 from an
 // unbounded virtual index; ±3 are invisible staging slots. Each slot shows
@@ -12,17 +13,22 @@
 // Positive offsets are "next", on the LEFT of this RTL page: ArrowLeft, the
 // left arrow and a swipe to the right go forward.
 //
+// Each card has two faces of the same size. «جزئیات پروژه» turns the centre
+// card over to its back: the need / built / result as three tabs, and the
+// site link. The face not in view is inert. Any move of the carousel turns
+// the card back first.
+//
 // A step writes each card's transform and opacity once, in one frame, and the
 // CSS transitions in home.css do the motion. The only per-frame work is the
 // optional stage tilt, a track on the shared engine. Layout is read only on
-// resize (the engine's measure) and when the dialog opens or closes.
+// resize (the engine's measure) and when a text panel scrolls or changes.
 
 import { track, kick, whenMotion } from './motion/engine.js';
 import { clamp, damp } from './motion/easing.js';
 import { faNumber } from '../utils/format.js';
 
 const POOL = 7;          // offsets −3 … +3
-const HOLD_MS = 8000;    // autoplay rests this long after a manual interaction
+const HOLD_MS = 8000;    // autoplay rests this long after a manual interaction or a flip
 const SWIPE_PX = 45;
 const MAX_DOTS = 7;      // more projects than this: a «۳ از ۱۲» counter instead
 const TILT_DEG = 3;
@@ -34,17 +40,20 @@ const LAYOUT = {
   narrow: [[0, 1, 0, 1, 0], [62, .86, 18, .65, .45], [116, .74, 26, .38, .6], [160, .64, 32, 0, .6]]
 };
 const Z = [30, 20, 10, 0];
-const OPEN_SIDE_OPACITY = .2; // side cards while the dialog is open
+const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is turned over
+
+// The back's three blocks, in reading order (right to left).
+const TABS = [['need', 'نیاز'], ['built', 'راهکار'], ['result', 'نتیجه']];
 
 // The card's screenshot covers a 4:5 box, so it is drawn ~2.6× the card's width.
 const CARD_SIZES = '(max-width: 499px) 187vw, (max-width: 759px) 936px, (max-width: 999px) 676px, (max-width: 1307px) 68vw, 884px';
-const DETAIL_SIZES = '(min-width: 900px) 510px, 92vw';
 const NOTE = 'لینک سایت بعد از تأیید مشتری منتشر می‌شود.';
 
 const root = document.documentElement;
 const narrow = matchMedia('(max-width: 759px)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 const motionOn = () => root.classList.contains('motion');
+const flipMs = () => (motionOn() ? 700 : 250);   // home.css: the flip, or the reduced-motion crossfade
 const mod = (n, m) => ((n % m) + m) % m;
 
 function h(tag, cls, attrs = {}) {
@@ -59,6 +68,11 @@ function iconButton(cls, icon, label) {
   return b;
 }
 const srcsetOf = (im) => [im.src960 && `${im.src960} 960w`, im.src1920 && `${im.src1920} 1920w`].filter(Boolean).join(', ');
+const chips = (tags) => (tags || []).map((t) => {
+  const chip = h('span', 'work-card__tag');
+  chip.textContent = t;
+  return chip;
+});
 
 export async function initWork() {
   const section = document.getElementById('work');
@@ -81,25 +95,33 @@ export async function initWork() {
 function build(section, host, projects) {
   const N = projects.length;
   const many = N > 1;
-  const easeOut = getComputedStyle(root).getPropertyValue('--ease-out').trim() || 'ease-out';
   const layers = [...section.querySelectorAll('.work__ambient-layer')];
+
+  // ---- state
+  let active = 0;          // unbounded virtual index of the centre card
+  let queue = 0;           // steps still to take (signed), e.g. from a dot three away
+  let pumpTimer = 0;
+  let announce = false;    // say the new project (manual changes only, never autoplay)
+  let flipped = null;      // the slot turned over to its back, if any
+  let turningUntil = 0;    // until then a card is still turning back; the carousel waits
 
   // ---- the stage and its seven slots
   const stage = h('div', 'work-stage');
   const trackEl = h('div', 'work-stage__track');
   stage.append(trackEl);
-  const slots = Array.from({ length: POOL }, (_, i) => makeSlot(i - 3));
+  const slots = Array.from({ length: POOL }, (_, i) => makeSlot(i));
   trackEl.append(...slots.map((s) => s.el));
   host.append(stage);
 
   // ---- controls
-  let prev = null, next = null, toggle = null, counter = null, bar = null;
+  let toggle = null, counter = null, bar = null;
   let dots = [];
   const controls = h('div', 'work-controls');
   if (many) {
-    prev = iconButton('work-arrow work-arrow--prev', 'icon-chevron-right', 'پروژه‌ی قبلی');
-    next = iconButton('work-arrow work-arrow--next', 'icon-chevron-left', 'پروژه‌ی بعدی');
-    host.append(prev, next);
+    host.append(
+      iconButton('work-arrow work-arrow--prev', 'icon-chevron-right', 'پروژه‌ی قبلی'),
+      iconButton('work-arrow work-arrow--next', 'icon-chevron-left', 'پروژه‌ی بعدی')
+    );
     if (N <= MAX_DOTS) {
       const wrap = h('div', 'work-dots');
       dots = projects.map((_, i) => {
@@ -124,28 +146,60 @@ function build(section, host, projects) {
   const status = h('p', 'visually-hidden', { 'aria-live': 'polite', 'aria-atomic': 'true' });
   host.append(controls, status);
 
-  // ---- state
-  let active = 0;          // unbounded virtual index of the centre card
-  let queue = 0;           // steps still to take (signed), e.g. from a dot three away
-  let pumpTimer = 0;
-  let announce = false;    // say the new project (manual changes only, never autoplay)
-  let isOpen = false;
-  let closing = false;
-
-  function makeSlot(pos) {
+  // One card: a front (the screenshot and its face) and a back (the details),
+  // the same size, back to back inside .work-card__inner.
+  function makeSlot(i) {
     const el = h('div', 'work-card is-teleport');
+    const inner = h('div', 'work-card__inner');
+
+    const front = h('div', 'work-card__front');
     const img = h('img', 'work-card__img', { alt: '', decoding: 'async', sizes: CARD_SIZES });
     const face = h('div', 'work-card__face');
     const tags = h('div', 'work-card__tags');
     const body = h('div', 'work-card__body');
     const title = h('h3', 'work-card__title');
     const summary = h('p', 'work-card__summary');
-    const more = h('button', 'btn btn--sm btn--tonal work-card__more', { type: 'button' });
+    const more = h('button', 'btn btn--sm btn--tonal work-card__more', { type: 'button', 'aria-expanded': 'false', 'aria-controls': `work-back-${i}` });
     more.textContent = 'جزئیات پروژه';
     body.append(title, h('span', 'work-card__rule', { 'aria-hidden': 'true' }), summary, more);
     face.append(tags, body);
-    el.append(img, face, h('span', 'work-card__dim', { 'aria-hidden': 'true' }));
-    return { el, img, tags, title, summary, more, dim: el.lastChild, pos, p: -1, clearAt: 0, exiting: false, teleport: true };
+    const dim = h('span', 'work-card__dim', { 'aria-hidden': 'true' });
+    front.append(img, face, dim);
+
+    const back = h('div', 'work-card__back', { id: `work-back-${i}`, role: 'group', 'aria-labelledby': `work-back-title-${i}` });
+    back.inert = true;
+    const backImg = h('img', 'work-card__back-img', { alt: '', decoding: 'async', loading: 'lazy' });
+    const sheet = h('div', 'work-card__sheet');
+    const head = h('div', 'work-card__head');
+    const backTags = h('div', 'work-card__tags');
+    head.append(backTags, iconButton('work-card__close', 'icon-x', 'بستن جزئیات'));
+    const backTitle = h('h3', 'work-card__back-title', { id: `work-back-title-${i}` });
+    const tablist = h('div', 'work-tabs', { role: 'tablist', 'aria-labelledby': backTitle.id });
+    const indicator = h('span', 'work-tabs__indicator', { 'aria-hidden': 'true' });
+    tablist.append(indicator);
+    const content = h('div', 'work-card__content');
+    const tabs = [], panels = [];
+    TABS.forEach(([, label], k) => {
+      const tab = h('button', 'work-tab', { type: 'button', role: 'tab', id: `work-tab-${i}-${k}`, 'aria-controls': `work-panel-${i}-${k}` });
+      tab.textContent = label;
+      tab.dataset.k = k;
+      const panel = h('div', 'work-card__panel', { role: 'tabpanel', id: `work-panel-${i}-${k}`, 'aria-labelledby': tab.id });
+      panel.append(h('p'));
+      tabs.push(tab);
+      panels.push(panel);
+    });
+    tablist.append(...tabs);
+    content.append(...panels);
+    const foot = h('div', 'work-card__foot');
+    sheet.append(head, backTitle, tablist, content, foot);
+    back.append(backImg, sheet);
+
+    inner.append(front, back);
+    el.append(inner);
+    const s = { el, front, back, img, tags, title, summary, more, dim, backImg, backTags, backTitle, indicator, tabs, panels, foot,
+      pos: i - 3, p: -1, tab: 0, clearAt: 0, exiting: false, teleport: true };
+    selectTab(s, 0);
+    return s;
   }
 
   // A slot's project follows from its offset; swapped only while it is invisible.
@@ -164,16 +218,83 @@ function build(section, host, projects) {
       s.img.src = im.src960 || im.src1920;
       s.img.alt = im.alt || '';
     }
-    s.title.textContent = pr.nameFa || pr.name || '';
+    s.title.textContent = s.backTitle.textContent = pr.nameFa || pr.name || '';
     s.summary.textContent = pr.summary || '';
     s.summary.hidden = !pr.summary;
-    s.tags.replaceChildren(...(pr.tags || []).map((t) => {
-      const chip = h('span', 'work-card__tag');
-      chip.textContent = t;
-      return chip;
-    }));
+    s.tags.replaceChildren(...chips(pr.tags));
+    s.backTags.replaceChildren(...chips(pr.tags));
+    s.backImg.hidden = !im?.ambient;
+    if (im?.ambient) s.backImg.src = im.ambient;
+    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = pr[key] || ''; });
+    if (pr.url && pr.url !== '#') {
+      const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
+      a.href = pr.url;
+      a.append('دیدن سایت ', h('span', 'icon icon-arrow-up-left', { 'aria-hidden': 'true' }));
+      s.foot.replaceChildren(a);
+    } else {
+      const note = h('p', 'work-note');
+      note.textContent = NOTE;
+      s.foot.replaceChildren(note);
+    }
+    selectTab(s, 0);
   }
   slots.forEach(fill);
+
+  // ---- the back's tabs: «نیاز» · «راهکار» · «نتیجه»
+  function selectTab(s, k, focus = false) {
+    s.tab = k;
+    s.tabs.forEach((t, j) => {
+      t.setAttribute('aria-selected', String(j === k));
+      t.tabIndex = j === k ? 0 : -1;
+    });
+    s.panels.forEach((panel, j) => {
+      panel.classList.toggle('is-current', j === k);
+      panel.inert = j !== k;
+      panel.tabIndex = j === k ? 0 : -1; // the text can be scrolled from the keyboard
+      if (j === k) panel.scrollTop = 0;
+    });
+    // Equal thirds, so one tab's width is 100% of the indicator's own; the
+    // first tab is on the right, the next ones to its left.
+    s.indicator.style.transform = k ? `translateX(${-100 * k}%)` : '';
+    if (focus) s.tabs[k].focus({ preventScroll: true });
+    if (s === flipped) requestAnimationFrame(() => fade(s.panels[k]));
+  }
+  // A soft fade at the foot of a text that goes on below the fold.
+  function fade(panel) {
+    panel.toggleAttribute('data-more', panel.scrollHeight - panel.clientHeight - panel.scrollTop > 4);
+  }
+
+  // ---- turning the centre card over
+  function flip(s) {
+    if (flipped || s.pos !== 0 || performance.now() < turningUntil) return;
+    flipped = s;
+    queue = 0;
+    clearTimeout(pumpTimer);
+    selectTab(s, 0);
+    s.back.inert = false;
+    s.tabs[0].focus({ preventScroll: true }); // before the front goes inert, so focus never drops to <body>
+    s.front.inert = true;
+    s.more.setAttribute('aria-expanded', 'true');
+    s.el.classList.add('is-flipped');
+    requestAnimationFrame(() => fade(s.panels[0]));
+    render();
+    schedule();
+  }
+  function unflip(returnFocus = false) {
+    const s = flipped;
+    if (!s) return;
+    flipped = null;
+    const hadFocus = s.el.contains(document.activeElement);
+    s.front.inert = false;
+    if (hadFocus || returnFocus) s.more.focus({ preventScroll: true });
+    s.back.inert = true;
+    s.more.setAttribute('aria-expanded', 'false');
+    s.el.classList.remove('is-flipped');
+    // The carousel moves once the card has (nearly) finished turning back.
+    turningUntil = performance.now() + flipMs() * 0.65;
+    render();
+    holdAutoplay();
+  }
 
   // ---- writing one frame
   let raf = 0;
@@ -184,11 +305,11 @@ function build(section, host, projects) {
     const side = Math.sign(s.pos);
     const [x, sc, r, o, dim] = lay[a];
     s.el.style.transform = `translateX(${-side * x || 0}%) scale(${flat ? 1 : sc}) rotateY(${flat ? 0 : side * r}deg)`;
-    s.el.style.opacity = isOpen && a ? Math.min(o, OPEN_SIDE_OPACITY) : o;
+    s.el.style.opacity = o;
     s.el.style.zIndex = Z[a];
     // A card leaving for ±3 fades out fast, so its slot is free to recycle soon.
     s.el.style.transitionDuration = s.exiting ? `800ms, ${exitMs()}ms` : '';
-    s.dim.style.opacity = dim;
+    s.dim.style.opacity = flipped && a ? Math.min(dim + FLIPPED_DIM, .85) : dim;
     s.el.dataset.pos = s.pos;
     s.el.classList.toggle('is-active', a === 0);
     s.el.inert = a === 3;
@@ -268,7 +389,12 @@ function build(section, host, projects) {
   function pump() {
     clearTimeout(pumpTimer);
     pumpTimer = 0;
-    while (queue && !isOpen) {
+    const turning = turningUntil - performance.now();
+    if (turning > 0) {
+      pumpTimer = setTimeout(pump, turning);
+      return;
+    }
+    while (queue && !flipped) {
       const dir = Math.sign(queue);
       const wait = step(dir);
       if (wait > 0) {
@@ -279,12 +405,14 @@ function build(section, host, projects) {
     }
   }
 
+  // Any move turns a flipped card back first; the carousel moves after it.
   function go(delta, manual = true) {
-    if (!many || isOpen || !delta) return;
+    if (!many || !delta) return;
     if (manual) {
       announce = true;
       holdAutoplay();
     }
+    if (flipped) unflip();
     queue = clamp(queue + delta, -3, 3);
     pump();
   }
@@ -322,7 +450,7 @@ function build(section, host, projects) {
   const delay = Math.max(1500, Number(section.dataset.autoplayDelay) || 4500);
   let userPaused = section.dataset.autoplay === 'false';
   let hovering = false, focused = false, onScreen = false, holdUntil = 0, timer = 0;
-  const canPlay = () => many && !userPaused && motionOn() && !hovering && !focused && onScreen && !isOpen && !document.hidden;
+  const canPlay = () => many && !userPaused && motionOn() && !hovering && !focused && onScreen && !flipped && !document.hidden;
   function schedule() {
     clearTimeout(timer);
     timer = 0;
@@ -348,8 +476,9 @@ function build(section, host, projects) {
   }
   setUserPaused(userPaused);
 
-  // ---- one listener set, on the carousel
+  // ---- one listener set, on the carousel (plus Esc and outside clicks while a card is turned)
   let swipe = null, swipedAt = -1e9;
+  const slotOf = (el) => slots.find((x) => x.el === el.closest('.work-card'));
   host.addEventListener('click', (e) => {
     const t = e.target;
     if (t.closest('.work-arrow--next')) return go(1);
@@ -357,19 +486,46 @@ function build(section, host, projects) {
     const dot = t.closest('.work-dot');
     if (dot) return goTo(Number(dot.dataset.to));
     if (t.closest('.work-toggle')) return setUserPaused(!userPaused);
+    if (t.closest('.work-card__close')) return unflip(true);
+    const tab = t.closest('.work-tab');
+    if (tab) return selectTab(slotOf(tab), Number(tab.dataset.k), true);
     const card = t.closest('.work-card');
     if (!card || performance.now() - swipedAt < 400) return;
-    const s = slots.find((x) => x.el === card);
+    const s = slotOf(card);
     if (!s || Math.abs(s.pos) > 2) return;
-    if (s.pos === 0) openDetail(s);
-    else go(s.pos);
+    if (s.pos === 0) {
+      if (!t.closest('.work-card__back')) flip(s);
+    } else go(s.pos);
   });
-  // Only while focus is inside the carousel, never on the whole window.
   host.addEventListener('keydown', (e) => {
-    if (!many || isOpen || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    // Tabs: roving focus in RTL order, so ArrowLeft is the next tab.
+    const tab = e.target.closest('.work-tab');
+    if (tab) {
+      const s = slotOf(tab);
+      const k = { ArrowLeft: s.tab + 1, ArrowRight: s.tab - 1, Home: 0, End: TABS.length - 1 }[e.key];
+      if (k === undefined) return;
+      e.preventDefault();
+      selectTab(s, mod(k, TABS.length), true);
+      return;
+    }
+    // The carousel's keys work only while focus is inside it, never on the
+    // whole window, and not while reading a card's back.
+    if (!many || e.target.closest('.work-card__back')) return;
     if (e.key === 'ArrowLeft') { e.preventDefault(); go(1); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); go(-1); }
   });
+  document.addEventListener('keydown', (e) => {
+    if (flipped && e.key === 'Escape') unflip(true);
+  });
+  // A click anywhere outside the turned card turns it back (an arrow, dot or
+  // side card then moves the carousel once it has).
+  document.addEventListener('pointerdown', (e) => {
+    if (flipped && !flipped.el.contains(e.target)) unflip();
+  }, true);
+  host.addEventListener('scroll', (e) => {
+    if (e.target.classList?.contains('work-card__panel')) fade(e.target);
+  }, true);
   // Touch: a swipe to the right brings the card on the left (next) to the centre.
   stage.addEventListener('pointerdown', (e) => {
     if (e.pointerType !== 'mouse') swipe = { id: e.pointerId, x: e.clientX, y: e.clientY };
@@ -416,7 +572,7 @@ function build(section, host, projects) {
         left = x; top = y; w = stage.offsetWidth || 1; ht = stage.offsetHeight || 1;
       },
       update(dt, snap) {
-        if (snap || isOpen) { tx = ty = 0; cx = cy = 0; }
+        if (snap) { tx = ty = 0; cx = cy = 0; }
         cx = damp(cx, tx, dt, 140);
         cy = damp(cy, ty, dt, 140);
         if (Math.abs(cx - tx) < 0.005) cx = tx;
@@ -427,10 +583,11 @@ function build(section, host, projects) {
       }
     });
     // Rotating toward the pointer: rotateY(+) faces right, rotateX(+) faces up.
+    // Held still while a card is turned over, so its back stays square to the reader.
     const move = (e) => {
-      if (e.pointerType !== 'mouse' || isOpen) return;
-      tx = TILT_DEG * clamp(((e.pageX - left) / w) * 2 - 1, -1, 1);
-      ty = -TILT_DEG * clamp(((e.pageY - top) / ht) * 2 - 1, -1, 1);
+      if (e.pointerType !== 'mouse') return;
+      tx = flipped ? 0 : TILT_DEG * clamp(((e.pageX - left) / w) * 2 - 1, -1, 1);
+      ty = flipped ? 0 : -TILT_DEG * clamp(((e.pageY - top) / ht) * 2 - 1, -1, 1);
       kick();
     };
     const leave = () => { tx = ty = 0; kick(); };
@@ -455,152 +612,6 @@ function build(section, host, projects) {
       schedule();
     };
   });
-
-  // ---- the detail dialog
-  let dialog = null, panel, veil, scroller, media, dImg, dTags, dTitle, dLink, closeBtn;
-  const facts = [];
-  let opener = null;
-
-  function buildDialog() {
-    dialog = h('dialog', 'work-detail', { 'aria-modal': 'true', 'aria-labelledby': 'work-detail-title' });
-    dialog.dataset.surface = 'dark';
-    veil = h('div', 'work-detail__veil');
-    panel = h('div', 'work-detail__panel');
-    closeBtn = iconButton('work-detail__close', 'icon-x', 'بستن');
-    scroller = h('div', 'work-detail__scroll', { role: 'region', 'aria-labelledby': 'work-detail-title' });
-    media = h('figure', 'work-detail__media');
-    dImg = h('img', '', { alt: '', decoding: 'async', sizes: DETAIL_SIZES });
-    media.append(dImg);
-    const text = h('div', 'work-detail__text');
-    dTags = h('div', 'work-detail__tags');
-    dTitle = h('h3', 'work-detail__title', { id: 'work-detail-title' });
-    const dl = h('dl', 'work-facts');
-    for (const [key, label] of [['need', 'نیاز کسب‌وکار'], ['built', 'راهکار ما'], ['result', 'نتیجه']]) {
-      const row = h('div');
-      const dt = h('dt');
-      dt.textContent = label;
-      const dd = h('dd');
-      row.append(dt, dd);
-      dl.append(row);
-      facts.push([key, row, dd]);
-    }
-    dLink = h('div');
-    text.append(dTags, dTitle, dl, dLink);
-    scroller.append(media, text);
-    panel.append(closeBtn, scroller);
-    dialog.append(veil, panel);
-    document.body.append(dialog);
-    dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeDetail(); }); // Esc
-    veil.addEventListener('click', closeDetail);
-    closeBtn.addEventListener('click', closeDetail);
-    dialog.addEventListener('keydown', trapTab);
-  }
-
-  function fillDialog(pr) {
-    const im = pr.image;
-    media.hidden = !im;
-    if (im) {
-      dImg.width = im.width || 1920;
-      dImg.height = im.height || 960;
-      dImg.srcset = srcsetOf(im);
-      dImg.src = im.src960 || im.src1920;
-      dImg.alt = im.alt || '';
-    }
-    dTags.replaceChildren(...(pr.tags || []).map((t) => {
-      const b = h('span', 'badge');
-      b.textContent = t;
-      return b;
-    }));
-    dTitle.textContent = pr.nameFa || pr.name || '';
-    for (const [key, row, dd] of facts) {
-      dd.textContent = pr[key] || '';
-      row.hidden = !pr[key];
-    }
-    if (pr.url && pr.url !== '#') {
-      const a = h('a', 'btn btn--md btn--outline', { target: '_blank', rel: 'noopener' });
-      a.href = pr.url;
-      a.append('دیدن سایت ', h('span', 'icon icon-arrow-up-left', { 'aria-hidden': 'true' }));
-      dLink.replaceChildren(a);
-    } else {
-      const note = h('p', 'work-note');
-      note.textContent = NOTE;
-      dLink.replaceChildren(note);
-    }
-  }
-
-  // Focus stays in the panel: Tab wraps round its own controls (and the
-  // scrolling area, when the panel is taller than the screen).
-  function trapTab(e) {
-    if (e.key !== 'Tab') return;
-    const f = [...panel.querySelectorAll('a[href], button:not([disabled]), [tabindex="0"]')].filter((el) => !el.closest('[hidden]'));
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
-
-  // Opens from the card's own rect (FLIP), slides up as a sheet on phones,
-  // and only fades under reduced motion. Transform and opacity only.
-  function panelFrames(rect) {
-    if (!motionOn()) return [{ opacity: 0 }, { opacity: 1 }];
-    if (narrow.matches) return [{ transform: 'translateY(100%)' }, { transform: 'none' }];
-    const to = panel.getBoundingClientRect();
-    const dx = rect.left + rect.width / 2 - (to.left + to.width / 2);
-    const dy = rect.top + rect.height / 2 - (to.top + to.height / 2);
-    return [
-      { transform: `translate(${dx}px, ${dy}px) scale(${rect.width / to.width}, ${rect.height / to.height})`, opacity: 0 },
-      { transform: 'none', opacity: 1 }
-    ];
-  }
-  const settle = () => [panel, veil].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
-
-  function setArrows(disabled) {
-    if (prev) prev.disabled = next.disabled = disabled;
-  }
-
-  function openDetail(s) {
-    if (isOpen || closing) return;
-    if (!dialog) buildDialog();
-    queue = 0;
-    clearTimeout(pumpTimer);
-    fillDialog(projects[s.p]);
-    opener = s.more;
-    const rect = s.el.getBoundingClientRect();
-    isOpen = true;
-    section.classList.add('is-detail-open');
-    setArrows(true);
-    schedule();
-    render();
-    dialog.showModal();
-    scroller.scrollTop = 0;
-    scroller.tabIndex = scroller.scrollHeight > scroller.clientHeight + 1 ? 0 : -1;
-    closeBtn.focus({ preventScroll: true });
-    settle();
-    const dur = motionOn() ? 350 : 200;
-    veil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: dur, easing: 'linear' });
-    panel.animate(panelFrames(rect), { duration: dur, easing: easeOut });
-  }
-
-  function closeDetail() {
-    if (!isOpen || closing) return;
-    closing = true;
-    const centre = slots.find((x) => x.pos === 0);
-    const dur = motionOn() ? 300 : 160;
-    settle();
-    veil.animate([{ opacity: 1 }, { opacity: 0 }], { duration: dur, easing: 'linear', fill: 'forwards' });
-    const a = panel.animate(panelFrames(centre.el.getBoundingClientRect()).reverse(), { duration: dur, easing: easeOut, fill: 'forwards' });
-    a.finished.catch(() => {}).then(() => {
-      dialog.close();
-      settle();
-      closing = false;
-      isOpen = false;
-      section.classList.remove('is-detail-open');
-      setArrows(false);
-      render();
-      opener?.focus({ preventScroll: true });
-      holdAutoplay();
-    });
-  }
 
   render();
   queueAmbient();

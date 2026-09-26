@@ -124,7 +124,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
    A forest band: a documented exception to the one-forest-band rule, next to
    the hero and the CTA (DESIGN.md §6). The projects turn on a 3D coverflow
    (src/scripts/work.js, built from src/data/portfolio.json) whose centre card
-   opens a detail dialog. Behind the stage, the active project's pre-blurred
+   turns over, in place, to its details. Behind the stage, the active project's pre-blurred
    screenshot tints the middle of the band under a radial forest overlay, so
    the band always reads as mitec forest: a client's colours appear only in
    its screenshots and this glow, never in a token.
@@ -139,7 +139,6 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   isolation: isolate;
   overflow-x: clip; /* side cards reach past the viewport on narrow screens */
 }
-.work.is-detail-open { --ambient-o: .75; }
 
 /* Two full-bleed layers crossfade (700ms) to the active project's ambient
    file. The files are pre-blurred; no CSS blur. The overlay is forest at the
@@ -244,7 +243,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   pointer-events: none;
 }
 
-/* ---- details (the no-JS items and the dialog) */
+/* ---- details (the no-JS items) */
 .work-facts { display: grid; gap: var(--space-4); margin: 0; }
 .work-facts dt { margin-bottom: 2px; color: var(--color-text-muted); font-size: var(--text-caption); font-weight: 700; }
 .work-facts dd { margin: 0; color: var(--color-text-body); line-height: var(--lh-body); }
@@ -285,19 +284,28 @@ html:not(.js) .work-carousel,
    stack by z-index (30 / 20 / 10 / 0) rather than by depth. */
 .work-stage { position: relative; height: var(--stage-h); perspective: 1400px; touch-action: pan-y; }
 .work-stage__track { position: absolute; inset: 0; perspective: 1400px; }
+/* In the stage a card is only the frame of its two faces, which carry the
+   surface themselves (fill, border, radius), so the card can turn over. It is
+   also the container its back's layout tightens against (below 300px). */
 .work-stage .work-card {
+  container-type: inline-size;
   position: absolute;
   top: 50%;
   left: 50%;
   width: var(--card-w);
   margin: calc(var(--card-w) * -.625) 0 0 calc(var(--card-w) / -2);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  perspective: 1200px;
   cursor: pointer;
-  backface-visibility: hidden;
   will-change: transform, opacity;
   transition: transform 800ms var(--ease-coverflow), opacity 800ms var(--ease-coverflow);
 }
 .work-stage .work-card.is-teleport { transition: none; }
 .work-stage .work-card[data-pos="0"] { cursor: zoom-in; }
+.work-stage .work-card.is-flipped { cursor: default; }
 .work-stage .work-card__dim { transition: opacity 800ms var(--ease-coverflow); }
 /* Only the active card shows its face; side cards are just the screenshot. */
 .work-stage .work-card__face { opacity: 0; pointer-events: none; transition: opacity 500ms var(--ease-out); }
@@ -305,6 +313,168 @@ html:not(.js) .work-carousel,
 .work-stage .work-card.is-active .work-card__face { opacity: 1; pointer-events: auto; transition-delay: 150ms; }
 .work-stage .work-card.is-active .work-card__face > * { transform: none; transition-delay: 150ms; }
 html.motion .work-stage__track { will-change: transform; }
+
+/* ---- the flip: «جزئیات پروژه» turns the centre card over, in place.
+   Two faces of exactly the card's size, back to back; the one not in view is
+   inert (work.js). Turned over, the card grows to 1.04 and the side cards dim
+   a little more. Transform and opacity only. */
+.work-card__inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(.2, .8, .2, 1);
+}
+.work-stage .work-card.is-active .work-card__inner { will-change: transform; }
+.work-stage .work-card.is-flipped .work-card__inner { transform: rotateY(180deg) scale(1.04); }
+.work-card__front,
+.work-card__back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.work-card__back { transform: rotateY(180deg); background: var(--color-bg); }
+
+/* The back: the project's own ambient file under 88% forest, deepening to
+   96% over the foot (the lightest file, Karamad's, is near-white there and the
+   note is muted text), so every text meets contrast whatever the client's
+   colours (DESIGN.md §10). Five rows:
+   tags and ×; the title; the tabs; the text, which takes the rest and scrolls
+   inside it (the card never grows); the site link. */
+.work-card__back-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.work-card__sheet {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--color-bg) 88%, transparent) 50%,
+    color-mix(in srgb, var(--color-bg) 96%, transparent) 75%);
+}
+.work-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+/* One row of whole chips: a chip that does not fit wraps out of sight rather
+   than pushing the text down (every tag is on the front as well). */
+.work-card__head .work-card__tags { max-height: 30px; overflow: hidden; }
+.work-card__close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--color-text-muted); /* a control's edge on this dark sheet: ≥ 3:1 */
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease-out);
+}
+.work-card__close:hover { background: var(--color-surface-elevated); }
+.work-card__close .icon { width: 18px; height: 18px; }
+.work-card__back-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  font-size: clamp(17px, 1.4vw, 20px);
+  font-weight: 800;
+  line-height: 1.45;
+}
+/* Segmented control, equal thirds with «نیاز» on the right (start). The tonal
+   pill slides under the chosen tab: 100% of its own width per tab. */
+.work-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-bg-alt) 55%, transparent);
+}
+.work-tabs__indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  inset-inline-start: 3px;
+  width: calc((100% - 6px) / 3);
+  border-radius: var(--radius-pill);
+  background: var(--color-tonal);
+  transition: transform 300ms var(--ease-out);
+}
+.work-tab {
+  position: relative;
+  min-height: 34px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease-out);
+}
+.work-tab:hover { color: var(--color-text-primary); }
+.work-tab[aria-selected="true"] { color: var(--color-tonal-text); }
+/* The three texts share one inset panel that fills the rest of the card, so
+   a short text never leaves a bare gap. Switching crossfades them (opacity
+   and a 6px rise, 200ms). A text that fits sits centred in the panel; a
+   longer one starts at the top, scrolls inside it, and fades out at the foot
+   while there is more below. */
+.work-card__content {
+  position: relative;
+  min-height: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+.work-card__panel {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+.work-card__panel.is-current { opacity: 1; transform: none; }
+.work-card__panel p { margin: 0; color: var(--color-text-body); font-size: var(--text-body-sm); line-height: 1.8; }
+.work-card__panel[data-more] {
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
+}
+.work-card__site { width: 100%; border-color: var(--color-text-muted); }
+.work-card__foot .work-note { font-size: var(--text-caption); line-height: 1.6; text-align: center; }
+/* Narrow cards (260–300px, around 768px and on phones): tighter rows, so the
+   text panel keeps at least three lines. */
+@container (max-width: 300px) {
+  .work-card__sheet { gap: var(--space-2); padding: var(--space-4); }
+  .work-card__close { width: 36px; height: 36px; }
+  .work-tab { min-height: 30px; }
+  .work-card__panel { padding: var(--space-1) var(--space-3); }
+}
+
+/* Without html.motion (reduced motion, forced colours): no turn. The back
+   lies over the front, unrotated, and the two crossfade (250ms). */
+html:not(.motion) .work-stage .work-card.is-flipped .work-card__inner { transform: none; }
+html:not(.motion) .work-card__back { transform: none; opacity: 0; transition: opacity 250ms linear; }
+html:not(.motion) .work-card__front { transition: opacity 250ms linear; }
+html:not(.motion) .work-card.is-flipped .work-card__back { opacity: 1; }
+html:not(.motion) .work-card.is-flipped .work-card__front { opacity: 0; }
 
 /* Arrows at the stage's edges; forward is on the LEFT on this RTL page. */
 .work-arrow {
@@ -386,90 +556,13 @@ html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing tur
 @media (prefers-reduced-motion: reduce) {
   .work-stage .work-card,
   .work-stage .work-card__dim,
-  .work-stage .work-card__face { transition: opacity 250ms linear !important; }
-  .work-stage .work-card__face > * { transform: none; }
+  .work-stage .work-card__face,
+  .work-card__front,
+  .work-card__back { transition: opacity 250ms linear !important; }
+  .work-card__panel { transition: opacity 200ms linear !important; }
+  .work-stage .work-card__face > *,
+  .work-card__panel { transform: none; }
   .work__ambient-layer { transition: opacity 700ms linear !important; }
-}
-
-/* ---- the detail dialog (a native <dialog>, opened modal by work.js)
-   It covers the screen; its veil dims the band behind (the side cards drop
-   to .2 and the ambient brightens) and a click on it closes. The panel is a
-   raised forest surface, two columns from 900px, a bottom sheet below 760px. */
-html:has(.work-detail[open]) { overflow: hidden; scrollbar-gutter: stable; }
-.work-detail[open] {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  max-width: none;
-  height: 100%;
-  max-height: none;
-  margin: 0;
-  padding: var(--space-5);
-  border: 0;
-  background: none;
-  color: var(--color-text-body);
-  overflow: hidden;
-}
-.work-detail::backdrop { background: none; }
-.work-detail__veil { position: absolute; inset: 0; background: color-mix(in srgb, var(--color-bg-alt) 62%, transparent); }
-.work-detail__panel {
-  position: relative;
-  display: flex;
-  width: min(960px, 92vw);
-  max-height: 86vh;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-}
-.work-detail__scroll {
-  display: grid;
-  gap: var(--space-7);
-  width: 100%;
-  padding: 68px var(--space-8) var(--space-8);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-/* Two columns from 900px: the text on the start (right) side, the
-   screenshot at the end, as in every hero (DESIGN.md §5); stacked, the
-   screenshot comes first. */
-@media (min-width: 900px) {
-  .work-detail__scroll { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: "text media"; align-items: start; }
-  .work-detail__media { grid-area: media; }
-  .work-detail__text { grid-area: text; }
-}
-.work-detail__media { margin: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-alt); }
-.work-detail__media img { display: block; width: 100%; height: auto; }
-.work-detail__text { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
-.work-detail__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.work-detail__title { font-size: var(--text-h4); font-weight: 800; line-height: 1.4; }
-.work-detail__close {
-  position: absolute;
-  top: var(--space-3);
-  inset-inline-start: var(--space-3);
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--color-text-muted);
-  border-radius: 50%;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: background-color var(--dur) var(--ease-out);
-}
-.work-detail__close:hover { background: var(--color-surface-elevated); }
-/* On the raised panel --color-border-strong is only 2.96:1; a control's edge
-   there uses the muted text colour (4.74:1), as on the hero's glass. */
-.work-detail .btn--outline { border-color: var(--color-text-muted); }
-@media (max-width: 759px) {
-  .work-detail[open] { place-items: end stretch; padding: 0; }
-  .work-detail__panel { width: 100%; max-height: 88vh; border-bottom: 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
-  .work-detail__scroll { gap: var(--space-5); padding: 68px var(--space-5) calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* ---------------------------------------------------------------- process
