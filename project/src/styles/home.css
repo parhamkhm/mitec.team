@@ -1283,7 +1283,7 @@ html:not(.js) .scope { display: none; }
 .faq-item__chevron { flex: 0 0 auto; width: 18px; height: 18px; color: var(--color-tonal-text); }
 .faq-item__a { padding-bottom: var(--space-5); color: var(--color-text-secondary); font-size: var(--text-body); line-height: var(--lh-body); }
 .faq-item__a[hidden] { display: none; }
-.faq-item__body { max-width: 68ch; }
+.faq-item__body { max-width: calc(68 * var(--ch)); }
 /* With JS the panels collapse by grid rows (0fr <-> 1fr) so opening animates;
    home.js makes closed ones inert. The padding travels with the row so a
    closed panel is truly zero-height. */
@@ -1332,7 +1332,7 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
 @media (max-width: 620px) { .cta-band__screen { padding: var(--space-7) var(--space-4); } }
 .cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
 .cta-band h2 > span { display: inline-block; } /* whole words, so they can rise in one by one */
-.cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: 52ch; }
+.cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: calc(52 * var(--ch)); }
 .cta-band__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 .cta-band__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-7); align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-6); width: 100%; }
 .cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }

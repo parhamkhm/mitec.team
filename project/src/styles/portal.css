@@ -59,7 +59,7 @@
    highlight is the text colour itself (amber-400: 6.33:1 on forest). The
    light-surface highlighter stroke would put pale paper behind light text. */
 .portal__copy[data-surface="dark"] .portal__title .headline-mark { background: none; padding: 0; color: var(--color-highlight-text); }
-.portal__sub { max-width: 46ch; }
+.portal__sub { max-width: calc(46 * var(--ch)); }
 .portal__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
 /* On forest the usual outline edge is too faint; muted text is 5.41:1 there. */
 .portal__copy[data-surface="dark"] .portal__actions .btn--outline { border-color: var(--color-text-muted); }

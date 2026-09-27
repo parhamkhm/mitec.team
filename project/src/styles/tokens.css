@@ -54,11 +54,27 @@
    The scale is a 1.414 ratio. Its floor honours DESIGN.md §9: body never
    below 16px, secondary and caption never below 14px, eyebrow never below
    12px — Persian loses joins and dots faster than Latin does.
-   PRODUCTION: self-host Vazirmatn from public/fonts; Google Fonts can be
-   unreachable from Iran. */
+
+   Self-hosted (public/fonts, see its README): a CDN can be slow or unreachable
+   from Iran, and a hanging font stylesheet blanks the page. Vazirmatn v33.003,
+   subset to Arabic + Latin, one file per weight; index.html preloads 800
+   (the H1). "Vazirmatn Fallback" is Tahoma scaled and re-metricked to
+   Vazirmatn's width and line box, so the swap from it moves no text where
+   Tahoma exists (Windows, macOS). */
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-500.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-800.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+/* size-adjust = Vazirmatn's width ÷ Tahoma's on the page's own text; the
+   overrides are Vazirmatn's ascent (2100) and descent (1100) over its 2048
+   units, divided by that size-adjust. */
+@font-face { font-family: 'Vazirmatn Fallback'; src: local('Tahoma'); font-weight: 100 450; size-adjust: 93%; ascent-override: 110.26%; descent-override: 57.75%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Fallback'; src: local('Tahoma'); font-weight: 451 599; size-adjust: 93.8%; ascent-override: 109.32%; descent-override: 57.26%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Fallback'; src: local('Tahoma Bold'), local('Tahoma-Bold'); font-weight: 600 750; size-adjust: 83.8%; ascent-override: 122.36%; descent-override: 64.09%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Fallback'; src: local('Tahoma Bold'), local('Tahoma-Bold'); font-weight: 751 900; size-adjust: 84.1%; ascent-override: 121.93%; descent-override: 63.87%; line-gap-override: 0%; }
 :root {
-  --font-display: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
-  --font-body: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  --font-display: 'Vazirmatn', 'Vazirmatn Fallback', Tahoma, 'Segoe UI', sans-serif;
+  --font-body: 'Vazirmatn', 'Vazirmatn Fallback', Tahoma, 'Segoe UI', sans-serif;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -84,6 +100,11 @@
   --lh-tight: 1.5;
   --lh-heading: 1.2;
   --lh-display: 1.08;
+  /* Reading measures are counted in this, not in ch: 1ch is the "0" of
+     whichever font is showing, so the fallback's narrower "0" would narrow
+     every measure and re-wrap its lines when Vazirmatn lands. This is 1ch of
+     Vazirmatn Regular, so calc(52 * var(--ch)) lays out exactly as 52ch did. */
+  --ch: 0.56201em;
   /* Zero, not tight: Persian is a joined script, and any tracking — negative
      or positive — opens gaps in the joins (DESIGN.md §13). */
   --ls-display: 0;

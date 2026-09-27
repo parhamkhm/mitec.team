@@ -218,7 +218,7 @@ body { caret-color: var(--color-cta); }
 .card-title { font-size: var(--text-h4); color: var(--color-text-primary); }
 
 /* ---------------------------------------------------------------- SectionHeading */
-.section-heading { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; text-align: start; max-width: 62ch; }
+.section-heading { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; text-align: start; max-width: calc(62 * var(--ch)); }
 .section-heading--center { align-items: center; text-align: center; margin-inline: auto; }
 .section-heading__eyebrow {
   font-family: var(--font-body);
@@ -230,7 +230,7 @@ body { caret-color: var(--color-cta); }
 .section-heading__title { font-family: var(--font-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); color: var(--color-text-primary); margin: 0; }
 .section-heading__title--display-1 { font-weight: 800; font-size: var(--text-display-1); }
 .section-heading__title--display-3 { font-weight: 700; font-size: var(--text-display-3); }
-.section-heading__sub { font-size: var(--text-lead); font-weight: 400; color: var(--color-text-secondary); line-height: var(--lh-tight); max-width: 52ch; }
+.section-heading__sub { font-size: var(--text-lead); font-weight: 400; color: var(--color-text-secondary); line-height: var(--lh-tight); max-width: calc(52 * var(--ch)); }
 
 /* The one amber moment: a highlighter stroke under a single headline phrase.
    Amber never becomes text on light — it sits behind ink at 13.30:1. */
