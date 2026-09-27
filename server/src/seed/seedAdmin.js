@@ -17,9 +17,15 @@ async function run() {
       continue;
     }
     const hash = await bcrypt.hash(password, 12);
+    // Re-running this for an existing account resets its password, ends its
+    // sessions and unlocks it — the recovery path for a locked-out admin.
     await pool.query(
       `INSERT INTO admin_users (username, password_hash) VALUES ($1, $2)
-       ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
+       ON CONFLICT (username) DO UPDATE SET
+         password_hash = EXCLUDED.password_hash,
+         session_version = admin_users.session_version + 1,
+         failed_logins = 0,
+         locked_until = NULL`,
       [username, hash]
     );
     console.log(`seeded admin user: ${username}`);
