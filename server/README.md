@@ -55,6 +55,19 @@ npm run test:contract        # سرور باید در حال اجرا باشد
 
 برای تست روی سرور دیگر: `BASE_URL=https://api.example.com npm run test:contract`.
 
+## انتشار روی سرور
+
+سایت در `https://portfolio.chenarcafegallery.info`: nginx فایل‌های `project/` را از `/var/www/portfolio` سرو
+می‌کند و `/api/` را (با حذف پیشوند) به همین سرویس روی `127.0.0.1:4000` می‌فرستد، که با pm2 به اسم `mitec-api` اجرا
+می‌شود. انتشار نسخه‌ی جدید، روی سرور و بدون sudo:
+
+```bash
+bash ~/mitec.team/server/scripts/deploy.sh          # یا نام یک شاخه‌ی دیگر
+```
+
+به ترتیب: `git pull --ff-only` (اگر تغییر محلی باشد متوقف می‌شود)، پشتیبان‌گیری، `npm ci` و migrate، ری‌استارت
+API و صبر تا `/health` جواب بدهد، و کپی سایت با `USE_MOCK: false`. با اولین خطا متوقف می‌شود.
+
 ## پشتیبان‌گیری
 
 `scripts/backup.sh` هر شب دیتابیس (`pg_dump`) و پوشه‌ی فایل‌های آپلودی را در `~/backups` می‌ریزد و ۱۴ نسخه‌ی آخر

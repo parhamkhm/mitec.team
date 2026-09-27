@@ -32,9 +32,10 @@ export function createApp() {
   app.use(cookieParser());
 
   // Routes are mounted at the path API_CONTRACT.md names directly
-  // (/catalog, /pricing, /orders, ...). Point the front end's
-  // `APP_CONFIG.API_BASE_URL` at this service's origin (or reverse-proxy
-  // that origin's `/api/*` here without stripping the prefix).
+  // (/catalog, /pricing, /orders, ...). Either point the front end's
+  // `APP_CONFIG.API_BASE_URL` at this service's origin, or reverse-proxy the
+  // site's `/api/` here with the prefix stripped (production: nginx
+  // `location /api/ { proxy_pass http://127.0.0.1:4000/; }`).
   app.use(healthRouter);
   app.use(catalogRouter);
   app.use(pricingRouter);
