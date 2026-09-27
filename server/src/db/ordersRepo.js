@@ -81,17 +81,22 @@ export async function listOrders({ status, limit = 50, offset = 0 } = {}, client
   return rows;
 }
 
-export async function updateOrderStatus(trackingCode, { status, statusLabel, estimateWeeks, notes }, client = pool) {
+export async function updateOrderStatus(
+  trackingCode,
+  { status, statusLabel, estimateWeeks, customerNote, internalNotes },
+  client = pool
+) {
   const { rows } = await client.query(
     `UPDATE orders SET
       status = COALESCE($2, status),
       status_label = COALESCE($3, status_label),
       estimate_weeks = COALESCE($4, estimate_weeks),
-      notes = COALESCE($5, notes),
+      customer_note = COALESCE($5, customer_note),
+      internal_notes = COALESCE($6, internal_notes),
       updated_at = now()
     WHERE tracking_code = $1
     RETURNING *`,
-    [trackingCode, status ?? null, statusLabel ?? null, estimateWeeks ?? null, notes ?? null]
+    [trackingCode, status ?? null, statusLabel ?? null, estimateWeeks ?? null, customerNote ?? null, internalNotes ?? null]
   );
   return rows[0] ?? null;
 }

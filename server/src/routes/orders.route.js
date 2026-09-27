@@ -48,7 +48,9 @@ ordersRouter.post(
       status_label: order.status_label,
       created_at: order.created_at,
       estimate_weeks: order.estimate_weeks,
-      notes: order.notes
+      // The contract's `notes` is the customer-facing note only —
+      // internal_notes must never appear in this response.
+      notes: order.customer_note
     });
   })
 );

@@ -28,7 +28,13 @@ adminOrdersRouter.patch(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const { trackingCode } = req.params;
-    const { status, estimate_weeks: estimateWeeks, notes } = req.body ?? {};
+    // customer_note is shown on /track; internal_notes never leaves the admin API.
+    const {
+      status,
+      estimate_weeks: estimateWeeks,
+      customer_note: customerNote,
+      internal_notes: internalNotes
+    } = req.body ?? {};
 
     if (status !== undefined && !ORDER_STATUSES.includes(status)) {
       throw Errors.validation('وضعیت نامعتبر است.', { status: `باید یکی از ${ORDER_STATUSES.join(', ')} باشد.` });
@@ -36,12 +42,18 @@ adminOrdersRouter.patch(
     if (estimateWeeks !== undefined && !(Number.isInteger(estimateWeeks) && estimateWeeks >= 0)) {
       throw Errors.validation('برآورد هفته نامعتبر است.', { estimate_weeks: 'باید عدد صحیح و بزرگ‌تر یا مساوی صفر باشد.' });
     }
+    for (const [field, value] of [['customer_note', customerNote], ['internal_notes', internalNotes]]) {
+      if (value !== undefined && typeof value !== 'string') {
+        throw Errors.validation('یادداشت نامعتبر است.', { [field]: 'باید متن باشد.' });
+      }
+    }
 
     const updated = await updateOrderStatus(trackingCode, {
       status,
       statusLabel: status ? STATUS_LABELS[status] : undefined,
       estimateWeeks,
-      notes
+      customerNote,
+      internalNotes
     });
     if (!updated) throw Errors.notFound('سفارشی با این کد پیدا نشد.');
     sendOk(res, updated);
