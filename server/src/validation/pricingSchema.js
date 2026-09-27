@@ -17,10 +17,14 @@ const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
 
+// The x-rules run even when the schema check failed, so they must not assume a
+// list is a list: a wrong type is already reported by the schema errors.
+const asArray = (v) => (Array.isArray(v) ? v : []);
+
 function duplicateIdErrors(list, basePath) {
   const errors = {};
   const seen = new Map();
-  (list || []).forEach((item, i) => {
+  asArray(list).forEach((item, i) => {
     if (!item || typeof item.id !== 'string') return;
     if (seen.has(item.id)) {
       errors[`${basePath}/${i}/id`] = `id «${item.id}» تکراری است (اولین بار در ایندکس ${seen.get(item.id)}).`;
@@ -37,9 +41,9 @@ function checkXRules(doc) {
   fieldErrors = { ...fieldErrors, ...duplicateIdErrors(doc.siteTypes, '/siteTypes') };
   fieldErrors = { ...fieldErrors, ...duplicateIdErrors(doc.addons, '/addons') };
 
-  const addonIds = new Set((doc.addons || []).map((a) => a?.id).filter(Boolean));
+  const addonIds = new Set(asArray(doc.addons).map((a) => a?.id).filter(Boolean));
 
-  (doc.siteTypes || []).forEach((t, i) => {
+  asArray(doc.siteTypes).forEach((t, i) => {
     if (!t) return;
     fieldErrors = { ...fieldErrors, ...duplicateIdErrors(t.base?.included, `/siteTypes/${i}/base/included`) };
 
@@ -47,7 +51,7 @@ function checkXRules(doc) {
       fieldErrors[`/siteTypes/${i}/pages/max`] = 'pages.max باید بزرگ‌تر یا مساوی pages.min باشد.';
     }
 
-    (t.addons || []).forEach((addonId, j) => {
+    asArray(t.addons).forEach((addonId, j) => {
       if (!addonIds.has(addonId)) {
         fieldErrors[`/siteTypes/${i}/addons/${j}`] = `id «${addonId}» در فهرست addons وجود ندارد.`;
       }

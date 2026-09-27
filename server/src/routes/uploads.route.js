@@ -34,6 +34,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
+  // Browsers send the filename as raw UTF-8; multer's default (latin1)
+  // turned every Persian name into mojibake («لوگو.png» → «Ù\u0084Ù\u0088Ú¯Ù\u0088.png»).
+  defParamCharset: 'utf8',
   limits: { fileSize: ENV.uploadMaxSizeMB * 1024 * 1024, files: 1 },
   fileFilter: (req, file, cb) => {
     if (!ENV.uploadAccept.includes(file.mimetype)) {

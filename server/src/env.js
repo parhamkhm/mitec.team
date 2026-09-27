@@ -25,6 +25,7 @@ export const ENV = {
   uploadMaxSizeMB: Number(process.env.UPLOAD_MAX_SIZE_MB || 8),
   uploadMaxFiles: Number(process.env.UPLOAD_MAX_FILES || 5),
   uploadAccept: list(process.env.UPLOAD_ACCEPT || 'image/png,image/jpeg,image/webp,application/pdf'),
+  uploadOrphanHours: Number(process.env.UPLOAD_ORPHAN_HOURS || 24),
 
   smtp: {
     host: process.env.SMTP_HOST || '',
