@@ -27,6 +27,7 @@
 import { track, kick, whenMotion } from './motion/engine.js';
 import { clamp, damp } from './motion/easing.js';
 import { faNumber } from '../utils/format.js';
+import { icon, setIcon } from '../utils/icon.js';
 
 const POOL = 7;          // offsets −3 … +3
 const HOLD_MS = 8000;    // autoplay rests this long after a manual interaction or the details close
@@ -77,9 +78,9 @@ function h(tag, cls, attrs = {}) {
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   return el;
 }
-function iconButton(cls, icon, label) {
+function iconButton(cls, name, label) {
   const b = h('button', cls, { type: 'button', 'aria-label': label });
-  b.append(h('span', `icon ${icon}`, { 'aria-hidden': 'true' }));
+  b.append(icon(name));
   return b;
 }
 const srcsetOf = (im) => [im.src960 && `${im.src960} 960w`, im.src1920 && `${im.src1920} 1920w`].filter(Boolean).join(', ');
@@ -151,8 +152,8 @@ function build(section, host, projects) {
   host.append(stage);
   if (many) {
     host.append(
-      iconButton('work-arrow work-arrow--prev', 'icon-chevron-right', 'پروژه‌ی قبلی'),
-      iconButton('work-arrow work-arrow--next', 'icon-chevron-left', 'پروژه‌ی بعدی')
+      iconButton('work-arrow work-arrow--prev', 'chevron-right', 'پروژه‌ی قبلی'),
+      iconButton('work-arrow work-arrow--next', 'chevron-left', 'پروژه‌ی بعدی')
     );
     if (N <= MAX_DOTS) {
       const wrap = h('div', 'work-dots');
@@ -172,7 +173,7 @@ function build(section, host, projects) {
       box.append(counter, progress);
       controls.append(box);
     }
-    toggle = iconButton('work-toggle', 'icon-pause', 'توقف چرخش');
+    toggle = iconButton('work-toggle', 'pause', 'توقف چرخش');
     controls.append(toggle);
   }
   host.append(caption, controls);
@@ -197,7 +198,7 @@ function build(section, host, projects) {
     label.firstChild.textContent = 'جزئیات پروژه';
     label.lastChild.textContent = 'جزئیات';
     const circle = h('span', 'work-cue__circle');
-    circle.append(h('span', 'icon icon-plus'));
+    circle.append(icon('plus'));
     cue.append(h('span', 'work-cue__pill'), label, circle);
     const dim = h('span', 'work-card__dim', { 'aria-hidden': 'true' });
     front.append(img, pan, cue, dim);
@@ -208,7 +209,7 @@ function build(section, host, projects) {
     const sheet = h('div', 'work-card__sheet');
     const head = h('div', 'work-card__head');
     const backTags = h('div', 'work-card__tags');
-    head.append(backTags, iconButton('work-card__close', 'icon-x', 'بستن جزئیات'));
+    head.append(backTags, iconButton('work-card__close', 'x', 'بستن جزئیات'));
     const backTitle = h('h3', 'work-card__back-title', { id: `work-back-title-${i}` });
     const tablist = h('div', 'work-tabs', { role: 'tablist', 'aria-labelledby': backTitle.id });
     const indicator = h('span', 'work-tabs__indicator', { 'aria-hidden': 'true' });
@@ -266,7 +267,7 @@ function build(section, host, projects) {
     if (pr.url && pr.url !== '#') {
       const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
       a.href = pr.url;
-      a.append('دیدن سایت ', h('span', 'icon icon-arrow-up-left', { 'aria-hidden': 'true' }));
+      a.append('دیدن سایت ', icon('arrow-up-left'));
       s.foot.replaceChildren(a);
     } else {
       const note = h('p', 'work-note');
@@ -661,7 +662,7 @@ function build(section, host, projects) {
     userPaused = v;
     if (toggle) {
       toggle.setAttribute('aria-label', v ? 'ادامه‌ی چرخش' : 'توقف چرخش');
-      toggle.firstChild.className = `icon ${v ? 'icon-play' : 'icon-pause'}`;
+      setIcon(toggle.firstChild, v ? 'play' : 'pause');
     }
     schedule();
   }

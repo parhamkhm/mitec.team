@@ -10,6 +10,7 @@ import { initEffects } from './motion/effects.js';
 import { initScope } from './scope.js';
 import { initWork } from './work.js';
 import { faNumber } from '../utils/format.js';
+import { setIcon } from '../utils/icon.js';
 
 function initNav() {
   const toggle = document.getElementById('navToggle');
@@ -77,12 +78,9 @@ function initFaq() {
     // A closed panel stays in the layout at zero height, so opening can
     // animate (home.css), but inert: nothing in it can take focus or be read.
     panel.inert = !isOpen;
-    // The marker is a masked Lucide glyph, not a "+" character, so the open
-    // state swaps the mask class rather than writing text into the span.
-    if (chevron) {
-      chevron.classList.toggle('icon-minus', isOpen);
-      chevron.classList.toggle('icon-plus', !isOpen);
-    }
+    // The marker is a Lucide glyph from the sprite, not a "+" character, so
+    // the open state swaps the glyph rather than writing text.
+    if (chevron) setIcon(chevron, isOpen ? 'minus' : 'plus');
   }
 
   // Take over from the no-JS default, where every answer is open and readable

@@ -18,6 +18,7 @@
 
 import { track, view, whenMotion, kick } from './engine.js';
 import { clamp, seg, lerp, damp, inCubic, outCubic, inOutSine, inOutCubic } from './easing.js';
+import { icon as glyph } from '../../utils/icon.js';
 
 const px = (n) => `${n}px`;
 const H1_MIN = 36; // the lower bound of the H1's own clamp()
@@ -56,7 +57,7 @@ const make = (tag, cls, text) => {
 };
 const icon = (name) => {
   const box = make('span', 'portal__card-ico');
-  box.append(make('span', `icon icon-${name}`));
+  box.append(glyph(name));
   return box;
 };
 

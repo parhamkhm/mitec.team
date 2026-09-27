@@ -525,7 +525,7 @@ Inner pages (and any hero that is not the home portal):
 
 Also check:
 - `prefers-reduced-motion`: disable glow/hover transitions, and see §13.
-- `forced-colors: active`: buttons keep a visible border. Icons are CSS masks filled with a background colour, which forced colours would blank, so they opt out and take a system colour (`CanvasText`, `LinkText` in links, `ButtonText` in buttons).
+- `forced-colors: active`: buttons keep a visible border. Icons are inline SVG stroked in `currentColor`, so they take the system colour of their text (`CanvasText`, `LinkText` in links, `ButtonText` in buttons).
 - Status = color + icon + text.
 
 ---

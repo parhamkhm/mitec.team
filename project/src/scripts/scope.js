@@ -18,6 +18,7 @@
 import { getPricing } from '../api/client.js';
 import { estimate } from '../utils/estimate.js';
 import { faNumber, fill, formatPrice, formatDuration } from '../utils/format.js';
+import { icon, setIcon } from '../utils/icon.js';
 
 // The only strings not taken from the pricing document: what shows when it
 // cannot be loaded, the way out for visitors unsure of their site type, the
@@ -44,11 +45,6 @@ const el = (tag, cls, text) => {
   if (cls) n.className = cls;
   if (text != null) n.textContent = text;
   return n;
-};
-const icon = (name) => {
-  const i = el('span', `icon icon-${name}`);
-  i.setAttribute('aria-hidden', 'true');
-  return i;
 };
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -219,7 +215,7 @@ export async function initScope() {
       more.addEventListener('click', () => {
         const open = list.classList.toggle('is-open');
         more.setAttribute('aria-expanded', String(open));
-        more.lastChild.className = `icon icon-${open ? 'minus' : 'plus'}`;
+        setIcon(more.lastChild, open ? 'minus' : 'plus');
       });
       parts.push(more);
     }
@@ -359,7 +355,7 @@ export async function initScope() {
     if (on) state.picked.add(b.dataset.id);
     else state.picked.delete(b.dataset.id);
     b.setAttribute('aria-pressed', String(on));
-    b.querySelector('.scope-addon__toggle .icon').className = `icon icon-${on ? 'minus' : 'plus'}`;
+    setIcon(b.querySelector('.scope-addon__toggle .icon'), on ? 'minus' : 'plus');
     update(true);
   });
 

@@ -12,7 +12,8 @@
 <!-- No favicon has been designed yet; an empty icon stops the browser from
      requesting /favicon.ico (a console 404) until one exists. -->
 <link rel="icon" href="data:,">
-<!-- Vazirmatn is self-hosted (public/fonts, @font-face in tokens.css). Only the H1's weight
+<!-- Everything is served from this origin: Vazirmatn is self-hosted (public/fonts, @font-face
+     in tokens.css) and the icons are the inline sprite at the top of <body>. Only the H1's weight
      (800) is preloaded: the metric-matched fallback already keeps the swap from moving text, and
      preloading more costs first paint on a slow connection. -->
 <link rel="preload" href="public/fonts/vazirmatn-800.woff2" as="font" type="font/woff2" crossorigin>
@@ -31,6 +32,32 @@
 </script>
 </head>
 <body>
+<!-- Icons: Lucide v0.544.0 (lucide-static, ISC licence), inlined as one sprite so no icon depends on a CDN.
+     Use: <svg class="icon icon-NAME" aria-hidden="true"><use href="#i-NAME"/></svg>; src/utils/icon.js builds
+     the same from script. Size, stroke (2), caps and joins come from .icon in components.css. -->
+<svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+<symbol id="i-arrow-up-left" viewBox="0 0 24 24"><path d="M7 17V7h10"/><path d="M17 17 7 7"/></symbol>
+<symbol id="i-blocks" viewBox="0 0 24 24"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></symbol>
+<symbol id="i-headset" viewBox="0 0 24 24"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+<symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+<symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-shopping-bag" viewBox="0 0 24 24"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></symbol>
+<symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+</svg>
 <a class="skip-link" href="#top">پرش به محتوای اصلی</a>
 
 <!-- Overlays the portal. Starts on forest; motion/portal.js drops data-surface
@@ -41,7 +68,7 @@
   </a>
 
   <button type="button" class="navbar__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="باز کردن فهرست">
-    <span class="icon icon-menu" aria-hidden="true"></span>
+    <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
   </button>
 
   <nav class="navbar__menu" id="navMenu" aria-label="فهرست اصلی">
@@ -51,7 +78,7 @@
     <a href="#process" class="navbar__link">فرایند</a>
     <a href="#about" class="navbar__link">درباره‌ی ما</a>
     <a href="#contact" class="navbar__link">تماس</a>
-    <a href="./order/" class="btn btn--sm btn--tonal navbar__cta">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+    <a href="./order/" class="btn btn--sm btn--tonal navbar__cta">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
   </nav>
 </header>
 
@@ -74,8 +101,8 @@
         </h1>
         <p class="section-heading__sub portal__sub">طراحی سایت، سرویس‌های آنلاین، CRM و اتوماسیون، تحلیل داده و پشتیبانی؛ از اولین ایده تا رشد کسب‌وکارتان، کنار شما هستیم.</p>
         <div class="portal__actions">
-          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-          <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
+          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
+          <a class="btn btn--lg btn--outline" href="#work"><svg class="icon icon-layout-dashboard" aria-hidden="true"><use href="#i-layout-dashboard"/></svg> دیدن نمونه‌کارها</a>
         </div>
       </div>
       <script>
@@ -195,7 +222,7 @@
             <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
             <div><dt>نتیجه</dt><dd>مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.</dd></div>
           </dl>
-          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
+          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <svg class="icon icon-arrow-up-left" aria-hidden="true"><use href="#i-arrow-up-left"/></svg></a>
         </li>
         <li class="work-item">
           <figure class="work-card">
@@ -240,7 +267,7 @@
     <div class="band__inner">
       <div class="testimonials__head" data-reveal>
         <h2 id="t-title" class="section-heading__title section-heading__title--display-3">نظر مشتری‌ها</h2>
-        <span class="badge badge--highlight"><span class="icon icon-clock" aria-hidden="true"></span>نمونه</span>
+        <span class="badge badge--highlight"><svg class="icon icon-clock" aria-hidden="true"><use href="#i-clock"/></svg>نمونه</span>
       </div>
       <div class="testimonials-grid">
         <div class="card card--surface card--pad-lg testimonial">
@@ -271,45 +298,45 @@
       <div class="services-grid" data-reveal-stagger>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-1-768.webp" srcset="public/images/services/service-1-768.webp 768w, public/images/services/service-1-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-layout-dashboard" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-layout-dashboard" aria-hidden="true"><use href="#i-layout-dashboard"/></svg></span>
           <h3 class="card-title">طراحی و ساخت سایت</h3>
           <p>فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین، کاتالوگ و لندینگ؛ با طراحی رابط کاربری اختصاصی، نه قالب آماده.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-2-768.webp" srcset="public/images/services/service-2-768.webp 768w, public/images/services/service-2-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-blocks" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-blocks" aria-hidden="true"><use href="#i-blocks"/></svg></span>
           <h3 class="card-title">سرویس‌های آنلاین اختصاصی</h3>
           <p>باشگاه مشتریان، نوبت‌دهی و رزرو، پنل مدیریت محتوا، ثبت سفارش و پرداخت آنلاین؛ ابزارهایی که کار روزانه‌ی شما را ساده‌تر می‌کنند.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-3-768.webp" srcset="public/images/services/service-3-768.webp 768w, public/images/services/service-3-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-users" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-users" aria-hidden="true"><use href="#i-users"/></svg></span>
           <h3 class="card-title">CRM و سیستم‌های مدیریتی</h3>
           <p>مشتری‌ها، فروش، سفارش‌ها و کارهای تیم در یک پنل؛ متناسب با روند کاری خود شما، نه یک نرم‌افزار آماده‌ی عمومی.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-4-768.webp" srcset="public/images/services/service-4-768.webp 768w, public/images/services/service-4-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-trending-up" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-trending-up" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
           <h3 class="card-title">اتوماسیون و تحلیل داده</h3>
           <p>خودکارسازی کارهای تکراری، و گزارش‌ها و داشبوردهایی که نشان می‌دهند کسب‌وکارتان کجا رشد می‌کند و کجا نیاز به توجه دارد.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-5-768.webp" srcset="public/images/services/service-5-768.webp 768w, public/images/services/service-5-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-shield-check" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-shield-check" aria-hidden="true"><use href="#i-shield-check"/></svg></span>
           <h3 class="card-title">سئو، امنیت و بهینه‌سازی</h3>
           <p>سئوی پایه، بهینه‌سازی سرعت، امنیت و گواهی SSL، و خرید و تنظیم دامنه و هاست به نام خودتان.</p>
-          <a class="service-card__link" href="#contact">بپرسید <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="#contact">بپرسید <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-6-768.webp" srcset="public/images/services/service-6-768.webp 768w, public/images/services/service-6-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-headset" aria-hidden="true"></span></span>
+          <span class="service-card__badge"><svg class="icon icon-headset" aria-hidden="true"><use href="#i-headset"/></svg></span>
           <h3 class="card-title">پشتیبانی و توسعه‌ی مداوم</h3>
           <p>یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت شما بعد از تحویل رها نمی‌شود و همراه کسب‌وکارتان رشد می‌کند.</p>
-          <a class="service-card__link" href="#faq">جزئیات پشتیبانی <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="#faq">جزئیات پشتیبانی <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
       </div>
     </div>
@@ -375,7 +402,7 @@
         <div class="card card--surface card--pad-lg about-card">
           <div class="about-card__photo">
             <!-- REPLACE: real photo -->
-            <div class="img-slot img-slot--circle"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">عکس</span></div>
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="#i-image"/></svg><span class="img-slot__label">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">پرهام موحدی</h3>
@@ -386,7 +413,7 @@
         <div class="card card--surface card--pad-lg about-card">
           <div class="about-card__photo">
             <!-- REPLACE: real photo -->
-            <div class="img-slot img-slot--circle"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">عکس</span></div>
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="#i-image"/></svg><span class="img-slot__label">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">سینا علیپور</h3>
@@ -455,7 +482,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q1" aria-expanded="true" aria-controls="faq-a1">
               <span>پروژه چقدر طول می‌کشد؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq-item__body">بستگی به نوع سایت و امکاناتش دارد. زمان تقریبی را در «برآورد سریع» همین صفحه ببینید؛ زمان دقیق بعد از جلسه‌ی مشاوره و مشخص شدن محتوا اعلام می‌شود.</div></div>
@@ -464,7 +491,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q2" aria-expanded="true" aria-controls="faq-a2">
               <span>پرداخت چطور انجام می‌شود؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div class="faq-item__body">معمولاً در سه قسمت: بخشی در شروع کار، بخشی بعد از تأیید طراحی و بخش آخر هنگام تحویل. جزئیات در قرارداد نوشته می‌شود.</div></div>
@@ -473,7 +500,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q3" aria-expanded="true" aria-controls="faq-a3">
               <span>هاست و دامنه را هم شما تهیه می‌کنید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div class="faq-item__body">بله؛ تهیه و تنظیم دامنه، هاست و SSL بخشی از خدمات ماست. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</div></div>
@@ -482,7 +509,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q4" aria-expanded="true" aria-controls="faq-a4">
               <span>بعد از تحویل پشتیبانی دارید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div class="faq-item__body">بله. یک دوره پشتیبانی بعد از تحویل بدون هزینه است و بعد از آن به‌صورت ماهانه یا موردی ادامه پیدا می‌کند؛ امکانات جدید هم در همین مسیر به سایت اضافه می‌شود.</div></div>
@@ -491,7 +518,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q5" aria-expanded="true" aria-controls="faq-a5">
               <span>فقط سایت می‌سازید یا سیستم‌های داخلی کسب‌وکار را هم؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div class="faq-item__body">هر دو. علاوه بر سایت، CRM، پنل‌های مدیریتی، اتوماسیون فرایندها و داشبوردهای گزارش را هم طراحی و پیاده‌سازی می‌کنیم؛ جداگانه یا متصل به سایتتان.</div></div>
@@ -500,7 +527,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q6" aria-expanded="true" aria-controls="faq-a6">
               <span>بعد از تحویل، خودم می‌توانم محتوا را تغییر دهم؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div class="faq-item__body">اگر پنل مدیریت محتوا در پروژه‌ی شما باشد، بله؛ آموزش کار با آن هم بخشی از تحویل است.</div></div>
@@ -509,7 +536,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q7" aria-expanded="true" aria-controls="faq-a7">
               <span>لوگو و برند هم طراحی می‌کنید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a7" role="region" aria-labelledby="faq-q7"><div class="faq-item__body">نه. تمرکز ما سایت، سرویس‌های آنلاین و سیستم‌های دیجیتال کسب‌وکار است. اگر لوگو ندارید، با یک نشانه‌ی ساده‌ی متنی کار را پیش می‌بریم یا شما را به یک طراح معرفی می‌کنیم.</div></div>
@@ -528,7 +555,7 @@
         <h2 data-reveal-stagger><span>مسیر</span> <span>دیجیتال</span> <span>کسب‌وکارتان</span> <span>را</span> <span>از</span> <span>همین‌جا</span> <span>شروع</span> <span>کنید</span></h2>
         <p>در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید. هر جا مطمئن نبودید، گزینه‌ی «نمی‌دانم» هست و ما پیشنهاد می‌دهیم.</p>
         <div class="cta-band__ctas">
-          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
           <a class="btn btn--lg btn--outline" href="./track/">پیگیری سفارش</a>
         </div>
       </div>
