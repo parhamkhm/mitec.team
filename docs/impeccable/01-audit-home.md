@@ -16,6 +16,18 @@ behaviour, theming and implementation integrity, measured on the rendered page. 
 Per the owner: the hero float cards' figures are confirmed decorative illustration and are not raised here.
 Items that PRODUCT.md already documents as unbuilt or placeholder are listed separately, not scored.
 
+## Owner triage (2026-09-27)
+
+- **A1–A8 (all P1 and P2): accepted.** To be fixed in Phase 2. Not fixed yet.
+- **C1–C8 (Conflicts with DESIGN.md): accepted by owner.** They are deliberate decisions, stay as they are, and are not
+  raised again in later reports.
+- **A13: done for `_ds`.** `45a8b79` removed `project/_ds/`, keeping its three live scales in `src/styles/scales/`. The
+  four `.dc.html` prototypes (plus `support.js` and `image-slot.js`) are still in `project/` and now render unstyled.
+- **A14: closed.** It is the same question as C7, which the owner accepted.
+- **A9–A12 (P3):** open, no decision yet.
+
+Later reports refer to these findings by ID.
+
 ---
 
 ## Audit Health Score
@@ -72,7 +84,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
 
 ### P1 Major
 
-#### [P1] The hero layout jumps after first paint (CLS 0.22 desktop, 1.08 phone)
+#### A1 · [P1] The hero layout jumps after first paint (CLS 0.22 desktop, 1.08 phone)
 - **Location:**
   - The CSS stand-ins for the pre-JS geometry: `project/src/styles/portal.css`, the `.portal` custom properties (lines
     24–37), and the `@media (max-width: 759px)` block that sets `html.motion .portal__frame { transform: translateY(22svh) }`.
@@ -99,7 +111,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   - This fixes a load-state bug and leaves the approved choreography alone, so the guardrail allows it.
 - **Suggested command:** `/impeccable optimize`
 
-#### [P1] The font depends on Google Fonts, and a hanging request blanks the page
+#### A2 · [P1] The font depends on Google Fonts, and a hanging request blanks the page
 - **Location:** `project/index.html:17–18`: `preconnect` to `fonts.gstatic.com`, and a render-blocking `<link>` to
   `fonts.googleapis.com/css2?family=Vazirmatn…`. The file's own comment, and `tokens.css:57`, already say to self-host.
 - **Category:** Performance (resilience).
@@ -121,7 +133,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
 
 ### P2 Minor
 
-#### [P2] The open mobile menu doesn't contain focus, and its toggle label doesn't change
+#### A3 · [P2] The open mobile menu doesn't contain focus, and its toggle label doesn't change
 - **Location:** `initNav()` in `project/src/scripts/home.js`, and the menu panel in `project/src/styles/home.css:1341–1365`.
 - **Category:** Accessibility.
 - **Evidence (390):**
@@ -136,7 +148,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   tap, returning focus to the toggle. Switching the label to «بستن فهرست» is new copy, so the owner must approve it.
 - **Suggested command:** `/impeccable harden`
 
-#### [P2] Services illustrations load at double resolution on phones (≈480KB)
+#### A4 · [P2] Services illustrations load at double resolution on phones (≈480KB)
 - **Location:** `project/index.html`: the six `.service-card__art` images, with
   `sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw"`.
 - **Category:** Performance.
@@ -149,7 +161,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   about 75% of a half-width card, from 1024px about 75% of a third-width card.
 - **Suggested command:** `/impeccable optimize`
 
-#### [P2] Serialised module loading (15 files, no `modulepreload`)
+#### A5 · [P2] Serialised module loading (15 files, no `modulepreload`)
 - **Location:** `project/index.html:561`. `home.js` → its 7 imports → `scope.js`'s → `api/client.js`'s (`endpoints.js`,
   `mock.js`, `mapper.js`, `app.config.js`).
 - **Category:** Performance.
@@ -162,7 +174,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   direct imports.
 - **Suggested command:** `/impeccable optimize`
 
-#### [P2] Render-blocking CSS `@import` chain
+#### A6 · [P2] Render-blocking CSS `@import` chain
 - **Location:** `project/src/styles/tokens.css:16–18` `@import`s `spacing.css`, `radii.css` and `motion.css` from `_ds`.
 - **Category:** Performance.
 - **Evidence:** Three extra render-blocking requests that can only start after `tokens.css` arrives, on top of five
@@ -171,7 +183,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   the three small scales into `tokens.css`.
 - **Suggested command:** `/impeccable optimize`
 
-#### [P2] Touch targets below 44px
+#### A7 · [P2] Touch targets below 44px
 - **Location:**
   - Work: `.work-dot` (24×24; the active dot 44×24) and `.work-toggle` (36×36).
   - Calculator: `.scope-unsure` («مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم», 27px tall).
@@ -184,7 +196,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
 - **Recommendation:** Enlarge the hit areas with padding or a transparent `::before` without changing the visuals.
 - **Suggested command:** `/impeccable adapt`
 
-#### [P2] Placeholder photo label below AA
+#### A8 · [P2] Placeholder photo label below AA
 - **Location:** About, `.img-slot__label` «عکس» in both team cards.
 - **Category:** Accessibility.
 - **Evidence:** `--color-text-muted` on `--color-surface-sunken` is 4.36:1 at 14px.
@@ -196,29 +208,29 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
 
 ### P3 Polish
 
-- **[P3] Permanent `will-change` on about 25 elements outside the hero** (Performance).
+- **A9 · [P3] Permanent `will-change` on about 25 elements outside the hero** (Performance).
   - **Location:** `home.css:298, 304, 316` and `motion.css:68–74`: the 7 Work slots and track; the Process rail, 5 step
     fills and 5 lines; the About title lines; the CTA echo; two cards. In the hero, the glow, glass and reflection keep
     theirs even when the hero is off screen.
   - **Impact:** Each holds a compositor layer for the whole visit (memory on low-end phones).
   - **Recommendation:** Enable it only while in view or animating, the way `.portal.is-live` already does.
   - **Command:** `/impeccable optimize`
-- **[P3] Layout-property transitions** (Performance).
+- **A10 · [P3] Layout-property transitions** (Performance).
   - **Location:** `.work-dot { transition: width }` (`home.css:724`) and the FAQ's `padding-bottom` transition
     (`home.css:1294`). The FAQ's `grid-template-rows` animation itself is DESIGN.md's recipe.
   - **Recommendation:** Grow the dot with `transform: scaleX` on a pseudo-element, and put the FAQ padding inside the
     animating row.
   - **Command:** `/impeccable optimize`
-- **[P3] `portfolio.json` is fetched three times per load** (Performance).
+- **A11 · [P3] `portfolio.json` is fetched three times per load** (Performance).
   - **Location:** `home.js` (project count), `work.js`, and `portal.js` (wall of work).
   - **Recommendation:** Share one loader.
   - **Command:** `/impeccable optimize`
-- **[P3] An `<img>` with no `src` in the markup** (Implementation Integrity).
+- **A12 · [P3] An `<img>` with no `src` in the markup** (Implementation Integrity).
   - **Location:** `index.html:172`, `.work__ambient-layer`.
   - **Impact:** Invalid HTML without JS; `alt=""` means nothing visibly breaks.
   - **Recommendation:** Give it the first ambient file as `src`, or create it in `work.js`.
   - **Command:** `/impeccable harden`
-- **[P3] Retired design-system files and prototypes are still served** (Implementation Integrity).
+- **A13 · [P3] Retired design-system files and prototypes are still served** (Implementation Integrity). *`_ds` removed in `45a8b79`; the prototypes remain.*
   - **Location:**
     - `project/_ds/…/tokens/`: `colors.css`, `gradients.css`, `elevation.css`, `typography.css`, `fonts.css` (which
       `@import`s Montserrat and Mulish from Google) and `base.css`. None is imported; `tokens.css` uses only spacing,
@@ -227,7 +239,7 @@ product state, listed under [Known and documented](#known-and-documented-not-sco
   - **Impact:** They ship with the static site, and linking one by mistake would bring the navy system back.
   - **Recommendation:** Move them out of the served folder, or delete them (owner's call).
   - **Command:** `/impeccable polish`
-- **[P3] Tight Persian display leading** (Typography).
+- **A14 · [P3] Tight Persian display leading** (Typography). *Closed: accepted with C7.*
   - **Location:** `--lh-display: 1.08` (`tokens.css`), used by the hero H1 and the display headings.
   - **Evidence:** No collisions at 72px, but the dots under «ی» and «ب» sit close to the next line's ascenders.
   - **Recommendation:** Have `typeset` check it at the 36px phone size. The value is a DESIGN.md token (see
@@ -304,28 +316,28 @@ These are open product items recorded in PRODUCT.md, not implementation defects:
 - Contact links are placeholders (`wa.me/989000000000`, `mitec_studio`), as are the prices, labelled «اعداد نمونه»,
   and the team photos.
 
-## Conflicts with DESIGN.md
+## Conflicts with DESIGN.md — accepted by owner
 
-Impeccable's heuristics recommend the changes below, but DESIGN.md decided otherwise on purpose. None is applied;
-the owner decides.
+Impeccable's heuristics recommend the changes below, but DESIGN.md decided otherwise on purpose. **The owner accepted
+all eight as deliberate decisions (2026-09-27).** They stay as they are and are not raised again.
 
-1. **Hero eyebrow pill** (`hero-eyebrow-chip`). Impeccable reads an eyebrow chip above the H1 as a template pattern.
-   The V8 spec and DESIGN.md §5 specify the tonal pill.
-2. **Mint and green-300 text on forest** (`ai-color-palette`, "cyan neon on dark"). This is the studio's Instagram
-   palette (DESIGN.md §1, §4).
-3. **The glow behind the laptop and forest-tinted shadows on forest** (`radial-spotlight-glow`, `dark-glow`). DESIGN.md §8
-   prescribes the glow, and documents the shadow exceptions: Work's card faces, the laptop's deck, and the float cards.
-4. **Grid texture** (`codex-grid-background`). DESIGN.md §8 calls it the Instagram signature.
-5. **Thin border plus soft wide shadow on cards** (`gpt-thin-border-wide-shadow`, advisory). This is the DESIGN.md §5
-   card recipe.
-6. **Reduced motion.** `components.css:54` sets every transition to 0.01ms and removes all animations, and Impeccable
-   prefers keeping non-motion feedback such as opacity and colour. DESIGN.md §13 says all durations go to 0; Work
-   restores its own short crossfades on purpose.
-7. **Display leading 1.08** (`tight-leading`). Impeccable wants at least 1.3. `--lh-display` is a DESIGN.md token.
-   `typeset` should weigh this with the owner (see P3).
-8. **An internal DESIGN.md inconsistency (for the owner, not a finding).** §5 names a primitive (`--amber-300`) for the
-   testimonials quote mark, while §2 rule 2 says components use semantic tokens only. `home.css:878` follows §5. The
-   section is hidden today.
+- **C1 · Hero eyebrow pill** (`hero-eyebrow-chip`). Impeccable reads an eyebrow chip above the H1 as a template pattern.
+  The V8 spec and DESIGN.md §5 specify the tonal pill.
+- **C2 · Mint and green-300 text on forest** (`ai-color-palette`, "cyan neon on dark"). This is the studio's Instagram
+  palette (DESIGN.md §1, §4).
+- **C3 · The glow behind the laptop and forest-tinted shadows on forest** (`radial-spotlight-glow`, `dark-glow`). DESIGN.md §8
+  prescribes the glow, and documents the shadow exceptions: Work's card faces, the laptop's deck, and the float cards.
+- **C4 · Grid texture** (`codex-grid-background`). DESIGN.md §8 calls it the Instagram signature.
+- **C5 · Thin border plus soft wide shadow on cards** (`gpt-thin-border-wide-shadow`, advisory). This is the DESIGN.md §5
+  card recipe.
+- **C6 · Reduced motion.** `components.css:54` sets every transition to 0.01ms and removes all animations, and Impeccable
+  prefers keeping non-motion feedback such as opacity and colour. DESIGN.md §13 says all durations go to 0; Work
+  restores its own short crossfades on purpose.
+- **C7 · Display leading 1.08** (`tight-leading`). Impeccable wants at least 1.3. `--lh-display` is a DESIGN.md token.
+  Accepted by owner, so A14 is closed.
+- **C8 · An internal DESIGN.md inconsistency (for the owner, not a finding).** §5 names a primitive (`--amber-300`) for the
+  testimonials quote mark, while §2 rule 2 says components use semantic tokens only. `home.css:878` follows §5. The
+  section is hidden today.
 
 ## Recommended Actions
 
@@ -343,7 +355,7 @@ the owner decides.
    - (P3) The `src`-less ambient image.
 4. **[P2] `/impeccable adapt`**: 44px hit areas for the Work dots and pause toggle, the «مطمئن نیستید؟» link and the
    logo.
-5. **[P3] `/impeccable typeset`**: Persian display leading, weighed against DESIGN.md's `--lh-display`.
+5. ~~**[P3] `/impeccable typeset`**: Persian display leading.~~ Closed (A14, accepted with C7).
 6. **[P3] `/impeccable polish`**: move the retired `_ds` files and prototypes out of the served folder (owner's
    call), then the final detail pass.
 
