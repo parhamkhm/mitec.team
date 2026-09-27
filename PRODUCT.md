@@ -67,7 +67,7 @@ Every engagement gets a design built specifically for that client's need — not
 - Team photos are placeholders pending real photos.
 - Every price and duration in the pricing document is a placeholder until the owner enters real ones (`"placeholder": true`, labelled «اعداد نمونه» on the page). The old week-based estimates in `order-catalog.json` are no longer used for quoting: the owner found them unrealistic.
 - Contact info (WhatsApp number, Telegram, Instagram) in `app.config.js` is placeholder/TODO, not the real accounts yet.
-- The hero's three float cards (`src/data/site-copy.json` → `hero.floatCards`: «رتبه‌ی ۱ گوگل», «سفارش جدید ثبت شد», «۳۲٪ رشد») are decorative illustrations of what a client's SEO, CRM and analytics can look like, not claims about mitec. The owner has yet to confirm that reading (`docs/copy-todo.md`).
+- The hero's three float cards (`src/data/site-copy.json` → `hero.floatCards`: «رتبه‌ی ۱ گوگل», «سفارش جدید ثبت شد», «۳۲٪ رشد») are confirmed by the owner as decorative illustration: `aria-hidden`, showing what a client's SEO, CRM and analytics can look like, not factual claims about mitec. They are not fabricated proof and are not to be raised as a finding.
 
 ## Product Principles
 
