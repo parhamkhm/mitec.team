@@ -6,9 +6,10 @@ import { asyncHandler } from '../lib/asyncHandler.js';
 import { sendOk } from '../lib/respond.js';
 import { Errors } from '../lib/errors.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
-import { findOrderByTrackingCode, listOrders, updateOrderStatus } from '../db/ordersRepo.js';
+import { findOrderByTrackingCode, listOrderEvents, listOrders, updateOrder } from '../db/ordersRepo.js';
 import { listUploadsForOrder } from '../db/uploadsRepo.js';
-import { ORDER_STATUSES, STATUS_LABELS } from '../constants/orderStatus.js';
+import { withTransaction } from '../db/pool.js';
+import { ORDER_STATUSES } from '../constants/orderStatus.js';
 import { normalizePhone } from '../utils/phone.js';
 
 export const adminOrdersRouter = Router();
@@ -61,7 +62,11 @@ adminOrdersRouter.get(
   asyncHandler(async (req, res) => {
     const order = await findOrderByTrackingCode(req.params.trackingCode);
     if (!order) throw Errors.notFound('سفارشی با این کد پیدا نشد.');
-    sendOk(res, { ...order, uploads: await listUploadsForOrder(order.id) });
+    sendOk(res, {
+      ...order,
+      uploads: await listUploadsForOrder(order.id),
+      history: await listOrderEvents(order.id)
+    });
   })
 );
 
@@ -81,7 +86,8 @@ adminOrdersRouter.patch(
     if (status !== undefined && !ORDER_STATUSES.includes(status)) {
       throw Errors.validation('وضعیت نامعتبر است.', { status: `باید یکی از ${ORDER_STATUSES.join(', ')} باشد.` });
     }
-    if (estimateWeeks !== undefined && !(Number.isInteger(estimateWeeks) && estimateWeeks >= 0)) {
+    // null clears the estimate.
+    if (estimateWeeks != null && !(Number.isInteger(estimateWeeks) && estimateWeeks >= 0)) {
       throw Errors.validation('برآورد هفته نامعتبر است.', { estimate_weeks: 'باید عدد صحیح و بزرگ‌تر یا مساوی صفر باشد.' });
     }
     for (const [field, value] of [['customer_note', customerNote], ['internal_notes', internalNotes]]) {
@@ -90,13 +96,15 @@ adminOrdersRouter.patch(
       }
     }
 
-    const updated = await updateOrderStatus(trackingCode, {
-      status,
-      statusLabel: status ? STATUS_LABELS[status] : undefined,
-      estimateWeeks,
-      customerNote,
-      internalNotes
-    });
+    const admin = { id: req.admin.sub, username: req.admin.username };
+    const updated = await withTransaction((client) =>
+      updateOrder(
+        trackingCode,
+        { status, estimate_weeks: estimateWeeks, customer_note: customerNote, internal_notes: internalNotes },
+        admin,
+        client
+      )
+    );
     if (!updated) throw Errors.notFound('سفارشی با این کد پیدا نشد.');
     sendOk(res, updated);
   })

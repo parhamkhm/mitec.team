@@ -201,6 +201,40 @@ test('PATCH /admin/orders/:code sets status label, estimate and notes', async ()
   assert.equal(res.body.estimate_weeks, 3);
 });
 
+test('each PATCH that changes something is recorded in the order history', async () => {
+  const cookie = await api.login();
+  const code = (await api.order()).body.tracking_code;
+  const patch = (body) => api.patch(`/admin/orders/${code}`, body, { cookie });
+
+  await patch({ status: 'in_design', estimate_weeks: 4 });
+  await patch({ status: 'in_design', internal_notes: 'client wants blue' }); // status unchanged
+  await patch({ status: 'in_design' }); // nothing changes: no event
+  await patch({ estimate_weeks: null }); // null clears the estimate
+
+  const { body: order } = await api.get(`/admin/orders/${code}`, { cookie });
+  assert.equal(order.estimate_weeks, null);
+  assert.equal(order.history.length, 3);
+  const [first, second, third] = order.history;
+
+  assert.equal(first.admin_username, ADMIN.username);
+  assert.deepEqual(first.changes, {
+    status: { from: 'received', to: 'in_design' },
+    estimate_weeks: { from: null, to: 4 }
+  });
+  assert.deepEqual(second.changes, { internal_notes: { from: '', to: 'client wants blue' } });
+  assert.deepEqual(third.changes, { estimate_weeks: { from: 4, to: null } });
+  assert.ok(new Date(first.created_at) <= new Date(third.created_at));
+});
+
+test('a PATCH that changes nothing leaves updated_at alone', async () => {
+  const cookie = await api.login();
+  const code = (await api.order()).body.tracking_code;
+  const before = (await api.get(`/admin/orders/${code}`, { cookie })).body.updated_at;
+  const res = await api.patch(`/admin/orders/${code}`, { status: 'received', customer_note: '' }, { cookie });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.updated_at, before);
+});
+
 test('PATCH /admin/orders/:code validates its input', async () => {
   const cookie = await api.login();
   const code = (await api.order()).body.tracking_code;

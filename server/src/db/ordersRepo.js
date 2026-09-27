@@ -113,22 +113,49 @@ export async function listOrders({ status, q, phoneDigits, limit = 50, offset = 
   return { items: rows, total: countRows[0].total };
 }
 
-export async function updateOrderStatus(
-  trackingCode,
-  { status, statusLabel, estimateWeeks, customerNote, internalNotes },
-  client = pool
-) {
-  const { rows } = await client.query(
+const EDITABLE = ['status', 'estimate_weeks', 'customer_note', 'internal_notes'];
+
+// Applies an admin's edit and records it in order_events, in the caller's
+// transaction. `patch` holds only the fields being set (undefined = leave
+// alone; estimate_weeks may be null to clear it). The row is locked FOR UPDATE
+// so two admins editing at once each record the correct "from" values.
+// Returns the order (unchanged, with no event, if nothing actually differs),
+// or null if there is no such order.
+export async function updateOrder(trackingCode, patch, admin, client) {
+  const { rows } = await client.query('SELECT * FROM orders WHERE tracking_code = $1 FOR UPDATE', [trackingCode]);
+  const current = rows[0];
+  if (!current) return null;
+
+  const changes = {};
+  for (const field of EDITABLE) {
+    if (patch[field] !== undefined && patch[field] !== current[field]) {
+      changes[field] = { from: current[field], to: patch[field] };
+    }
+  }
+  if (Object.keys(changes).length === 0) return current;
+
+  const next = { ...current, ...Object.fromEntries(Object.entries(changes).map(([f, c]) => [f, c.to])) };
+  const { rows: updated } = await client.query(
     `UPDATE orders SET
-      status = COALESCE($2, status),
-      status_label = COALESCE($3, status_label),
-      estimate_weeks = COALESCE($4, estimate_weeks),
-      customer_note = COALESCE($5, customer_note),
-      internal_notes = COALESCE($6, internal_notes),
-      updated_at = now()
-    WHERE tracking_code = $1
+      status = $2, status_label = $3, estimate_weeks = $4,
+      customer_note = $5, internal_notes = $6, updated_at = now()
+    WHERE id = $1
     RETURNING *`,
-    [trackingCode, status ?? null, statusLabel ?? null, estimateWeeks ?? null, customerNote ?? null, internalNotes ?? null]
+    [current.id, next.status, STATUS_LABELS[next.status], next.estimate_weeks, next.customer_note, next.internal_notes]
   );
-  return rows[0] ?? null;
+  await client.query(
+    'INSERT INTO order_events (order_id, admin_user_id, admin_username, changes) VALUES ($1, $2, $3, $4)',
+    [current.id, admin.id, admin.username, JSON.stringify(changes)]
+  );
+  return updated[0];
+}
+
+// Oldest first, for a timeline.
+export async function listOrderEvents(orderId, client = pool) {
+  const { rows } = await client.query(
+    `SELECT id, admin_username, changes, created_at
+       FROM order_events WHERE order_id = $1 ORDER BY created_at, id`,
+    [orderId]
+  );
+  return rows;
 }

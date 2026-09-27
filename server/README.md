@@ -83,12 +83,16 @@ USE_MOCK: false,
 | `/admin/me` | GET | کاربر جاری (نیاز به ورود) |
 | `/admin/pricing` | GET, PUT | خواندن/ذخیره‌ی کل سند قیمت‌گذاری (نیاز به ورود؛ `PUT` نسخه‌بندی خوش‌بینانه دارد — `409` اگر کس دیگری زودتر ذخیره کرده) |
 | `/admin/orders` | GET | فهرست سفارش‌ها، جدیدترین اول (نیاز به ورود؛ فراتر از قرارداد). پارامترها: `status`، `q` (بخشی از کد رهگیری، نام کسب‌وکار یا شماره موبایل — ارقام فارسی هم)، `limit` (۱ تا ۲۰۰، پیش‌فرض ۵۰)، `offset`. پاسخ: `{ items, total, limit, offset }` که `total` تعداد همه‌ی نتایج است |
-| `/admin/orders/:trackingCode` | GET | یک سفارش کامل (شامل `quote` و `internal_notes`) به‌همراه `uploads`: فهرست فایل‌های پیوست (`id`, `filename`, `mime_type`, `size_bytes`) (نیاز به ورود) |
-| `/admin/orders/:trackingCode` | PATCH | تغییر `status`، `estimate_weeks`، `customer_note` (در صفحه‌ی پیگیری به مشتری نشان داده می‌شود) و `internal_notes` (فقط برای تیم؛ هرگز در `/orders/track` برنمی‌گردد) (نیاز به ورود) |
+| `/admin/orders/:trackingCode` | GET | یک سفارش کامل (شامل `quote` و `internal_notes`) به‌همراه `uploads`: فهرست فایل‌های پیوست (`id`, `filename`, `mime_type`, `size_bytes`) و `history`: تاریخچه‌ی تغییرات (نیاز به ورود) |
+| `/admin/orders/:trackingCode` | PATCH | تغییر `status`، `estimate_weeks` (`null` آن را پاک می‌کند)، `customer_note` (در صفحه‌ی پیگیری به مشتری نشان داده می‌شود) و `internal_notes` (فقط برای تیم؛ هرگز در `/orders/track` برنمی‌گردد) (نیاز به ورود) |
 
 ## تصمیم‌های گرفته‌شده
 
-- **دیتابیس:** PostgreSQL. `orders`, `pricing_versions` (هر نسخه نگه داشته می‌شود، طبق پیشنهاد §6)، `uploads`, `admin_users`.
+- **دیتابیس:** PostgreSQL. `orders`, `pricing_versions` (هر نسخه نگه داشته می‌شود، طبق پیشنهاد §6)، `uploads`, `admin_users`,
+  `order_events` (تاریخچه‌ی تغییرات ادمین روی هر سفارش).
+- **تاریخچه‌ی سفارش:** هر `PATCH` که واقعاً چیزی را عوض کند یک رویداد ثبت می‌کند: چه کسی، چه زمانی، و مقدار قبلی و جدید
+  هر فیلد (`{"status": {"from": "received", "to": "in_design"}}`). `PATCH` بدون تغییر، رویداد و `updated_at` جدید
+  نمی‌سازد. تاریخچه در `GET /admin/orders/:trackingCode` به‌صورت `history` (قدیمی‌ترین اول) برمی‌گردد.
 - **اعتبارسنجی سند قیمت‌گذاری:** با `docs/pricing.schema.json` (ajv, draft 2020-12) + سه قاعده‌ی `x-rules` که در
   کد بررسی می‌شوند (`src/validation/pricingSchema.js`).
 - **احراز هویت ادمین:** یک جدول ساده‌ی کاربر + رمز هش‌شده (bcrypt) + کوکی JWT. برای تیم دو نفره کافی است؛
