@@ -31,6 +31,12 @@ test('POST /uploads stores the file and returns { id, name, size, url: null }', 
   assert.ok(fs.existsSync(row.storage_path));
 });
 
+test('POST /uploads keeps a Persian filename intact (it used to be stored as mojibake)', async () => {
+  const up = await api.upload('لوگوی کافه.png');
+  assert.equal(up.name, 'لوگوی کافه.png');
+  assert.equal((await uploadRow(up.id)).filename, 'لوگوی کافه.png');
+});
+
 test('POST /uploads rejects a type that is not accepted', async () => {
   const form = new FormData();
   form.append('file', new Blob(['hello'], { type: 'text/plain' }), 'a.txt');
