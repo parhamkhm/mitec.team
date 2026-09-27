@@ -3,19 +3,19 @@
    The single source of colour truth for the site. See DESIGN.md at the repo
    root for the rules these tokens encode.
 
-   Only the STRUCTURAL scales still come from the bound Mitec Design System —
-   spacing, radii and motion, none of which carry colour. Its colour, gradient
-   and elevation files are deliberately NOT imported: this system is light-first
-   sage and forest green, and the old palette was navy-based, which rule 1 of
-   DESIGN.md now forbids outright.
+   Only the STRUCTURAL scales still come from the retired Mitec Design System —
+   spacing, radii and motion (src/styles/scales/), none of which carry colour.
+   Its colour, gradient and elevation files were removed: this system is
+   light-first sage and forest green, and the old palette was navy-based,
+   which rule 1 of DESIGN.md now forbids outright.
 
    Components must use the semantic --color-* tokens only. Primitives live here
    and nowhere else; a raw hex in a component file is a defect.
    ────────────────────────────────────────────────────────────────────────── */
 
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css");
+@import url("scales/spacing.css");
+@import url("scales/radii.css");
+@import url("scales/motion.css");
 
 /* ─── Primitives ─────────────────────────────────────────────── */
 :root {

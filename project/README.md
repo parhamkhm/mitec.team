@@ -10,8 +10,8 @@
 - رنگ‌ها فقط در `src/styles/tokens.css` تعریف می‌شوند (primitive و semantic). کامپوننت‌ها فقط توکن‌های
   `--color-*` را می‌خوانند؛ مقدار hex در فایل کامپوننت خطاست.
 - هر ناحیه‌ی تیره `data-surface="dark"` دارد و همه‌ی توکن‌های semantic زیر آن عوض می‌شوند.
-- از Mitec Design System (`_ds/…`) فقط مقیاس‌های فاصله، شعاع و حرکت import می‌شوند. رنگ، گرادیان و
-  سایه‌ی آن (که بر پایه‌ی سرمه‌ای بود) استفاده نمی‌شود و `_ds_bundle.js` لود نمی‌شود.
+- از Mitec Design System قبلی فقط مقیاس‌های فاصله، شعاع و حرکت مانده است (`src/styles/scales/`، از
+  `tokens.css` import می‌شوند). بقیه‌ی آن خروجی (رنگ، گرادیان و سایه‌ی سرمه‌ای) حذف شده است.
 - فونت وزیرمتن است (Montserrat و Mulish گلیف فارسی ندارند) و letter-spacing روی متن فارسی صفر است.
 - لوگو متنی است و `direction: ltr` دارد تا در صفحه‌ی RTL جابه‌جا نشود.
 
@@ -67,8 +67,8 @@ src/config/   app.config.js, order-catalog.json, pricing.json
 src/data/     portfolio.json, faq.json, testimonials.json, site-copy.json
 src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (engine, easing, portal, effects, reveal)
 src/styles/   tokens.css, components.css, home.css, portal.css, motion.css
+              scales/ (spacing، radii و motion؛ مانده از سیستم طراحی قبلی)
 src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js
-_ds/…/        سیستم طراحی قبلی؛ فقط spacing، radii و motion آن import می‌شود
 public/       sitemap.xml, robots.txt
 image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
 API_CONTRACT.md
