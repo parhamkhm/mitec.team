@@ -114,7 +114,6 @@ There are **no remaining phases** in the master prompt or in V2–V4. What is le
    and must not be edited; DESIGN.md is the visual source. Until the pages exist, every `./order/` and `./track/` link
    returns 404.
 5. **Before launch:**
-   - make the fonts (Google Fonts) and icons (jsDelivr) local, because of access from Iran;
    - replace the placeholder images, testimonials and contact links (WhatsApp, Telegram, Instagram);
    - add a favicon;
    - deploy the back end and point the front end at it (see below).

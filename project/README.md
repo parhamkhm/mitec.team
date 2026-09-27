@@ -68,8 +68,8 @@ src/data/     portfolio.json, faq.json, testimonials.json, site-copy.json
 src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (engine, easing, portal, effects, reveal)
 src/styles/   tokens.css, components.css, home.css, portal.css, motion.css
               scales/ (spacing، radii و motion؛ مانده از سیستم طراحی قبلی)
-src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js
-public/       sitemap.xml, robots.txt
+src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js, icon.js
+public/       sitemap.xml, robots.txt, fonts/ (وزیرمتن)
 image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
 API_CONTRACT.md
 ```
@@ -90,8 +90,6 @@ API_CONTRACT.md
 ## کارهای باقی‌مانده
 
 - صفحه‌های `/order` و `/track` (و ۴۰۴) هنوز ساخته نشده‌اند.
-- `public/fonts/` — فایل‌های لوکال وزیرمتن. فونت فعلاً از Google Fonts لود می‌شود؛ **برای انتشار باید لوکال
-  شود** (دسترسی از ایران). آیکون‌ها هم از CDN لوسید (jsDelivr) mask می‌شوند — همان‌ها را هم لوکال کنید.
 - تصاویر: اسکرین‌شات هر سه پروژه (کافه مری، کارآمد، کافه E2) و نسخه‌ی تارشده‌ی هرکدام برای پس‌زمینه‌ی بخش نمونه‌کارها
   (`-ambient.webp`) در `public/images/work/` است (مسیرها در `src/data/portfolio.json` هم ثبت شده). عکس تیم هنوز `.img-slot` است — با `<img>` از `public/images/` جایگزین
   کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص). تصویرهای تزئینی کارت‌های خدمات در
