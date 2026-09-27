@@ -101,6 +101,6 @@ API_CONTRACT.md
 - متن‌ها: متن نهایی سایت در `docs/copy-final.md` است؛ کارهای باقی‌مانده‌ی متن در `docs/copy-todo.md` (هر دو در ریشه‌ی مخزن).
 - شماره‌ی واتساپ، آیدی تلگرام و اینستاگرام در `app.config.js` و در `index.html`.
 - اعداد آمار در `src/data/site-copy.json` — فقط واقعیت، بدون عدد ساختگی. عدد «پروژه‌ی تحویل‌شده» خودکار از تعداد
-  پروژه‌های `src/data/portfolio.json` می‌آید. کاروسل نمونه‌کارها هم از همین فایل ساخته می‌شود (`src/scripts/work.js`)؛
+  پروژه‌های `src/data/portfolio.json` می‌آید. کاروسل نمونه‌کارها هم از همین فایل ساخته می‌شود (`src/scripts/work.js`؛ راهنمای فیلدها: `docs/portfolio-guide.md`)؛
   برای پروژه‌ی جدید فقط کارت بدون JS در `index.html` (فهرست `.work-list`) هم باید دستی اضافه شود.
 - favicon هنوز طراحی نشده؛ فعلاً یک آیکون خالی (`data:,`) در `index.html` هست تا مرورگر `/favicon.ico` را درخواست نکند.

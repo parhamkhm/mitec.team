@@ -139,12 +139,14 @@
 
   <!-- ============================================================ WORK / PORTFOLIO
        A forest band (DESIGN.md §6 exception). With JS, src/scripts/work.js builds
-       a 3D coverflow from src/data/portfolio.json into .work-carousel: the centre
-       card opens a detail dialog, and the active project's pre-blurred
-       screenshot tints the middle of the band (.work__ambient). Without JS, or
-       if the data cannot load, the list below is the section: a scroll-snap row
-       of cards with every detail under each card. Keep it in sync with
-       portfolio.json (images, tags, summary, texts, link). -->
+       a 3D coverflow from src/data/portfolio.json into .work-carousel: each card
+       face is the client's website alone, the centre card turns over to its
+       details, and a caption under the stage names the active project. The
+       active project's pre-blurred screenshot tints the middle of the band
+       (.work__ambient). Without JS, or if the data cannot load, the list below
+       is the section: a scroll-snap row of screenshots, each with its name and
+       summary and every detail under it. Keep it in sync with portfolio.json
+       (images, name, summary, texts, link). -->
   <section id="work" class="band work" data-surface="dark" data-autoplay="true" data-autoplay-delay="4500" aria-labelledby="work-title">
     <div class="work__ambient" aria-hidden="true">
       <img class="work__ambient-layer is-on" src="public/images/work/mery-home-ambient.webp" width="480" height="230" alt="" decoding="async">
@@ -162,17 +164,13 @@
 
       <ul class="work-list" role="list">
         <li class="work-item">
-          <article class="work-card" aria-labelledby="work-mery-club-title">
-            <img class="work-card__img" src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
-            <div class="work-card__face">
-              <div class="work-card__tags"><span class="work-card__tag">منوی آنلاین</span><span class="work-card__tag">باشگاه مشتریان</span></div>
-              <div class="work-card__body">
-                <h3 class="work-card__title" id="work-mery-club-title">کافه مری؛ منوی آنلاین و باشگاه مشتریان</h3>
-                <span class="work-card__rule" aria-hidden="true"></span>
-                <p class="work-card__summary">منوی آنلاین دوزبانه و باشگاه مشتریان امتیازی</p>
-              </div>
-            </div>
-          </article>
+          <figure class="work-card">
+            <img class="work-card__img" src="public/images/work/mery-home-960.webp" srcset="public/images/work/mery-home-960.webp 960w, public/images/work/mery-home-1920.webp 1920w" sizes="(max-width: 557px) 86vw, 480px" width="1920" height="922" alt="صفحه‌ی اصلی سایت کافه مری" loading="lazy" decoding="async">
+          </figure>
+          <div class="work-item__caption">
+            <h3 class="work-caption__name" dir="auto">Mery Coffee Club</h3>
+            <p class="work-caption__summary">منوی آنلاین دوزبانه و باشگاه مشتریان امتیازی</p>
+          </div>
           <dl class="work-facts">
             <div><dt>نیاز کسب‌وکار</dt><dd>کافه می‌خواست مشتری‌های همیشگی‌اش را بشناسد و منوی چاپی را کنار بگذارد.</dd></div>
             <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
@@ -181,17 +179,13 @@
           <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
         </li>
         <li class="work-item">
-          <article class="work-card" aria-labelledby="work-karamad-title">
-            <img class="work-card__img" src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
-            <div class="work-card__face">
-              <div class="work-card__tags"><span class="work-card__tag">فروشگاه اینترنتی</span></div>
-              <div class="work-card__body">
-                <h3 class="work-card__title" id="work-karamad-title">فروشگاه تجهیزات پزشکی کارآمد</h3>
-                <span class="work-card__rule" aria-hidden="true"></span>
-                <p class="work-card__summary">فروشگاه اینترنتی با دسته‌بندی فنی و پنل مدیریت</p>
-              </div>
-            </div>
-          </article>
+          <figure class="work-card">
+            <img class="work-card__img" src="public/images/work/karamad-home-960.webp" srcset="public/images/work/karamad-home-960.webp 960w, public/images/work/karamad-home-1920.webp 1920w" sizes="(max-width: 557px) 86vw, 480px" width="1920" height="925" alt="صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد" loading="lazy" decoding="async">
+          </figure>
+          <div class="work-item__caption">
+            <h3 class="work-caption__name" dir="auto">Karamad MedTech</h3>
+            <p class="work-caption__summary">فروشگاه اینترنتی با دسته‌بندی فنی و پنل مدیریت</p>
+          </div>
           <dl class="work-facts">
             <div><dt>نیاز کسب‌وکار</dt><dd>فروش تجهیزات فقط تلفنی انجام می‌شد و مشخصات محصول‌ها جایی ثبت نبود.</dd></div>
             <div><dt>راهکار ما</dt><dd>فروشگاه اینترنتی با دسته‌بندی فنی، جست‌وجو، سبد خرید و پنل مدیریت محصول.</dd></div>
@@ -200,17 +194,13 @@
           <p class="work-note">لینک سایت بعد از تأیید مشتری منتشر می‌شود.</p>
         </li>
         <li class="work-item">
-          <article class="work-card" aria-labelledby="work-e2-title">
-            <img class="work-card__img" src="public/images/work/e2-home-960.webp" srcset="public/images/work/e2-home-960.webp 960w, public/images/work/e2-home-1920.webp 1920w" sizes="(max-width: 424px) 208vw, 884px" width="1920" height="951" alt="صفحه‌ی اصلی منوی آنلاین کافه E2" loading="lazy" decoding="async">
-            <div class="work-card__face">
-              <div class="work-card__tags"><span class="work-card__tag">منوی آنلاین</span></div>
-              <div class="work-card__body">
-                <h3 class="work-card__title" id="work-e2-title">منوی آنلاین کافه E2</h3>
-                <span class="work-card__rule" aria-hidden="true"></span>
-                <p class="work-card__summary">منوی QR سبک و سریع، بهینه برای موبایل</p>
-              </div>
-            </div>
-          </article>
+          <figure class="work-card">
+            <img class="work-card__img" src="public/images/work/e2-home-960.webp" srcset="public/images/work/e2-home-960.webp 960w, public/images/work/e2-home-1920.webp 1920w" sizes="(max-width: 557px) 86vw, 480px" width="1920" height="951" alt="صفحه‌ی اصلی منوی آنلاین کافه E2" loading="lazy" decoding="async">
+          </figure>
+          <div class="work-item__caption">
+            <h3 class="work-caption__name" dir="auto">E2 Café</h3>
+            <p class="work-caption__summary">منوی QR سبک و سریع، بهینه برای موبایل</p>
+          </div>
           <dl class="work-facts">
             <div><dt>نیاز کسب‌وکار</dt><dd>منوی QR لازم بود؛ سریع، سبک و قابل تغییر روزانه.</dd></div>
             <div><dt>راهکار ما</dt><dd>منوی تک‌صفحه‌ای با دسته‌بندی تب‌دار، بهینه برای موبایل و اینترنت کند.</dd></div>

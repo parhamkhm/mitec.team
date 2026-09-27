@@ -27,6 +27,10 @@ html.motion [data-reveal-stagger].is-revealed > * {
    that has not revealed yet (or is mid-reveal), it shows at once. */
 html.motion [data-reveal]:focus-within,
 html.motion [data-reveal-stagger] > :focus-within { opacity: 1; animation: none; }
+/* Played once, never again (reveal.js marks it): focus moving in and out
+   would otherwise restart the entrance. */
+html.motion [data-reveal].is-settled,
+html.motion [data-reveal-stagger].is-settled > * { animation: none; }
 
 @keyframes reveal-pop {
   from { opacity: 0; transform: scale(var(--pop-from, .8)); }
