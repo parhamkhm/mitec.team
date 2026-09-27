@@ -26,7 +26,7 @@ export function createApp() {
       credentials: true
     })
   );
-  app.use(morgan(ENV.nodeEnv === 'production' ? 'combined' : 'dev'));
+  if (ENV.nodeEnv !== 'test') app.use(morgan(ENV.nodeEnv === 'production' ? 'combined' : 'dev'));
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
