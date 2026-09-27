@@ -108,6 +108,8 @@ body { caret-color: var(--color-cta); }
 .icon-chevron-left     { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-left.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-left.svg); }
 .icon-chevron-right    { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-right.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/chevron-right.svg); }
 .icon-pause            { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/pause.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/pause.svg); }
+.icon-search           { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/search.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/search.svg); }
+.icon-shopping-bag     { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shopping-bag.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/shopping-bag.svg); }
 .icon-play             { -webkit-mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/play.svg); mask-image: url(https://cdn.jsdelivr.net/npm/lucide-static@0.544.0/icons/play.svg); }
 
 /* ---------------------------------------------------------------- Logo
@@ -319,8 +321,9 @@ body { caret-color: var(--color-cta); }
 /* ---------------------------------------------------------------- Laptop
    The brand laptop (DESIGN.md §5), drawn in CSS so it stays sharp at any
    scale: a lid with a bezel ring that is deeper at the chin, a camera dot,
-   the display, and a single-hue keyboard deck with a thumb notch. It is a
-   forest object, so the element carrying it sets data-surface="dark".
+   the display, and a keyboard deck with a thumb notch. Silver with a black
+   bezel (the fixed --color-device-* tokens, never remapped), so it stands
+   apart from the forest wall it sits on.
 
    The box is the display; the lid and the deck are drawn outside it, so the
    caller leaves room round it: --bezel above and at the sides, --chin +
@@ -328,7 +331,7 @@ body { caret-color: var(--color-cta); }
    the geometry: --screen-r, --bezel, --chin, --base-h, and --screen-w /
    --screen-h where the display is not simply this box (100% by default).
    The portal hero sets them in measured px and draws its lid and deck from
-   these parts on its own frame; Work derives them from its column.
+   these parts on its own frame.
 
      <div class="laptop" data-surface="dark">
        <div class="laptop__lid"><span class="laptop__camera"></span></div>
@@ -336,22 +339,25 @@ body { caret-color: var(--color-cta); }
        <div class="laptop__base"></div>
      </div> */
 .laptop { position: relative; background: none; }
+/* The lid: a black bezel ring (sides, top and chin) inside a silver rim: 2px
+   of rim and a 1px shade outside it. The shade is the lid's own 1px border
+   and the rim an inset ring, so no width changes and the geometry maths stays
+   the same (an outer shadow would also be cut off by the portal's mask). */
 .laptop__lid {
   position: absolute;
   inset: calc(-1 * var(--bezel)) calc(-1 * var(--bezel)) calc(-1 * var(--chin));
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-device-rim-shade);
   border-radius: calc(var(--screen-r) + var(--bezel));
-  background:
-    linear-gradient(transparent calc(100% - var(--chin) + 1px), var(--color-surface-sunken) 0),
-    var(--color-surface-elevated);
+  background: var(--color-device-bezel);
+  box-shadow: inset 0 0 0 2px var(--color-device-rim);
 }
-/* The bezel's inner edge. */
+/* The bezel's inner line, hugging the display. */
 .laptop__lid::before {
   content: '';
   position: absolute;
-  inset: calc(var(--bezel) - 4px) calc(var(--bezel) - 4px) calc(var(--chin) - 4px);
-  border: 3px solid var(--color-surface-sunken);
-  border-radius: calc(var(--screen-r) + 3px);
+  inset: calc(var(--bezel) - 3px) calc(var(--bezel) - 3px) calc(var(--chin) - 3px);
+  border: 2px solid var(--color-device-bezel-edge);
+  border-radius: calc(var(--screen-r) + 2px);
 }
 .laptop__camera {
   position: absolute;
@@ -360,7 +366,7 @@ body { caret-color: var(--color-cta); }
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-border-strong);
+  background: var(--color-device-bezel-edge);
 }
 /* After the lid in the markup, so it paints over it. Its content keeps its
    own aspect ratio: the display takes the height of what is on it. */
@@ -371,14 +377,16 @@ body { caret-color: var(--color-cta); }
   background: var(--color-surface);
 }
 .laptop__display > img { display: block; width: 100%; height: auto; }
-/* The keyboard deck: a single-hue trapezoid with a thumb notch. */
+/* The keyboard deck: a silver trapezoid, lighter at its top edge (a 1px
+   highlight line), with a thumb notch. */
 .laptop__base {
   position: absolute;
   top: calc(var(--screen-h, 100%) + var(--chin));
   left: calc(50% - (var(--screen-w, 100%) + 2 * var(--bezel)) * .58);
   width: calc((var(--screen-w, 100%) + 2 * var(--bezel)) * 1.16);
   height: var(--base-h);
-  background: linear-gradient(var(--color-border-strong), var(--color-border));
+  background: linear-gradient(var(--color-device-deck-hi), var(--color-device-deck-mid) 70%, var(--color-device-deck-lo));
+  box-shadow: inset 0 1px 0 var(--color-device-deck-line);
   clip-path: polygon(1.5% 0, 98.5% 0, 100% 100%, 0 100%);
 }
 .laptop__base::after {
@@ -389,7 +397,7 @@ body { caret-color: var(--color-cta); }
   width: 16%;
   height: 35%;
   border-radius: 0 0 6px 6px;
-  background: var(--color-border);
+  background: var(--color-device-deck-notch);
 }
 
 /* ---------------------------------------------------------------- image placeholder

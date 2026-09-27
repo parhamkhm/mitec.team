@@ -12,6 +12,22 @@
     "secondaryCta": {
       "label": "دیدن نمونه‌کارها",
       "href": "#work"
+    },
+    "floatCards": {
+      "_note": "Decorative UI illustrations around the hero laptop (aria-hidden): what a client's SEO, CRM and analytics look like, not facts about the team. The numbers are part of the illustration.",
+      "seo": {
+        "before": "رتبه‌ی",
+        "value": "۱",
+        "after": "گوگل"
+      },
+      "crm": {
+        "title": "سفارش جدید ثبت شد",
+        "meta": "همین حالا · به CRM اضافه شد"
+      },
+      "analytics": {
+        "label": "بازدید این ماه",
+        "value": "۳۲٪ رشد"
+      }
     }
   },
   "keywords": [

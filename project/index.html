@@ -70,7 +70,7 @@
       <div class="portal__copy texture-grid" data-surface="dark">
         <span class="section-heading__eyebrow">تیم متخصص · طراحی سایت و راهکارهای دیجیتال</span>
         <h1 id="hero-title" class="portal__title">
-          <span class="headline-mark">فراتر از طراحی سایت</span>؛ ساخت زیرساخت دیجیتال برای رشد کسب‌وکار شما
+          <span class="headline-mark">فراتر از طراحی سایت؛</span> ساخت زیرساخت دیجیتال برای رشد کسب‌وکار شما
         </h1>
         <p class="section-heading__sub portal__sub">طراحی سایت، سرویس‌های آنلاین، CRM و اتوماسیون، تحلیل داده و پشتیبانی؛ از اولین ایده تا رشد کسب‌وکارتان، کنار شما هستیم.</p>
         <div class="portal__actions">
@@ -78,6 +78,13 @@
           <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
         </div>
       </div>
+      <script>
+        // Before first paint: on the pinned scene the copy starts on the
+        // laptop's lit screen, in the light token set. motion/portal.js
+        // re-decides on every measure (stacked above the laptop, on phones or
+        // when it cannot fit, it keeps the forest set).
+        if (document.documentElement.classList.contains('motion') && innerWidth >= 760) document.currentScript.previousElementSibling.removeAttribute('data-surface');
+      </script>
 
       <!-- The intro statement the screen shows before it "loads" into the room.
            Line 1 is split by whole words (never inside a word or its ZWNJ
@@ -117,17 +124,29 @@
       </div>
 
       <!-- Decorative: the brand laptop (lid, camera, deck: .laptop__* in
-           components.css), drawn in CSS so it stays sharp at any scale. The
-           frame box is the display itself, so scaling it flies into the screen.
-           The wall and the lid have the display cut out of them; the glass fills
-           the display until the screen "loads". -->
+           components.css; silver with a black bezel), drawn in CSS so it stays
+           sharp at any scale. The frame box is the display itself, so scaling it
+           flies into the screen. The wall, the wall of work (a tilted, tinted
+           plane of the portfolio's screenshots, filled by portal.js after first
+           paint), the glow and the lid have the display cut out of them; the lit
+           glass fills the display until the screen "loads". The floor is the
+           screen's light on the desk. -->
       <div class="portal__frame" data-surface="dark" aria-hidden="true">
         <div class="portal__wall texture-grid"></div>
+        <div class="portal__works"><div class="portal__works-plane"></div><div class="portal__works-tint"></div></div>
         <div class="portal__glow"></div>
+        <div class="portal__floor"></div>
         <div class="laptop__lid portal__lid"><span class="laptop__camera"></span></div>
         <div class="portal__glass"><span class="portal__reflection"></span></div>
+        <div class="portal__deck-shadow"></div>
         <div class="laptop__base portal__base"></div>
       </div>
+
+      <!-- Decorative UI cards around the laptop (SEO, CRM, analytics): "beyond
+           web design" at a glance. Built by portal.js from src/data/site-copy.json
+           (hero.floatCards); only on the pinned scene with the copy on the
+           screen, from 760px. -->
+      <div class="portal__cards" data-surface="dark" aria-hidden="true"></div>
 
       <button class="portal__hint" type="button" data-surface="dark">
         <span class="portal__hint-line" aria-hidden="true"></span>
@@ -539,6 +558,6 @@
 </footer>
 
 <!-- If the module can't load, fall back to the static, fully visible page. -->
-<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion')"></script>
+<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion'); document.querySelector('.portal__copy').dataset.surface = 'dark'"></script>
 </body>
 </html>

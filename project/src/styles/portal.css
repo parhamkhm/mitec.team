@@ -55,15 +55,14 @@
   letter-spacing: 0;
   text-wrap: balance;
 }
-/* On forest the highlight is the text colour itself (amber-400: 6.33:1 on
-   forest, 5.55:1 on the glass). The light-surface highlighter stroke would
-   put pale paper behind light text. */
-.portal__title .headline-mark { background: none; padding: 0; color: var(--color-highlight-text); }
+/* On forest (the static band, and the copy stacked above the laptop) the
+   highlight is the text colour itself (amber-400: 6.33:1 on forest). The
+   light-surface highlighter stroke would put pale paper behind light text. */
+.portal__copy[data-surface="dark"] .portal__title .headline-mark { background: none; padding: 0; color: var(--color-highlight-text); }
 .portal__sub { max-width: 46ch; }
 .portal__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
-/* The actions sit on the glass (--forest-raised), where the usual outline edge
-   is only 2.95:1; muted text is 4.74:1 there and 5.41:1 on the wall. */
-.portal__actions .btn--outline { border-color: var(--color-text-muted); }
+/* On forest the usual outline edge is too faint; muted text is 5.41:1 there. */
+.portal__copy[data-surface="dark"] .portal__actions .btn--outline { border-color: var(--color-text-muted); }
 
 /* ---------------------------------------------------------------- intro statement
    Static: the screen of a plain laptop outline, under the copy. */
@@ -153,6 +152,24 @@ html.motion .portal__copy {
 }
 html.motion .portal__actions { pointer-events: auto; }
 html.motion .portal--stacked .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
+/* Stacked, the outline button is filled with the wall's own forest (no
+   change at rest), so it stays legible if the lit screen rises behind it
+   before it has faded. */
+html.motion .portal--stacked .portal__actions .btn--outline:not(:hover) { background: var(--color-bg); }
+/* On the lit screen (portal.js drops the copy's data-surface when the copy
+   fits there) the copy reads in the light token set: dark heading, the
+   standard highlighter stroke under the marked phrase in --color-headline-
+   accent (green-700: never clickable, so not the CTA green), a tonal pill for
+   the eyebrow, and the light primary + an outline button on white. */
+html.motion .portal__copy:not([data-surface]) .section-heading__eyebrow {
+  padding: 5px 14px;
+  border: 1px solid var(--color-tonal-hover);
+  border-radius: var(--radius-pill);
+  background: var(--color-tonal);
+  color: var(--color-tonal-text);
+}
+html.motion .portal__copy:not([data-surface]) .headline-mark { color: var(--color-headline-accent); }
+html.motion .portal__copy:not([data-surface]) .btn--outline:not(:hover) { background: var(--color-surface); }
 
 /* A viewport-centred layer of its own: it never takes the frame's scale, so it
    neither balloons nor blurs. */
@@ -247,35 +264,101 @@ html.motion .portal__frame {
   inset: calc((var(--screen-h) - var(--portal-w)) / 2) calc((var(--screen-w) - var(--portal-w)) / 2);
   background-color: var(--color-bg);
 }
-/* One mint glow behind the laptop, masked off the display so it never lies
-   over the room. */
+/* The wall of work: a tilted, faded plane of the portfolio's screenshots on
+   the forest wall, behind the laptop (portal.js fills it after first paint,
+   from portfolio.json). Texture, never content: the plane is at .34, a radial
+   mask fades it out well before its edges, and a forest tint (no filter)
+   mutes the client colours. It has the display cut out of it like the wall,
+   scales with the frame through the dive, and nothing in it moves. Not in
+   the lite scene (phones, low-power devices) or with the copy stacked above
+   the laptop. Its box is 1.2 × 1.3 viewports round the display, which the
+   fade's ellipse is proportioned to. The fade and the display cut are one
+   mask (the fade less the display), so the layer costs one offscreen pass. */
+.portal__works {
+  display: none;
+  inset: calc((var(--screen-h) - 130svh) / 2) calc((var(--screen-w) - 120vw) / 2);
+  perspective: 1400px;
+  -webkit-mask:
+    radial-gradient(ellipse 62% 58% at 50% 50%, black 0%, rgb(0 0 0 / .55) 45%, transparent 78%),
+    var(--portal-hole) center / var(--screen-w) var(--screen-h) no-repeat;
+  -webkit-mask-composite: source-out;
+  mask:
+    radial-gradient(ellipse 62% 58% at 50% 50%, black 0%, rgb(0 0 0 / .55) 45%, transparent 78%),
+    var(--portal-hole) center / var(--screen-w) var(--screen-h) no-repeat;
+  mask-composite: subtract;
+}
+html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { display: block; }
+.portal__works-plane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  width: 2400px;
+  height: 999.2px; /* 4 rows of 2:1 tiles, (2400 − 4 × 28) / 5 wide, and 3 gaps */
+  opacity: .34;
+  transform: translate(-50%, -46%) rotateX(52deg) rotateZ(-14deg);
+  contain: strict;
+}
+.portal__works-plane img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: right top; border-radius: 14px; }
+.portal__works-tint {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, var(--color-works-tint), var(--color-works-tint-edge) 80%);
+}
+/* The screen's light: a mint glow close round the laptop, strongest at its
+   core, masked off the display so it never lies over the room… */
 .portal__glow {
-  inset: calc(var(--screen-h) * -.7) calc(var(--screen-w) * -.45);
-  background: radial-gradient(closest-side, var(--color-glow) 50%, transparent);
-  opacity: .5;
+  inset: calc(var(--screen-h) * -.3) calc(var(--screen-w) * -.25);
+  background: radial-gradient(closest-side, var(--color-glow-strong) 0%, var(--color-glow) 55%, transparent);
+  opacity: .8;
   will-change: opacity;
+}
+/* …and a soft ellipse of it on the desk, just under the deck. */
+.portal__floor {
+  top: calc(var(--screen-h) + var(--chin) + var(--base-h) * .4);
+  left: calc(50% - (var(--screen-w) + 2 * var(--bezel)) * .8);
+  width: calc((var(--screen-w) + 2 * var(--bezel)) * 1.6);
+  height: calc(var(--screen-h) * .3);
+  background: radial-gradient(ellipse 50% 40% at 50% 10%, var(--color-floor-light), transparent 70%);
+}
+/* The deck's own shadow, moved with it (portal.js). */
+.portal__deck-shadow {
+  top: calc(var(--screen-h) + var(--chin) + var(--base-h) * .6);
+  left: calc(50% - (var(--screen-w) + 2 * var(--bezel)) * .56);
+  width: calc((var(--screen-w) + 2 * var(--bezel)) * 1.12);
+  height: calc(var(--base-h) * 3.5);
+  background: radial-gradient(closest-side, var(--color-device-shadow), transparent);
 }
 /* The lid, camera and keyboard deck are the shared brand laptop
    (components.css: .laptop__lid, .laptop__camera, .laptop__base), sized by
    the --screen-* / --bezel / --chin / --base-h that portal.js measures. Here
    the lid only gets the display cut out of it, so the room shows through. */
 .portal__lid { --hole-at: var(--bezel) var(--bezel); }
-/* The screen while it is off / loading. */
+/* The screen, lit: the light screen colour under one static sheen (a soft
+   radial at its top centre) and a diagonal glare from its top-start corner
+   (the right, on this RTL page). All three fade out with the glass when the
+   screen "loads" into the room, which is nearly the same daylight. */
 .portal__glass {
   inset: 0;
   overflow: hidden;
   border-radius: var(--screen-r);
-  background: var(--color-surface);
+  background:
+    linear-gradient(235deg, var(--color-screen-glare), transparent 32%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-screen-sheen), transparent 70%),
+    var(--color-screen);
   will-change: opacity;
 }
-/* One soft highlight that slides across the dark screen (start → end). */
+/* One white band that slides once across the lit screen (start → end). */
 .portal__reflection {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 35%;
-  background: linear-gradient(115deg, transparent, var(--color-reflection), transparent);
+  background: linear-gradient(115deg, transparent, var(--color-reflection-light), transparent);
   /* A 115° gradient in a narrow, tall box is not transparent along the box's
      sides; fade them so the band has no hard vertical edges. */
   -webkit-mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
@@ -292,7 +375,7 @@ html.motion .portal__frame {
   html.motion .portal__frame { transform: translateY(22svh); }
 }
 
-.portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),
+.portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__deck-shadow, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),
 .portal.is-live .portal__copy > * { will-change: transform, opacity; }
 
 /* ---------------------------------------------------------------- scroll hint */
@@ -331,3 +414,86 @@ html.motion .portal--tight .portal__hint { display: none; } /* tight: the laptop
   0% { transform: translateY(-100%); }
   60%, 100% { transform: translateY(100%); }
 }
+
+/* ---------------------------------------------------------------- float cards
+   Three small decorative UI cards round the laptop (an SEO rank, a CRM order,
+   an analytics chart) that say "beyond web design" before anyone reads the
+   H1. Built by portal.js from site-copy.json (hero.floatCards) and placed
+   from the frame's measured rect; they overlap the lid's edges. They live in
+   the stage, not the frame, so they never balloon: in the first 15% of the
+   dive they drift out and fade away, and on a fine pointer they lean toward
+   it. Decorative (aria-hidden), never focusable. Only on the pinned scene
+   with the copy on the screen, from 760px. */
+.portal__cards { display: none; }
+html.motion .portal:not(.portal--stacked):not(.portal--tight) .portal__cards {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: none;
+  pointer-events: none;
+}
+@media (max-width: 759px) { html.motion .portal .portal__cards { display: none; } }
+.portal__card { position: absolute; top: 0; left: 0; }
+.portal.is-live .portal__card { will-change: transform, opacity; }
+.portal__card-body {
+  position: relative;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-surface-elevated) 92%, transparent);
+  box-shadow: 0 24px 48px -16px var(--color-device-shadow), inset 0 1px 0 var(--color-border-subtle);
+  color: var(--color-text-primary);
+  rotate: var(--r, 0deg);
+  animation: portal-card-in 600ms var(--ease-out) backwards;
+  animation-delay: calc(350ms + var(--i, 0) * 80ms); /* after the H1 */
+}
+@keyframes portal-card-in { from { opacity: 0; transform: translateY(12px); } }
+.portal__card-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-tonal);
+  color: var(--color-tonal-text);
+}
+/* 1 · the SEO pill, on the lid's top edge near its top-end corner */
+.portal__card--seo .portal__card-body {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 9px 16px 9px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption);
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.portal__card--seo .portal__card-ico { width: 26px; height: 26px; border-radius: 50%; }
+.portal__card--seo .icon { width: 14px; height: 14px; }
+.portal__card-num { color: var(--color-highlight); }
+/* 2 · the CRM order, over the lid's right edge */
+.portal__card--crm .portal__card-body { display: flex; align-items: center; gap: var(--space-3); min-width: 258px; white-space: nowrap; }
+.portal__card--crm .icon { width: 20px; height: 20px; }
+.portal__card-title { font-size: var(--text-body-sm); font-weight: 800; line-height: 1.5; }
+.portal__card-meta { margin-top: 2px; color: var(--color-text-secondary); font-size: var(--text-caption); line-height: 1.5; }
+.portal__card-dot {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: -5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-tonal-text);
+  box-shadow: 0 0 0 4px var(--color-tonal-hover);
+}
+/* 3 · the analytics chart, over the lid's left edge */
+.portal__card--analytics .portal__card-body { width: 236px; }
+.portal__card-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.portal__card-label { color: var(--color-text-secondary); font-size: var(--text-caption); }
+.portal__card-value { color: var(--color-tonal-text); font-size: var(--text-h4); font-weight: 800; line-height: 1.2; }
+/* The dot and the chart are the value's mint (green-300), not the forest CTA
+   mint (green-400): nothing on the cards is clickable. */
+.portal__card-chart { display: block; width: 100%; height: auto; margin-top: var(--space-2); color: var(--color-tonal-text); }

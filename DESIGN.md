@@ -70,6 +70,13 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --on-dark-1: #F1F5F2;  --on-dark-2: #B9CBC3;  --on-dark-3: #8FA69C;
   --mint-hover: #72C7AB;
 
+  /* The brand laptop's finish (the home hero's device): silver with a black
+     bezel. A device, not a surface — the only place these are used (§5). */
+  --device-bezel: #0E1714;       --device-bezel-edge: #2A3632;
+  --device-rim: #C9D3CD;         --device-rim-shade: #8E9C95;
+  --device-deck-hi: #E6ECE8;     --device-deck-mid: #AAB7B0;
+  --device-deck-lo: #8E9C95;     --device-deck-notch: #9AA7A0;
+
 /* ─── Semantic · light (default) ─────────────────────────────── */
   --color-bg:               var(--sage-25);
   --color-bg-alt:           var(--sage-50);
@@ -127,6 +134,29 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
 
   --shadow-card:     0 1px 2px rgba(18,49,42,.06), 0 10px 28px -12px rgba(18,49,42,.14);
   --shadow-elevated: 0 2px 4px rgba(18,49,42,.06), 0 18px 40px -16px rgba(18,49,42,.22);
+
+  /* Home hero (§5 hero exception, §8). Fixed: they belong to objects in the
+     scene (the lit screen, its light, the device), not to a surface, so
+     [data-surface="dark"] does not remap them. */
+  --color-screen:           var(--sage-0);               /* the lit display */
+  --color-screen-sheen:     var(--green-50);             /* soft radial at its top centre */
+  --color-screen-glare:     rgba(255, 255, 255, .45);    /* diagonal glare from its top-start corner */
+  --color-reflection-light: rgba(255, 255, 255, .55);    /* the band that slides once across it */
+  --color-headline-accent:  var(--green-700);            /* the marked phrase on the lit screen: never clickable, so not --color-cta */
+  --color-glow-strong:      rgba(87, 183, 154, .26);     /* the screen's glow, at its core */
+  --color-floor-light:      rgba(214, 236, 226, .14);    /* the light the screen throws on the desk */
+  --color-works-tint:       rgba(18, 49, 42, .10);       /* the forest tint over the wall of work: centre … */
+  --color-works-tint-edge:  rgba(18, 49, 42, .75);       /* … and edge */
+  --color-device-bezel:      var(--device-bezel);
+  --color-device-bezel-edge: var(--device-bezel-edge);
+  --color-device-rim:        var(--device-rim);
+  --color-device-rim-shade:  var(--device-rim-shade);
+  --color-device-deck-hi:    var(--device-deck-hi);
+  --color-device-deck-mid:   var(--device-deck-mid);
+  --color-device-deck-lo:    var(--device-deck-lo);
+  --color-device-deck-notch: var(--device-deck-notch);
+  --color-device-deck-line:  rgba(255, 255, 255, .9);    /* the deck's top highlight */
+  --color-device-shadow:     rgba(11, 33, 28, .7);       /* under the deck and the float cards: forest, never black */
 }
 
 /* ─── Semantic · on forest (bands, tiles, footer) ──────────────── */
@@ -165,9 +195,6 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --color-focus-halo: transparent;
   --color-grid-line:  rgba(255, 255, 255, .035);
   --shadow-card: none;
-
-  /* Home hero laptop only (§8) */
-  --color-reflection: rgba(241, 245, 242, .06);
 
   background-color: var(--color-bg);
   color: var(--color-text-body);
@@ -291,11 +318,17 @@ Inner pages (and any hero that is not the home portal):
 
 **Home: the laptop portal (hero exception).** The home hero is a full-viewport forest *scene*, not a light canvas, and it does not count as the one forest band allowed between hero and footer (§6).
 
-- **The device.** The brand laptop: drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). One component, `.laptop` in `components.css` (lid, camera, display, deck); the hero draws its lid and deck from those parts on its own frame and cuts the display out of the lid. Display 16:10 here. Lid `--color-surface-elevated` with a 1px `--color-border` edge; bezel inner edge and chin `--color-surface-sunken`; camera dot `--color-border-strong`; keyboard deck a single-hue gradient `--color-border-strong → --color-border`. It stands on the forest wall with the grid texture and one mint glow behind it (§8).
-- **The copy** sits centred on the display (the glass is `--color-surface` on forest), as wide as the display less 48px a side. If it cannot fit, the H1 shrinks towards its clamp floor (36px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. H1 800, `clamp(36px, 5.4vw, 76px)`, letter-spacing 0. On forest the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest, 5.55:1 on the glass), not the highlighter stroke. One primary + one outline; the outline edge uses `--color-text-muted` on the glass (4.74:1, where `--color-border-strong` would be 2.96:1).
-- **The dive.** Scrolling carries the camera into the screen: the copy lifts off, the screen shows the intro statement — «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» — revealed by whole words and phrases (never by characters), with a thin loading line in `--color-text-secondary` (not the CTA colour: it is not clickable). Then the glass fades to the light room — the Proof section — and the camera passes through the display into it.
-- **Readability.** Light text only ever sits on forest: the statement reaches opacity 0 before the glass starts to fade, and the copy is gone before the statement starts.
-- **Without motion** (reduced motion, no JS, forced colours): a forest band with the copy, then the statement on the screen of a static laptop outline, then Proof as an ordinary light section.
+- **The device.** The brand laptop: drawn in CSS, never a raster mockup (it is scaled up during the dive and must stay sharp). One component, `.laptop` in `components.css` (lid, camera, display, deck); the hero draws its lid and deck from those parts on its own frame and cuts the display out of the lid. Display 16:10. **Silver with a black bezel**, so it separates from the forest wall: lid `--color-device-bezel` inside a 2px `--color-device-rim` ring and a 1px `--color-device-rim-shade` edge; bezel inner line and camera dot `--color-device-bezel-edge`; keyboard deck a single-hue gradient `--color-device-deck-hi → --color-device-deck-mid (70%) → --color-device-deck-lo` with a 1px `--color-device-deck-line` highlight along its top, a `--color-device-deck-notch` thumb notch and a soft `--color-device-shadow` under it. The `--color-device-*` tokens are fixed (a device is an object, not a surface: `data-surface` never remaps them) and the laptop is the only thing that uses them. It stands on the forest wall with the grid texture, the wall of work, the screen's glow and its light on the desk (§8).
+- **The lit screen.** Under motion the display is lit: `--color-screen` under one static sheen (`--color-screen-sheen`, a soft radial at its top centre) and a diagonal glare from its top-start corner, which is the right on this RTL page (`--color-screen-glare`, 45% white, gone by 32%).
+- **The copy** sits centred on the lit display, as wide as the display less 48px a side, in the **light token set**: portal.js drops the copy's `data-surface` whenever it fits on the screen (an inline script does the same before first paint from 760px, and the static fallback puts it back). Eyebrow: a tonal pill (`--color-tonal` fill, 1px `--color-tonal-hover` edge, `--color-tonal-text`). H1 800, `clamp(36px, 5.4vw, 76px)`, letter-spacing 0, `--color-text-primary`; its marked phrase «فراتر از طراحی سایت؛» takes the standard highlighter stroke, with the phrase in `--color-headline-accent` (green-700). The accent is never clickable, so it is deliberately not `--color-cta` (green-600): action green stays on clickables only (§2, rule 4). Sub `--color-text-secondary`. One light primary + one outline button on white. If the copy cannot fit, the H1 shrinks towards its clamp floor (36px) first; on phones, or where it still cannot fit, the copy stacks above the laptop. There it sits on the forest wall, so it keeps `data-surface="dark"` and the forest treatment: the highlighted phrase is `--color-highlight-text` (amber-400, 6.33:1 on forest) instead of the stroke, the outline edge is `--color-text-muted` (5.41:1), and the outline button is filled with the wall's own forest. The laptop starts under the copy (cropped at the bottom where there is no room, never pulled up behind it) and rises late in the lean, once the copy has mostly faded, so its lit screen never sits behind the copy's forest-set text; it is in place when the statement starts.
+- **Float cards.** Three small decorative UI cards overlap the lid's edges and say "beyond web design" before anyone reads the H1: an SEO pill (search icon, «رتبه‌ی ۱ گوگل», the digit in `--color-highlight`) on the top edge near the top-left corner, −2°; a CRM order (bag icon tile, a title, a muted line and a status dot) on the right edge, 2°; an analytics card (a muted label, «۳۲٪ رشد» in `--color-tonal-text`, and a small area + line chart) on the left edge, −3°. The copy lives in `site-copy.json` → `hero.floatCards`; the figures are part of the illustration, not claims about the team.
+  - On forest tokens: `--color-surface-elevated` at 92%, 1px `--color-border` (forest-line), radius 18px (the pill 999px), a `--color-device-shadow` drop shadow and a 1px `--color-border-subtle` inset top highlight; caption to body-sm text, 800 titles. The status dot and the chart are `--color-tonal-text` (green-300), not the forest CTA mint (green-400): nothing on the cards is clickable.
+  - `aria-hidden`, never focusable. They live in the stage, not the frame, so they never balloon; portal.js places them on resize from the measured lid. A side card reaches at most 36px onto the display (the copy keeps 48px there), and where the H1 is wider than that it slides along its edge to the nearest spot 20px clear of every line and button, or sits that layout out. The SEO pill overlaps the lid by 12px, so its text line stays above the silver rim.
+  - They stagger in after the H1 (opacity + 12px, 80ms apart), lean 8–14px toward a fine pointer, and in the first ~15% of the dive drift 48–72px outward and fade out, gone before the statement. Hidden stacked, tight, below 760px and without motion.
+- **Wall of work.** Behind the laptop, a tilted plane of the portfolio's own screenshots (`portfolio.json` → `image.src960`, cycled into 5 × 4 tiles, so a new project appears by itself): 2400px wide, `rotateX(52deg) rotateZ(-14deg)` under a 1400px perspective, 28px gaps, 2:1 tiles cropped from the top right, radius 14px, the plane at .34. It is texture, never content: a radial mask (an ellipse 62% × 58% of a 1.2 × 1.3-viewport box, solid at the centre, gone by 78%) fades it out, a forest tint on top (`--color-works-tint → --color-works-tint-edge`) mutes the client colours without a filter, and the display is cut out of it like the wall (one mask: the fade less the display), so it never shows inside the screen. It scales with the frame through the dive; nothing in it moves. The images load lazily at low priority, after first paint, when the page is idle, so they never compete with the H1 (LCP). Not in the lite scene, stacked, or without motion.
+- **The dive.** Scrolling carries the camera into the screen: the cards drift off and the copy lifts off, and the lit screen shows the intro statement — «آماده‌اید زیرساخت دیجیتال کسب‌وکارتان را بسازید؟» / «سایت شما. سرویس شما. مسیر رشد شما.» — in dark text (light tokens), revealed by whole words and phrases (never by characters), with a thin loading line (`--color-border` track, `--color-text-secondary` fill: not the CTA colour, it is not clickable). Then the screen "loads": the glass, with its sheen and glare, fades to the light room — the Proof section, nearly the same daylight, so there is no flash — and the camera passes through the display into it.
+- **Readability.** The statement is only ever on the lit glass: while it is visible it lies inside the display at every size (checked against the measured `--say-max` at 1920, 1440, 1280×800, 1024, 768 and 390), and it reaches opacity 0 before the glass starts to fade. The copy is gone before the statement starts.
+- **Without motion** (reduced motion, no JS, forced colours): unchanged. A forest band with the copy (forest tokens), then the statement on the screen of a static laptop outline, then Proof as an ordinary light section. No cards, no wall of work.
 
 ### Stats / trust bar
 
@@ -406,7 +439,7 @@ Inner pages (and any hero that is not the home portal):
 
 - **Glow:** forest surfaces only. Radial `--color-glow`, one source per section, behind media, never behind text, never on buttons.
 - **Work's ambient backdrop** is client light, not `--color-glow`: the active project's own screenshot, pre-blurred, full-bleed behind the stage, under a radial overlay that is solid forest at the band's edges, so the heading and controls always sit on forest (§5 Work coverflow).
-- **Home hero laptop:** its one glow sits behind the device and is masked off the display, so it never lies over the light room. The only other light on it is `--color-reflection` (`--on-dark-1` at 6%): a soft band that slides once across the dark screen. There is no rim or sheen.
+- **Home hero laptop — the screen's light:** one glow close round the laptop, `radial-gradient(closest-side, --color-glow-strong, --color-glow 55%, transparent)` at .8 (rising to 1 as the screen loads), masked off the display so it never lies over the light room; a soft ellipse of the same light on the desk under the deck (`--color-floor-light`); and on the lit screen its static sheen and glare (§5) and one white band (`--color-reflection-light`, 55%) that slides once across it, not in the lite scene. All of it fades out with the glass.
 - **Gradients:** single hue only, e.g. `#12312A → #0E2A24`. Never green→amber, green→blue or navy.
 - **Grid texture** (Instagram signature):
   ```css
@@ -418,7 +451,7 @@ Inner pages (and any hero that is not the home portal):
   }
   ```
   Use on forest bands/tiles; on light only in the hero, if at all.
-- **Shadows:** forest-tinted `rgba(18,49,42,…)` only, never black. None on forest, except Work's card faces, which carry `--shadow-elevated` to lift a white client site off the dark band (§5 Work coverflow).
+- **Shadows:** forest-tinted `rgba(18,49,42,…)` only, never black. None on forest, except Work's card faces, which carry `--shadow-elevated` to lift a white client site off the dark band (§5 Work coverflow), and in the home hero the laptop's deck and the float cards, which carry `--color-device-shadow` (`#0B211C` at 70%, §5 hero).
 - **Image overlays:** `linear-gradient(to top, var(--color-overlay), transparent)`.
 - **RTL:** CSS gradients aren't direction-aware. Flip directional gradients and glow positions under `[dir="rtl"]`. The light source sits on the text (right) side.
 
@@ -466,8 +499,9 @@ Inner pages (and any hero that is not the home portal):
 | forest-line-strong `#5E8479` on forest | 3.37 |
 | success / warning / error / info on their bg | 5.39 / 5.91 / 5.75 / 6.02 |
 | cta `#197358` link on bg-alt `#EDF2EE` | 5.10 |
-| amber `#E0A25C` on the laptop glass (forest-raised) | 5.55 |
-| on-dark-3 `#8FA69C` as the outline-button edge on the glass | 4.74 |
+| Hero copy on the lit screen, at the worst pixel under each text (sheen and glare included; 1024–1920px): eyebrow (tonal pill) / H1 / marked phrase (green-700 on the stroke) / sub / primary label / outline label | 6.82 / 13.30 / 5.94 / 7.38 / 5.78 / 16.80 |
+| Hero intro statement on the lit screen, worst pixel (390–1440px): line 1 / line 2 | ≥ 16.00 / ≥ 13.66 |
+| Hero float cards, worst pixel (1024–1920px; the card at 92% over the wall, the rim and the glass): titles / muted lines (on-dark-2) / SEO digit (amber-400) / «۳۲٪ رشد» (green-300, 23px 800) | ≥ 7.54 / 4.90 / 4.75 / ≥ 5.35 |
 | nav on the hero at 94% forest over the light room: links / tonal CTA | 6.97 / 4.73 |
 | text-primary / text-secondary on step fill `#D8EDE3` | 13.71 / 6.02 |
 | brand `#12312A` numeral on step fill | 11.44 |
@@ -483,7 +517,7 @@ Inner pages (and any hero that is not the home portal):
 | accent `#57B79A` active dot / border-strong `#5E8479` dots and arrow edges on forest | 5.77 / 3.37 |
 | Services card text over its illustration, at the darkest pixel under any line (measured 360–1920px): paragraph at rest / on hover; title; link | ≥ 7.04 / ≥ 4.96; 16.8; 5.78 |
 | ℹ add-on tile edges: `--color-border` dashed on white 1.79, `--color-border-hover` on tonal 1.36 | decorative: the tile is identified by its text and the ≥ 3:1 toggle circle |
-| ❌ forest-line-strong `#5E8479` on the glass | 2.96: not an outline-button edge there |
+| ❌ amber-400 digit where the 92% SEO pill would cross the silver rim | 3.94: so the pill's text line stays above the rim |
 | ❌ amber `#E0A25C` on light | 2.07: never text |
 | ❌ mint `#57B79A` on white | 2.43: never text or meaningful icons |
 
@@ -541,6 +575,7 @@ Motion explains depth and order; nothing on the page needs it to be understood.
 - **Transform and opacity only, per frame.** Scroll-linked effects never animate width/height/position, `clip-path`, masks, filters, shadows or background position per frame. Masks and geometry are set on resize. Class or attribute flips (a nav switching surface, a spotlight moving) happen only when state changes, and their CSS transitions do the rest.
 - **One engine.** One `requestAnimationFrame` loop and one passive scroll listener (`src/scripts/motion/engine.js`) serve every scroll-linked effect; layout is read only in `measure()` (resize, load, font swap), never in the loop. Off-screen effects are skipped.
 - **One pinned scene per page.** On the home page that is the portal hero; everything after it scrolls normally.
+- **Pointer lean is decoration only.** The hero's float cards lean up to 14px toward a fine pointer, eased on the engine; never on touch, in the lite scene or without motion, and they are gone once the dive starts.
 - **Reversible.** Scroll-linked motion is a pure function of scroll position, so scrolling back replays it in reverse. No one-shot triggers inside a scene.
 - **Reveal once, calmly.** Entrances play once as a section arrives: rise 20–28px and fade, 600–700ms `--ease-entrance`, 60–90ms stagger. Content that keyboard focus reaches shows at once.
 - **Words, never characters.** Persian text may reveal by whole words or phrases (ZWNJ-joined words stay whole), never by letter — the letters join.

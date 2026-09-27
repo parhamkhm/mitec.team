@@ -16,6 +16,7 @@ what was built, and that wins.
 | 7 | `CLAUDE_CODE_PROMPT_V6_WORK_COVERFLOW.md` | Work as a forest band with a 3D coverflow of the projects (built from `portfolio.json`, endless with recycled slots, autoplay with a pause toggle) and a detail dialog; an ambient backdrop from each project's pre-blurred screenshot | The Work media of the earlier passes (forest tiles, browser frame, then the laptop with its glow) and Work's surface: now a documented second forest band |
 | 8 | *Work card flip* (given in chat, not saved as a file) | The centre card turns over, in place, to its details: need / built / result as three tabs over the project's ambient file, the site link at the foot | V6 §4: the detail dialog, its FLIP expand and the phone bottom sheet. Documented in `DESIGN.md` §5, "Work coverflow" |
 | 9 | `CLAUDE_CODE_PROMPT_V7_WORK_CLEAN_CARDS.md` | Screenshot-only 16:10 card faces with one cue chip on the centre card, a caption (name + summary) under the stage, a bottom sheet for the details where a card is too short, and an opt-in scroll preview (`image.full`) | V6's card faces (gradient, tags, title, summary, button) and its portrait size and coverflow values; the flip's back is kept |
+| 10 | `CLAUDE_CODE_PROMPT_V8_HERO_DEPTH.md` | The hero's depth: a lit screen with the copy in the light token set, a silver laptop with a black bezel, the screen's glow and floor light, three decorative float cards round the lid, and a tilted wall of the portfolio's screenshots behind it (mockups in `docs/mockups/`) | The forest glass and forest-toned device of the earlier portal specs |
 
-Approved and frozen (do not change without the owner's go-ahead): the hero, the laptop, the intro
-statement, the motion engine, the Process spotlight and the pricing data model.
+Approved and frozen (do not change without the owner's go-ahead): the hero and the laptop as V8 left
+them, the intro statement, the motion engine, the Process spotlight and the pricing data model.

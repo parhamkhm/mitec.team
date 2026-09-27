@@ -51,6 +51,7 @@ git push --tags
    - `docs/prompts/CLAUDE_CODE_PROMPT_V5_PRICING_BALANCE.md`
    - `docs/prompts/CLAUDE_CODE_PROMPT_V6_WORK_COVERFLOW.md` (Work)
    - `docs/prompts/CLAUDE_CODE_PROMPT_V7_WORK_CLEAN_CARDS.md` (Work, current)
+   - `docs/prompts/CLAUDE_CODE_PROMPT_V8_HERO_DEPTH.md` (the hero, current; approved mockups in `docs/mockups/`)
 
 Run the site with `python devserver.py 4173` from the repository root, then open <http://127.0.0.1:4173/>.
 
@@ -78,8 +79,7 @@ Run the site with `python devserver.py 4173` from the repository root, then open
 Checkpoint tags (local until pushed): `checkpoint/v4-layout`, `checkpoint/phase-6`, `checkpoint/phase-7`.
 
 **Frozen — change only with the owner's go-ahead:**
-- the hero;
-- the laptop;
+- the hero and the laptop, as V8 left them;
 - the intro statement;
 - the motion engine;
 - the Process spotlight;

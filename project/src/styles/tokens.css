@@ -40,6 +40,13 @@
   --forest-line:   #2E574C;  --forest-line-strong: #5E8479;
   --on-dark-1: #F1F5F2;  --on-dark-2: #B9CBC3;  --on-dark-3: #8FA69C;
   --mint-hover: #72C7AB;
+
+  /* The brand laptop's finish (the portal hero's device): silver with a black
+     bezel. A device, not a surface — the only place these are used. */
+  --device-bezel: #0E1714;       --device-bezel-edge: #2A3632;
+  --device-rim: #C9D3CD;         --device-rim-shade: #8E9C95;
+  --device-deck-hi: #E6ECE8;     --device-deck-mid: #AAB7B0;
+  --device-deck-lo: #8E9C95;     --device-deck-notch: #9AA7A0;
 }
 
 /* ─── Type ───────────────────────────────────────────────────────
@@ -162,6 +169,31 @@
 
   --shadow-card:     0 1px 2px rgba(18,49,42,.06), 0 10px 28px -12px rgba(18,49,42,.14);
   --shadow-elevated: 0 2px 4px rgba(18,49,42,.06), 0 18px 40px -16px rgba(18,49,42,.22);
+
+  /* Portal hero (DESIGN.md §5 hero exception, §8). Fixed values: they belong
+     to objects in the scene (the lit screen, its light, the device), not to a
+     surface, so [data-surface="dark"] does not remap them. */
+  --color-screen:           var(--sage-0);               /* the lit display */
+  --color-screen-sheen:     var(--green-50);             /* soft radial at its top centre */
+  --color-screen-glare:     rgba(255, 255, 255, .45);    /* diagonal glare from its top-start corner */
+  --color-reflection-light: rgba(255, 255, 255, .55);    /* the band that slides once across it */
+  /* The marked phrase on the lit screen. Never clickable, so deliberately not
+     --color-cta (green-600): action green stays on clickables only. */
+  --color-headline-accent:  var(--green-700);
+  --color-glow-strong:      rgba(87, 183, 154, .26);     /* the screen's glow, at its core */
+  --color-floor-light:      rgba(214, 236, 226, .14);    /* the light the screen throws on the desk */
+  --color-works-tint:       rgba(18, 49, 42, .10);       /* the forest tint over the wall of work: centre … */
+  --color-works-tint-edge:  rgba(18, 49, 42, .75);       /* … and edge */
+  --color-device-bezel:      var(--device-bezel);
+  --color-device-bezel-edge: var(--device-bezel-edge);
+  --color-device-rim:        var(--device-rim);
+  --color-device-rim-shade:  var(--device-rim-shade);
+  --color-device-deck-hi:    var(--device-deck-hi);
+  --color-device-deck-mid:   var(--device-deck-mid);
+  --color-device-deck-lo:    var(--device-deck-lo);
+  --color-device-deck-notch: var(--device-deck-notch);
+  --color-device-deck-line:  rgba(255, 255, 255, .9);    /* the deck's top highlight */
+  --color-device-shadow:     rgba(11, 33, 28, .7);       /* under the deck and the float cards: forest, never black */
 }
 
 /* ─── Semantic · on forest (bands, tiles, footer) ──────────────── */
@@ -200,10 +232,6 @@
   --color-focus-halo: transparent;
   --color-grid-line:  rgba(255, 255, 255, .035);
   --shadow-card: none;
-
-  /* Portal hero only: the soft highlight that slides across the laptop's
-     dark screen (DESIGN.md §8 — on-dark-1 at 6%, a forest object, behind no text). */
-  --color-reflection: rgba(241, 245, 242, .06);
 
   background-color: var(--color-bg);
   color: var(--color-text-body);
