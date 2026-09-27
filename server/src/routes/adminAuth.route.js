@@ -1,8 +1,14 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { pool } from '../db/pool.js';
 import { ENV } from '../env.js';
+import {
+  findAdminById,
+  findAdminByUsername,
+  recordFailedLogin,
+  recordSuccessfulLogin,
+  setAdminPassword
+} from '../db/adminUsersRepo.js';
 import { asyncHandler } from '../lib/asyncHandler.js';
 import { sendOk } from '../lib/respond.js';
 import { Errors } from '../lib/errors.js';
@@ -22,6 +28,17 @@ function durationMs(v, fallbackMs) {
   return n * mult;
 }
 const COOKIE_MAX_AGE = durationMs(ENV.jwtExpiresIn, 12 * 3600000);
+
+const BCRYPT_COST = 12;
+const MIN_PASSWORD_LENGTH = 10;
+const MAX_PASSWORD_BYTES = 72;
+// Compared against when the username doesn't exist; see /admin/login.
+const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', BCRYPT_COST);
+
+// `sv` must match admin_users.session_version for requireAdmin to accept it.
+function signSession(id, username, sessionVersion) {
+  return jwt.sign({ sub: id, username, sv: sessionVersion }, ENV.jwtSecret, { expiresIn: ENV.jwtExpiresIn });
+}
 
 function setAdminCookie(res, token) {
   res.cookie(COOKIE_NAME, token, {
@@ -46,16 +63,58 @@ adminAuthRouter.post(
       throw Errors.validation('نام کاربری و رمز عبور لازم است.', fieldErrors);
     }
 
-    const { rows } = await pool.query('SELECT id, username, password_hash FROM admin_users WHERE username = $1', [username]);
-    const user = rows[0];
-    if (!user) throw Errors.invalidCredentials();
+    const user = await findAdminByUsername(username);
 
-    const valid = await bcrypt.compare(password, user.password_hash);
-    if (!valid) throw Errors.invalidCredentials();
+    // While locked, the password isn't even checked. (This does tell a caller
+    // that the username exists; the per-IP limit still applies to them.)
+    if (user?.locked_until && new Date(user.locked_until) > new Date()) {
+      throw Errors.rateLimited('به‌خاطر چند ورود ناموفق، این حساب موقتاً قفل شده است. کمی بعد دوباره تلاش کنید.');
+    }
 
-    const token = jwt.sign({ sub: user.id, username: user.username }, ENV.jwtSecret, { expiresIn: ENV.jwtExpiresIn });
-    setAdminCookie(res, token);
+    // Always run bcrypt, against a dummy hash for an unknown username, so the
+    // response time doesn't reveal which usernames exist.
+    const valid = await bcrypt.compare(password, user?.password_hash ?? DUMMY_HASH);
+    if (!user || !valid) {
+      if (user) await recordFailedLogin(user.id);
+      throw Errors.invalidCredentials();
+    }
+
+    await recordSuccessfulLogin(user.id);
+    setAdminCookie(res, signSession(user.id, user.username, user.session_version));
     sendOk(res, { username: user.username });
+  })
+);
+
+// Change your own password. Ends every other session (session_version is
+// bumped) and re-issues this one's cookie so the caller stays signed in.
+adminAuthRouter.post(
+  '/admin/password',
+  loginLimiter,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const current = String(req.body?.current_password ?? '');
+    const newPassword = String(req.body?.new_password ?? '');
+
+    const fieldErrors = {};
+    if (!current) fieldErrors.current_password = 'لازم است.';
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      fieldErrors.new_password = `حداقل ${MIN_PASSWORD_LENGTH} نویسه.`;
+    } else if (Buffer.byteLength(newPassword, 'utf8') > MAX_PASSWORD_BYTES) {
+      // bcrypt silently ignores everything past 72 bytes (36 Persian letters).
+      fieldErrors.new_password = 'رمز عبور خیلی بلند است.';
+    } else if (newPassword === current) {
+      fieldErrors.new_password = 'رمز جدید باید با رمز فعلی فرق داشته باشد.';
+    }
+    if (Object.keys(fieldErrors).length) throw Errors.validation('رمز عبور نامعتبر است.', fieldErrors);
+
+    const user = await findAdminById(req.admin.sub);
+    if (!(await bcrypt.compare(current, user.password_hash))) {
+      throw Errors.validation('رمز فعلی اشتباه است.', { current_password: 'اشتباه است.' });
+    }
+
+    const sessionVersion = await setAdminPassword(user.id, await bcrypt.hash(newPassword, BCRYPT_COST));
+    setAdminCookie(res, signSession(user.id, user.username, sessionVersion));
+    sendOk(res, { ok: true });
   })
 );
 
