@@ -5,7 +5,7 @@
   "description": "mitec — backend API (orders, pricing, uploads, tracking, admin pricing panel)",
   "type": "module",
   "engines": {
-    "node": ">=18.17"
+    "node": ">=22.12"
   },
   "scripts": {
     "start": "node src/index.js",

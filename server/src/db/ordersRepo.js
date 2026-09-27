@@ -37,13 +37,13 @@ export async function insertOrder(trackingCode, order, client = pool) {
       site_type, pages, addons, pricing_version, template, mixed_description,
       sections, features, style, assets,
       business_name, business_field, business_handle, business_refs, business_desc, business_phone,
-      attachments, meta
+      attachments, meta, quote
     ) VALUES (
       $1, 'received', $2,
       $3, $4, $5, $6, $7, $8,
       $9, $10, $11, $12,
       $13, $14, $15, $16, $17, $18,
-      $19, $20
+      $19, $20, $21
     ) RETURNING *`,
     [
       trackingCode,
@@ -65,7 +65,8 @@ export async function insertOrder(trackingCode, order, client = pool) {
       order.business.description,
       order.business.phone,
       JSON.stringify(order.attachments),
-      JSON.stringify(order.meta)
+      JSON.stringify(order.meta),
+      order.quote ? JSON.stringify(order.quote) : null
     ]
   );
   return rows[0];

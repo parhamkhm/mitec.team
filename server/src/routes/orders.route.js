@@ -7,6 +7,7 @@ import { assertValidOrder, assertValidTrackRequest } from '../validation/orderSc
 import { createOrder, findOrderByTrackingCode } from '../db/ordersRepo.js';
 import { claimUploads } from '../db/uploadsRepo.js';
 import { withTransaction } from '../db/pool.js';
+import { quoteOrder } from '../pricing/quote.js';
 import { sendNewOrderEmail } from '../utils/mailer.js';
 import { orderSubmitLimiter, orderTrackLimiter } from '../middleware/rateLimit.js';
 
@@ -21,7 +22,8 @@ ordersRouter.post(
     // The order and its attachments are saved together: if any attachment id
     // is unknown or taken, no order is created.
     const saved = await withTransaction(async (client) => {
-      const row = await createOrder(order, client);
+      const { pricingVersion, quote } = await quoteOrder(order, client);
+      const row = await createOrder({ ...order, pricing_version: pricingVersion, quote }, client);
       await claimUploads(order.attachments.map((a) => a.id), row.id, client);
       return row;
     });

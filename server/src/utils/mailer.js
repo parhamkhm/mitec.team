@@ -31,7 +31,12 @@ export async function sendNewOrderEmail(order) {
     `تلفن: ${order.business_phone}`,
     order.business_field ? `زمینه‌ی فعالیت: ${order.business_field}` : null,
     order.business_handle ? `اینستاگرام/سایت: ${order.business_handle}` : null,
-    order.business_desc ? `توضیحات: ${order.business_desc}` : null
+    order.business_desc ? `توضیحات: ${order.business_desc}` : null,
+    order.quote
+      ? `برآورد: ${order.quote.price.toLocaleString('fa-IR')} ${order.quote.currency_unit}، ` +
+        `${order.quote.days.toLocaleString('fa-IR')} روز کاری` +
+        (order.quote.placeholder ? ' (اعداد نمونه)' : '')
+      : null
   ].filter(Boolean);
 
   try {

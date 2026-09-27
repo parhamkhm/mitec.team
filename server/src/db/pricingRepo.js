@@ -5,6 +5,11 @@ export async function getLatestPricing(client = pool) {
   return rows[0]?.document ?? null;
 }
 
+export async function getPricingVersion(version, client = pool) {
+  const { rows } = await client.query('SELECT document FROM pricing_versions WHERE version = $1', [version]);
+  return rows[0]?.document ?? null;
+}
+
 export async function insertPricingVersion(version, document, client = pool) {
   const { rows } = await client.query(
     'INSERT INTO pricing_versions (version, document) VALUES ($1, $2) RETURNING version, document',
