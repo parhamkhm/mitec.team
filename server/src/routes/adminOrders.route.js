@@ -6,7 +6,8 @@ import { asyncHandler } from '../lib/asyncHandler.js';
 import { sendOk } from '../lib/respond.js';
 import { Errors } from '../lib/errors.js';
 import { requireAdmin } from '../middleware/requireAdmin.js';
-import { listOrders, updateOrderStatus } from '../db/ordersRepo.js';
+import { findOrderByTrackingCode, listOrders, updateOrderStatus } from '../db/ordersRepo.js';
+import { listUploadsForOrder } from '../db/uploadsRepo.js';
 import { ORDER_STATUSES, STATUS_LABELS } from '../constants/orderStatus.js';
 
 export const adminOrdersRouter = Router();
@@ -20,6 +21,18 @@ adminOrdersRouter.get(
     const offset = Number(req.query.offset) || 0;
     const orders = await listOrders({ status, limit, offset });
     sendOk(res, orders);
+  })
+);
+
+// One order with the metadata of its attached files (download them with
+// GET /admin/uploads/:id).
+adminOrdersRouter.get(
+  '/admin/orders/:trackingCode',
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const order = await findOrderByTrackingCode(req.params.trackingCode);
+    if (!order) throw Errors.notFound('سفارشی با این کد پیدا نشد.');
+    sendOk(res, { ...order, uploads: await listUploadsForOrder(order.id) });
   })
 );
 

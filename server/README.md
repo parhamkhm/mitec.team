@@ -83,6 +83,7 @@ USE_MOCK: false,
 | `/admin/me` | GET | کاربر جاری (نیاز به ورود) |
 | `/admin/pricing` | GET, PUT | خواندن/ذخیره‌ی کل سند قیمت‌گذاری (نیاز به ورود؛ `PUT` نسخه‌بندی خوش‌بینانه دارد — `409` اگر کس دیگری زودتر ذخیره کرده) |
 | `/admin/orders` | GET | فهرست سفارش‌ها (نیاز به ورود؛ فراتر از قرارداد، برای این‌که پیگیری معنا داشته باشد) |
+| `/admin/orders/:trackingCode` | GET | یک سفارش کامل (شامل `quote` و `internal_notes`) به‌همراه `uploads`: فهرست فایل‌های پیوست (`id`, `filename`, `mime_type`, `size_bytes`) (نیاز به ورود) |
 | `/admin/orders/:trackingCode` | PATCH | تغییر `status`، `estimate_weeks`، `customer_note` (در صفحه‌ی پیگیری به مشتری نشان داده می‌شود) و `internal_notes` (فقط برای تیم؛ هرگز در `/orders/track` برنمی‌گردد) (نیاز به ورود) |
 
 ## تصمیم‌های گرفته‌شده

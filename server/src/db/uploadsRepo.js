@@ -1,4 +1,16 @@
+import { pool } from './pool.js';
 import { Errors } from '../lib/errors.js';
+
+// The files attached to an order, for the admin panel. storage_path stays on
+// the server.
+export async function listUploadsForOrder(orderId, client = pool) {
+  const { rows } = await client.query(
+    `SELECT id, filename, mime_type, size_bytes, created_at
+       FROM uploads WHERE order_id = $1 ORDER BY created_at, id`,
+    [orderId]
+  );
+  return rows;
+}
 
 // Attaches uploads to an order. Every id must exist and not belong to an
 // order yet; otherwise nothing is linked and the caller's transaction is

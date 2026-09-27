@@ -126,6 +126,27 @@ test('GET /admin/orders lists newest first and filters by status', async () => {
   assert.deepEqual(inReview.body.map((o) => o.tracking_code), [first]);
 });
 
+test('GET /admin/orders/:code returns the full order with its files, without storage paths', async () => {
+  const cookie = await api.login();
+  const file = await api.upload('brief.png');
+  const code = (await api.order({ attachments: [file] })).body.tracking_code;
+
+  const res = await api.get(`/admin/orders/${code}`, { cookie });
+  assert.equal(res.status, 200);
+  assert.equal(res.body.tracking_code, code);
+  assert.equal(res.body.business_name, 'Test business');
+  assert.ok('internal_notes' in res.body && 'quote' in res.body);
+  assert.equal(res.body.uploads.length, 1);
+  assert.equal(res.body.uploads[0].id, file.id);
+  assert.equal(res.body.uploads[0].filename, 'brief.png');
+  assert.ok(!('storage_path' in res.body.uploads[0]));
+
+  const unknown = await api.get('/admin/orders/MTC-00000', { cookie });
+  assert.equal(unknown.status, 404);
+  assert.equal(unknown.body.error.code, 'NOT_FOUND');
+  assert.equal((await api.get(`/admin/orders/${code}`)).status, 401);
+});
+
 test('PATCH /admin/orders/:code sets status label, estimate and notes', async () => {
   const cookie = await api.login();
   const code = (await api.order()).body.tracking_code;
