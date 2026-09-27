@@ -119,11 +119,55 @@ test('GET /admin/orders lists newest first and filters by status', async () => {
 
   const all = await api.get('/admin/orders', { cookie });
   assert.equal(all.status, 200);
-  const codes = all.body.map((o) => o.tracking_code);
+  const codes = all.body.items.map((o) => o.tracking_code);
   assert.ok(codes.indexOf(second) < codes.indexOf(first));
 
   const inReview = await api.get('/admin/orders?status=review', { cookie });
-  assert.deepEqual(inReview.body.map((o) => o.tracking_code), [first]);
+  assert.deepEqual(inReview.body.items.map((o) => o.tracking_code), [first]);
+  assert.equal(inReview.body.total, 1);
+});
+
+test('GET /admin/orders searches code, business name and phone (Persian digits too)', async () => {
+  const cookie = await api.login();
+  const mk = async (name, phone) =>
+    (await api.order({ business: { name, phone } })).body.tracking_code;
+  const coffee = await mk('کافه نارنج', '09351112233');
+  const shop = await mk('Blue Shop', '09364445566');
+  const codesFor = async (q) =>
+    (await api.get(`/admin/orders?q=${encodeURIComponent(q)}`, { cookie })).body.items.map((o) => o.tracking_code);
+
+  assert.deepEqual(await codesFor('نارنج'), [coffee]);
+  assert.deepEqual(await codesFor('blue'), [shop], 'name search ignores case');
+  // "C-12345", not just the digits: a digits-only query also searches phones,
+  // and a random code could then match another test order's phone number.
+  assert.deepEqual(await codesFor(shop.slice(2)), [shop], 'part of the tracking code');
+  assert.deepEqual(await codesFor('4445566'), [shop], 'part of the phone');
+  assert.deepEqual(await codesFor('۱۱۱۲۲۳۳'), [coffee], 'phone typed in Persian digits');
+  assert.deepEqual(await codesFor('%'), [], '% is literal, not a wildcard');
+});
+
+test('GET /admin/orders pages with limit/offset and reports the total', async () => {
+  const cookie = await api.login();
+  for (let i = 0; i < 3; i++) await api.order({ business: { name: 'paging-test', phone: '09370000000' } });
+
+  const page1 = await api.get('/admin/orders?q=paging-test&limit=2', { cookie });
+  const page2 = await api.get('/admin/orders?q=paging-test&limit=2&offset=2', { cookie });
+  assert.equal(page1.body.total, 3);
+  assert.equal(page1.body.items.length, 2);
+  assert.equal(page2.body.items.length, 1);
+  assert.equal(page2.body.total, 3);
+  assert.deepEqual([page1.body.limit, page1.body.offset], [2, 0]);
+  const ids = [...page1.body.items, ...page2.body.items].map((o) => o.id);
+  assert.equal(new Set(ids).size, 3, 'no order appears on two pages');
+});
+
+test('GET /admin/orders rejects bad paging and unknown statuses (used to be a 500)', async () => {
+  const cookie = await api.login();
+  for (const qs of ['limit=-5', 'limit=0', 'limit=201', 'limit=abc', 'offset=-1', 'offset=1.5', 'status=shipped']) {
+    const res = await api.get(`/admin/orders?${qs}`, { cookie });
+    assert.equal(res.status, 422, qs);
+    assert.equal(res.body.error.code, 'VALIDATION_ERROR');
+  }
 });
 
 test('GET /admin/orders/:code returns the full order with its files, without storage paths', async () => {

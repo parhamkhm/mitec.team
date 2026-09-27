@@ -77,19 +77,40 @@ export async function findOrderByTrackingCode(code, client = pool) {
   return rows[0] ?? null;
 }
 
-export async function listOrders({ status, limit = 50, offset = 0 } = {}, client = pool) {
+// Escapes LIKE's wildcards so a search for "50%" or "a_b" is literal.
+const likeEscape = (s) => s.replace(/[\\%_]/g, '\\$&');
+
+// One page of orders, newest first, and how many match in total.
+// `q` matches part of the tracking code or business name (case-insensitive),
+// or part of the phone number when it is made of digits (already normalised
+// to ASCII by the caller, as stored phones are).
+export async function listOrders({ status, q, phoneDigits, limit = 50, offset = 0 } = {}, client = pool) {
   const params = [];
-  let where = '';
+  const where = [];
   if (status) {
     params.push(status);
-    where = `WHERE status = $${params.length}`;
+    where.push(`status = $${params.length}`);
   }
-  params.push(limit, offset);
+  if (q) {
+    params.push(`%${likeEscape(q)}%`);
+    const text = `$${params.length}`;
+    const match = [`tracking_code ILIKE ${text}`, `business_name ILIKE ${text}`];
+    if (phoneDigits) {
+      params.push(`%${likeEscape(phoneDigits)}%`);
+      match.push(`business_phone LIKE $${params.length}`);
+    }
+    where.push(`(${match.join(' OR ')})`);
+  }
+  const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+  const { rows: countRows } = await client.query(`SELECT count(*)::int AS total FROM orders ${whereSql}`, params);
   const { rows } = await client.query(
-    `SELECT * FROM orders ${where} ORDER BY created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
-    params
+    `SELECT * FROM orders ${whereSql}
+      ORDER BY created_at DESC, id DESC
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+    [...params, limit, offset]
   );
-  return rows;
+  return { items: rows, total: countRows[0].total };
 }
 
 export async function updateOrderStatus(
