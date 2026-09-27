@@ -3,7 +3,7 @@
 Recorded from `docs/prompts/IMPECCABLE_DECISIONS.md` (2026-09-27). It decides every open question in the summary. Then run Phase 2 in the batches below.
 
 **Change log**
-- 2026-09-27, Phone nav: the menu toggle moves to the left edge of the phone/tablet bar, and the menu opens from that side. Applied in batch 3, together with HE1, MO1 and A3.
+- 2026-09-27, Phone nav: the menu toggle moves to the left edge of the phone/tablet bar, and the menu panel opens from that side (the owner's wording, as saved in the prompt file). Applied in batch 3, together with HE1, MO1 and A3.
 
 The session rules from `IMPECCABLE_PASS.md` §A still apply:
 - DESIGN.md wins unless a line below changes it;
@@ -57,7 +57,10 @@ Decided once and reused in the closing band (FC1), the phone menu (MO1), About (
 
 ### Phone nav (HE1, MO1, A3)
 
-- On the phone/tablet bar (below 860px, where the menu collapses), the menu toggle moves to the **left edge** of the bar, and the menu opens **from that side**.
+- **Toggle position (owner request):** on phones and tablets, the menu toggle moves to the **left edge** of the bar (the end side in RTL).
+  - Bar order, right to left: logo at the right edge → flexible space → tonal «شروع پروژه» → menu toggle at the left edge.
+  - The open menu panel anchors to the toggle's side: it opens from the left/top-left, and its enter/exit motion comes from that side.
+  - Keep the 44px hit area and the gutter. Check at 320, 360, 390 and 768 that the logo, CTA and toggle never overlap or wrap.
 - The phone bar shows a persistent small **tonal** «شروع پروژه» next to the menu toggle. It is tonal, so the one-primary rule holds.
 - The open menu ends with the tier-2 pair (WhatsApp, Telegram).
 - A3:
