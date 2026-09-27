@@ -12,6 +12,7 @@ import { uploadsRouter } from './routes/uploads.route.js';
 import { adminAuthRouter } from './routes/adminAuth.route.js';
 import { adminPricingRouter } from './routes/adminPricing.route.js';
 import { adminOrdersRouter } from './routes/adminOrders.route.js';
+import { adminUploadsRouter } from './routes/adminUploads.route.js';
 import { notFoundMiddleware } from './middleware/notFound.js';
 import { errorHandlerMiddleware } from './middleware/errorHandler.js';
 
@@ -42,6 +43,7 @@ export function createApp() {
   app.use(adminAuthRouter);
   app.use(adminPricingRouter);
   app.use(adminOrdersRouter);
+  app.use(adminUploadsRouter);
 
   app.use(notFoundMiddleware);
   app.use(errorHandlerMiddleware);

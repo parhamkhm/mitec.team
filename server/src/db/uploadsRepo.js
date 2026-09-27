@@ -1,6 +1,11 @@
 import { pool } from './pool.js';
 import { Errors } from '../lib/errors.js';
 
+export async function findUpload(id, client = pool) {
+  const { rows } = await client.query('SELECT * FROM uploads WHERE id = $1', [id]);
+  return rows[0] ?? null;
+}
+
 // The files attached to an order, for the admin panel. storage_path stays on
 // the server.
 export async function listUploadsForOrder(orderId, client = pool) {
