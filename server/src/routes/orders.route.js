@@ -5,6 +5,8 @@ import { Errors } from '../lib/errors.js';
 import { ENV } from '../env.js';
 import { assertValidOrder, assertValidTrackRequest } from '../validation/orderSchema.js';
 import { createOrder, findOrderByTrackingCode } from '../db/ordersRepo.js';
+import { claimUploads } from '../db/uploadsRepo.js';
+import { withTransaction } from '../db/pool.js';
 import { sendNewOrderEmail } from '../utils/mailer.js';
 import { orderSubmitLimiter, orderTrackLimiter } from '../middleware/rateLimit.js';
 
@@ -16,7 +18,13 @@ ordersRouter.post(
   orderSubmitLimiter,
   asyncHandler(async (req, res) => {
     const order = assertValidOrder(req.body);
-    const saved = await createOrder(order);
+    // The order and its attachments are saved together: if any attachment id
+    // is unknown or taken, no order is created.
+    const saved = await withTransaction(async (client) => {
+      const row = await createOrder(order, client);
+      await claimUploads(order.attachments.map((a) => a.id), row.id, client);
+      return row;
+    });
 
     // Best-effort; sendNewOrderEmail never throws (it logs and swallows).
     sendNewOrderEmail(saved);

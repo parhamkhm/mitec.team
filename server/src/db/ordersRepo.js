@@ -8,11 +8,21 @@ const UNIQUE_VIOLATION = '23505';
 // random code collides. Letting the unique index be the arbiter (rather than
 // a SELECT first) closes the race where two simultaneous orders both see a
 // code as free and one insert then fails.
-export async function createOrder(order, client = pool) {
+//
+// Each attempt runs under a savepoint: inside a transaction a failed INSERT
+// aborts the whole transaction, so without it one collision would fail the
+// order instead of retrying. SAVEPOINT is only valid inside a transaction,
+// so `client` must be a transaction's client (see withTransaction).
+// `nextCode` is only swapped out by tests, to force a collision.
+export async function createOrder(order, client, nextCode = randomTrackingCode) {
   for (let attempt = 0; attempt < 10; attempt++) {
+    await client.query('SAVEPOINT create_order');
     try {
-      return await insertOrder(randomTrackingCode(), order, client);
+      const row = await insertOrder(nextCode(), order, client);
+      await client.query('RELEASE SAVEPOINT create_order');
+      return row;
     } catch (e) {
+      await client.query('ROLLBACK TO SAVEPOINT create_order');
       if (e.code === UNIQUE_VIOLATION && e.constraint === 'orders_tracking_code_key') continue;
       throw e;
     }

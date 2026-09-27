@@ -2,6 +2,7 @@
 // shape `toApiOrder()` sends). Required fields per the contract:
 // site_type, business.name, business.phone.
 import { Errors } from '../lib/errors.js';
+import { ENV } from '../env.js';
 import { isIranMobile, normalizePhone } from '../utils/phone.js';
 
 const str = (v) => (typeof v === 'string' ? v : '');
@@ -33,9 +34,7 @@ export function assertValidOrder(body) {
   const style = b.style && typeof b.style === 'object' ? b.style : {};
   const assets = b.assets && typeof b.assets === 'object' ? b.assets : {};
   const meta = b.meta && typeof b.meta === 'object' ? b.meta : {};
-  const attachments = Array.isArray(b.attachments)
-    ? b.attachments.filter((a) => a && typeof a.id === 'string').map((a) => ({ id: a.id }))
-    : [];
+  const attachments = assertValidAttachments(b.attachments);
 
   return {
     site_type: siteType,
@@ -59,6 +58,28 @@ export function assertValidOrder(body) {
     attachments,
     meta: { ...meta, locale: meta.locale || 'fa-IR', source: meta.source || 'web-order-builder' }
   };
+}
+
+// Shape only: ids as POST /uploads issues them, de-duplicated, at most
+// UPLOAD_MAX_FILES. Whether each id was really uploaded and is still free is
+// checked against the database when the order is saved (claimUploads).
+const UPLOAD_ID = /^f_[0-9a-f]{12}$/;
+
+function assertValidAttachments(value) {
+  if (value == null) return [];
+  if (!Array.isArray(value)) {
+    throw Errors.validation('فایل‌های پیوست نامعتبر است.', { attachments: 'باید فهرست باشد.' });
+  }
+  const ids = [...new Set(value.map((a) => (a && typeof a === 'object' ? a.id : a)))];
+  if (ids.some((id) => typeof id !== 'string' || !UPLOAD_ID.test(id))) {
+    throw Errors.validation('فایل‌های پیوست نامعتبر است.', { attachments: 'شناسه‌ی فایل نامعتبر است.' });
+  }
+  if (ids.length > ENV.uploadMaxFiles) {
+    throw Errors.validation('تعداد فایل‌های پیوست زیاد است.', {
+      attachments: `حداکثر ${ENV.uploadMaxFiles} فایل.`
+    });
+  }
+  return ids.map((id) => ({ id }));
 }
 
 export function assertValidTrackRequest(body) {
