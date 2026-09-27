@@ -55,6 +55,24 @@ npm run test:contract        # سرور باید در حال اجرا باشد
 
 برای تست روی سرور دیگر: `BASE_URL=https://api.example.com npm run test:contract`.
 
+## پشتیبان‌گیری
+
+`scripts/backup.sh` هر شب دیتابیس (`pg_dump`) و پوشه‌ی فایل‌های آپلودی را در `~/backups` می‌ریزد و ۱۴ نسخه‌ی آخر
+را نگه می‌دارد (`KEEP`). تنظیمات را از `server/.env` می‌خواند. فایل‌ها شماره‌ی موبایل مشتری‌ها را دارند، پس فقط
+برای همان کاربر قابل خواندن‌اند. خط crontab روی سرور (با `bash` صریح، تا از دست رفتن مجوز اجرای فایل پشتیبان‌گیری
+را بی‌صدا متوقف نکند):
+
+```
+30 3 * * * bash /home/claude/mitec.team/server/scripts/backup.sh >> /home/claude/backups/mitec-backup.log 2>&1
+```
+
+**بازگردانی** — در یک دیتابیس خالی:
+
+```bash
+gunzip -c ~/backups/mitec-db-YYYYMMDD-HHMMSS.sql.gz | psql "$DATABASE_URL"
+tar -xzf ~/backups/mitec-uploads-YYYYMMDD-HHMMSS.tar.gz -C server/uploads
+```
+
 ## وصل کردن فرانت‌اند
 
 در `project/src/config/app.config.js`:
