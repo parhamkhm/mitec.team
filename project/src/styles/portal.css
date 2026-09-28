@@ -22,8 +22,10 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 .portal {
-  /* Pre-JS geometry (the desktop formula); portal.js replaces these with
-     measured px values. 99.2svh = 0.62 × vh × 1.6. */
+  /* Geometry. Under motion, the inline layout script after the portal
+     (index.html, mitecPortalLayout) sets all of these in px before first
+     paint, and portal.js re-runs it on every measure. These are only its
+     fallbacks: the desktop formula (99.2svh = 0.62 × vh × 1.6). */
   --screen-w: min(70vw, 860px, 99.2svh);
   --screen-h: calc(var(--screen-w) / 1.6);
   --screen-r: 10px;
@@ -242,7 +244,10 @@ html.motion .portal__frame {
   margin: auto;
   background: none;
   pointer-events: none;
-  transform: rotateX(10deg);
+  /* The resting pose: tilted back (flat on phones and low-power devices)
+     and, stacked, lowered under the copy. portal.js takes it over from
+     here with the same values at the top of the scroll. */
+  transform: translateY(var(--portal-dy, 0px)) rotateX(var(--portal-tilt, 10deg));
   transform-style: flat;
   backface-visibility: hidden;
 }
@@ -368,11 +373,10 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
 }
 /* Phones and low-power devices: no tilt, no reflection. */
 .portal--lite .portal__reflection { display: none; }
-/* Pre-JS stand-ins for the phone layout portal.js computes. */
+/* Fallbacks for the phone layout, should the inline layout script not run. */
 @media (max-width: 759px) {
-  .portal { --copy-max: calc(100vw - 48px); }
+  .portal { --copy-max: calc(100vw - 48px); --portal-dy: 22svh; --portal-tilt: 0deg; }
   html.motion .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
-  html.motion .portal__frame { transform: translateY(22svh); }
 }
 
 .portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__deck-shadow, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),

@@ -145,13 +145,6 @@
           <a class="btn btn--lg btn--outline" href="#work"><svg class="icon icon-layout-dashboard" aria-hidden="true"><use href="#i-layout-dashboard"/></svg> دیدن نمونه‌کارها</a>
         </div>
       </div>
-      <script>
-        // Before first paint: on the pinned scene the copy starts on the
-        // laptop's lit screen, in the light token set. motion/portal.js
-        // re-decides on every measure (stacked above the laptop, on phones or
-        // when it cannot fit, it keeps the forest set).
-        if (document.documentElement.classList.contains('motion') && innerWidth >= 760) document.currentScript.previousElementSibling.removeAttribute('data-surface');
-      </script>
 
       <!-- The intro statement the screen shows before it "loads" into the room.
            Line 1 is split by whole words (never inside a word or its ZWNJ
@@ -220,6 +213,102 @@
         اسکرول کنید
       </button>
     </div>
+    <script>
+      // The hero's layout, run here before first paint and again by motion/portal.js on every
+      // measure (resize, load, font swap), so the first frame already is the measured one and
+      // nothing moves when the modules arrive. It lives inline because a module cannot run before
+      // first paint. It sizes the display (and the lid parts round it) to the viewport, then puts
+      // the copy on the lit screen, shrinking the H1 towards its clamp floor until it fits; where
+      // it cannot fit, or below 760px, the copy stacks above the laptop on the forest wall and the
+      // laptop starts under it (DESIGN.md §5). Returns what the scene needs for scrolling.
+      window.mitecPortalLayout = (vh = innerHeight, lowPower = (navigator.hardwareConcurrency || 8) <= 4 || !!navigator.connection?.saveData) => {
+        const portal = document.querySelector('.portal');
+        const q = (s) => portal.querySelector(s);
+        const stage = q('.portal__stage'), copy = q('.portal__copy'), title = q('.portal__title'), sub = q('.portal__sub');
+        const kids = copy.children;
+        const px = (n) => `${n}px`;
+        const set = (k, v) => portal.style.setProperty(k, v);
+        const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+        const w = innerWidth;
+        const sh = stage.clientHeight; // 100svh: steady while a phone's URL bar slides
+        const sw = stage.clientWidth;
+        const small = w < 760;
+        const lite = small || lowPower;
+        const W = Math.round(Math.min(0.7 * w, 860, 0.62 * sh * 1.6));
+        const H = Math.round(W / 1.6);
+        const r = Math.round(clamp(0.012 * W, 8, 12));
+        const b = Math.round(clamp(0.016 * W, 10, 16));
+        const chin = Math.round(1.4 * b);
+        const bh = Math.round(clamp(0.02 * W, 10, 16));
+        const L = Math.round(vh * (w >= 1024 ? 3 : small ? 2.1 : 2.4));
+        const tilt = lite ? 0 : 10;
+        portal.classList.toggle('portal--lite', lite);
+        set('--portal-track', px(L));
+        set('--screen-w', px(W));
+        set('--screen-h', px(H));
+        set('--screen-r', px(r));
+        set('--bezel', px(b));
+        set('--chin', px(chin));
+        set('--base-h', px(bh));
+        set('--portal-tilt', `${tilt}deg`);
+        set('--portal-hole', `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}'%3E%3Crect width='${W}' height='${H}' rx='${r}'/%3E%3C/svg%3E")`);
+        // The statement stays on the glass even while the screen is at its smallest.
+        set('--say-max', px(Math.round(Math.min(w - 48, 1.25 * W - 32))));
+
+        // Copy height from its first child's top to its last child's bottom: layout offsets, so
+        // the lift transforms don't count.
+        const copyEnd = () => kids[kids.length - 1].offsetTop + kids[kids.length - 1].offsetHeight;
+        const copyH = () => copyEnd() - kids[0].offsetTop;
+        // Shrink the H1 in 4px steps towards 36px (its clamp floor) until the copy fits `avail`;
+        // only if that is not enough does the sub drop to body-lg. True if it fits.
+        const fit = (avail) => {
+          title.style.fontSize = sub.style.fontSize = '';
+          let size = parseFloat(getComputedStyle(title).fontSize);
+          while (copyH() > avail && size > 36) title.style.fontSize = px((size = Math.max(36, size - 4)));
+          if (copyH() > avail) sub.style.fontSize = 'var(--text-body-lg)';
+          return copyH() <= avail;
+        };
+
+        // On the lit screen the copy reads in the light token set; stacked, it sits on the
+        // forest wall and keeps the forest one.
+        let stacked = small;
+        if (!stacked) {
+          portal.classList.remove('portal--stacked');
+          copy.removeAttribute('data-surface');
+          set('--copy-max', px(W - 96));
+          stacked = !fit(H - 56);
+        }
+        if (stacked) copy.dataset.surface = 'dark';
+        portal.classList.toggle('portal--stacked', stacked);
+        let dy0 = 0;
+        if (stacked) {
+          set('--copy-max', px(w - 48));
+          const lh = b + H + chin + bh; // lid top to base bottom
+          const floor = sh - 68;        // keep the hint's corner clear
+          fit(floor - kids[0].offsetTop - 24 - lh);
+          const from = copyEnd() + 24;
+          // Centred in the space under the copy. Where there is no room (tight), it starts under
+          // the copy and is cropped: pulled up, its lit screen would sit behind the copy's
+          // forest-set text.
+          const lt = from + Math.max(0, (floor - from - lh) / 2);
+          dy0 = lt + b + H / 2 - sh / 2;
+          portal.classList.toggle('portal--tight', lt + lh > floor);
+        } else portal.classList.remove('portal--tight');
+        set('--portal-dy', px(dy0));
+        set('--portal-w', px(Math.ceil(1.05 * Math.hypot(w, sh + 2 * Math.abs(dy0)))));
+        return { sw, sh, W, H, bezel: b, chin, L, lite, tilt, stacked, dy0 };
+      };
+      if (document.documentElement.classList.contains('motion')) {
+        mitecPortalLayout();
+        // A Vazirmatn weight that lands after this re-wraps the copy in the real font, and the H1
+        // can fit at another size (the fallback matches the width, not every line break). Fit
+        // again as it lands, in the same task, so no frame is drawn with the stale fit.
+        for (const f of document.fonts) {
+          if (f.family.replace(/"/g, '') !== 'Vazirmatn' || f.status === 'loaded') continue;
+          f.loaded.then(() => document.documentElement.classList.contains('motion') && mitecPortalLayout(), () => {});
+        }
+      }
+    </script>
   </section>
 
 
@@ -624,7 +713,8 @@
   </div>
 </footer>
 
-<!-- If the module can't load, fall back to the static, fully visible page. -->
-<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion'); document.querySelector('.portal__copy').dataset.surface = 'dark'"></script>
+<!-- If the module can't load, fall back to the static, fully visible page (and drop the sizes the
+     hero's layout script set for the scene). -->
+<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion'); document.querySelector('.portal__copy').dataset.surface = 'dark'; document.querySelectorAll('.portal, .portal__title, .portal__sub').forEach((el) => el.removeAttribute('style'))"></script>
 </body>
 </html>

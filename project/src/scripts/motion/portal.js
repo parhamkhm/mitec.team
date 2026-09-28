@@ -20,8 +20,6 @@ import { track, view, whenMotion, kick } from './engine.js';
 import { clamp, seg, lerp, damp, inCubic, outCubic, inOutSine, inOutCubic } from './easing.js';
 import { icon as glyph } from '../../utils/icon.js';
 
-const px = (n) => `${n}px`;
-const H1_MIN = 36; // the lower bound of the H1's own clamp()
 const DEPTH = 1600; // the stage's perspective (portal.css)
 
 // The float cards: which edge of the lid each one overlaps and where along
@@ -69,6 +67,7 @@ export function initPortal() {
   const qa = (s) => [...portal.querySelectorAll(s)];
   const stage = q('.portal__stage');
   const copy = q('.portal__copy');
+  const kids = copy.children;
   const title = q('.portal__title');
   const sub = q('.portal__sub');
   const actions = q('.portal__actions');
@@ -201,14 +200,10 @@ export function initPortal() {
   }
 
   // ---- the scene
-  let top = 0, L = 1, sExit = 1, rise = 0, tilt = 0, lite = false, tau = 90;
+  let top = 0, L = 1, sExit = 1, rise = 0, tilt = 0, lite = false, stacked = false, tau = 90;
   let W = 1, H = 1, dy0 = 0;
   let sw = 1, sh = 1, bz = 0, chinH = 0;
   let ps = -1, drawn = -1;
-  let vars = {};
-  const setVar = (k, v) => {
-    if (vars[k] !== v) portal.style.setProperty(k, (vars[k] = v));
-  };
   const show = (el, t, d) => {
     el.style.opacity = t;
     el.style.transform = t < 1 ? `translateY(${d * (1 - t)}px)` : '';
@@ -383,84 +378,24 @@ export function initPortal() {
     setNav(light ? p >= 0.84 : p >= 0.86);
   }
 
-  // Copy height from its first child's top to its last child's bottom — layout
-  // offsets, so the lift transforms don't count.
-  const kids = copy.children;
-  const copyEnd = () => kids[kids.length - 1].offsetTop + kids[kids.length - 1].offsetHeight;
-  const copyH = () => copyEnd() - kids[0].offsetTop;
-  // Shrink the H1 toward its clamp's lower bound until the copy fits `avail`;
-  // only if that is not enough does the sub drop to body-lg. True if it fits.
-  function fit(avail) {
-    title.style.fontSize = sub.style.fontSize = '';
-    let size = parseFloat(getComputedStyle(title).fontSize);
-    while (copyH() > avail && size > H1_MIN) title.style.fontSize = px((size = Math.max(H1_MIN, size - 4)));
-    if (copyH() > avail) sub.style.fontSize = 'var(--text-body-lg)';
-    return copyH() <= avail;
-  }
-
   const scene = {
     el: portal,
     measure() {
-      const w = view.w;
-      sh = stage.clientHeight; // 100svh: steady while a phone's URL bar slides
-      sw = stage.clientWidth;
-      const small = w < 760;
-      lite = small || view.lite;
-      W = Math.round(Math.min(0.7 * w, 860, 0.62 * sh * 1.6));
-      H = Math.round(W / 1.6);
-      const r = Math.round(clamp(0.012 * W, 8, 12));
-      const b = Math.round(clamp(0.016 * W, 10, 16));
-      const chin = Math.round(1.4 * b);
-      const bh = Math.round(clamp(0.02 * W, 10, 16));
-      bz = b;
-      chinH = chin;
-      L = Math.round(view.h * (w >= 1024 ? 3 : small ? 2.1 : 2.4));
+      // The layout itself (display and lid, where the copy goes and how big
+      // the H1 is, where the laptop starts) lives inline after the portal in
+      // index.html, which runs it before first paint; calling the same
+      // function here keeps the two in step. The rest is for scrolling.
+      const g = window.mitecPortalLayout(view.h, view.lite);
+      ({ sw, sh, W, H, dy0, lite, tilt, stacked } = g);
+      bz = g.bezel;
+      chinH = g.chin;
+      L = g.L;
       // No roll, so the display only has to clear the viewport itself.
-      sExit = Math.max(w / W, view.h / H) * 1.12;
+      sExit = Math.max(view.w / W, view.h / H) * 1.12;
       rise = 0.14 * view.h;
-      tilt = lite ? 0 : 10;
       tau = view.coarse ? 45 : 90;
-      portal.classList.toggle('portal--lite', lite);
-      setVar('--portal-track', px(L));
-      setVar('--screen-w', px(W));
-      setVar('--screen-h', px(H));
-      setVar('--screen-r', px(r));
-      setVar('--bezel', px(b));
-      setVar('--chin', px(chin));
-      setVar('--base-h', px(bh));
-      setVar('--portal-hole', `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}'%3E%3Crect width='${W}' height='${H}' rx='${r}'/%3E%3C/svg%3E")`);
-      // The statement stays on the glass even while the screen is at its smallest.
-      setVar('--say-max', px(Math.round(Math.min(w - 48, 1.25 * W - 32))));
       // Lite and full animate different spans; start both from clean.
       for (const el of reveal) el.removeAttribute('style');
-
-      // The copy goes on the screen if it fits there, else above the laptop.
-      // On the lit screen it reads in the light token set; stacked, it sits
-      // on the forest wall and keeps the forest one.
-      let stacked = small;
-      if (!stacked) {
-        portal.classList.remove('portal--stacked');
-        copy.removeAttribute('data-surface');
-        setVar('--copy-max', px(W - 96));
-        stacked = !fit(H - 56);
-      }
-      if (stacked) copy.dataset.surface = 'dark';
-      dy0 = 0;
-      portal.classList.toggle('portal--stacked', stacked);
-      if (stacked) {
-        setVar('--copy-max', px(w - 48));
-        const lh = b + H + chin + bh; // lid top to base bottom
-        const floor = sh - 68;        // keep the hint's corner clear
-        fit(floor - kids[0].offsetTop - 24 - lh);
-        const from = copyEnd() + 24;
-        // Centred in the space under the copy. Where there is no room (tight),
-        // it starts under the copy and is cropped: pulled up, its lit screen
-        // would sit behind the copy's forest-set text.
-        const lt = from + Math.max(0, (floor - from - lh) / 2);
-        dy0 = lt + b + H / 2 - sh / 2;
-        portal.classList.toggle('portal--tight', lt + lh > floor);
-      } else portal.classList.remove('portal--tight');
-      setVar('--portal-w', px(Math.ceil(1.05 * Math.hypot(w, sh + 2 * Math.abs(dy0)))));
 
       if (!stacked) loadCards();
       placeCards();
@@ -512,7 +447,6 @@ export function initPortal() {
       copy.dataset.surface = say.dataset.surface = 'dark'; // the static forest band
       hint.hidden = false;
       actions.inert = false;
-      vars = {};
       ps = drawn = -1;
       tx = ty = lx = ly = 0;
       cardsOn = false;
