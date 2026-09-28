@@ -309,13 +309,14 @@ html:not(.js) .work-carousel,
   background: none;
   box-shadow: none;
   perspective: 1200px;
-  will-change: transform, opacity;
   transition: transform 800ms var(--ease-coverflow), opacity 800ms var(--ease-coverflow), translate 260ms var(--ease-out);
 }
 .work-stage .work-card::after { content: none; }
 .work-stage .work-card.is-teleport { transition: none; }
 .work-stage .work-card__dim { transition: opacity 800ms var(--ease-coverflow); }
-html.motion .work-stage__track { will-change: transform; }
+/* Compositor layers only while the stage is in view (work.js sets .in-view). */
+.work-carousel.in-view .work-stage .work-card { will-change: transform, opacity; }
+html.motion .work-carousel.in-view .work-stage__track { will-change: transform; }
 
 /* ---- the flip: the centre card turns over, in place. Two faces of exactly
    the card's size, back to back; the one not in view is inert (work.js).
@@ -327,7 +328,7 @@ html.motion .work-stage__track { will-change: transform; }
   transform-style: preserve-3d;
   transition: transform 700ms cubic-bezier(.2, .8, .2, 1);
 }
-.work-stage .work-card.is-active .work-card__inner { will-change: transform; }
+.work-carousel.in-view .work-stage .work-card.is-active .work-card__inner { will-change: transform; }
 .work-stage .work-card.is-flipped .work-card__inner { transform: rotateY(180deg) scale(1.04); }
 .work-card__front,
 .work-card__back {

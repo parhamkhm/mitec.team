@@ -310,7 +310,6 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
   inset: calc(var(--screen-h) * -.3) calc(var(--screen-w) * -.25);
   background: radial-gradient(closest-side, var(--color-glow-strong) 0%, var(--color-glow) 55%, transparent);
   opacity: .8;
-  will-change: opacity;
 }
 /* …and a soft ellipse of it on the desk, just under the deck. */
 .portal__floor {
@@ -345,7 +344,6 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
     linear-gradient(235deg, var(--color-screen-glare), transparent 32%),
     radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-screen-sheen), transparent 70%),
     var(--color-screen);
-  will-change: opacity;
 }
 /* One white band that slides once across the lit screen (start → end). */
 .portal__reflection {
@@ -360,8 +358,11 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
   -webkit-mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
   mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
   transform: translateX(var(--screen-w));
-  will-change: transform;
 }
+/* The glow, the glass and the reflection hold compositor layers only while
+   the scene is near the viewport (the engine sets .in-view on .portal). */
+.portal.in-view :is(.portal__glow, .portal__glass) { will-change: opacity; }
+.portal.in-view .portal__reflection { will-change: transform; }
 /* Phones and low-power devices: no tilt, no reflection. */
 .portal--lite .portal__reflection { display: none; }
 /* Fallbacks for the phone layout, should the inline layout script not run. */

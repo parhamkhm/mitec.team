@@ -793,6 +793,7 @@ function build(section, host, projects) {
   });
   new IntersectionObserver(([e]) => {
     onScreen = e.isIntersecting;
+    host.classList.toggle('in-view', onScreen); // the cards' compositor layers, only while the stage is seen
     schedule();
   }, { threshold: 0.25 }).observe(stage);
   document.addEventListener('visibilitychange', schedule);
