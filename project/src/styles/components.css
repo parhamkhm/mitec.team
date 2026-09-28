@@ -437,7 +437,7 @@ body { caret-color: var(--color-cta); }
   border: 1px dashed var(--color-border-strong);
 }
 .img-slot .icon { width: 26px; height: 26px; }
-.img-slot__label { font-size: var(--text-caption); max-width: 92%; line-height: 1.4; }
+.img-slot__label { font-size: var(--text-caption); max-width: 92%; line-height: 1.4; color: var(--color-text-secondary); } /* 5.97:1 on the sunken fill; muted was 4.36 */
 .img-slot--circle { border-radius: 50%; }
 
 /* ---------------------------------------------------------------- utilities */
