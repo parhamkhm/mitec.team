@@ -1324,15 +1324,7 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
   border-radius: var(--radius-md);
   pointer-events: none;
 }
-.cta-band__echo::after {
-  content: '';
-  position: absolute;
-  inset-inline: -6%;
-  top: calc(100% + var(--space-2));
-  height: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-}
+.cta-band__echo { --deck-reach: -6%; } /* its deck: .deck-line (components.css) */
 @media (max-width: 620px) { .cta-band__screen { padding: var(--space-7) var(--space-4); } }
 .cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
 .cta-band h2 > span { display: inline-block; } /* whole words, so they can rise in one by one */

@@ -405,6 +405,22 @@ body { caret-color: var(--color-cta); }
   background: var(--color-device-deck-notch);
 }
 
+/* ---------------------------------------------------------------- deck line
+   The keyboard-deck line under an outline laptop (the static hero's statement,
+   the closing band's echo): it reaches past its screen by --deck-reach on each
+   side, but never closer than 8px to the viewport's edge, so on a phone or a
+   tablet it cannot widen the page. (100% − 100vw) / 2 is the room beside a
+   centred box, as a negative inset. */
+.deck-line::after {
+  content: '';
+  position: absolute;
+  inset-inline: max(var(--deck-reach, -8%), (100% - 100vw) / 2 + 8px);
+  top: calc(100% + var(--space-2));
+  height: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
 /* ---------------------------------------------------------------- image placeholder
    Stand-in for the real screenshots. Inside a forest tile the tokens remap,
    so it reads correctly on both grounds without a second rule. */
