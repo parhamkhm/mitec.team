@@ -1338,13 +1338,26 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
 .cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
 .cta-band__links a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); font-weight: 500; }
 
-/* ---------------------------------------------------------------- responsive nav */
+/* ---------------------------------------------------------------- responsive nav
+   Up to 860px the nav is a bar: the logo at the start edge, then a tonal
+   «شروع پروژه» (always there, so a way to start is never out of sight; tonal,
+   so the page keeps one primary) and the menu toggle at the end edge, the
+   left on this RTL page. The menu opens from the toggle's corner: it hangs
+   from the bar's end side and grows out of its top-left (transform and
+   opacity only). It ends with the channels pair. While it is open, focus
+   stays in it and everything else is inert (home.js). */
 @media (max-width: 860px) {
+  .navbar { gap: var(--space-2); }
+  .navbar__cta--bar { display: inline-flex; margin-inline-start: auto; }
+  .navbar__cta--menu { display: none; }
   .navbar__toggle { display: inline-flex; }
   .navbar__menu {
     position: fixed;
-    inset: 68px var(--gutter) auto;
+    top: 68px;
+    inset-inline-end: var(--gutter);
+    width: min(400px, 100vw - 2 * var(--gutter)); /* 400: room for the channels side by side */
     margin: 0;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-1);
@@ -1353,16 +1366,30 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
     background: var(--color-surface);
     border: 1px solid var(--color-border-subtle);
     box-shadow: var(--shadow-elevated);
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(.96);
+    transform-origin: top left;
+    transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast);
   }
-  .navbar__menu.is-open { display: flex; }
+  .navbar__menu.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), visibility 0s;
+  }
   .navbar__link { padding-inline: var(--space-2); }
   .navbar__link::after { display: none; }
   .navbar__link.is-active { background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
-  .navbar__cta { margin-top: var(--space-2); justify-content: center; }
+  .navbar__menu .navbar__channels { display: grid; margin-top: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle); }
   /* DESIGN.md §8: no shadows on forest. */
   .navbar[data-surface="dark"] .navbar__menu { box-shadow: none; border-color: var(--color-border); }
+  /* Without JS the toggle can do nothing; the bar keeps the logo and «شروع پروژه». */
+  html:not(.js) .navbar__toggle { display: none; }
 }
+/* The narrowest phones: the bar's «شروع پروژه» drops its arrow, so the logo,
+   the button and the toggle keep clear of one another at 320px. */
+@media (max-width: 359px) { .navbar__cta--bar .icon { display: none; } }
 
 @media (max-width: 620px) {
   .cta-band__ctas { width: 100%; }

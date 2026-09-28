@@ -282,12 +282,23 @@ body { caret-color: var(--color-cta); }
 .navbar__link.is-active { font-weight: 700; color: var(--color-text-primary); }
 .navbar__link.is-active::after { background: var(--color-cta); }
 .navbar__cta { flex: 0 0 auto; }
+.navbar__cta--bar,
+.navbar__menu .navbar__channels { display: none; } /* beats .channels below */
 .navbar__toggle {
   display: none; flex: 0 0 auto; align-items: center; justify-content: center;
   width: 44px; height: 44px; padding: 0;
   border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm);
   background: var(--color-surface); color: var(--color-text-primary); cursor: pointer;
 }
+
+/* ---------------------------------------------------------------- Channels
+   The direct-message pair, tier 2 of the direct-message hierarchy (DESIGN.md
+   §5): «پیام در واتساپ» and «پیام در تلگرام» as two tonal buttons, the same
+   size as each other and smaller than the primary. Side by side wherever both
+   labels fit; where they don't (the narrowest phones), one above the other,
+   each full width, so neither label is cut. */
+.channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.75rem), 1fr)); gap: var(--space-3); }
+.channels .btn { width: 100%; }
 
 /* ---------------------------------------------------------------- Footer */
 .footer { padding: var(--space-9) var(--gutter) var(--space-7); }

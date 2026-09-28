@@ -11,37 +11,73 @@ import { initScope } from './scope.js';
 import { initWork } from './work.js';
 import { faNumber } from '../utils/format.js';
 import { setIcon } from '../utils/icon.js';
+import { APP_CONFIG } from '../config/app.config.js';
 
+// The menu of the phone and tablet bar (up to 860px), a disclosure. While it
+// is open, everything but the toggle and the menu is inert and Tab cycles
+// between the two; the toggle reads «بستن فهرست» and shows a cross. Escape
+// closes it and hands focus back to the toggle. Choosing a link closes it and
+// moves on to the link's target; a tap outside closes it and activates
+// nothing, since the page under it is inert.
 function initNav() {
   const toggle = document.getElementById('navToggle');
   const menu = document.getElementById('navMenu');
   if (!toggle || !menu) return;
+  const bar = matchMedia('(max-width: 860px)');
+  const glyph = toggle.querySelector('.icon');
+  const rest = ['.skip-link', '.navbar .logo', '.navbar__cta--bar', 'main', 'footer']
+    .map((s) => document.querySelector(s))
+    .filter(Boolean);
+  let isOpen = false;
 
-  const close = () => {
-    menu.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+  const set = (open, refocus = false) => {
+    isOpen = open;
+    menu.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'بستن فهرست' : 'باز کردن فهرست');
+    setIcon(glyph, open ? 'x' : 'menu');
+    for (const el of rest) el.inert = open;
+    if (!open && refocus) toggle.focus();
   };
-  const open = () => {
-    menu.classList.add('is-open');
-    toggle.setAttribute('aria-expanded', 'true');
-  };
+  // The toggle, then what the menu shows (the desktop-only CTA is hidden here).
+  const stops = () => [toggle, ...[...menu.querySelectorAll('a, button')].filter((el) => el.getClientRects().length)];
 
-  toggle.addEventListener('click', () => {
-    if (menu.classList.contains('is-open')) close();
-    else open();
-  });
-
-  // Close after choosing a link, on Escape, or when the layout grows past
-  // the breakpoint where the menu is no longer an overlay.
+  toggle.addEventListener('click', () => set(!isOpen));
   menu.addEventListener('click', (e) => {
-    if (e.target.closest('a')) close();
+    if (e.target.closest('a')) set(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (isOpen && !menu.contains(e.target) && !toggle.contains(e.target)) set(false);
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') close();
+    if (!isOpen) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      set(false, true);
+    } else if (e.key === 'Tab') {
+      const list = stops();
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      }
+    }
   });
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 860) close();
+  // Past 860px the menu is an ordinary row again.
+  bar.addEventListener('change', () => {
+    if (!bar.matches && isOpen) set(false);
   });
+}
+
+// Every WhatsApp, Telegram and Instagram link takes its address from
+// src/config/app.config.js (contact), so each is set in one place. The markup
+// holds the same addresses for visitors without JS; keep them in step.
+function initChannels() {
+  for (const link of document.querySelectorAll('[data-channel]')) {
+    const href = APP_CONFIG.contact?.[link.dataset.channel];
+    if (href) link.href = href;
+  }
 }
 
 // The nav marks the section under a thin band at ~45% of the viewport.
@@ -118,6 +154,7 @@ async function initProjectCount() {
 }
 
 initNav();
+initChannels();
 initScrollSpy();
 initProjectCount();
 initPortal();

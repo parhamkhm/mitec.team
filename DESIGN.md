@@ -265,7 +265,7 @@ The home hero's forest scene (§5) is measured as the hero, not against this bud
 | Level | Light | On forest | When |
 |---|---|---|---|
 | **Primary** | bg `--color-cta`, text `--color-cta-text`, hover `--color-cta-hover`, active `--color-cta-active` | same tokens (resolve to mint + dark text) | The one main action: «شروع پروژه», «ارسال درخواست» |
-| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «شروع پروژه», «مشاوره رایگان» |
+| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «شروع پروژه», «مشاوره رایگان», the channels «پیام در واتساپ» / «پیام در تلگرام» |
 | **Outline** | transparent, 1px `--color-border-strong`, text `--color-text-primary`, hover bg `--color-surface-sunken` | same tokens | Navigation-type actions: «دیدن نمونه‌کارها» |
 | **Text link** | `--color-link`, underline, `text-underline-offset: 5px` | same | Tertiary actions, inline links |
 | **Disabled** | bg `--sage-100`, text `--sage-400` | bg `--forest-raised`, text `--forest-line-strong` | Never pale green |
@@ -301,7 +301,23 @@ Never remove outlines without a replacement.
 - Background: `--color-bg` at 88% opacity + `backdrop-filter: blur(12px)`; add a `--color-border-subtle` bottom border once scrolled.
 - Links: `--color-text-secondary`. Active link: `--color-text-primary` + 2px `--color-cta` underline.
 - Nav CTA: **tonal**.
+- Up to 860px it is a bar: the logo at the start edge (right); at the end edge (left) a tonal `btn--sm` «شروع پروژه», always there, and the 44px menu toggle beside it, so a way to start a project is never out of sight on a phone. They never overlap or wrap from 320px (below 360px the button drops its arrow).
+- The menu opens from the toggle's corner: a panel hanging from the bar's end side, full width between the gutters on phones and 400px at most (room for the channels side by side), growing out of its top-left (scale .96 → 1 with opacity, `--dur` in, `--dur-fast` out). Its links, then the channels pair (Direct messages below).
+- While the menu is open the toggle reads «بستن فهرست» and shows ×, the rest of the page is inert, and Tab cycles between the toggle and the menu. Escape closes it and returns focus to the toggle; a tap outside closes it.
 - Home page: the nav overlays the hero (fixed). It uses the forest variant (`data-surface="dark"`, **94%** fill, no bottom border) over the hero scene and switches to light once the visitor is inside the room. 94% rather than a see-through 70%, because late in the scene it is the light room that shows through, and the tonal CTA needs 94% to stay at 4.73:1 on it.
+
+### Direct messages
+
+A direct message is a success in its own right (PRODUCT.md), so every place that offers one uses the same three tiers:
+
+| Tier | Element |
+|---|---|
+| **1** | «شروع پروژه»: the one primary button. |
+| **2** | «پیام در واتساپ» and «پیام در تلگرام»: **tonal** buttons with their icons (Lucide `message-circle`, `send`), side by side, the same size as each other and smaller than the primary. Where both labels don't fit side by side (the narrowest phones), one above the other, each full width. |
+| **3** | «پیگیری سفارش» and Instagram: plain text links. |
+
+- Where: the closing band (all three tiers), the phone menu (ends with tier 2), About (one tier-2 pair under the cards, with the line «مستقیم با خود تیم حرف بزنید»), the footer (the three channels as small icon + text links). Services' «بپرسید» scrolls to the closing band's tier 2.
+- The addresses come from `app.config.js` (`contact`); the markup carries the same ones for visitors without JS.
 
 ### Hero
 
