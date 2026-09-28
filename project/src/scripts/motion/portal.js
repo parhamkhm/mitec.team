@@ -80,6 +80,7 @@ export function initPortal() {
   const room = q('.portal__room');
   const frame = q('.portal__frame');
   const glass = q('.portal__glass');
+  const shot = q('.portal__shot');
   const shine = q('.portal__reflection');
   const glow = q('.portal__glow');
   const base = q('.portal__base');
@@ -93,7 +94,7 @@ export function initPortal() {
   // before the statement starts at .16.
   const lift = [...copy.children].map((el, i) => [el, [0, 0.015, 0.03, 0.045][i], [0.1, 0.12, 0.14, 0.15][i]]);
   const reveal = [...words, ...phrases, ...lines];
-  const styled = [hint, room, frame, glass, shine, glow, base, shadow, say, loader, fill, card, ...stats, ...reveal, ...lift.map(([el]) => el)];
+  const styled = [hint, room, frame, glass, shot, shine, glow, base, shadow, say, loader, fill, card, ...stats, ...reveal, ...lift.map(([el]) => el)];
 
   let light = null;
   const setNav = (on) => {
@@ -331,6 +332,9 @@ export function initPortal() {
     // Invisible means unfocusable. Only the actions go inert, so the heading
     // stays in the accessibility tree.
     if (actions.inert !== !o) actions.inert = !o;
+    // Stacked, the screenshot on the lit screen goes with the copy (by .15),
+    // before the statement comes up on the glass.
+    if (stacked) shot.style.opacity = 1 - inCubic(seg(p, 0, 0.15));
 
     const lean = inOutSine(seg(p, 0, 0.18));
     const s = p < 0.18 ? lerp(1, 1.25, lean)
@@ -396,6 +400,7 @@ export function initPortal() {
       tau = view.coarse ? 45 : 90;
       // Lite and full animate different spans; start both from clean.
       for (const el of reveal) el.removeAttribute('style');
+      if (!stacked) shot.style.opacity = '';
 
       if (!stacked) loadCards();
       placeCards();

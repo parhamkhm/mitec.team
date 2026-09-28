@@ -379,6 +379,21 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
   html.motion .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
 }
 
+/* Stacked only: the first project's screenshot on the lit screen at rest,
+   so the brightest shape on a phone is real work rather than a blank white
+   field. It fades out with the copy (portal.js), before the statement comes
+   up on the glass. Loaded lazily, so no other layout downloads it. */
+.portal__shot { display: none; }
+html.motion .portal--stacked .portal__shot {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right top;
+}
+
 .portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__deck-shadow, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),
 .portal.is-live .portal__copy > * { will-change: transform, opacity; }
 
