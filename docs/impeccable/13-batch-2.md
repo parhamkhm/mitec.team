@@ -78,7 +78,9 @@ The three files total 1.7 KB, so merging them would save three requests; it is t
   1024×768, 1024×1366, 768×1024, 414, 390, 360 and 320.
 - **The font landing later.** No single `size-adjust` can match every line break. At 1440 and wider the display is
   capped, and the H1 fits in three lines at 76 px in every fallback, while Vazirmatn needs 72 px. So each
-  Vazirmatn weight re-runs the layout as it lands, in the same task, and no frame is drawn with the old fit.
+  Vazirmatn weight re-runs the layout as it lands. (Corrected in batch 4: Chrome first lays the H1 out in
+  Vazirmatn at the old 76 px, in four lines, then at the re-fit 72 px, so a late swap counts as two small shifts,
+  about 0.046 together; see `15-batch-4.md`.)
 - **Unchanged:** reduced motion, forced colours and no-JS keep the static band. If the module fails to load, the
   static page also drops the layout's sizes.
 
