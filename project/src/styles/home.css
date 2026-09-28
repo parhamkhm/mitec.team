@@ -235,6 +235,9 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 /* ---- the caption: the active project's name and one line about it (no-JS
    items reuse the two classes) */
 .work-caption__name { margin: 0; color: var(--color-text-primary); font-size: var(--text-h4); font-weight: 800; line-height: 1.4; }
+/* Under the stage the name keeps to one line (the full name in its title),
+   so a long one can never grow the caption and move the controls. */
+.work-caption .work-caption__name { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .work-caption__summary { margin: 0; color: var(--color-text-muted); font-size: var(--text-body); line-height: 1.8; }
 
 /* ---- details (the no-JS items) */
@@ -745,31 +748,49 @@ html:has(.work-sheet[open]) { overflow: hidden; scrollbar-gutter: stable; }
 @media (max-width: 759px) { .work-arrow { display: none; } }
 
 .work-controls { display: flex; align-items: center; justify-content: center; gap: var(--space-4); min-height: 44px; margin-top: var(--space-4); }
-.work-dots { display: flex; align-items: center; }
+/* Dots: 8px, the active one a 28px pill, 24px apart; each a 24 × 44px
+   target (a 44px-wide one would push them apart). Drawn with transforms only:
+   a pill is two 8px caps and the bar between them. At rest the caps sit
+   together and the bar is folded; active, the caps move 10px apart and the
+   bar opens between them, and the dots on either side step 10px aside, so
+   the row looks as it did when the active box grew to 44px. The row's 10px
+   of padding each side is that room. */
+.work-dots { display: flex; align-items: center; padding-inline: 10px; }
 .work-dot {
+  --pill: var(--color-border-strong);
   position: relative;
   width: 24px;
-  height: 24px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
   background: none;
   cursor: pointer;
-  transition: width var(--dur) var(--ease-out);
+  transition: translate var(--dur) var(--ease-out);
 }
-.work-dot::before {
-  content: '';
+.work-dot::before,
+.work-dot::after,
+.work-dot__bar {
   position: absolute;
-  top: 8px;
-  inset-inline: 8px;
+  top: 18px;
+  left: calc(50% - 4px);
+  width: 8px;
   height: 8px;
   border-radius: var(--radius-pill);
-  background: var(--color-border-strong);
-  transition: background-color var(--dur) var(--ease-out);
+  background: var(--pill);
+  transition: transform var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
 }
-/* 44 − 2 × 8: the active dot is a 28px pill. */
-.work-dot[aria-current="true"] { width: 44px; }
-.work-dot[aria-current="true"]::before { background: var(--color-accent); }
+.work-dot::before,
+.work-dot::after { content: ''; }
+.work-dot__bar { left: calc(50% - 10px); width: 20px; border-radius: 0; transform: scaleX(0); }
+.work-dot[aria-current="true"] { --pill: var(--color-accent); }
+.work-dot[aria-current="true"]::before { transform: translateX(-10px); }
+.work-dot[aria-current="true"]::after { transform: translateX(10px); }
+.work-dot[aria-current="true"] .work-dot__bar { transform: scaleX(1); }
+/* On this RTL page the dots before the active one (in the markup) sit to its
+   right, those after it to its left. */
+.work-dot:has(~ .work-dot[aria-current="true"]) { translate: 10px 0; }
+.work-dot[aria-current="true"] ~ .work-dot { translate: -10px 0; }
 .work-counter { display: flex; align-items: center; gap: var(--space-3); color: var(--color-text-secondary); font-size: var(--text-caption); font-variant-numeric: tabular-nums; }
 .work-progress { position: relative; width: 120px; height: 2px; overflow: hidden; border-radius: 2px; background: var(--color-border); }
 .work-progress span {

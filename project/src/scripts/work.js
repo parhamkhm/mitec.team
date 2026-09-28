@@ -122,7 +122,17 @@ export async function initWork() {
 function build(section, host, projects) {
   const N = projects.length;
   const many = N > 1;
+  // The backdrop's two crossfading layers: the markup has the first (with a
+  // src, for the first paint); the second is made here, so no <img> ever
+  // stands in the page without one.
   const layers = [...section.querySelectorAll('.work__ambient-layer')];
+  if (layers.length === 1) {
+    const second = layers[0].cloneNode(false);
+    second.removeAttribute('src');
+    second.classList.remove('is-on');
+    layers[0].after(second);
+    layers.push(second);
+  }
   const easeOut = getComputedStyle(root).getPropertyValue('--ease-out').trim() || 'ease-out';
 
   // ---- state
@@ -169,8 +179,10 @@ function build(section, host, projects) {
     if (N <= MAX_DOTS) {
       const wrap = h('div', 'work-dots');
       dots = projects.map((_, i) => {
-        const d = h('button', 'work-dot', { type: 'button', 'aria-label': `رفتن به پروژه‌ی ${faNumber(i + 1)}` });
+        // Named by project, like the side cards' fronts.
+        const d = h('button', 'work-dot', { type: 'button', 'aria-label': `رفتن به پروژه‌ی ${nameOf(projects[i])}` });
         d.dataset.to = i;
+        d.append(h('span', 'work-dot__bar', { 'aria-hidden': 'true' }));
         return d;
       });
       wrap.append(...dots);
@@ -498,7 +510,7 @@ function build(section, host, projects) {
     const pr = projects[p];
     const inc = capItems[1 - capCur], out = capItems[capCur];
     capCur = 1 - capCur;
-    inc.name.textContent = nameOf(pr);
+    inc.name.textContent = inc.name.title = nameOf(pr);
     inc.summary.textContent = summaryOf(pr);
     inc.summary.title = summaryOf(pr);
     // Manual moves are announced once; autoplay's never.
