@@ -382,7 +382,8 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
 /* Stacked only: the first project's screenshot on the lit screen at rest,
    so the brightest shape on a phone is real work rather than a blank white
    field. It fades out with the copy (portal.js), before the statement comes
-   up on the glass. Loaded lazily, so no other layout downloads it. */
+   up on the glass. Preloaded where the hero stacks (index.html <head>) and
+   lazy everywhere else, so no other layout downloads it. */
 .portal__shot { display: none; }
 html.motion .portal--stacked .portal__shot {
   display: block;

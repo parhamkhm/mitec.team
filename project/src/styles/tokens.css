@@ -4,8 +4,8 @@
    root for the rules these tokens encode.
 
    Only the STRUCTURAL scales still come from the retired Mitec Design System —
-   spacing, radii and motion (src/styles/scales/, linked from index.html's
-   <head> before this file), none of which carry colour.
+   spacing, radii and motion (the first section below), none of which carry
+   colour.
    Its colour, gradient and elevation files were removed: this system is
    light-first sage and forest green, and the old palette was navy-based,
    which rule 1 of DESIGN.md now forbids outright.
@@ -13,6 +13,54 @@
    Components must use the semantic --color-* tokens only. Primitives live here
    and nowhere else; a raw hex in a component file is a defect.
    ────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Structural scales ──────────────────────────────────────────
+   Spacing, radii and motion, kept as the retired system exported them (the
+   @kind notes are its own). They were three files; they live here so the
+   page makes one request for them, not three: on a slow mobile network each
+   request costs a full round trip. */
+:root{
+--space-0:0px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;
+--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;--space-11:80px;--space-12:96px;--space-13:128px;
+
+/* Rhythm */
+--gutter:24px;
+--section-y:clamp(64px,8vw,128px); /* @kind spacing */
+--container-max:1200px;
+--container-narrow:760px;
+--pad-card:24px;
+--pad-card-lg:32px;
+--pad-control-x:20px;
+--pad-control-y:11px;
+}
+:root{
+--radius-xs:6px;--radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;--radius-2xl:36px;--radius-pill:999px;--radius-circle:50%;
+--radius-card:var(--radius-lg);
+--radius-control:var(--radius-pill);
+--radius-input:var(--radius-sm);
+--radius-media:var(--radius-md);
+--border-width:1px;--border-width-thick:1.5px;
+}
+:root{
+--dur-instant:90ms; /* @kind other */
+--dur-fast:140ms; /* @kind other */
+--dur:220ms; /* @kind other */
+--dur-slow:420ms; /* @kind other */
+--dur-ambient:6s; /* @kind other */
+--ease-out:cubic-bezier(.22,.61,.36,1); /* @kind other */
+--ease-in-out:cubic-bezier(.65,.05,.36,1); /* @kind other */
+--ease-entrance:cubic-bezier(.16,.84,.44,1); /* @kind other */
+--transition-control:background-color var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out),color var(--dur) var(--ease-out),border-color var(--dur) var(--ease-out); /* @kind other */
+--transition-lift:transform var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out); /* @kind other */
+--lift-hover:translateY(-2px); /* @kind other */
+--press-scale:.97; /* @kind other */
+}
+@media (prefers-reduced-motion:reduce){:root{
+--dur-instant:0ms; /* @kind other */
+--dur-fast:0ms; /* @kind other */
+--dur:0ms; /* @kind other */
+--dur-slow:0ms; /* @kind other */
+}}
 
 /* ─── Primitives ─────────────────────────────────────────────── */
 :root {

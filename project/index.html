@@ -16,16 +16,17 @@
      in tokens.css) and the icons are the inline sprite at the top of <body>. No font is preloaded:
      on a slow connection a preload takes bandwidth from the stylesheets and delays first paint,
      and the metric-matched fallback already keeps the swap from moving text. -->
-<!-- The three structural scales are linked here rather than @imported from tokens.css, so they
-     download alongside it instead of after it. -->
-<link rel="stylesheet" href="src/styles/scales/spacing.css">
-<link rel="stylesheet" href="src/styles/scales/radii.css">
-<link rel="stylesheet" href="src/styles/scales/motion.css">
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/components.css">
 <link rel="stylesheet" href="src/styles/home.css">
 <link rel="stylesheet" href="src/styles/portal.css">
 <link rel="stylesheet" href="src/styles/motion.css">
+<!-- The stacked hero's screenshot on the lit screen (see .portal__shot): fetched early, at high
+     priority, only where the hero stacks. Stacked is the layout script's call, and today it
+     stacks at 867px wide or less and at 612px tall or less, whatever the other side (measured with
+     the current copy; recheck if the hero copy or its sizes change). Elsewhere the image is lazy and
+     hidden, so a desktop never downloads it. -->
+<link rel="preload" as="image" href="public/images/work/mery-home-960.webp" fetchpriority="high" media="(max-width: 867px), (max-height: 612px)">
 <script>
   // The whole module graph of src/scripts/home.js, preloaded in parallel as soon as the page has
   // first painted. Without it the browser finds each import only once the file that imports it has
@@ -199,7 +200,8 @@
         <div class="laptop__lid portal__lid"><span class="laptop__camera"></span></div>
         <!-- Stacked only (phones, and wherever the copy does not fit on the screen): the first
              project's screenshot on the lit screen at rest, fading out with the copy. Keep it in
-             step with the first entry of src/data/portfolio.json (image.src960). -->
+             step with the first entry of src/data/portfolio.json (image.src960) and with its
+             preload in <head>. -->
         <div class="portal__glass"><img class="portal__shot" src="public/images/work/mery-home-960.webp" width="960" height="461" alt="" loading="lazy" decoding="async"><span class="portal__reflection"></span></div>
         <div class="portal__deck-shadow"></div>
         <div class="laptop__base portal__base"></div>

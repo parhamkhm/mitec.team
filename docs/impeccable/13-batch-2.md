@@ -134,3 +134,9 @@ first project's screenshot at rest. It is `portfolio.json`'s first `src960`, wit
 `docs/impeccable/shots/` (on disk, not in git) has `b2-before-*` and `b2-after-*` at 1440, 768 and 390. For each,
 `-first` is the first frame with the modules held back and `-settled` is the page after they ran. Before, the two
 differ at every width; after, they are the same.
+
+## Open items
+
+- **Geeza Pro (iOS fallback): waiting for the owner's iPhone values.** `Vazirmatn Geeza` stays at `size-adjust: 100%`
+  (and the matching overrides) until the owner opens `public/fonts/fallback-check.html` on an iPhone and sends the
+  lines it prints; they go into `src/styles/tokens.css` as they are.
