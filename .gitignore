@@ -20,3 +20,7 @@ Claude outputs/
 # Source PNGs of the Services card illustrations (about 1.3 MB each); the page
 # uses only the WebP exports next to them (-768 / -1536).
 project/public/images/services/*.png
+
+# Before/after screenshots from the Impeccable pass: kept on disk, referenced
+# by path in docs/impeccable/, never committed.
+docs/impeccable/shots/
