@@ -132,9 +132,26 @@ function initFaq() {
     if (!btn) return;
     const item = btn.closest('.faq-item');
     const willOpen = btn.getAttribute('aria-expanded') !== 'true';
+    const top = btn.getBoundingClientRect().top;
     // Single-open accordion: opening one closes every other item.
     for (const other of items) setOpen(other, other === item && willOpen);
+    holdInPlace(btn, top);
   });
+
+  // Closing the open item above collapses it over --dur-slow, which would
+  // carry the question just tapped up the screen (off it, on a phone with a
+  // long answer open). Scroll along with the collapse, frame by frame, so the
+  // question stays where it was under the finger.
+  function holdInPlace(el, top) {
+    const ms = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dur-slow')) || 0;
+    const end = performance.now() + ms + 60;
+    const tick = () => {
+      const dy = el.getBoundingClientRect().top - top;
+      if (Math.abs(dy) >= 0.5) window.scrollBy({ top: dy, behavior: 'instant' });
+      if (performance.now() < end) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 }
 
 // The Proof room's «projects delivered» figure is the number of projects in

@@ -1348,20 +1348,27 @@ html:not(.js) .scope { display: none; }
   padding: var(--space-5) 0; cursor: pointer; min-height: 44px;
 }
 .faq-item__chevron { flex: 0 0 auto; width: 18px; height: 18px; color: var(--color-tonal-text); }
+@media (hover: hover) { .faq-item__q:hover { color: var(--color-tonal-text); } }
+/* Without JS every answer is open and the buttons do nothing: no +/−
+   markers and no pointer. */
+html:not(.js) .faq-item__chevron { display: none; }
+html:not(.js) .faq-item__q { cursor: default; }
 .faq-item__a { padding-bottom: var(--space-5); color: var(--color-text-secondary); font-size: var(--text-body); line-height: var(--lh-body); }
 .faq-item__a[hidden] { display: none; }
 .faq-item__body { max-width: calc(68 * var(--ch)); }
 /* With JS the panels collapse by grid rows (0fr <-> 1fr) so opening animates;
-   home.js makes closed ones inert. The padding travels with the row so a
-   closed panel is truly zero-height. */
+   home.js makes closed ones inert. The space under an answer is a block
+   inside the collapsing row, so a closed panel is truly zero-height and only
+   the row animates. */
 html.js .faq-item__a {
   display: grid;
   grid-template-rows: 0fr;
   padding-bottom: 0;
-  transition: grid-template-rows var(--dur-slow) var(--ease-in-out), padding-bottom var(--dur-slow) var(--ease-in-out);
+  transition: grid-template-rows var(--dur-slow) var(--ease-in-out);
 }
-html.js .faq-item.is-open .faq-item__a { grid-template-rows: 1fr; padding-bottom: var(--space-5); }
+html.js .faq-item.is-open .faq-item__a { grid-template-rows: 1fr; }
 html.js .faq-item__body { min-height: 0; overflow: hidden; }
+html.js .faq-item__body::after { content: ''; display: block; height: var(--space-5); }
 
 /* ---------------------------------------------------------------- closing CTA band
    Centred. The heading, line and buttons sit on a "screen": an outline echo
