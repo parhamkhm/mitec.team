@@ -475,7 +475,7 @@
           <span class="service-card__badge"><svg class="icon icon-shield-check" aria-hidden="true"><use href="#i-shield-check"/></svg></span>
           <h3 class="card-title">سئو، امنیت و بهینه‌سازی</h3>
           <p>سئوی پایه، بهینه‌سازی سرعت، امنیت و گواهی SSL، و خرید و تنظیم دامنه و هاست به نام خودتان.</p>
-          <a class="service-card__link" href="#contact">بپرسید <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
+          <a class="service-card__link" href="#channels">بپرسید <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-6-768.webp" srcset="public/images/services/service-6-768.webp 768w, public/images/services/service-6-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
@@ -566,6 +566,14 @@
             <p class="about-card__role">بک‌اند و زیرساخت</p>
             <p class="about-card__bio">سرویس‌های اختصاصی، CRM و سیستم‌های مدیریتی، اتوماسیون و تحلیل داده، زیرساخت و امنیت، و پشتیبانی فنی بعد از تحویل.</p>
           </div>
+        </div>
+      </div>
+
+      <div class="about-channels" data-reveal>
+        <p class="about-channels__line">مستقیم با خود تیم حرف بزنید</p>
+        <div class="channels">
+          <a class="btn btn--md btn--tonal" href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp"><svg class="icon icon-message-circle" aria-hidden="true"><use href="#i-message-circle"/></svg> پیام در واتساپ</a>
+          <a class="btn btn--md btn--tonal" href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram"><svg class="icon icon-send" aria-hidden="true"><use href="#i-send"/></svg> پیام در تلگرام</a>
         </div>
       </div>
     </div>
@@ -702,14 +710,19 @@
         <p>در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید. هر جا مطمئن نبودید، گزینه‌ی «نمی‌دانم» هست و ما پیشنهاد می‌دهیم.</p>
         <div class="cta-band__ctas">
           <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
-          <a class="btn btn--lg btn--outline" href="./track/">پیگیری سفارش</a>
         </div>
-      </div>
-      <div class="cta-band__links">
-        <span class="cta-band__links-label">یا مستقیم پیام بدهید:</span>
-        <a href="https://wa.me/989000000000" target="_blank" rel="noopener">واتساپ</a>
-        <a href="https://t.me/mitec_studio" target="_blank" rel="noopener">تلگرام</a>
-        <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener">اینستاگرام</a>
+        <!-- Services' «بپرسید» lands here. -->
+        <div class="cta-band__channels" id="channels">
+          <span class="cta-band__channels-label">یا مستقیم پیام بدهید:</span>
+          <div class="channels">
+            <a class="btn btn--md btn--tonal" href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp"><svg class="icon icon-message-circle" aria-hidden="true"><use href="#i-message-circle"/></svg> پیام در واتساپ</a>
+            <a class="btn btn--md btn--tonal" href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram"><svg class="icon icon-send" aria-hidden="true"><use href="#i-send"/></svg> پیام در تلگرام</a>
+          </div>
+        </div>
+        <div class="cta-band__more">
+          <a href="./track/">پیگیری سفارش</a>
+          <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram">اینستاگرام</a>
+        </div>
       </div>
     </div>
   </section>
@@ -723,9 +736,12 @@
     <nav class="footer__nav" aria-label="فهرست پایین صفحه">
       <a href="#services">خدمات</a>
       <a href="#work">نمونه‌کارها</a>
-      <a href="./order/">شروع پروژه</a>
-      <a href="./track/">پیگیری سفارش</a>
     </nav>
+    <div class="footer__channels">
+      <a href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp"><svg class="icon icon-message-circle" aria-hidden="true"><use href="#i-message-circle"/></svg> واتساپ</a>
+      <a href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram"><svg class="icon icon-send" aria-hidden="true"><use href="#i-send"/></svg> تلگرام</a>
+      <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram"><svg class="icon icon-instagram" aria-hidden="true"><use href="#i-instagram"/></svg> اینستاگرام</a>
+    </div>
     <span class="footer__copy">© ۱۴۰۵ mitec — طراحی سایت و راهکارهای دیجیتال</span>
   </div>
 </footer>

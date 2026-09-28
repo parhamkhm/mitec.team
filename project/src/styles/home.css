@@ -856,6 +856,10 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
    A two-line display heading whose lines converge from opposite sides as the
    section scrolls in (effects.js). */
 .about-heading { gap: var(--space-5); }
+/* Under the cards: one pair of channels (tier 2), with its line. */
+.about-channels { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-top: var(--space-9); text-align: center; }
+.about-channels__line { margin: 0; font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); }
+.about-channels .channels { width: min(100%, 30rem); }
 .about-title { font-size: clamp(34px, 5vw, 64px); font-weight: 500; line-height: 1.25; letter-spacing: 0; }
 .about-title__line { display: block; }
 .about-card { display: flex; gap: var(--space-5); align-items: center; }
@@ -1334,9 +1338,14 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
 .cta-band h2 > span { display: inline-block; } /* whole words, so they can rise in one by one */
 .cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: calc(52 * var(--ch)); }
 .cta-band__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
-.cta-band__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-7); align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-6); width: 100%; }
-.cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
-.cta-band__links a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); font-weight: 500; }
+/* Tier 2: the channels, under the primary. Services' «بپرسید» lands on them,
+   clear of the fixed nav. */
+.cta-band__channels { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); width: min(100%, 30rem); scroll-margin-top: 96px; }
+.cta-band__channels-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+.cta-band__channels .channels { width: 100%; }
+/* Tier 3: order tracking and Instagram, as text links. */
+.cta-band__more { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-7); }
+.cta-band__more a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); text-decoration: underline; text-underline-offset: 5px; }
 
 /* ---------------------------------------------------------------- responsive nav
    Up to 860px the nav is a bar: the logo at the start edge, then a tonal

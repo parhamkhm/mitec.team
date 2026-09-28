@@ -300,12 +300,17 @@ body { caret-color: var(--color-cta); }
 .channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.75rem), 1fr)); gap: var(--space-3); }
 .channels .btn { width: 100%; }
 
-/* ---------------------------------------------------------------- Footer */
-.footer { padding: var(--space-9) var(--gutter) var(--space-7); }
+/* ---------------------------------------------------------------- Footer
+   No inline padding of its own: .container already brings the gutter. */
+.footer { padding-block: var(--space-9) var(--space-7); }
 .footer__inner { display: flex; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap; align-items: center; }
-.footer__nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--text-body-sm); }
-.footer__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text-secondary); }
-.footer__nav a:hover { color: var(--color-text-primary); }
+.footer__nav,
+.footer__channels { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--text-body-sm); }
+.footer__nav a,
+.footer__channels a { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--color-text-secondary); }
+.footer__nav a:hover,
+.footer__channels a:hover { color: var(--color-text-primary); }
+.footer__channels .icon { width: 16px; height: 16px; }
 .footer__copy { font-size: var(--text-caption); color: var(--color-text-muted); }
 
 /* ---------------------------------------------------------------- Laptop

@@ -424,12 +424,13 @@ Inner pages (and any hero that is not the home portal):
 
 - Full width, `data-surface="dark"`, grid texture + one mint glow.
 - Heading `--color-text-primary`, one line of `--color-text-body`, one primary button (mint).
-- Home page: centred. The heading, line and buttons sit on a "screen" framed by a `--color-border` outline echo of the hero laptop; the heading reveals word by word.
+- Home page: centred. The heading, line and buttons sit on a "screen" framed by a `--color-border` outline echo of the hero laptop; the heading reveals word by word. On the screen, under the primary: the channels pair with its lead-in «یا مستقیم پیام بدهید:» (`--color-text-muted`), then «پیگیری سفارش» and Instagram as text links (Direct messages). No hairline above them.
 
 ### Footer
 
 - `data-surface="dark"`, background `--color-bg-alt` (`#0B211C`).
 - Links `--color-text-secondary` → hover `--color-text-primary`. Small print `--color-text-muted`.
+- The three channels as small icon + text links (WhatsApp, Telegram, Instagram). No repeated CTAs: the closing band right above already has them.
 
 ---
 
