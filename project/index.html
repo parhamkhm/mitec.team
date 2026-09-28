@@ -13,15 +13,55 @@
      requesting /favicon.ico (a console 404) until one exists. -->
 <link rel="icon" href="data:,">
 <!-- Everything is served from this origin: Vazirmatn is self-hosted (public/fonts, @font-face
-     in tokens.css) and the icons are the inline sprite at the top of <body>. Only the H1's weight
-     (800) is preloaded: the metric-matched fallback already keeps the swap from moving text, and
-     preloading more costs first paint on a slow connection. -->
-<link rel="preload" href="public/fonts/vazirmatn-800.woff2" as="font" type="font/woff2" crossorigin>
+     in tokens.css) and the icons are the inline sprite at the top of <body>. No font is preloaded:
+     on a slow connection a preload takes bandwidth from the stylesheets and delays first paint,
+     and the metric-matched fallback already keeps the swap from moving text. -->
+<!-- The three structural scales are linked here rather than @imported from tokens.css, so they
+     download alongside it instead of after it. -->
+<link rel="stylesheet" href="src/styles/scales/spacing.css">
+<link rel="stylesheet" href="src/styles/scales/radii.css">
+<link rel="stylesheet" href="src/styles/scales/motion.css">
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/components.css">
 <link rel="stylesheet" href="src/styles/home.css">
 <link rel="stylesheet" href="src/styles/portal.css">
 <link rel="stylesheet" href="src/styles/motion.css">
+<script>
+  // The whole module graph of src/scripts/home.js, preloaded in parallel as soon as the page has
+  // first painted. Without it the browser finds each import only once the file that imports it has
+  // arrived (four levels deep), and no module runs until the last one is in. Not <link
+  // rel="modulepreload"> tags: those start at once and, on a slow connection, take bandwidth from
+  // the stylesheets and hold up first paint. Keep the list in step with the imports.
+  try {
+    new PerformanceObserver((list, observer) => {
+      if (!list.getEntriesByName('first-contentful-paint').length) return;
+      observer.disconnect();
+      for (const href of [
+        'src/scripts/home.js',
+        'src/scripts/motion/engine.js',
+        'src/scripts/motion/easing.js',
+        'src/scripts/motion/portal.js',
+        'src/scripts/motion/effects.js',
+        'src/scripts/motion/reveal.js',
+        'src/scripts/scope.js',
+        'src/scripts/work.js',
+        'src/utils/icon.js',
+        'src/utils/format.js',
+        'src/utils/estimate.js',
+        'src/api/client.js',
+        'src/api/endpoints.js',
+        'src/api/mock.js',
+        'src/api/mapper.js',
+        'src/config/app.config.js'
+      ]) {
+        const link = document.createElement('link');
+        link.rel = 'modulepreload';
+        link.href = href;
+        document.head.append(link);
+      }
+    }).observe({ type: 'paint', buffered: true });
+  } catch { /* no paint timing: the imports load one level at a time, as before */ }
+</script>
 <script>
   // Decided before first paint so the pinned hero never flashes in its static
   // layout first. Motion is opt-in; motion/engine.js keeps this in sync after.

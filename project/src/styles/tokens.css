@@ -4,7 +4,8 @@
    root for the rules these tokens encode.
 
    Only the STRUCTURAL scales still come from the retired Mitec Design System —
-   spacing, radii and motion (src/styles/scales/), none of which carry colour.
+   spacing, radii and motion (src/styles/scales/, linked from index.html's
+   <head> before this file), none of which carry colour.
    Its colour, gradient and elevation files were removed: this system is
    light-first sage and forest green, and the old palette was navy-based,
    which rule 1 of DESIGN.md now forbids outright.
@@ -12,10 +13,6 @@
    Components must use the semantic --color-* tokens only. Primitives live here
    and nowhere else; a raw hex in a component file is a defect.
    ────────────────────────────────────────────────────────────────────────── */
-
-@import url("scales/spacing.css");
-@import url("scales/radii.css");
-@import url("scales/motion.css");
 
 /* ─── Primitives ─────────────────────────────────────────────── */
 :root {
@@ -57,8 +54,8 @@
 
    Self-hosted (public/fonts, see its README): a CDN can be slow or unreachable
    from Iran, and a hanging font stylesheet blanks the page. Vazirmatn v33.003,
-   subset to Arabic + Latin, one file per weight; index.html preloads 800
-   (the H1).
+   subset to Arabic + Latin, one file per weight, none preloaded (a preload
+   takes bandwidth from the stylesheets on a slow connection).
 
    Until a weight arrives, text shows in the device's own Persian font,
    scaled and re-metricked to Vazirmatn so the swap moves no text. One
