@@ -24,7 +24,7 @@ import { icon, setIcon } from '../utils/icon.js';
 // cannot be loaded, the way out for visitors unsure of their site type, the
 // count of chosen add-ons under the total, and the defaults for the optional
 // section fields of the same names: the two that fold a long add-on list, the
-// price of one more page, and a free add-on's price.
+// breakdown's button, the price of one more page, and a free add-on's price.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
@@ -32,6 +32,7 @@ const COPY = {
   picked: '{n} امکان انتخاب شده',
   showAllAddons: 'نمایش همه‌ی امکانات ({n})',
   showFewerAddons: 'نمایش کمتر',
+  breakdown: 'جزئیات برآورد',
   perPage: 'هر صفحه‌ی بیشتر: از {price}',
   free: 'بدون هزینه‌ی اضافه'
 };
@@ -111,16 +112,21 @@ export async function initScope() {
   // the slider (0 until then). `pages` is what the current type shows.
   const state = { type: types[0], pages: 0, wanted: 0, picked: new Set() };
 
-  // ---- heading (+ the «sample numbers» badge while the numbers are placeholders)
+  // «Sample numbers», while the numbers are placeholders: in the heading, and
+  // again beside the total, so the bar (or a screenshot of it) says so too.
+  const sampleBadge = () => {
+    const badge = el('span', 'badge badge--highlight');
+    badge.append(icon('clock'), S.placeholderBadge);
+    return badge;
+  };
+  const sample = P.placeholder && S.placeholderBadge;
+
+  // ---- heading
   const title = el('div', 'scope-head__title');
   const h2 = el('h2', 'section-heading__title section-heading__title--display-3', S.title);
   h2.id = 'scope-title';
   title.append(h2);
-  if (P.placeholder && S.placeholderBadge) {
-    const badge = el('span', 'badge badge--highlight');
-    badge.append(icon('clock'), S.placeholderBadge);
-    title.append(badge);
-  }
+  if (sample) title.append(sampleBadge());
   head.replaceChildren(el('span', 'section-heading__eyebrow', S.eyebrow), title);
   if (S.subtitle) head.append(el('p', 'section-heading__sub', S.subtitle));
 
@@ -166,7 +172,33 @@ export async function initScope() {
   const live = el('p', 'visually-hidden');
   live.setAttribute('aria-live', 'polite');
   const go = cta(S.ctaLabel || COPY.cta);
-  checkout.append(figures, live, go);
+
+  // The breakdown: what the estimate is made of (estimate()'s lines), folded
+  // under a text button next to the «sample numbers» badge. In the card it
+  // opens under the button; in the bar it sits above it, so the bar grows
+  // upward and the button stays where it was tapped.
+  const tools = el('div', 'scope-checkout__tools');
+  let lines = null;
+  if (P.display.showPrice) {
+    const toggle = el('button', 'scope-lines__toggle', S.breakdown || COPY.breakdown);
+    toggle.type = 'button';
+    lines = el('ul', 'scope-lines');
+    lines.id = 'scopeLines';
+    lines.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', lines.id);
+    toggle.append(icon('plus'));
+    toggle.addEventListener('click', () => {
+      const open = lines.hidden;
+      lines.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      setIcon(toggle.lastChild, open ? 'minus' : 'plus');
+      scrollable(lines, S.breakdown || COPY.breakdown);
+    });
+    tools.append(toggle);
+  }
+  if (sample) tools.append(sampleBadge());
+  checkout.append(figures, ...(tools.childElementCount ? [tools] : []), ...(lines ? [lines] : []), live, go);
 
   // ---- the summary card: the base (rebuilt per type), then the checkout and
   // the disclaimer
@@ -179,20 +211,27 @@ export async function initScope() {
   let list = null; // the included items; scrolls inside the sticky card when it must
   let listBox = null;
 
+  // A box that scrolls must be reachable by keyboard to be scrolled: then it
+  // takes focus, named by `label`. True if it scrolls.
+  function scrollable(box, label) {
+    const scrolls = box.scrollHeight > box.clientHeight + 1;
+    if (scrolls !== box.hasAttribute('tabindex')) {
+      if (scrolls) {
+        box.tabIndex = 0;
+        box.setAttribute('aria-label', label);
+      } else {
+        box.removeAttribute('tabindex');
+        box.removeAttribute('aria-label');
+      }
+    }
+    return scrolls;
+  }
+
   // The fade at the list's foot shows only while there is more below.
   function listEdge() {
     if (!list) return;
-    const scrolls = list.scrollHeight > list.clientHeight + 1;
+    const scrolls = scrollable(list, state.type.base.title);
     listBox.classList.toggle('has-more', scrolls && list.scrollTop + list.clientHeight < list.scrollHeight - 1);
-    // A list that scrolls must be reachable by keyboard to be scrolled.
-    if (scrolls === list.hasAttribute('tabindex')) return;
-    if (scrolls) {
-      list.tabIndex = 0;
-      list.setAttribute('aria-label', state.type.base.title);
-    } else {
-      list.removeAttribute('tabindex');
-      list.removeAttribute('aria-label');
-    }
   }
 
   function renderBase(t) {
@@ -397,6 +436,17 @@ export async function initScope() {
     count.textContent = n ? fill(COPY.picked, { n: faNumber(n) }) : '';
     count.hidden = !n;
     meta.hidden = !n && !meta.contains(daysBox);
+    // The breakdown: the type itself, the pages beyond those included
+    // («+۴ صفحه»), then each add-on, a free one as such.
+    if (lines) {
+      lines.replaceChildren(...est.lines.map((l) => {
+        const name = l.id === 'base' ? t.label : l.id === 'extra-pages' ? `+${fill(S.pagesValue, { n: faNumber(l.qty) })}` : l.title;
+        const li = el('li');
+        li.append(el('span', 'scope-lines__name', name), el('span', l.price > 0 ? 'scope-lines__price' : 'scope-lines__price is-free', l.price > 0 ? price(l.price) : free));
+        return li;
+      }));
+      if (!lines.hidden) scrollable(lines, S.breakdown || COPY.breakdown);
+    }
     if (announce) live.textContent = [S.totalLabel, [priceText, daysText].filter(Boolean).join('، ')].filter(Boolean).join(': ');
     return est;
   }
@@ -468,6 +518,7 @@ export async function initScope() {
       summary.classList.add('has-desc');
       if (wide.matches && list) summary.classList.toggle('has-desc', list.scrollHeight <= list.clientHeight + 1);
       listEdge();
+      if (lines && !lines.hidden) scrollable(lines, S.breakdown || COPY.breakdown);
     });
   }
 
@@ -475,6 +526,9 @@ export async function initScope() {
   place();
   fit();
   new ResizeObserver(fit).observe(summary);
+  // The bar's height (it grows with the breakdown), so a control focused by
+  // keyboard below 1024px scrolls clear of it (home.css).
+  new ResizeObserver(() => sec.style.setProperty('--scope-bar-h', `${checkout.offsetHeight}px`)).observe(checkout);
   addEventListener('resize', fit);
   wide.addEventListener('change', () => {
     place();
