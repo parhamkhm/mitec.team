@@ -140,3 +140,42 @@ differ at every width; after, they are the same.
 - **Geeza Pro (iOS fallback): waiting for the owner's iPhone values.** `Vazirmatn Geeza` stays at `size-adjust: 100%`
   (and the matching overrides) until the owner opens `public/fonts/fallback-check.html` on an iPhone and sends the
   lines it prints; they go into `src/styles/tokens.css` as they are.
+
+## Follow-ups after approval (measured under Slow 4G)
+
+From here on every measurement uses Chrome DevTools' **Slow 4G** preset (request latency 562.5 ms, i.e. a ~150 ms
+round trip; 1.6 Mbps × 0.9 down, 750 kbps × 0.9 up) and a 4× slower CPU on phones and tablets. The runs are
+interleaved, with medians of 8 and a cold cache. The keep-alive server now sends `no-cache` instead of the dev
+server's `no-store`, so a preloaded file can be reused within the page, as on a production server.
+
+**Batch 2 re-reported, slow phone 390×844 (ms):**
+
+| | FCP | LCP | DCL | CLS |
+|---|---|---|---|---|
+| Batch 1, keep-alive | 2736 | 2740 | 6172 | 1.0 |
+| Batch 2, keep-alive | 2540 | 2638 | 5895 | 0.0007 |
+| Batch 1, dev server | 2904 | 2904 | 5776 | 0.337 |
+| Batch 2, dev server | 2504 | 2674 | 5843 | 0.0007 |
+
+- **Under Slow 4G, batch 2 is no slower than batch 1** (within ±200 ms run-to-run noise) and removes the layout
+  shift.
+- **Desktop 1440×900** under the same network, without the CPU slowdown: FCP and LCP 2192, DCL 4992. CLS was
+  0.047: with the fonts arriving this late, the Vazirmatn 800 swap re-fits the H1 (76 → 72 px) after first paint.
+
+**The three follow-ups:**
+- **Scales merged into `tokens.css`:** the three files are gone, so there are three fewer requests.
+- **The stacked screenshot is preloaded where it is the LCP element.** That is where the hero stacks and from
+  414px wide, where the H1 drops to three lines and the screenshot outgrows it. A first version preloaded it
+  wherever the hero stacks; at 390, where the H1 is the LCP, that delayed LCP by about 190 ms, so phones under
+  414px no longer preload it. The `<img>` stays lazy, and a desktop never fetches it for the hero. The wall of work
+  already loads the same file there, after first paint and at low priority.
+
+  | LCP (ms) | Batch 2 | Now |
+  |---|---|---|
+  | 390×844 (the H1) | 2876 | 2822 |
+  | 430×932 (the screenshot) | 4096 | 2884 |
+  | 768×1024 (the screenshot) | 4202 | 3048 |
+
+  **On `devserver.py` the preloaded screenshot downloads twice**, because its `no-store` header forbids reusing
+  the preload. A server that allows storing fetches it once.
+- **Geeza Pro:** see Open items.

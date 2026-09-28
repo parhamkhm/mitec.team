@@ -21,12 +21,14 @@
 <link rel="stylesheet" href="src/styles/home.css">
 <link rel="stylesheet" href="src/styles/portal.css">
 <link rel="stylesheet" href="src/styles/motion.css">
-<!-- The stacked hero's screenshot on the lit screen (see .portal__shot): fetched early, at high
-     priority, only where the hero stacks. Stacked is the layout script's call, and today it
-     stacks at 867px wide or less and at 612px tall or less, whatever the other side (measured with
-     the current copy; recheck if the hero copy or its sizes change). Elsewhere the image is lazy and
-     hidden, so a desktop never downloads it. -->
-<link rel="preload" as="image" href="public/images/work/mery-home-960.webp" fetchpriority="high" media="(max-width: 867px), (max-height: 612px)">
+<!-- The stacked hero's screenshot on the lit screen (see .portal__shot), fetched early at high
+     priority where it is the largest thing in the first view (the LCP): where the hero stacks
+     (867px wide or less, or 612px tall or less, whatever the other side) and from 414px wide,
+     where the H1 drops to three lines and the screenshot outgrows it. On narrower phones the H1 is
+     the LCP, and fetching the image early would only take bandwidth from the stylesheets.
+     Measured with the current copy; recheck if the hero copy or its sizes change. Elsewhere the
+     image is lazy and hidden, so a desktop never downloads it. -->
+<link rel="preload" as="image" href="public/images/work/mery-home-960.webp" fetchpriority="high" media="(min-width: 414px) and (max-width: 867px), (min-width: 414px) and (max-height: 612px)">
 <script>
   // The whole module graph of src/scripts/home.js, preloaded in parallel as soon as the page has
   // first painted. Without it the browser finds each import only once the file that imports it has
