@@ -23,8 +23,8 @@ import { icon, setIcon } from '../utils/icon.js';
 // The only strings not taken from the pricing document: what shows when it
 // cannot be loaded, the way out for visitors unsure of their site type, the
 // count of chosen add-ons under the total, and the defaults for the optional
-// section fields of the same names: the two that fold a long add-on list, and
-// the price of one more page.
+// section fields of the same names: the two that fold a long add-on list, the
+// price of one more page, and a free add-on's price.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
@@ -32,7 +32,8 @@ const COPY = {
   picked: '{n} امکان انتخاب شده',
   showAllAddons: 'نمایش همه‌ی امکانات ({n})',
   showFewerAddons: 'نمایش کمتر',
-  perPage: 'هر صفحه‌ی بیشتر: از {price}'
+  perPage: 'هر صفحه‌ی بیشتر: از {price}',
+  free: 'بدون هزینه‌ی اضافه'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
@@ -102,6 +103,7 @@ export async function initScope() {
   const addons = new Map(P.addons.filter((a) => a.active).map((a) => [a.id, a]));
   const unit = { prefix: P.display.durationPrefix, label: P.display.durationLabel };
   const price = (n) => formatPrice(n, P.currency);
+  const free = S.free || COPY.free;
   // The visitor's choices are kept whole across site types: `picked` holds
   // every add-on chosen, including ones the current type doesn't offer (no
   // tile shows them and estimate() leaves them out, so they return with a
@@ -251,7 +253,7 @@ export async function initScope() {
       b.append(desc);
     }
     // No price element at all when prices are off.
-    if (P.display.showPrice) b.append(el('span', 'scope-addon__price', a.price > 0 ? price(a.price) : ''));
+    if (P.display.showPrice) b.append(a.price > 0 ? el('span', 'scope-addon__price', price(a.price)) : el('span', 'scope-addon__price is-free', free));
     return b;
   }
 

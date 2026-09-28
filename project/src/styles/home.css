@@ -1285,6 +1285,7 @@ html:not(.js) .scope { display: none; }
   color: var(--color-text-secondary);
   white-space: nowrap;
 }
+.scope-addon__price.is-free { font-weight: 500; color: var(--color-text-muted); } /* 5.38:1 off, 4.89:1 on */
 .scope-addon__toggle {
   flex: 0 0 auto;
   display: inline-flex;
