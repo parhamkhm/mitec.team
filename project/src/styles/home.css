@@ -1144,6 +1144,7 @@ html:not(.js) .scope { display: none; }
 .scope-pages__title { font-weight: 700; color: var(--color-text-primary); }
 .scope-pages__value { font-weight: 800; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 .scope-pages__desc { font-size: var(--text-body-sm); color: var(--color-text-secondary); }
+.scope-pages__per { font-weight: 700; }
 
 /* Native range, token-styled. 44px tall for the hit area; the fill runs from
    the start edge (the right, on this RTL page) to the value. */
@@ -1177,6 +1178,14 @@ html:not(.js) .scope { display: none; }
 .scope-range::-moz-range-progress { height: 4px; border-radius: var(--radius-pill); background: var(--color-cta); }
 .scope-range::-moz-range-thumb { width: 18px; height: 18px; border: 3px solid var(--color-surface); border-radius: 50%; background: var(--color-cta); box-shadow: 0 0 0 1px var(--color-cta); }
 .scope-range:focus-visible { outline-offset: 4px; border-radius: var(--radius-sm); }
+/* The last page the type includes: a neutral tick across the track, drawn
+   on the input's own box (the track paints over its middle). The thumb's
+   centre runs from 12px to 12px short of the far end (24px thumb). */
+.scope-range.has-included {
+  background: linear-gradient(var(--color-text-muted), var(--color-text-muted)) no-repeat;
+  background-size: 2px 14px;
+  background-position: right calc(11px + (100% - 22px) * var(--included)) center;
+}
 
 .scope-addons__title { margin-top: var(--space-2); font-size: var(--text-body-lg); }
 .scope-addons__group { margin-top: var(--space-2); font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); }

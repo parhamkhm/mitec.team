@@ -22,15 +22,17 @@ import { icon, setIcon } from '../utils/icon.js';
 
 // The only strings not taken from the pricing document: what shows when it
 // cannot be loaded, the way out for visitors unsure of their site type, the
-// count of chosen add-ons under the total, and the defaults for the two
-// optional section fields that fold a long add-on list.
+// count of chosen add-ons under the total, and the defaults for the optional
+// section fields of the same names: the two that fold a long add-on list, and
+// the price of one more page.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
   unsure: 'مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم',
   picked: '{n} امکان انتخاب شده',
   showAllAddons: 'نمایش همه‌ی امکانات ({n})',
-  showFewerAddons: 'نمایش کمتر'
+  showFewerAddons: 'نمایش کمتر',
+  perPage: 'هر صفحه‌ی بیشتر: از {price}'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
@@ -100,7 +102,12 @@ export async function initScope() {
   const addons = new Map(P.addons.filter((a) => a.active).map((a) => [a.id, a]));
   const unit = { prefix: P.display.durationPrefix, label: P.display.durationLabel };
   const price = (n) => formatPrice(n, P.currency);
-  const state = { type: types[0], pages: 0, picked: new Set() };
+  // The visitor's choices are kept whole across site types: `picked` holds
+  // every add-on chosen, including ones the current type doesn't offer (no
+  // tile shows them and estimate() leaves them out, so they return with a
+  // type that offers them), and `wanted` is the page count last asked for on
+  // the slider (0 until then). `pages` is what the current type shows.
+  const state = { type: types[0], pages: 0, wanted: 0, picked: new Set() };
 
   // ---- heading (+ the «sample numbers» badge while the numbers are placeholders)
   const title = el('div', 'scope-head__title');
@@ -263,16 +270,27 @@ export async function initScope() {
       slider = el('input', 'scope-range');
       Object.assign(slider, { type: 'range', id: 'scopePages', min: t.pages.min, max: t.pages.max, step: 1, value: state.pages });
       slider.addEventListener('input', () => {
-        state.pages = Number(slider.value);
+        state.pages = state.wanted = Number(slider.value);
         update(true);
       });
-      box.append(top, slider);
-      if (S.pagesDesc) {
-        const hint = el('p', 'scope-pages__desc', S.pagesDesc);
-        hint.id = 'scopePagesDesc';
-        slider.setAttribute('aria-describedby', hint.id);
-        box.append(hint);
+      // Where the type includes more than its minimum, a neutral tick on the
+      // track marks the last included page (the steps up to it cost nothing).
+      const inc = t.base.pagesIncluded || 1;
+      if (inc > t.pages.min && inc < t.pages.max) {
+        slider.classList.add('has-included');
+        slider.style.setProperty('--included', String((inc - t.pages.min) / (t.pages.max - t.pages.min)));
       }
+      box.append(top, slider);
+      // The price of one more page, then the section's note on extra pages.
+      const hints = [];
+      if (P.display.showPrice && t.pages.pricePerExtra > 0) {
+        const amount = formatPrice(t.pages.pricePerExtra, { ...P.currency, from: '' });
+        hints.push(el('p', 'scope-pages__desc scope-pages__per', fill(S.perPage || COPY.perPage, { price: amount })));
+      }
+      if (S.pagesDesc) hints.push(el('p', 'scope-pages__desc', S.pagesDesc));
+      hints.forEach((hint, i) => { hint.id = `scopePagesDesc${i}`; });
+      if (hints.length) slider.setAttribute('aria-describedby', hints.map((hint) => hint.id).join(' '));
+      box.append(...hints);
       parts.push(box);
     }
 
@@ -383,10 +401,9 @@ export async function initScope() {
 
   function selectType(t, announce) {
     state.type = t;
-    // Keep the chosen add-ons this type also offers, and the page count
-    // within this type's range.
-    state.picked = new Set([...state.picked].filter((id) => t.addons.includes(id) && addons.has(id)));
-    state.pages = clamp(state.pages || t.base.pagesIncluded, t.pages.min, t.pages.max);
+    // Nothing chosen is dropped (see state). The slider starts at the pages
+    // last asked for, and never below the pages this type includes.
+    state.pages = clamp(Math.max(state.wanted, t.base.pagesIncluded || 1), t.pages.min, t.pages.max);
     renderBase(t);
     renderConfig(t);
     update(announce);
