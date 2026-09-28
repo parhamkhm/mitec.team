@@ -108,6 +108,9 @@ body { caret-color: var(--color-cta); }
   direction: ltr; /* the wordmark is Latin runs; keep it from reordering on an RTL page */
 }
 .logo:hover { color: var(--color-text-primary); }
+/* A 44px-tall target round the 24px wordmark, drawn nowhere. */
+.logo { position: relative; }
+.logo::before { content: ''; position: absolute; inset-block: calc(50% - 22px); inset-inline: 0; }
 .logo__mi { color: var(--color-cta); }
 .logo__dot { color: var(--color-highlight-text); font-weight: 800; }
 .logo__team { color: var(--color-text-muted); font-weight: 500; font-size: 0.62em; letter-spacing: .02em; margin-inline-start: 1px; }
