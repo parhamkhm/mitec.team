@@ -49,14 +49,15 @@ python devserver.py 4173
 
 ## صفحه‌ها
 
-| طرح اولیه | صفحه | وضعیت |
-|---|---|---|
-| — | صفحه‌ی اصلی (`/`) | ✅ `index.html` — طبق DESIGN.md؛ `Mitec Home.dc.html` قدیمی است و مرجع بصری نیست |
-| `Mitec Order Builder.dc.html` | سفارش‌ساز و صفحه‌ی موفقیت (`/order`, `/order/success`) | ⬜ هنوز فقط طرح؛ لینک‌های `./order/` فعلاً ۴۰۴ می‌دهند |
-| `Mitec Track.dc.html` | پیگیری سفارش (`/track`) | ⬜ هنوز فقط طرح؛ لینک‌های `./track/` فعلاً ۴۰۴ می‌دهند |
-| `Mitec 404.dc.html` | صفحه‌ی ۴۰۴ | ⬜ هنوز فقط طرح |
+| صفحه | وضعیت |
+|---|---|
+| صفحه‌ی اصلی (`/`) | ✅ `index.html`، طبق DESIGN.md |
+| سفارش‌ساز و صفحه‌ی موفقیت (`/order`, `/order/success`) | ⬜ هنوز ساخته نشده؛ لینک‌های `./order/` فعلاً ۴۰۴ می‌دهند |
+| پیگیری سفارش (`/track`) | ⬜ هنوز ساخته نشده؛ لینک‌های `./track/` فعلاً ۴۰۴ می‌دهند |
+| صفحه‌ی ۴۰۴ | ⬜ هنوز ساخته نشده |
 
-فایل‌های `.dc.html` نمونه‌های اولیه‌ی Claude Design هستند و ویرایش نمی‌شوند. لایه‌ی مشترک
+طرح‌های اولیه‌ی `.dc.html` این صفحه‌ها (از Claude Design) حذف شده‌اند و اگر برای روند کار لازم شدند، در تاریخچه‌ی git
+هستند؛ مرجع بصری DESIGN.md است. لایه‌ی مشترک
 (`src/styles/`، `src/api/`، `src/config/`، `src/utils/`) برای هر چهار صفحه نوشته شده است.
 
 ## ساختار
@@ -69,7 +70,6 @@ src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (en
 src/styles/   tokens.css (همراه مقیاس‌های spacing، radii و motion), components.css, home.css, portal.css, motion.css
 src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js, icon.js, portfolio.js
 public/       sitemap.xml, robots.txt, fonts/ (وزیرمتن)
-image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
 API_CONTRACT.md
 ```
 
