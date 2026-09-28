@@ -28,6 +28,7 @@ import { track, kick, whenMotion } from './motion/engine.js';
 import { clamp, damp } from './motion/easing.js';
 import { faNumber } from '../utils/format.js';
 import { icon, setIcon } from '../utils/icon.js';
+import { loadPortfolio } from '../utils/portfolio.js';
 
 const POOL = 7;          // offsets −3 … +3
 const HOLD_MS = 8000;    // autoplay rests this long after a manual interaction or the details close
@@ -107,9 +108,7 @@ export async function initWork() {
   if (!host) return;
   let projects;
   try {
-    const res = await fetch(new URL('../data/portfolio.json', import.meta.url));
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    projects = (await res.json()).filter((p) => p && p.id);
+    projects = (await loadPortfolio()).filter((p) => p && p.id);
     if (!projects.length) throw new Error('no projects');
   } catch (e) {
     console.warn('[work] portfolio unavailable; showing the static list', e);

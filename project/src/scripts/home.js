@@ -12,6 +12,7 @@ import { initWork } from './work.js';
 import { faNumber } from '../utils/format.js';
 import { setIcon } from '../utils/icon.js';
 import { APP_CONFIG } from '../config/app.config.js';
+import { loadPortfolio } from '../utils/portfolio.js';
 
 // The menu of the phone and tablet bar (up to 860px), a disclosure. While it
 // is open, everything but the toggle and the menu is inert and Tab cycles
@@ -161,9 +162,7 @@ async function initProjectCount() {
   const value = document.querySelector('[data-stat="projects"]');
   if (!value) return;
   try {
-    const res = await fetch(new URL('../data/portfolio.json', import.meta.url));
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const projects = await res.json();
+    const projects = await loadPortfolio();
     if (Array.isArray(projects) && projects.length) value.textContent = faNumber(projects.length);
   } catch (e) {
     console.warn('[proof] project count unavailable; keeping the figure in the markup', e);

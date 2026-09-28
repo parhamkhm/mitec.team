@@ -19,6 +19,7 @@
 import { track, view, whenMotion, kick } from './engine.js';
 import { clamp, seg, lerp, damp, inCubic, outCubic, inOutSine, inOutCubic } from './easing.js';
 import { icon as glyph } from '../../utils/icon.js';
+import { loadPortfolio } from '../../utils/portfolio.js';
 
 const DEPTH = 1600; // the stage's perspective (portal.css)
 
@@ -176,9 +177,7 @@ export function initPortal() {
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 300));
     requestAnimationFrame(() => idle(async () => {
       try {
-        const res = await fetch(new URL('../../data/portfolio.json', import.meta.url));
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const shots = (await res.json()).map((p) => p.image).filter((im) => im?.src960);
+        const shots = (await loadPortfolio()).map((p) => p.image).filter((im) => im?.src960);
         if (!shots.length) return;
         const tiles = document.createDocumentFragment();
         for (let i = 0; i < WALL_TILES; i++) {

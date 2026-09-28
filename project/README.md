@@ -67,7 +67,7 @@ src/config/   app.config.js, order-catalog.json, pricing.json
 src/data/     portfolio.json, faq.json, testimonials.json, site-copy.json
 src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (engine, easing, portal, effects, reveal)
 src/styles/   tokens.css (همراه مقیاس‌های spacing، radii و motion), components.css, home.css, portal.css, motion.css
-src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js, icon.js
+src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js, icon.js, portfolio.js
 public/       sitemap.xml, robots.txt, fonts/ (وزیرمتن)
 image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
 API_CONTRACT.md
