@@ -147,7 +147,9 @@ body { caret-color: var(--color-cta); }
 .btn--primary:hover { background: var(--color-cta-hover); color: var(--color-cta-text); }
 .btn--primary:active { background: var(--color-cta-active); }
 
-.btn--tonal { background: var(--color-tonal); color: var(--color-tonal-text); }
+/* On light surfaces a 1px --color-border-hover edge (--color-tonal-border),
+   since the mint fill alone barely parts from the sage canvas; none on forest. */
+.btn--tonal { background: var(--color-tonal); color: var(--color-tonal-text); border-color: var(--color-tonal-border); }
 .btn--tonal:hover { background: var(--color-tonal-hover); color: var(--color-tonal-text); }
 
 .btn--outline { background: transparent; color: var(--color-text-primary); border-color: var(--color-border-strong); }
@@ -293,12 +295,20 @@ body { caret-color: var(--color-cta); }
 
 /* ---------------------------------------------------------------- Channels
    The direct-message pair, tier 2 of the direct-message hierarchy (DESIGN.md
-   §5): «پیام در واتساپ» and «پیام در تلگرام» as two tonal buttons, the same
-   size as each other and smaller than the primary. Side by side wherever both
-   labels fit; where they don't (the narrowest phones), one above the other,
-   each full width, so neither label is cut. */
-.channels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.75rem), 1fr)); gap: var(--space-3); }
+   §5): «پیام در واتساپ» and «پیام در تلگرام» as two tonal buttons with the
+   brands' marks, side by side, the same size as each other and smaller than
+   the primary. Where the pair is too narrow for both full labels on one line
+   each (under 352px, as on phones), the labels shorten to «واتساپ» and
+   «تلگرام» and the padding tightens; each button's aria-label keeps the full
+   name. The switch follows the pair's own width, so each placement flips
+   exactly where its labels stop fitting, with both Vazirmatn and the
+   fallbacks. */
+.channels { container-type: inline-size; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
 .channels .btn { width: 100%; }
+@container (max-width: 351px) {
+  .channels__verb { display: none; }
+  .channels .btn { padding-inline: 12px; }
+}
 
 /* ---------------------------------------------------------------- Footer
    No inline padding of its own: .container already brings the gutter. */

@@ -228,9 +228,10 @@
   --color-cta-active: var(--green-800);
   --color-cta-text:   #FFFFFF;
 
-  --color-tonal:       var(--green-50);
-  --color-tonal-hover: var(--green-100);
-  --color-tonal-text:  var(--green-700);
+  --color-tonal:        var(--green-50);
+  --color-tonal-hover:  var(--green-100);
+  --color-tonal-text:   var(--green-700);
+  --color-tonal-border: var(--color-border-hover); /* tonal buttons' edge on light */
 
   --color-link:       var(--green-600);
   --color-link-hover: var(--green-700);
@@ -305,9 +306,10 @@
   --color-cta-active: var(--green-300);
   --color-cta-text:   var(--green-950);
 
-  --color-tonal:       rgba(87, 183, 154, .14);
-  --color-tonal-hover: rgba(87, 183, 154, .22);
-  --color-tonal-text:  var(--green-300);
+  --color-tonal:        rgba(87, 183, 154, .14);
+  --color-tonal-hover:  rgba(87, 183, 154, .22);
+  --color-tonal-text:   var(--green-300);
+  --color-tonal-border: transparent; /* no edge on forest */
 
   --color-link:           var(--green-300);
   --color-link-hover:     var(--on-dark-1);

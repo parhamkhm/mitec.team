@@ -103,9 +103,10 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --color-cta-active: var(--green-800);
   --color-cta-text:   #FFFFFF;
 
-  --color-tonal:       var(--green-50);
-  --color-tonal-hover: var(--green-100);
-  --color-tonal-text:  var(--green-700);
+  --color-tonal:        var(--green-50);
+  --color-tonal-hover:  var(--green-100);
+  --color-tonal-text:   var(--green-700);
+  --color-tonal-border: var(--color-border-hover);
 
   --color-link:       var(--green-600);
   --color-link-hover: var(--green-700);
@@ -178,9 +179,10 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
   --color-cta-active: var(--green-300);
   --color-cta-text:   var(--green-950);
 
-  --color-tonal:       rgba(87, 183, 154, .14);
-  --color-tonal-hover: rgba(87, 183, 154, .22);
-  --color-tonal-text:  var(--green-300);
+  --color-tonal:        rgba(87, 183, 154, .14);
+  --color-tonal-hover:  rgba(87, 183, 154, .22);
+  --color-tonal-text:   var(--green-300);
+  --color-tonal-border: transparent;
 
   --color-link:           var(--green-300);
   --color-link-hover:     var(--on-dark-1);
@@ -265,7 +267,7 @@ The home hero's forest scene (§5) is measured as the hero, not against this bud
 | Level | Light | On forest | When |
 |---|---|---|---|
 | **Primary** | bg `--color-cta`, text `--color-cta-text`, hover `--color-cta-hover`, active `--color-cta-active` | same tokens (resolve to mint + dark text) | The one main action: «شروع پروژه», «ارسال درخواست» |
-| **Tonal** | bg `--color-tonal`, text `--color-tonal-text`, hover `--color-tonal-hover` | same tokens | Second conversion path: nav «شروع پروژه», «مشاوره رایگان», the channels «پیام در واتساپ» / «پیام در تلگرام» |
+| **Tonal** | bg `--color-tonal`, a 1px `--color-border-hover` edge (`--color-tonal-border`), text `--color-tonal-text`, hover bg `--color-tonal-hover` (the edge stays) | same fill and text tokens, no edge | Second conversion path: nav «شروع پروژه», «مشاوره رایگان», the channels «پیام در واتساپ» / «پیام در تلگرام» |
 | **Outline** | transparent, 1px `--color-border-strong`, text `--color-text-primary`, hover bg `--color-surface-sunken` | same tokens | Navigation-type actions: «دیدن نمونه‌کارها» |
 | **Text link** | `--color-link`, underline, `text-underline-offset: 5px` | same | Tertiary actions, inline links |
 | **Disabled** | bg `--sage-100`, text `--sage-400` | bg `--forest-raised`, text `--forest-line-strong` | Never pale green |
@@ -279,7 +281,7 @@ The home hero's forest scene (§5) is measured as the hero, not against this bud
 .btn-primary { background: var(--color-cta); color: var(--color-cta-text); border: 1px solid transparent; }
 .btn-primary:hover  { background: var(--color-cta-hover); }
 .btn-primary:active { background: var(--color-cta-active); }
-.btn-tonal   { background: var(--color-tonal); color: var(--color-tonal-text); }
+.btn-tonal   { background: var(--color-tonal); color: var(--color-tonal-text); border-color: var(--color-tonal-border); } /* edge on light only */
 .btn-tonal:hover { background: var(--color-tonal-hover); }
 .btn-outline { background: transparent; color: var(--color-text-primary); border: 1px solid var(--color-border-strong); }
 .btn-outline:hover { background: var(--color-surface-sunken); }
@@ -313,7 +315,7 @@ A direct message is a success in its own right (PRODUCT.md), so every place that
 | Tier | Element |
 |---|---|
 | **1** | «شروع پروژه»: the one primary button. |
-| **2** | «پیام در واتساپ» and «پیام در تلگرام»: **tonal** buttons with their icons (Lucide `message-circle`, `send`), side by side, the same size as each other and smaller than the primary. Where both labels don't fit side by side (the narrowest phones), one above the other, each full width. |
+| **2** | «پیام در واتساپ» and «پیام در تلگرام»: **tonal** buttons with the brands' marks (Simple Icons, CC0; monochrome in `currentColor`, never the brand colours), side by side, the same size as each other and smaller than the primary. Never stacked: where the pair is under 352px wide (phones), the visible labels shorten to «واتساپ» and «تلگرام» and the full names stay as each button's `aria-label`. |
 | **3** | «پیگیری سفارش» and Instagram: plain text links. |
 
 - Where: the closing band (all three tiers), the phone menu (ends with tier 2), About (one tier-2 pair under the cards, with the line «مستقیم با خود تیم حرف بزنید»), the footer (the three channels as small icon + text links). Services' «بپرسید» scrolls to the closing band's tier 2.
