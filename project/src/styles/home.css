@@ -637,6 +637,25 @@ html:not(.motion) .work-cue { --cue-open: 1; }
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
   mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
 }
+/* From 1024px, where all three fit (work.js checks each card): the texts as
+   rows in the same inset panel, «نیاز», «راهکار», «نتیجه» each a label over
+   its text, instead of the tabs. The back then has four rows. */
+.work-card__rows { display: none; }
+.work-stage .work-card.has-rows .work-card__sheet { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+.work-stage .work-card.has-rows :is(.work-tabs, .work-card__content) { display: none; }
+.work-stage .work-card.has-rows .work-card__rows {
+  display: grid;
+  align-content: center;
+  gap: var(--space-3);
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+.work-card__rows dt { margin-bottom: 0; color: var(--color-text-secondary); }
+.work-card__rows dd { font-size: var(--text-body-sm); line-height: 1.8; }
 .work-card__site { width: 100%; border-color: var(--color-text-muted); }
 .work-card__foot .work-note { font-size: var(--text-caption); line-height: 1.6; text-align: center; }
 /* Short landscape cards (up to 540px wide, so up to ~340px tall): tighter

@@ -54,8 +54,9 @@ const LAYOUT = {
 const Z = [30, 20, 10, 0];
 const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is turned over
 
-// The back's three blocks, in reading order (right to left).
-const TABS = [['need', 'نیاز'], ['built', 'راهکار'], ['result', 'نتیجه']];
+// The back's three blocks, in reading order (right to left): the tab label,
+// and the label of the same text as a row (as in the no-JS list, .work-facts).
+const TABS = [['need', 'نیاز', 'نیاز کسب‌وکار'], ['built', 'راهکار', 'راهکار ما'], ['result', 'نتیجه', 'نتیجه']];
 
 // The screenshot covers a 16:10 card of clamp(300px, 42vw, 600px) (86vw up
 // to 989px, less on a short screen); it is about 2:1, so it is drawn at
@@ -70,6 +71,9 @@ const narrow = matchMedia('(max-width: 989px)');
 // Below 990px a 16:10 card is under ~260px tall: too short for its back, so
 // the details open as a bottom sheet there (phones included).
 const sheetMode = matchMedia('(max-width: 989px)');
+// From 1024px the back shows its three texts as rows where they fit the card
+// (checked per card), and the tabs only where they don't.
+const rowsMode = matchMedia('(min-width: 1024px)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 const motionOn = () => root.classList.contains('motion');
 const flipMs = () => (motionOn() ? 700 : 250);   // home.css: the flip, or the reduced-motion crossfade
@@ -234,13 +238,25 @@ function build(section, host, projects) {
     });
     tablist.append(...tabs);
     content.append(...panels);
+    // The same three texts as rows (the no-JS list's .work-facts), shown
+    // instead of the tabs where they fit.
+    const rows = h('dl', 'work-facts work-card__rows');
+    const rowTexts = TABS.map(([, , label]) => {
+      const pair = h('div');
+      const dt = h('dt');
+      dt.textContent = label;
+      const dd = h('dd');
+      pair.append(dt, dd);
+      rows.append(pair);
+      return dd;
+    });
     const foot = h('div', 'work-card__foot');
-    sheet.append(head, backTitle, tablist, content, foot);
+    sheet.append(head, backTitle, tablist, content, rows, foot);
     back.append(backImg, sheet);
 
     inner.append(front, back);
     el.append(inner);
-    const s = { el, front, img, pan, full, dim, back, backImg, sheet, backTags, backTitle, indicator, tabs, panels, foot,
+    const s = { el, front, img, pan, full, dim, back, backImg, sheet, backTags, backTitle, indicator, tabs, panels, rows, rowTexts, foot,
       fullSrc: '', pos: i - 3, p: -1, tab: 0, clearAt: 0, exiting: false, teleport: true };
     selectTab(s, 0);
     return s;
@@ -270,7 +286,7 @@ function build(section, host, projects) {
     s.backTags.replaceChildren(...chips(pr.tags));
     s.backImg.hidden = !im?.ambient;
     if (im?.ambient) s.backImg.src = im.ambient;
-    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = pr[key] || ''; });
+    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = s.rowTexts[k].textContent = pr[key] || ''; });
     if (pr.url && pr.url !== '#') {
       const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
       a.href = pr.url;
@@ -282,6 +298,17 @@ function build(section, host, projects) {
       s.foot.replaceChildren(note);
     }
     selectTab(s, 0);
+    fitRows(s);
+  }
+  // Rows where all three texts fit the card's text area without scrolling,
+  // from 1024px; otherwise (or below) the tabs.
+  function fitRows(s) {
+    if (!rowsMode.matches) {
+      s.el.classList.remove('has-rows');
+      return;
+    }
+    s.el.classList.add('has-rows');
+    if (s.rows.scrollHeight > s.rows.clientHeight + 1) s.el.classList.remove('has-rows');
   }
   slots.forEach(fill);
 
@@ -328,7 +355,10 @@ function build(section, host, projects) {
     flipped = s;
     selectTab(s, 0);
     s.back.inert = false;
-    s.tabs[0].focus({ preventScroll: true }); // before the front goes inert, so focus never drops to <body>
+    // Before the front goes inert, so focus never drops to <body>: the first
+    // tab, or the back's × where the rows show (read inside the back, which
+    // is named by its title).
+    (s.el.classList.contains('has-rows') ? s.back.querySelector('.work-card__close') : s.tabs[0]).focus({ preventScroll: true });
     s.front.inert = true;
     s.front.setAttribute('aria-expanded', 'true');
     s.el.classList.add('is-flipped');
@@ -763,6 +793,7 @@ function build(section, host, projects) {
       const cue = slots.find((s) => s.pos === 0)?.front.querySelector('.work-cue');
       const w = cue?.offsetWidth;
       if (w) host.style.setProperty('--cue-s', (CUE_CIRCLE / w).toFixed(4));
+      slots.forEach(fitRows); // the card's size, or the font, changed
     },
     update() {}
   });
