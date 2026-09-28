@@ -272,8 +272,19 @@ html:not(.js) .work-carousel,
 .work--static .work-carousel { display: none; }
 /* Until work.js fills it: the stage, caption and controls keep their height. */
 .work-carousel:empty { min-height: calc(var(--stage-h) + var(--space-5) + var(--caption-h) + var(--space-4) + 44px); }
+/* Up to the sheet breakpoint the centre card takes 86% of the width and the
+   side cards peek at the edges. A short screen holds it down, so it never
+   outgrows the view (but never below the wide layout's 42vw); the stage grows
+   with it, 64px taller than the card and at least 300px. Phones keep their
+   86vw card on a 300px stage. */
+@media (max-width: 989px) {
+  .work-carousel {
+    --card-w: min(86vw, max(42vw, (100svh - 240px) * (var(--work-card-ratio))));
+    --stage-h: max(300px, var(--card-w) / (var(--work-card-ratio)) + 64px);
+  }
+}
 @media (max-width: 759px) {
-  .work-carousel { --card-w: 86vw; --caption-lines: 2; }
+  .work-carousel { --caption-lines: 2; }
 }
 
 /* The stage's perspective lights the whole-stage tilt; the track's own
@@ -639,6 +650,10 @@ html:not(.motion) .work-cue { --cue-open: 1; }
 
 /* Without html.motion (reduced motion, forced colours): no turn. The back
    lies over the front, unrotated, and the two crossfade (250ms). */
+/* …and a slide change crossfades in place (250ms), as under reduced motion
+   below; this covers forced colours, which also lays the cards out flat. */
+html:not(.motion) .work-stage .work-card { transition: opacity 250ms linear, transform 0s linear 250ms; }
+html:not(.motion) .work-stage .work-card.is-active { transition: opacity 250ms linear, transform 0s; }
 html:not(.motion) .work-stage .work-card.is-flipped .work-card__inner { transform: none; }
 html:not(.motion) .work-card__back { transform: none; opacity: 0; transition: opacity 250ms linear; }
 html:not(.motion) .work-card__front { transition: opacity 250ms linear; }
@@ -765,10 +780,13 @@ html:has(.work-sheet[open]) { overflow: hidden; scrollbar-gutter: stable; }
 .work-toggle .icon { width: 16px; height: 16px; }
 html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing turns by itself */
 
-/* Reduced motion: no 3D and no travel (work.js lays the cards out flat); a
-   slide change is a short crossfade, and so is the flip. */
+/* Reduced motion: no 3D and no travel (work.js lays the cards out flat, the
+   centre card alone); a slide change is a short crossfade in place, and so is
+   the flip. A card that stops being the centre one moves off only once it has
+   faded (the transform waits 250ms); the next one is in place at once. */
 @media (prefers-reduced-motion: reduce) {
-  .work-stage .work-card,
+  .work-stage .work-card { transition: opacity 250ms linear, transform 0s linear 250ms !important; }
+  .work-stage .work-card.is-active { transition: opacity 250ms linear, transform 0s !important; }
   .work-stage .work-card__dim,
   .work-card__front,
   .work-card__back { transition: opacity 250ms linear !important; }

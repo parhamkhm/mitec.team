@@ -41,10 +41,15 @@ const HINT_MS = 260 + 2400; // the first-view hint: expand, hold while the ring 
 // rotateY, opacity, dim]. The side cards turn to face the centre. Tuned for
 // the 16:10 card (measured): from 1280px each ±2 card is ~90% on screen and
 // 42–44% clear of the ±1 card in front of it, which stays ~55% clear of the
-// centre card.
+// centre card. ±1 is fully opaque (the dim layer alone sets it back), so no
+// card ever shows another through it; only ±2 fades, and ±3 is out.
+// flat (reduced motion): the centre card alone, flat; the others wait,
+// invisible and inert, a card's width (+4%) apart, and a slide change
+// crossfades in place (home.css), so nothing slides.
 const LAYOUT = {
-  wide: [[0, 1, 0, 1, 0], [50, .74, 34, .6, .45], [88, .56, 46, .3, .6], [124, .46, 48, 0, .6]],
-  narrow: [[0, 1, 0, 1, 0], [62, .86, 16, .6, .45], [112, .72, 24, .3, .6], [150, .6, 30, 0, .6]]
+  wide: [[0, 1, 0, 1, 0], [50, .74, 34, 1, .45], [88, .56, 46, .3, .6], [124, .46, 48, 0, .6]],
+  narrow: [[0, 1, 0, 1, 0], [62, .86, 16, 1, .45], [112, .72, 24, .3, .6], [150, .6, 30, 0, .6]],
+  flat: [[0, 1, 0, 1, 0], [104, 1, 0, 0, 0], [208, 1, 0, 0, 0], [312, 1, 0, 0, 0]]
 };
 const Z = [30, 20, 10, 0];
 const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is turned over
@@ -52,14 +57,16 @@ const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is
 // The back's three blocks, in reading order (right to left).
 const TABS = [['need', 'نیاز'], ['built', 'راهکار'], ['result', 'نتیجه']];
 
-// The screenshot covers a 16:10 card of clamp(300px, 42vw, 600px) (86vw on
-// phones); it is about 2:1, so it is drawn at ~1.3× the card's width.
-const CARD_SIZES = '(max-width: 759px) 112vw, (max-width: 1428px) 55vw, 780px';
+// The screenshot covers a 16:10 card of clamp(300px, 42vw, 600px) (86vw up
+// to 989px, less on a short screen); it is about 2:1, so it is drawn at
+// ~1.3× the card's width.
+const CARD_SIZES = '(max-width: 989px) 112vw, (max-width: 1428px) 55vw, 780px';
 const SHEET_SIZES = '100vw';
 const NOTE = 'لینک سایت بعد از تأیید مشتری منتشر می‌شود.';
 
 const root = document.documentElement;
-const narrow = matchMedia('(max-width: 759px)');
+// Up to the sheet breakpoint the centre card is 86vw and the side cards peek.
+const narrow = matchMedia('(max-width: 989px)');
 // Below 990px a 16:10 card is under ~260px tall: too short for its back, so
 // the details open as a bottom sheet there (phones included).
 const sheetMode = matchMedia('(max-width: 989px)');
@@ -495,15 +502,16 @@ function build(section, host, projects) {
     const a = Math.min(Math.abs(s.pos), 3);
     const side = Math.sign(s.pos);
     const [x, sc, r, o, dim] = lay[a];
-    s.el.style.transform = `translateX(${-side * x || 0}%) scale(${flat ? 1 : sc}) rotateY(${flat ? 0 : side * r}deg)`;
+    s.el.style.transform = `translateX(${-side * x || 0}%) scale(${sc}) rotateY(${side * r}deg)`;
     s.el.style.opacity = o;
     s.el.style.zIndex = Z[a];
     // A card leaving for ±3 fades out fast, so its slot is free to recycle soon.
-    s.el.style.transitionDuration = s.exiting ? `800ms, ${exitMs()}ms` : '';
+    // (Flat, every card but the centre one is already invisible.)
+    s.el.style.transitionDuration = s.exiting && !flat ? `800ms, ${exitMs()}ms` : '';
     s.dim.style.opacity = flipped && a ? Math.min(dim + FLIPPED_DIM, .85) : dim;
     s.el.dataset.pos = s.pos;
     s.el.classList.toggle('is-active', a === 0);
-    s.el.inert = a === 3;
+    s.el.inert = a === 3 || (flat && a > 0);
     const name = nameOf(projects[s.p]);
     s.front.tabIndex = a === 0 ? 0 : -1;
     if (a === 0) {
@@ -525,7 +533,7 @@ function build(section, host, projects) {
   function paint() {
     raf = 0;
     const flat = !motionOn();
-    const lay = narrow.matches ? LAYOUT.narrow : LAYOUT.wide;
+    const lay = flat ? LAYOUT.flat : narrow.matches ? LAYOUT.narrow : LAYOUT.wide;
     const jumped = [];
     for (const s of slots) {
       if (s.teleport) {
