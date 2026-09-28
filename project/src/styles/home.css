@@ -1342,9 +1342,23 @@ html:not(.js) .scope { display: none; }
   .scope-body > .scope-checkout .scope-cta { padding: 12px 16px; font-size: var(--text-body-sm); }
   .scope-body > .scope-checkout .scope-cta .icon { display: none; }
 }
-@media (max-width: 759px) {
+/* Below 1024px the six site types don't fit one row: they wrap into a grid
+   inside the same sunken track, three to a row, two below 600px, so every
+   type is in view. A long label may take two lines at 320px. */
+@media (max-width: 1023px) {
   .scope-types { align-items: stretch; }
-  .scope-tabs__track { border-radius: var(--radius-lg); }
+  .scope-tabs__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    scroll-snap-type: none;
+    border-radius: var(--radius-lg);
+  }
+  .scope-tab { display: flex; }
+  .scope-tab span { flex: 1; justify-content: center; padding-inline: var(--space-2); white-space: normal; text-align: center; }
+}
+@media (max-width: 599px) {
+  .scope-tabs__track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---------------------------------------------------------------- FAQ
