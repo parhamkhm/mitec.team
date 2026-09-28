@@ -68,12 +68,15 @@ and 851px).
 
   | Space needed / available in the panel | Mery | Karamad | E2 |
   |---|---|---|---|
-  | 1280×800 (card 538×336) | 214 / 170 | 225 / 192 | 198 / 192 |
-  | 1440 and 1920 (card 600×375) | 207 / 182 | 204 / 204 | 204 / 204 |
+  | 1280×800 (card 538×336) | 259 / 170 | 259 / 192 | 205 / 192 |
+  | 1440 and 1920 (card 600×375) | 232 / 182 | 205 / 204 | 205 / 204 |
 
   - **At 1280×800 none of the three fits,** so all keep the tabs there (the decided fallback).
-  - **At 1440 and wider,** Karamad and E2 show rows. Mery keeps the tabs, because its two-line title leaves it
-    25px short.
+  - **At 1440 and wider,** Karamad and E2 show rows. Mery keeps the tabs: its «نتیجه» takes two lines, and its
+    «دیدن سایت» button is 22px taller than the others' note.
+  - *Corrected after the batch:* this table first had the overflow halved (the panel centres its content, so
+    `scrollHeight` saw only the half below), and it named Mery's title, which is one line, as the cause. Since
+    the owner's decision on batch 4, one choice holds for every card (see `16-batch-5.md`).
 - **Dots (A7 + A10):** each dot is a 24 × 44px target at the same 24px pitch, since 44px-wide targets would push the
   dots apart.
   - The pill is two 8px caps and a bar. Active, the caps move 10px apart and the bar opens between them, and the

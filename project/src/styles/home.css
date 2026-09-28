@@ -641,9 +641,10 @@ html:not(.motion) .work-cue { --cue-open: 1; }
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
   mask-image: linear-gradient(to bottom, black calc(100% - 32px), transparent);
 }
-/* From 1024px, where all three fit (work.js checks each card): the texts as
-   rows in the same inset panel, «نیاز», «راهکار», «نتیجه» each a label over
-   its text, instead of the tabs. The back then has four rows. */
+/* From 1024px, where every project's three fit (work.js checks them all, so
+   every card shows the same): the texts as rows in the same inset panel,
+   «نیاز», «راهکار», «نتیجه» each a label over its text, instead of the tabs.
+   The back then has four rows. */
 .work-card__rows { display: none; }
 .work-stage .work-card.has-rows .work-card__sheet { grid-template-rows: auto auto minmax(0, 1fr) auto; }
 .work-stage .work-card.has-rows :is(.work-tabs, .work-card__content) { display: none; }

@@ -72,8 +72,8 @@ const narrow = matchMedia('(max-width: 989px)');
 // Below 990px a 16:10 card is under ~260px tall: too short for its back, so
 // the details open as a bottom sheet there (phones included).
 const sheetMode = matchMedia('(max-width: 989px)');
-// From 1024px the back shows its three texts as rows where they fit the card
-// (checked per card), and the tabs only where they don't.
+// From 1024px every card's back shows its three texts as rows when every
+// project's fit a card, and the tabs when any one's don't (fitRows).
 const rowsMode = matchMedia('(min-width: 1024px)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 const motionOn = () => root.classList.contains('motion');
@@ -293,10 +293,15 @@ function build(section, host, projects) {
     s.pan.classList.remove('is-ready');
     s.full.removeAttribute('src');
     s.fullSrc = im?.full || '';
-    s.backTitle.textContent = pr.nameFa || pr.title || nameOf(pr);
-    s.backTags.replaceChildren(...chips(pr.tags));
     s.backImg.hidden = !im?.ambient;
     if (im?.ambient) s.backImg.src = im.ambient;
+    fillBack(s, pr);
+    selectTab(s, 0);
+  }
+  // The back's words: title, tags, the three texts (tabs and rows), the foot.
+  function fillBack(s, pr) {
+    s.backTitle.textContent = pr.nameFa || pr.title || nameOf(pr);
+    s.backTags.replaceChildren(...chips(pr.tags));
     TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = s.rowTexts[k].textContent = pr[key] || ''; });
     if (pr.url && pr.url !== '#') {
       const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
@@ -308,20 +313,34 @@ function build(section, host, projects) {
       note.textContent = NOTE;
       s.foot.replaceChildren(note);
     }
-    selectTab(s, 0);
-    fitRows(s);
   }
-  // Rows where all three texts fit the card's text area without scrolling,
-  // from 1024px; otherwise (or below) the tabs.
-  function fitRows(s) {
-    if (!rowsMode.matches) {
-      s.el.classList.remove('has-rows');
-      return;
+  // Rows or tabs, one choice for every card, so a size never mixes the two:
+  // from 1024px, rows where every project's three texts fit a card's text
+  // area without scrolling, otherwise (or below) the tabs. Each project is
+  // tried in a spare card, added to the stage only while it is measured (the
+  // slots in use hold at most seven of the projects).
+  let probe = null;
+  function fitRows() {
+    let fits = rowsMode.matches;
+    if (fits) {
+      if (!probe) {
+        probe = makeSlot(POOL);
+        probe.el.classList.add('has-rows');
+        probe.el.style.visibility = 'hidden';
+        probe.el.inert = true;
+        probe.rows.style.alignContent = 'start'; // so an overflow shows in full
+      }
+      trackEl.append(probe.el);
+      fits = projects.every((pr) => {
+        fillBack(probe, pr);
+        return probe.rows.scrollHeight <= probe.rows.clientHeight + 1;
+      });
+      probe.el.remove();
     }
-    s.el.classList.add('has-rows');
-    if (s.rows.scrollHeight > s.rows.clientHeight + 1) s.el.classList.remove('has-rows');
+    slots.forEach((s) => s.el.classList.toggle('has-rows', fits));
   }
   slots.forEach(fill);
+  fitRows();
 
   function loadFull(s) {
     if (!s.fullSrc || s.full.getAttribute('src')) return;
@@ -805,7 +824,7 @@ function build(section, host, projects) {
       const cue = slots.find((s) => s.pos === 0)?.front.querySelector('.work-cue');
       const w = cue?.offsetWidth;
       if (w) host.style.setProperty('--cue-s', (CUE_CIRCLE / w).toFixed(4));
-      slots.forEach(fitRows); // the card's size, or the font, changed
+      fitRows(); // the card's size, or the font, changed
     },
     update() {}
   });

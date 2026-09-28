@@ -281,14 +281,39 @@
         // the lift transforms don't count.
         const copyEnd = () => kids[kids.length - 1].offsetTop + kids[kids.length - 1].offsetHeight;
         const copyH = () => copyEnd() - kids[0].offsetTop;
+        // Until Vazirmatn 800 has landed, the H1 is fitted for it too: the fallback matches its
+        // width overall, not word by word, so a line can break elsewhere once it lands (at 1440,
+        // «دیجیتال» is 7% wider in Vazirmatn, and at 76px the H1 takes four lines, not three).
+        // The lines it will take are counted from each word's width in Vazirmatn 800, in em
+        // (measured; the mark's .08em padding is added to its first and last word), and the fit
+        // takes the taller of the two. A word not in the table (the copy changed) turns this off,
+        // and the fit then follows the fallback until the font lands.
+        const VZ = { ' ': .248, 'فراتر': 1.8632, 'از': .6323, 'طراحی': 2.603, 'سایت؛': 2.7289, 'ساخت': 2.7026, 'زیرساخت': 3.7485,
+          'دیجیتال': 3.2007, 'برای': 1.6289, 'رشد': 1.6343, 'کسب‌وکار': 3.812, 'شما': 1.6523 };
+        const words = title.textContent.trim().split(/\s+/);
+        const vzPending = !document.fonts.check('800 16px Vazirmatn', 'ف') && words.every((x) => VZ[x]);
+        const vzExtra = (size) => {
+          if (!vzPending) return 0;
+          let lines = 1, x = -VZ[' '];
+          for (const word of words) {
+            x += VZ[' '] + VZ[word];
+            if (x * size > title.clientWidth + .5) { lines++; x = VZ[word]; }
+          }
+          const d = lines * parseFloat(getComputedStyle(title).lineHeight) - title.offsetHeight;
+          return d > 1 ? d : 0; // offsetHeight is rounded
+        };
         // Shrink the H1 in 4px steps towards 36px (its clamp floor) until the copy fits `avail`;
         // only if that is not enough does the sub drop to body-lg. True if it fits.
         const fit = (avail) => {
-          title.style.fontSize = sub.style.fontSize = '';
+          title.style.fontSize = sub.style.fontSize = title.style.minHeight = '';
           let size = parseFloat(getComputedStyle(title).fontSize);
-          while (copyH() > avail && size > 36) title.style.fontSize = px((size = Math.max(36, size - 4)));
-          if (copyH() > avail) sub.style.fontSize = 'var(--text-body-lg)';
-          return copyH() <= avail;
+          const h = () => copyH() + vzExtra(size);
+          while (h() > avail && size > 36) title.style.fontSize = px((size = Math.max(36, size - 4)));
+          if (h() > avail) sub.style.fontSize = 'var(--text-body-lg)';
+          // Hold the H1 at Vazirmatn's height meanwhile, so nothing under it moves when it lands.
+          const extra = vzExtra(size);
+          if (extra) title.style.minHeight = px(title.offsetHeight + extra);
+          return h() <= avail;
         };
 
         // On the lit screen the copy reads in the light token set; stacked, it sits on the
@@ -322,9 +347,10 @@
       };
       if (document.documentElement.classList.contains('motion')) {
         mitecPortalLayout();
-        // A Vazirmatn weight that lands after this re-wraps the copy in the real font, and the H1
-        // can fit at another size (the fallback matches the width, not every line break). Fit
-        // again as it lands, in the same task, so no frame is drawn with the stale fit.
+        // A Vazirmatn weight that lands after this re-wraps the copy in the real font. Fit again
+        // as it lands: for the 800 this confirms the size fitted for it above (and drops the
+        // held height); for the others, and wherever the fallback wrapped taller, it corrects
+        // the fit (Chrome still records that as a small shift).
         for (const f of document.fonts) {
           if (f.family.replace(/"/g, '') !== 'Vazirmatn' || f.status === 'loaded') continue;
           f.loaded.then(() => document.documentElement.classList.contains('motion') && mitecPortalLayout(), () => {});
@@ -356,7 +382,7 @@
       </div>
 
       <!-- Filled by work.js; the stage and controls keep their height before it runs. -->
-      <div class="work-carousel" role="region" aria-roledescription="carousel" aria-label="نمونه‌کارها" data-reveal></div>
+      <div class="work-carousel" role="region" aria-roledescription="اسلایدر نمونه‌کارها" aria-label="نمونه‌کارها" data-reveal></div>
 
       <ul class="work-list" role="list">
         <li class="work-item">
