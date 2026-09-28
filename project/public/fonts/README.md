@@ -26,7 +26,23 @@
   ```
 
   Run it the same way for Medium (500), Bold (700) and ExtraBold (800).
-- **Loading and fallback:** the `@font-face` rules and the metric-matched fallback ("Vazirmatn Fallback", Tahoma scaled
-  to Vazirmatn's width and line box) are in `src/styles/tokens.css`. `index.html` preloads 800 only (the H1).
+- **Loading:** the `@font-face` rules are in `src/styles/tokens.css`.
+- **Fallbacks:** until a weight arrives, text shows in the device's own Persian font, scaled (`size-adjust`) and
+  re-metricked (ascent, descent, line gap) to Vazirmatn, so the swap moves no text. One family per platform font,
+  tried in this order:
+
+  | Family | Font | Platforms |
+  |---|---|---|
+  | `Vazirmatn Tahoma` | Tahoma, Tahoma Bold | Windows, macOS |
+  | `Vazirmatn Geeza` | Geeza Pro | iOS (not measured yet; see below) |
+  | `Vazirmatn Naskh` | Noto Naskh Arabic (and its UI variant) | Android |
+  | `Vazirmatn Noto Sans` | Noto Sans Arabic (and its UI variant) | Android builds without Naskh, Linux |
+
+  Regular stands in for 400 and 500, Bold for 700 and 800. The Noto fonts have no Latin letters; those fall through
+  to Roboto on Android, which is where Vazirmatn's own Latin comes from.
+- **Measuring a fallback:** open `public/fonts/fallback-check.html` (served, e.g. `python devserver.py 4173`) on the
+  device. It lists which fallbacks that device has and measures each one's `size-adjust` and overrides on the home
+  page's own text, with ready-to-paste `@font-face` lines. Geeza Pro ships only on Apple devices, so its values stay
+  at 100% until the page is run once on an iPhone.
 - **Checking new copy:** if new copy uses a character outside these ranges, check it against the subset before
   shipping.

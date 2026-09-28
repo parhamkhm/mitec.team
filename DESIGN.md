@@ -20,7 +20,7 @@ If a new element makes any of these jobs ambiguous, its color is wrong.
 
 - Brand: **Mitec (میتک)**, a studio for websites and digital solutions (online services, CRM, automation, data analytics, support). Target market: Iran.
 - Language: **Persian, RTL** (`<html lang="fa" dir="rtl">`). Latin appears only in brand names and the `mitec.team` wordmark.
-- Font: **Vazirmatn** (weights 400 / 500 / 700 / 800). Fallback: `Tahoma, "Segoe UI", sans-serif`.
+- Font: **Vazirmatn** (weights 400 / 500 / 700 / 800), self-hosted. Fallback: the device's own Persian font, scaled and re-metricked to Vazirmatn so the swap moves no text (Tahoma, Geeza Pro, Noto Naskh Arabic or Noto Sans Arabic; `tokens.css`), then `Tahoma, "Segoe UI", sans-serif`.
 - Numerals: use **Persian digits** (۰–۹) in UI copy and stats.
 - Visual link: the site must feel like the same brand as the Instagram page (dark green `#12312A` posts, mint `#57B79A`, amber `#E0A25C`, subtle grid texture, device mockups on green).
 

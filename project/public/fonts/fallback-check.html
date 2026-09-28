@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Font fallback check</title>
+<link rel="icon" href="data:,">
+<!-- A dev page, not part of the site. Open it on a device (iPhone, Android phone, Mac…) to see which of the
+     metric-matched fallbacks in src/styles/tokens.css that device has, and to measure each one's size-adjust
+     and overrides on the home page's own Persian text. Paste any line marked "update" into tokens.css. -->
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; max-width: 960px; color: CanvasText; background: Canvas; }
+  table { border-collapse: collapse; margin-block: 12px; }
+  th, td { padding: 4px 10px 4px 0; text-align: left; border-bottom: 1px solid GrayText; vertical-align: top; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; border: 1px solid GrayText; padding: 12px; }
+  iframe { position: absolute; width: 390px; height: 800px; left: -10000px; border: 0; }
+</style>
+</head>
+<body>
+<h1>Font fallback check</h1>
+<p id="status">Loading the home page and Vazirmatn…</p>
+<table id="result" hidden>
+  <thead><tr><th>Family</th><th>Weights</th><th>On this device</th><th>size-adjust now</th><th>Measured</th></tr></thead>
+  <tbody></tbody>
+</table>
+<pre id="css" hidden></pre>
+<iframe id="page" src="../../index.html" title="home page (for its text)"></iframe>
+<script type="module">
+const A = 2100 / 2048, D = 1100 / 2048; // Vazirmatn's ascent and descent over its em
+const REP = { '100 450': 400, '451 599': 500, '600 750': 700, '751 900': 800 }; // the weight each range stands in for
+const $ = (id) => document.getElementById(id);
+
+const css = await (await fetch('../../src/styles/tokens.css')).text();
+const rules = [...css.matchAll(/@font-face\s*\{([^}]*local\([^}]*)\}/g)].map(([, body]) => ({
+  family: body.match(/font-family:\s*'([^']+)'/)[1],
+  src: body.match(/src:\s*([^;]+);/)[1],
+  range: body.match(/font-weight:\s*([^;]+);/)[1].trim(),
+  sizeAdjust: parseFloat(body.match(/size-adjust:\s*([\d.]+)%/)[1]),
+}));
+
+await Promise.all(Object.values(REP).map((w) =>
+  new FontFace('VzProbe', `url(vazirmatn-${w}.woff2)`, { weight: String(w) }).load().then((f) => document.fonts.add(f))));
+
+const frame = $('page');
+if (!frame.contentDocument || frame.contentDocument.readyState !== 'complete') await new Promise((r) => frame.addEventListener('load', r, { once: true }));
+await new Promise((r) => setTimeout(r, 1500)); // let the page's scripts render their sections
+const doc = frame.contentDocument;
+doc.querySelectorAll('[hidden]').forEach((el) => el.removeAttribute('hidden'));
+const text = doc.body.innerText.replace(/\s+/g, ' ').replace(/[A-Za-z]/g, ''); // Persian only: the Noto faces have no Latin
+
+const width = (family, w) => {
+  const el = document.createElement('span');
+  el.style.cssText = `position:absolute;white-space:nowrap;visibility:hidden;font:${w} 40px ${family}`;
+  el.textContent = text; document.body.append(el);
+  const x = el.getBoundingClientRect().width; el.remove(); return x;
+};
+
+const rows = [], lines = [];
+for (const [i, r] of rules.entries()) {
+  const w = REP[r.range];
+  const probe = new FontFace(`Probe${i}`, r.src, { weight: String(w) });
+  let found = true;
+  try { document.fonts.add(await probe.load()); } catch { found = false; }
+  r.found = found;
+  let measured = '', line = '';
+  if (found) {
+    const sa = Math.round(width('VzProbe', w) / width(`Probe${i}`, w) * 1000) / 10;
+    const diff = sa - r.sizeAdjust;
+    measured = `${sa}% (${diff >= 0 ? '+' : ''}${diff.toFixed(1)})`;
+    line = `@font-face { font-family: '${r.family}'; src: ${r.src}; font-weight: ${r.range}; size-adjust: ${sa}%; ` +
+      `ascent-override: ${Math.round(A / (sa / 100) * 10000) / 100}%; descent-override: ${Math.round(D / (sa / 100) * 10000) / 100}%; line-gap-override: 0%; }`;
+    lines.push(`${Math.abs(diff) >= 0.3 ? '/* update */ ' : '/* ok */     '}${line}`);
+  }
+  rows.push(`<tr><td>${r.family}</td><td>${r.range} (as ${w})</td><td>${found ? 'yes' : 'no'}</td><td>${r.sizeAdjust}%</td><td>${measured}</td></tr>`);
+}
+
+$('result').tBodies[0].innerHTML = rows.join('');
+$('result').hidden = false;
+$('css').textContent = lines.length ? lines.join('\n') : 'None of the fallback fonts is on this device.';
+$('css').hidden = false;
+const first = rules.find((r) => r.found);
+$('status').textContent = `${text.length} characters of the home page's Persian text measured. ` +
+  (first ? `This device falls back to '${first.family}' until Vazirmatn arrives.` : 'This device has none of the fallbacks.');
+</script>
+</body>
+</html>
