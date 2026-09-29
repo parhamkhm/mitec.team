@@ -186,7 +186,7 @@
    values extend the system's --dur / --ease scale for the scroll scene and
    reveals, and zero out with it under reduced motion. */
 :root {
-  --section-pad: clamp(96px, 11vw, 176px);
+  --section-pad: clamp(64px, 11vw, 176px); /* 64px on phones (under ~580px), 176px from 1600px */
 
   --ease-portal: cubic-bezier(.65, 0, .35, 1);
   /* A swap between a light and a dark surface: slow at both ends, through

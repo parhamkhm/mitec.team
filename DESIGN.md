@@ -205,7 +205,7 @@ Put this in the global stylesheet (e.g. `src/styles/tokens.css`) and import it b
 
 The footer uses `data-surface="dark"` plus `background: var(--color-bg-alt)` (resolves to `#0B211C`).
 
-`tokens.css` also holds the non-colour scales: type (`--text-*`, `--lh-*`, and `--ls-*`, which are all 0 — §13), `--section-pad: clamp(96px, 11vw, 176px)` for section padding, and the motion values (`--dur-reveal`, `--dur-media`, `--stagger`, `--reveal-rise`, `--ease-portal`) on top of the design system's `--dur` / `--ease-*` scale. All durations go to 0 under reduced motion.
+`tokens.css` also holds the non-colour scales: type (`--text-*`, `--lh-*`, and `--ls-*`, which are all 0 — §13), `--section-pad: clamp(64px, 11vw, 176px)` for section padding (the phone floor is 64px: 96px put about 1.6 screens of padding between the sections at 390), and the motion values (`--dur-reveal`, `--dur-media`, `--stagger`, `--reveal-rise`, `--ease-portal`) on top of the design system's `--dur` / `--ease-*` scale. All durations go to 0 under reduced motion.
 
 ### Tailwind v4 (if the project uses Tailwind)
 
