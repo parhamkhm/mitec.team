@@ -863,6 +863,15 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .process-step__title { margin: var(--space-3) 0 var(--space-2); }
 .process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
+/* Stacked on a tablet or a small laptop (760–1199px), a card is too wide for
+   one short line: two columns, the numeral and title on the start side and
+   the paragraph beside them, centred on them. */
+@media (min-width: 760px) and (max-width: 1199px) {
+  .process-step { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: var(--space-6); align-items: center; }
+  .process-step__n { grid-area: 1 / 1; }
+  .process-step__title { grid-area: 2 / 1; margin-bottom: 0; }
+  .process-step__body { grid-area: 1 / 2 / 3 / 3; }
+}
 
 /* The step cards take colour from the same progress as the rail (effects.js):
    a --green-100 fill grows from the start edge as the rail head approaches a
