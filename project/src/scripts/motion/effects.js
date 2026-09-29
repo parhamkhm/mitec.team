@@ -165,7 +165,7 @@ function processRail() {
         const f = +(i <= s);
         k.fill.style.transform = across ? `scaleX(${f})` : `scaleY(${f})`;
         k.line.style.opacity = f;
-        k.n.style.opacity = 0.35 + 0.65 * f;
+        k.n.style.opacity = 0.55 + 0.45 * f; // .55: 3.45:1 on white, over large text's 3:1
       });
       setSpot(s);
     },

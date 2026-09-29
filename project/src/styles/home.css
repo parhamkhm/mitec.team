@@ -891,7 +891,8 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
   .process-rail { top: 14px; inset-inline-start: 25px; width: var(--rail-len, 0px); height: 2px; }
   .process-rail__fill { transform-origin: 100% 50%; } /* fills from the start edge: the right, on this RTL page */
 }
-.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
+/* Proportional figures: in a tabular slot the narrow «۰» of «۰۱» sits apart. */
+.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); line-height: 1.1; }
 .process-step__title { margin: var(--space-3) 0 var(--space-2); }
 .process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
 /* Stacked on a tablet or a small laptop (760–1199px), a card is too wide for
