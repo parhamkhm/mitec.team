@@ -1109,6 +1109,10 @@ html:not(.js) .scope { display: none; }
 .scope-lines__toggle::before { content: ''; position: absolute; inset-block: calc(50% - 22px); inset-inline: -8px; }
 .scope-lines__toggle:hover { color: var(--color-link-hover); }
 .scope-lines__toggle .icon { width: 16px; height: 16px; }
+/* The bar's chevron and short «sample» mark; the card shows the text button
+   and the badge instead. */
+.scope-lines__chevron,
+.scope-meta__mark { display: none; }
 /* The breakdown: an inset list, name at the start, amount at the end. */
 .scope-lines {
   margin: 0;
@@ -1139,9 +1143,10 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
 .scope-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-2); margin: 0; color: var(--color-text-secondary); }
 .scope-meta[hidden],
 .scope-meta__count[hidden] { display: none; }
-/* A hairline between the duration and the count: a «·» beside Persian
-   digits reads as a zero (۰). */
-.scope-total__days + .scope-meta__count::before {
+/* A hairline between the duration, the count and the bar's «sample» mark: a
+   «·» beside Persian digits reads as a zero (۰). */
+.scope-total__days + .scope-meta__count::before,
+.scope-meta > * + .scope-meta__mark::before {
   content: '';
   display: inline-block;
   width: 1px;
@@ -1330,10 +1335,10 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
     bottom: 0;
     z-index: 5;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "lines lines" "tools tools" "figures cta";
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "lines lines lines" "toggle figures cta";
     align-items: center;
-    gap: var(--space-2) var(--space-4);
+    gap: 0 var(--space-3); /* no row gap: the closed breakdown's row is empty */
     margin-inline: calc(-1 * var(--gutter));
     padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--color-border-subtle);
@@ -1341,14 +1346,33 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
   }
   .scope-body > .scope-checkout .scope-checkout__figures { align-items: flex-start; text-align: start; }
   .scope-body > .scope-checkout .scope-total { justify-content: flex-start; }
-  .scope-body > .scope-checkout .scope-meta { justify-content: flex-start; font-size: var(--text-body-sm); }
+  .scope-body > .scope-checkout .scope-meta { justify-content: flex-start; font-size: var(--text-body-sm); line-height: 1.5; }
   .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-h4); }
   .scope-body > .scope-checkout .scope-cta { grid-area: cta; }
   .scope-body > .scope-checkout .scope-checkout__figures { grid-area: figures; }
-  .scope-body > .scope-checkout .scope-checkout__tools { grid-area: tools; }
+  /* One row: the breakdown's chevron, the figures, the CTA. The text button
+     keeps its words for screen readers only; the badge gives way to the
+     short mark after the duration. */
+  .scope-body > .scope-checkout .scope-checkout__tools { display: contents; }
+  .scope-body > .scope-checkout .scope-checkout__tools .badge { display: none; }
+  .scope-body > .scope-checkout .scope-lines__toggle {
+    grid-area: toggle;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-tonal);
+    color: var(--color-tonal-text);
+  }
+  .scope-body > .scope-checkout .scope-lines__toggle:hover { background: var(--color-tonal-hover); color: var(--color-tonal-text); }
+  .scope-body > .scope-checkout .scope-lines__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .scope-body > .scope-checkout .scope-lines__sign { display: none; }
+  .scope-body > .scope-checkout .scope-lines__chevron { display: block; width: 18px; height: 18px; transition: transform var(--dur) var(--ease-out); }
+  .scope-body > .scope-checkout .scope-lines__toggle[aria-expanded="true"] .scope-lines__chevron { transform: rotate(180deg); }
+  .scope-body > .scope-checkout .scope-meta__mark { display: inline; font-size: var(--text-eyebrow); font-weight: 500; color: var(--color-text-muted); }
   /* Open, the breakdown sits above the rest of the bar and scrolls past 40%
      of the screen. */
-  .scope-body > .scope-checkout .scope-lines { grid-area: lines; max-height: 40svh; overflow-y: auto; overscroll-behavior: contain; }
+  .scope-body > .scope-checkout .scope-lines { grid-area: lines; max-height: 40svh; margin-bottom: var(--space-3); overflow-y: auto; overscroll-behavior: contain; }
   /* Keyboard focus scrolled into view clears the nav and the bar (whose
      height scope.js keeps in --scope-bar-h). */
   .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 calc(var(--scope-bar-h, 120px) + 16px); }
@@ -1368,11 +1392,22 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
   .scope-body > .scope-checkout .scope-cta { padding: 12px 16px; font-size: var(--text-body-sm); }
   .scope-body > .scope-checkout .scope-cta .icon { display: none; }
 }
-/* Under 360px the price and the CTA don't fit side by side (they need about
-   340px): the CTA takes its own row, full width. */
+/* Under 400px the row gets the room it needs from the bar's side padding and
+   the CTA's; under 360px the CTA takes its own row, full width, with less
+   padding round the bar. */
+@media (max-width: 399px) {
+  .scope-body > .scope-checkout { column-gap: var(--space-2); padding-inline: var(--space-4); }
+  .scope-body > .scope-checkout .scope-meta { column-gap: var(--space-1); }
+  .scope-body > .scope-checkout .scope-meta__mark::before { margin-inline-end: var(--space-1); }
+  .scope-body > .scope-checkout .scope-cta { padding-inline: 10px; }
+}
 @media (max-width: 359px) {
-  .scope-body > .scope-checkout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "lines" "tools" "figures" "cta"; }
-  .scope-body > .scope-checkout .scope-cta { width: 100%; }
+  .scope-body > .scope-checkout {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "lines lines" "toggle figures" "cta cta";
+    padding-block: var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+  }
+  .scope-body > .scope-checkout .scope-cta { width: 100%; margin-top: var(--space-2); }
 }
 /* Below 1024px the six site types don't fit one row: they wrap into a grid
    inside the same sunken track, three to a row, two below 600px, so every

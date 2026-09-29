@@ -8,7 +8,7 @@ Where copy lives: section copy in `project/index.html` and `project/src/data/*.j
 pricing calculator in `project/src/config/pricing.json` (`section`, `siteTypes`, `addons`), except the strings in
 `COPY` at the top of `project/src/scripts/scope.js`: the three fallbacks, the chosen-add-on count, and defaults that a
 `section` field of the same name overrides (the two fold buttons and, from Impeccable batch 5, the owner-approved
-«جزئیات برآورد» (`breakdown`), «هر صفحه‌ی بیشتر: از {price}» (`perPage`) and «بدون هزینه‌ی اضافه» (`free`)).
+«جزئیات برآورد» (`breakdown`), «هر صفحه‌ی بیشتر: از {price}» (`perPage`) and «بدون هزینه‌ی اضافه» (`free`), and the bar's «نمونه» mark (`sampleMark`)).
 
 Conventions every new string follows (from `copy-final.md`):
 

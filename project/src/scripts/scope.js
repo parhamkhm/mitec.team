@@ -24,7 +24,8 @@ import { icon, setIcon } from '../utils/icon.js';
 // cannot be loaded, the way out for visitors unsure of their site type, the
 // count of chosen add-ons under the total, and the defaults for the optional
 // section fields of the same names: the two that fold a long add-on list, the
-// breakdown's button, the price of one more page, and a free add-on's price.
+// breakdown's button, the price of one more page, a free add-on's price, and
+// the bar's short «sample» mark.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
@@ -34,7 +35,8 @@ const COPY = {
   showFewerAddons: 'نمایش کمتر',
   breakdown: 'جزئیات برآورد',
   perPage: 'هر صفحه‌ی بیشتر: از {price}',
-  free: 'بدون هزینه‌ی اضافه'
+  free: 'بدون هزینه‌ی اضافه',
+  sampleMark: 'نمونه'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
@@ -113,7 +115,8 @@ export async function initScope() {
   const state = { type: types[0], pages: 0, wanted: 0, picked: new Set() };
 
   // «Sample numbers», while the numbers are placeholders: in the heading, and
-  // again beside the total, so the bar (or a screenshot of it) says so too.
+  // again under the total in the card (the bar has a short mark instead), so
+  // the figure carries its caveat wherever it is seen.
   const sampleBadge = () => {
     const badge = el('span', 'badge badge--highlight');
     badge.append(icon('clock'), S.placeholderBadge);
@@ -168,31 +171,40 @@ export async function initScope() {
   }
   const count = el('span', 'scope-meta__count');
   meta.append(count);
+  // In the bar, the «sample numbers» badge is this short mark after the
+  // duration (the card has the badge; screen readers have the heading's).
+  const mark = sample ? el('span', 'scope-meta__mark', S.sampleMark || COPY.sampleMark) : null;
+  if (mark) {
+    mark.setAttribute('aria-hidden', 'true');
+    meta.append(mark);
+  }
   figures.append(meta);
   const live = el('p', 'visually-hidden');
   live.setAttribute('aria-live', 'polite');
   const go = cta(S.ctaLabel || COPY.cta);
 
   // The breakdown: what the estimate is made of (estimate()'s lines), folded
-  // under a text button next to the «sample numbers» badge. In the card it
-  // opens under the button; in the bar it sits above it, so the bar grows
-  // upward and the button stays where it was tapped.
+  // under a button. In the card it is a text button next to the «sample
+  // numbers» badge, and the list opens under it. In the bar it is a chevron
+  // in the same row as the total (its text kept for screen readers), and the
+  // list opens above the row, so the bar grows upward.
   const tools = el('div', 'scope-checkout__tools');
   let lines = null;
   if (P.display.showPrice) {
-    const toggle = el('button', 'scope-lines__toggle', S.breakdown || COPY.breakdown);
+    const toggle = el('button', 'scope-lines__toggle');
     toggle.type = 'button';
+    const sign = icon('plus', 'scope-lines__sign');
+    toggle.append(el('span', 'scope-lines__label', S.breakdown || COPY.breakdown), sign, icon('chevron-up', 'scope-lines__chevron'));
     lines = el('ul', 'scope-lines');
     lines.id = 'scopeLines';
     lines.hidden = true;
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', lines.id);
-    toggle.append(icon('plus'));
     toggle.addEventListener('click', () => {
       const open = lines.hidden;
       lines.hidden = !open;
       toggle.setAttribute('aria-expanded', String(open));
-      setIcon(toggle.lastChild, open ? 'minus' : 'plus');
+      setIcon(sign, open ? 'minus' : 'plus');
       scrollable(lines, S.breakdown || COPY.breakdown);
     });
     tools.append(toggle);
@@ -435,7 +447,7 @@ export async function initScope() {
     const n = est.lines.filter((l) => addons.has(l.id)).length;
     count.textContent = n ? fill(COPY.picked, { n: faNumber(n) }) : '';
     count.hidden = !n;
-    meta.hidden = !n && !meta.contains(daysBox);
+    meta.hidden = !n && !meta.contains(daysBox) && !mark;
     // The breakdown: the type itself, the pages beyond those included
     // («+۴ صفحه»), then each add-on, a free one as such.
     if (lines) {
