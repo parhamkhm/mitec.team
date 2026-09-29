@@ -24,8 +24,9 @@ import { icon, setIcon } from '../utils/icon.js';
 // cannot be loaded, the way out for visitors unsure of their site type, the
 // count of chosen add-ons under the total, and the defaults for the optional
 // section fields of the same names: the two that fold a long add-on list, the
-// breakdown's button, the price of one more page, a free add-on's price, and
-// the bar's short «sample» mark.
+// breakdown's button and its line for the pages beyond those included, the
+// price of one more page, a free add-on's price, and the bar's short «sample»
+// mark.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
@@ -34,6 +35,7 @@ const COPY = {
   showAllAddons: 'نمایش همه‌ی امکانات ({n})',
   showFewerAddons: 'نمایش کمتر',
   breakdown: 'جزئیات برآورد',
+  extraPages: '{n} صفحه‌ی بیشتر',
   perPage: 'هر صفحه‌ی بیشتر: از {price}',
   free: 'بدون هزینه‌ی اضافه',
   sampleMark: 'نمونه'
@@ -449,10 +451,10 @@ export async function initScope() {
     count.hidden = !n;
     meta.hidden = !n && !meta.contains(daysBox) && !mark;
     // The breakdown: the type itself, the pages beyond those included
-    // («+۴ صفحه»), then each add-on, a free one as such.
+    // («۴ صفحه‌ی بیشتر»), then each add-on, a free one as such.
     if (lines) {
       lines.replaceChildren(...est.lines.map((l) => {
-        const name = l.id === 'base' ? t.label : l.id === 'extra-pages' ? `+${fill(S.pagesValue, { n: faNumber(l.qty) })}` : l.title;
+        const name = l.id === 'base' ? t.label : l.id === 'extra-pages' ? fill(S.extraPages || COPY.extraPages, { n: faNumber(l.qty) }) : l.title;
         const li = el('li');
         li.append(el('span', 'scope-lines__name', name), el('span', l.price > 0 ? 'scope-lines__price' : 'scope-lines__price is-free', l.price > 0 ? price(l.price) : free));
         return li;

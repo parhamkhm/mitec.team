@@ -8,7 +8,7 @@ Where copy lives: section copy in `project/index.html` and `project/src/data/*.j
 pricing calculator in `project/src/config/pricing.json` (`section`, `siteTypes`, `addons`), except the strings in
 `COPY` at the top of `project/src/scripts/scope.js`: the three fallbacks, the chosen-add-on count, and defaults that a
 `section` field of the same name overrides (the two fold buttons and, from Impeccable batch 5, the owner-approved
-«جزئیات برآورد» (`breakdown`), «هر صفحه‌ی بیشتر: از {price}» (`perPage`) and «بدون هزینه‌ی اضافه» (`free`), and the bar's «نمونه» mark (`sampleMark`)).
+«جزئیات برآورد» (`breakdown`) with its «{n} صفحه‌ی بیشتر» line (`extraPages`; its first line is the site type's own label), «هر صفحه‌ی بیشتر: از {price}» (`perPage`) and «بدون هزینه‌ی اضافه» (`free`), and the bar's «نمونه» mark (`sampleMark`)).
 
 Conventions every new string follows (from `copy-final.md`):
 
@@ -44,7 +44,6 @@ Copy flags from the Impeccable pass (`docs/impeccable/`), left as they are for t
 
 | Where | Text | Problem | Suggestion |
 |---|---|---|---|
-| `scope.js` → the breakdown («جزئیات برآورد») | Its first line is the site type's own label (e.g. «سایت شرکتی»); the pages beyond those included are «+{n} صفحه» (from `section.pagesValue`, «+۴ صفحه»). | Composed from existing strings, not written as new copy (batch 5, PC2). | Owner to confirm, or name the two lines. |
 
 ## Resolved in the final pass
 
