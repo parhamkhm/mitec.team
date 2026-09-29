@@ -876,11 +876,12 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-rail__fill { position: absolute; inset: 0; background: var(--color-brand); transform-origin: 50% 0; }
 @media (min-width: 1200px) {
   /* The row may run past the 1200px container, up to 1440px (never closer
-     than the gutter to the screen's edge), and the cards are a little
+     than the gutter to the page's edge, a classic scrollbar or not), and the cards are a little
      tighter (12px apart, 20px padding): a wider measure, so the lit card's
      paragraph keeps to two lines where it can (DESIGN.md §6). */
+  #process { container-type: inline-size; } /* 100cqw: the page's width, without a classic scrollbar */
   .process-track {
-    --track-w: min(100vw - 2 * var(--gutter), 1440px);
+    --track-w: min(100cqw - 2 * var(--gutter), 1440px);
     width: var(--track-w);
     margin-inline: calc((100% - var(--track-w)) / 2);
   }
@@ -947,13 +948,14 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-step[data-surface="dark"] { transform: translateY(-6px); box-shadow: none; }
 .process-step[data-surface="dark"] .process-step__spot { opacity: 1; }
 .process-step[data-surface="dark"] .process-step__n { color: var(--color-text-primary); }
-/* Across, a card changes in one step as the rail head passes its dot
-   (effects.js): its fill, edge and numeral ease in over --dur-slow, so it is
-   either done or not started and no seam rests across a paragraph. Arriving
-   by a link to #process shows the end state at once (.is-jumping). */
-html.motion .process-track.is-across .process-step__fill { transition: transform var(--dur-slow) var(--ease-out); }
-html.motion .process-track.is-across .process-step__line { transition: opacity var(--dur-slow) var(--ease-out); }
-html.motion .process-track.is-across .process-step__n { transition: opacity var(--dur-slow) var(--ease-out), color 0s linear calc(var(--dur-slow) / 2); }
+/* A card changes in one step as the rail head passes its mark (effects.js:
+   across, its dot; stacked, its middle): its fill, edge and numeral ease in
+   over --dur-slow, so it is either done or not started and no part-filled
+   card ever rests across a paragraph. Arriving by a link to #process shows
+   the row's end state at once (.is-jumping). */
+html.motion .process-step__fill { transition: transform var(--dur-slow) var(--ease-out); }
+html.motion .process-step__line { transition: opacity var(--dur-slow) var(--ease-out); }
+html.motion .process-step__n { transition: opacity var(--dur-slow) var(--ease-out), color 0s linear calc(var(--dur-slow) / 2); }
 .process-track.is-jumping * { transition: none !important; }
 
 /* ---------------------------------------------------------------- about

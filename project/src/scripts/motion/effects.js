@@ -74,21 +74,19 @@ function testimonialsTilt() {
 // reaches, as you scroll. The geometry is measured with or without motion,
 // so the static rail has its length too.
 //
-// Stacked, the head follows a reading line at 60% of the viewport, and each
-// card fills with --color-step-fill over the stretch of rail leading into
-// its dot (the first over an equal lead-in before the rail starts).
+// Stacked, the head follows a reading line at 60% of the viewport. Across
+// (the five in a row), it starts only once the whole row is in view and
+// reaches the end (step 5 lit) by the time the row's top is 25% down the
+// viewport; arriving by a link to #process shows that end state at once,
+// until the section next leaves the screen.
 //
-// Across (the five in a row), the head starts only once the whole row is in
-// view and reaches the end (step 5 lit) by the time the row's top is 25% down
-// the viewport. There a card changes in one step as the head passes its dot:
-// its fill, edge and numeral ease in over --dur-slow (home.css), so a card is
-// either done or not started, and no seam ever rests across a paragraph.
-// Arriving by a link to #process shows that end state at once, until the
-// section next leaves the screen.
-//
-// In both, the card whose dot the head reached last is the one forest
-// spotlight. Per frame only transform and opacity change; the spotlight's
-// data-surface flips only when its index does.
+// In both, a card changes in one step as the head passes its mark (across,
+// its dot; stacked, its middle): its fill, edge and numeral ease in over
+// --dur-slow (home.css), so a card is either done or not started and no
+// part-filled card ever rests across its paragraph. The card whose mark the
+// head passed last is the one forest spotlight, and scrolling back reverses
+// each change at the same mark. Per frame only transform and opacity change;
+// the spotlight's data-surface flips only when its index does.
 function processRail() {
   const box = document.querySelector('.process-track');
   if (!box) return null;
@@ -100,7 +98,7 @@ function processRail() {
   });
   const end = (li) => li.offsetLeft + li.offsetWidth; // the start edge, on this RTL page
   const HYST = 6; // px past a dot, either way, before the spotlight moves: no flicker on the line
-  let across = true, top = 0, from = 0, len = 1, at = [], dots = [], last = null, spot = -1;
+  let across = true, top = 0, from = 0, len = 1, at = [], dots = [], marks = [], last = null, spot = -1;
   let a0 = 0, a1 = 1;      // across: the scroll range from the whole row in view to its top at 25%
   // Arrived by a link: the end state until the section, once shown so, leaves
   // the screen (on a load with the hash it starts off screen, before the jump).
@@ -127,10 +125,12 @@ function processRail() {
       len = (across ? end(a) - end(z) : z.offsetTop - a.offsetTop) || 1;
       at = steps.map((li) => (across ? end(a) - end(li) : li.offsetTop - a.offsetTop) / len);
       dots = at.map((t) => t * len);
+      // Where each card changes, in px along the rail: across, at its dot;
+      // stacked, at its middle (the dot sits 33px into the card).
+      marks = across ? dots : steps.map((li) => li.offsetTop - a.offsetTop + li.offsetHeight / 2 - 33);
       from = a.offsetTop;
       box.style.setProperty('--rail-len', `${len}px`);
       box.style.setProperty('--rail-from', `${from}px`);
-      box.classList.toggle('is-across', across);
       top = docTop(box);
       a1 = top - 0.25 * view.h;
       a0 = Math.min(top + box.offsetHeight - view.h, a1 - 0.2 * view.h); // a short screen still gets some travel
@@ -142,18 +142,19 @@ function processRail() {
       if (!root.classList.contains('motion')) return;
       // The rail head, in px along the rail from the first dot (negative
       // before the rail starts). Clamped to the range where anything changes:
-      // up to just past the last dot's hysteresis band.
+      // up to just past the last mark's hysteresis band.
       const lead = dots[1] - dots[0];
+      const end_ = Math.max(len, marks[marks.length - 1]) + HYST + 1;
       const h = across
         ? -lead + (arrived ? 1 : seg(view.y, a0, a1)) * (len + lead + HYST + 1)
-        : clamp(view.y + 0.6 * view.h - (top + from + 33), -lead - 1, len + HYST + 1);
+        : clamp(view.y + 0.6 * view.h - (top + from + 33), -lead - 1, end_);
       if (h === last) return;
       const jump = last === null && arrived; // shown at once: no easing into the end state
       last = h;
       const p = clamp(h / len);
       let s = spot;
-      while (s < dots.length - 1 && h >= dots[s + 1] + HYST) s++;
-      while (s >= 0 && h < dots[s] - HYST) s--;
+      while (s < marks.length - 1 && h >= marks[s + 1] + HYST) s++;
+      while (s >= 0 && h < marks[s] - HYST) s--;
       if (jump) {
         box.classList.add('is-jumping');
         requestAnimationFrame(() => requestAnimationFrame(() => box.classList.remove('is-jumping')));
@@ -161,8 +162,7 @@ function processRail() {
       fill.style.transform = across ? `scaleX(${p})` : `scaleY(${p})`;
       steps.forEach((li, i) => li.classList.toggle('is-reached', p > 0 && p >= at[i] - 0.001));
       cards.forEach((k, i) => {
-        const from_ = i ? dots[i - 1] : -lead;
-        const f = across ? +(i <= s) : clamp((h - from_) / (dots[i] - from_));
+        const f = +(i <= s);
         k.fill.style.transform = across ? `scaleX(${f})` : `scaleY(${f})`;
         k.line.style.opacity = f;
         k.n.style.opacity = 0.35 + 0.65 * f;
