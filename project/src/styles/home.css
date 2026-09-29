@@ -896,6 +896,14 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-step[data-surface="dark"] { transform: translateY(-6px); box-shadow: none; }
 .process-step[data-surface="dark"] .process-step__spot { opacity: 1; }
 .process-step[data-surface="dark"] .process-step__n { color: var(--color-text-primary); }
+/* Across, a card changes in one step as the rail head passes its dot
+   (effects.js): its fill, edge and numeral ease in over --dur-slow, so it is
+   either done or not started and no seam rests across a paragraph. Arriving
+   by a link to #process shows the end state at once (.is-jumping). */
+html.motion .process-track.is-across .process-step__fill { transition: transform var(--dur-slow) var(--ease-out); }
+html.motion .process-track.is-across .process-step__line { transition: opacity var(--dur-slow) var(--ease-out); }
+html.motion .process-track.is-across .process-step__n { transition: opacity var(--dur-slow) var(--ease-out), color 0s linear calc(var(--dur-slow) / 2); }
+.process-track.is-jumping * { transition: none !important; }
 
 /* ---------------------------------------------------------------- about
    A two-line display heading whose lines converge from opposite sides as the
