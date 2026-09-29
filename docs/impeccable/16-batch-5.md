@@ -15,6 +15,11 @@ decisions on batch 4.
 
 ### 1. One kind of Work back per size
 
+> **Dropped after the batch (owner's decision on batch 5).** The rows mode is removed entirely: code, CSS and the
+> DESIGN.md line. With today's texts it never ran, and the tabs are the approved design, so every card keeps the
+> tabs at every size. The Mery budget entry in `docs/copy-todo.md` went with it. What follows records what was
+> built and measured.
+
 - **Rows or tabs is now one choice for every card.** From 1024px, work.js tries each project's three texts in a
   spare card (added to the stage only while it measures, so it works for any number of projects). Rows show only if
   every project fits; otherwise every card has the tabs.
