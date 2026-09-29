@@ -967,7 +967,9 @@ html.motion .process-step__n { transition: opacity var(--dur-slow) var(--ease-ou
 .about-channels { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-top: var(--space-9); text-align: center; }
 .about-channels__line { margin: 0; font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); }
 .about-channels .channels { width: min(100%, 30rem); }
-.about-title { font-size: clamp(34px, 5vw, 64px); font-weight: 500; line-height: 1.25; letter-spacing: 0; }
+/* On the H2 scale (display-3, 700, as every section title): each of the two
+   lines is one line from 1024px, and balances where it must wrap. */
+.about-title { font-size: var(--text-display-3); font-weight: 700; line-height: var(--lh-display); letter-spacing: 0; text-wrap: balance; }
 .about-title__line { display: block; }
 .about-card { container-type: inline-size; }
 .about-card__body { display: flex; gap: var(--space-5); align-items: flex-start; } /* names level across a row */
