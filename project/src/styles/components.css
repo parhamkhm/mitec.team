@@ -196,8 +196,11 @@ body { caret-color: var(--color-cta); }
   color: var(--color-text-body);
 }
 .card--interactive { transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out); }
-.card--surface.card--interactive:hover { border-color: var(--color-border-hover); box-shadow: var(--shadow-elevated); }
-.card--forest.card--interactive:hover { background: var(--color-brand-hover); }
+/* Hover only where there is one: on touch a tap would leave it stuck on. */
+@media (hover: hover) {
+  .card--surface.card--interactive:hover { border-color: var(--color-border-hover); box-shadow: var(--shadow-elevated); }
+  .card--forest.card--interactive:hover { background: var(--color-brand-hover); }
+}
 
 .card-title { font-size: var(--text-h4); color: var(--color-text-primary); }
 

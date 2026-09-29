@@ -65,7 +65,8 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 /* A decorative illustration in each card's end-bottom corner (bottom left on
    this RTL page), under a fade from the card's surface on the start side, so
    the chip, the title and the first lines always sit on near-solid surface.
-   Layers: the image, then the fade (::after), then the content (z-index 1).
+   Layers: the image and the fade (::after) below the content (z-index -1,
+   inside the card's own stacking context), then the content.
    The image box is 75% of the card's width (60% on phones). Below 1200px it
    is also held to 42% of the card's height: a wide, short card (large phones,
    the two-column tablet grid, the narrow three-column grid) would otherwise
@@ -85,6 +86,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 .service-card::after {
   content: '';
   position: absolute;
+  z-index: -1;
   inset: 0;
   /* Single hue: the surface fading out towards the end (left) side. */
   background: linear-gradient(to left, var(--color-surface) 25%, transparent 80%);
@@ -92,6 +94,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 }
 .service-card__art {
   position: absolute;
+  z-index: -1;
   inset-inline-end: 0;
   bottom: 0;
   width: var(--art-width);
@@ -103,9 +106,15 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   pointer-events: none;
   transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
 }
-.service-card:is(:hover, :focus-within) .service-card__art { opacity: var(--art-opacity-on); }
+.service-card:focus-within .service-card__art { opacity: var(--art-opacity-on); }
+@media (hover: hover) {
+  .service-card:hover .service-card__art { opacity: var(--art-opacity-on); }
+}
 @media (prefers-reduced-motion: no-preference) {
-  .service-card:is(:hover, :focus-within) .service-card__art { transform: translateY(-4px) scale(1.03); }
+  .service-card:focus-within .service-card__art { transform: translateY(-4px) scale(1.03); }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .service-card:hover .service-card__art { transform: translateY(-4px) scale(1.03); }
 }
 @media (max-width: 1199px) {
   .service-card__art { max-height: 42%; }
@@ -122,8 +131,24 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   background: var(--color-tonal); color: var(--color-tonal-text);
 }
 .service-card p { font-size: var(--text-body); color: var(--color-text-secondary); line-height: var(--lh-body); }
-.service-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
+.service-card__link { display: inline-flex; align-items: center; align-self: flex-start; gap: var(--space-2); min-height: 44px; margin-top: auto; font-size: var(--text-body-sm); font-weight: 700; }
 .service-card__link .icon { width: 16px; height: 16px; }
+/* The whole card is the link: the link stays in flow (static, so its box
+   is only its label and it sits on the last line of every card in a row),
+   and its ::before covers the card. Focus shows on the card. */
+.service-card > .service-card__link { position: static; }
+.service-card__link::before { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+@supports selector(:has(a)) {
+  .service-card__link:focus-visible { outline: none; box-shadow: none; }
+  .service-card:has(.service-card__link:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
+}
+/* Phones: the chip and the title share a row, and the card is 24px in from
+   its edge, not 32: about 60px less per card. */
+@media (max-width: 759px) {
+  .service-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-3); padding: var(--pad-card); }
+  .service-card > :not(.service-card__badge, h3) { grid-column: 1 / -1; }
+  .service-card__link { justify-self: start; }
+}
 
 /* ---------------------------------------------------------------- work / portfolio
    A forest band: a documented exception to the one-forest-band rule, next to
