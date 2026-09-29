@@ -351,8 +351,9 @@ Inner pages (and any hero that is not the home portal):
 ### Stats / trust bar
 
 - White surface card on canvas, `--color-border-subtle`.
-- Numerals: `--color-brand`, weight 800, Persian digits, `font-variant-numeric: tabular-nums`.
-- Labels: `--color-text-secondary`.
+- Numerals: `--color-brand`, weight 800, Persian digits, `font-variant-numeric: tabular-nums`, never wrapped. A unit after the numeral («۱ روز کاری») is `--text-h4` at 700, so the number leads.
+- Below 760px the stats are rows: the numeral (at least `--text-h3`) on the start side and its label beside it, the labels in one column.
+- Labels: `--color-text-secondary`, balanced.
 - **No buttons inside the stats bar.**
 - On the home page it lives in the Proof room the portal opens into: eyebrow, heading, one line, then the stat card, nothing else (no project-name list: projects live in Work). Stats are real facts only (`src/data/site-copy.json`); the delivered-projects figure is the number of projects in `src/data/portfolio.json`.
 
