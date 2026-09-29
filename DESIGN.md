@@ -397,6 +397,12 @@ Inner pages (and any hero that is not the home portal):
 - **No JS** (or if the data cannot load): `.work-list` is a scroll-snap row: each item is the screenshot (the same face), then the name and summary, then the need / built / result and the link, so nothing is hidden. This row is written in `index.html` by hand and must mirror `portfolio.json`.
 - **Reduced motion:** flat (no rotateY, no scale), the centre card alone (the others invisible and inert); a slide change is a 250ms crossfade in place, with no autoplay and no tilt; no pulse, zoom, lift or scroll preview; the chip stays open with its label; a card's two faces crossfade instead of turning; the caption and the sheet crossfade.
 
+### About (team cards)
+
+- One white card per member (`card--surface card--pad-lg`), two per row from 760px; an odd count puts the last card centred at a column's width, never alone at the start of a row.
+- The card is a container. At 480px and wider: an 88px round photo beside the name, role and bio, all aligned to the top so names in a row sit level. Narrower (phones, the two-column tablet grid): a 64px photo beside the name and role, and the bio under them across the card.
+- **Photos.** Square WebP, at least 176px (88px at DPR 2), `width` / `height` set, `alt` the member's name; the circle crops it (`object-fit: cover`). Until one exists, the dashed «عکس» slot stands in.
+
 ### Client list / testimonials
 
 - Client names/logos monochrome `--color-text-muted` on `--color-bg-alt`; hover → `--color-text-primary`.
