@@ -821,9 +821,10 @@ html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing tur
    The numerals earn their place: the sequence is the information. They carry
    the brand colour, never the action colour — nothing here is clickable, and
    neither is the rail, which fills in forest as you read the steps. Five
-   across with the rail above them from 1024px; below that the steps stack
-   along a vertical rail on the start side (five columns would wrap and
-   break a horizontal rail). effects.js measures the rail's length. */
+   across with the rail above them from 1200px; below that the steps stack
+   along a vertical rail on the start side, where each paragraph has room
+   (five columns under 1200px set it in four or five lines). effects.js
+   measures the rail's length. */
 .process-track { position: relative; }
 .process-grid { margin: 0; padding: 0; padding-inline-start: 40px; list-style: none; display: grid; gap: var(--space-4); }
 .process-grid > li { position: relative; }
@@ -843,10 +844,20 @@ html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing tur
 html:not(.motion) .process-grid > li::before { border-color: var(--color-brand); background: var(--color-brand); }
 .process-rail { position: absolute; top: calc(var(--rail-from, 0px) + 33px); inset-inline-start: 11px; width: 2px; height: var(--rail-len, 0px); background: var(--color-border); }
 .process-rail__fill { position: absolute; inset: 0; background: var(--color-brand); transform-origin: 50% 0; }
-@media (min-width: 1024px) {
-  .process-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); padding-inline-start: 0; padding-top: 36px; }
-  .process-grid > li::before { top: -26px; inset-inline-start: 24px; }
-  .process-rail { top: 14px; inset-inline-start: 29px; width: var(--rail-len, 0px); height: 2px; }
+@media (min-width: 1200px) {
+  /* The row may run past the 1200px container, up to 1440px (never closer
+     than the gutter to the screen's edge), and the cards are a little
+     tighter (12px apart, 20px padding): a wider measure, so the lit card's
+     paragraph keeps to two lines where it can (DESIGN.md §6). */
+  .process-track {
+    --track-w: min(100vw - 2 * var(--gutter), 1440px);
+    width: var(--track-w);
+    margin-inline: calc((100% - var(--track-w)) / 2);
+  }
+  .process-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); padding-inline-start: 0; padding-top: 36px; }
+  .process-step { padding: var(--space-5); }
+  .process-grid > li::before { top: -26px; inset-inline-start: 20px; }
+  .process-rail { top: 14px; inset-inline-start: 25px; width: var(--rail-len, 0px); height: 2px; }
   .process-rail__fill { transform-origin: 100% 50%; } /* fills from the start edge: the right, on this RTL page */
 }
 .process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
@@ -870,6 +881,7 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
 .process-step {
   position: relative;
   isolation: isolate;
+  height: 100%; /* every card in a row as tall as the tallest */
   background: var(--step-base);
   transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur) var(--ease-out);
 }
@@ -890,7 +902,7 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-swap);
 }
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .process-step__fill { transform-origin: 100% 50%; } /* grows from the start edge, like the rail */
 }
 .process-step[data-surface="dark"] { transform: translateY(-6px); box-shadow: none; }
