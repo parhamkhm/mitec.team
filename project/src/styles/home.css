@@ -862,8 +862,10 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
    The layers live in one clipped span so the growing fill keeps the card's
    rounded corners. The card's own fill is pinned to the light surface
    (--step-base is resolved on the li, outside the card's scope), so going
-   dark never repaints it: only the forest layer fades, and text colours
-   ease across with --dur. */
+   dark never repaints it: only the forest layer fades. It fades on
+   --ease-swap, which crosses the middle (where neither text colour reaches
+   4.5:1) in about 40ms of its 420, and the text switches colour in one step
+   at that midpoint, entering or leaving. */
 .process-grid > li { --step-base: var(--color-surface); }
 .process-step {
   position: relative;
@@ -871,7 +873,7 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
   background: var(--step-base);
   transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur) var(--ease-out);
 }
-.process-step > :not(.process-step__bg) { transition: color var(--dur) var(--ease-out); }
+.process-step > :not(.process-step__bg) { transition: color 0s linear calc(var(--dur-slow) / 2); }
 .process-step__bg {
   position: absolute;
   z-index: -1;
@@ -886,7 +888,7 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
   background: var(--color-brand);
   border: 1px solid var(--color-step-spot-line);
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease-out);
+  transition: opacity var(--dur-slow) var(--ease-swap);
 }
 @media (min-width: 1024px) {
   .process-step__fill { transform-origin: 100% 50%; } /* grows from the start edge, like the rail */

@@ -368,7 +368,7 @@ Inner pages (and any hero that is not the home portal):
 ### Process steps
 
 - White step cards on a rail. As the rail's forest fill (`--color-brand`) reaches a step, the card fills with `--color-step-fill` (`--green-100`) from the start edge, its edge turns `--color-step-line` (`--green-300`), and its numeral comes up to full `--color-brand`. Text keeps its colours: title 13.71:1, secondary 6.02:1 on the fill.
-- **One forest "spotlight" at a time** — the step whose dot the rail reached last. It sets `data-surface="dark"` (text remaps to on-dark), cross-fades a `--color-brand` layer in over `--dur-slow`, lifts 6px, drops its shadow and takes a `--forest-line` edge. This is a documented exception to "never a text-heavy forest card" (§6): one short step, and never more than one.
+- **One forest "spotlight" at a time** — the step whose dot the rail reached last. It sets `data-surface="dark"` (text remaps to on-dark), cross-fades a `--color-brand` layer in over `--dur-slow` on `--ease-swap` (slow at both ends, through the middle in about 40ms), its text switching colour in one step at that midpoint (entering and leaving), so no text sits on a half-lit card in the wrong colour for more than a frame or so; it lifts 6px, drops its shadow and takes a `--forest-line` edge. This is a documented exception to "never a text-heavy forest card" (§6): one short step, and never more than one.
 - Nothing here is clickable, so nothing here is `--color-cta`.
 - Reduced motion / no JS: every step shows filled, no spotlight.
 

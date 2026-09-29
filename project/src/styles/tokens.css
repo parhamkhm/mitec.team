@@ -189,6 +189,10 @@
   --section-pad: clamp(96px, 11vw, 176px);
 
   --ease-portal: cubic-bezier(.65, 0, .35, 1);
+  /* A swap between a light and a dark surface: slow at both ends, through
+     the middle (where no text colour would pass) in about a tenth of the
+     time. Process's spotlight fades on it, its text switching at the midpoint. */
+  --ease-swap: cubic-bezier(1, 0, 0, 1);
   --dur-reveal: 600ms;
   --dur-media: 700ms;
   --stagger: 70ms;
