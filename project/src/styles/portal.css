@@ -88,7 +88,7 @@
 }
 /* …and its keyboard deck: .deck-line (components.css), 8% past each side. */
 .portal__intro-line { display: block; }
-.portal__intro-line:first-child { font-weight: 700; color: var(--color-text-primary); }
+.portal__intro-line:first-child { font-weight: 700; color: var(--color-text-primary); text-wrap: balance; }
 .portal__intro-line:last-child { font-size: clamp(18px, 2vw, 26px); font-weight: 500; color: var(--color-text-body); }
 /* Whole words and phrases only — never split inside a word or its ZWNJ joins. */
 .portal__intro .w,

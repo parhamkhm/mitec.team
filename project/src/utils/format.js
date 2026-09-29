@@ -21,6 +21,12 @@ export function formatPrice(toman, currency = {}) {
   return [from, amount.trim()].filter(Boolean).join(' ');
 }
 
+// Ties each Persian function word (و، از، به، با، در، تا، بدون، یا، که) to
+// the word after it with a no-break space, so no heading line ends on one.
+// The static headings in index.html carry the same &nbsp; in their markup.
+const TIED = /(?<=^|\s)(و|از|به|با|در|تا|بدون|یا|که) (?=\S)/g;
+export const tie = (text) => String(text ?? '').replace(TIED, '$1\u00A0');
+
 // «حدود ۱۲ روز کاری». unit: { prefix, label } from the document's display.
 export function formatDuration(days, unit = {}) {
   return [unit.prefix, faNumber(days), unit.label].filter(Boolean).join(' ');

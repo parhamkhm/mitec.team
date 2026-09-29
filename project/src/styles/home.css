@@ -1519,6 +1519,7 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
   font-family: var(--font-body); font-size: var(--text-body-lg); font-weight: 700; text-align: start;
   padding: var(--space-5) 0; cursor: pointer; min-height: 44px;
 }
+.faq-item__q > span { text-wrap: balance; }
 .faq-item__chevron { flex: 0 0 auto; width: 18px; height: 18px; color: var(--color-tonal-text); }
 @media (hover: hover) { .faq-item__q:hover { color: var(--color-tonal-text); } }
 /* Without JS every answer is open and the buttons do nothing: no +/−
@@ -1568,8 +1569,8 @@ html.js .faq-item__body::after { content: ''; display: block; height: var(--spac
 }
 .cta-band__echo { --deck-reach: -6%; } /* its deck: .deck-line (components.css) */
 @media (max-width: 620px) { .cta-band__screen { padding: var(--space-7) var(--space-4); } }
-.cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
-.cta-band h2 > span { display: inline-block; } /* whole words, so they can rise in one by one */
+.cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); text-wrap: balance; }
+.cta-band h2 > span { display: inline-block; } /* whole words (and «از همین‌جا», one phrase), so they can rise in one by one */
 .cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: calc(52 * var(--ch)); }
 .cta-band__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 /* Tier 2: the channels, under the primary. Services' «بپرسید» lands on them,

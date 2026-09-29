@@ -17,7 +17,7 @@
 
 import { getPricing } from '../api/client.js';
 import { estimate } from '../utils/estimate.js';
-import { faNumber, fill, formatPrice, formatDuration } from '../utils/format.js';
+import { faNumber, fill, formatPrice, formatDuration, tie } from '../utils/format.js';
 import { icon, setIcon } from '../utils/icon.js';
 
 // The only strings not taken from the pricing document: what shows when it
@@ -128,12 +128,12 @@ export async function initScope() {
 
   // ---- heading
   const title = el('div', 'scope-head__title');
-  const h2 = el('h2', 'section-heading__title section-heading__title--display-3', S.title);
+  const h2 = el('h2', 'section-heading__title section-heading__title--display-3', tie(S.title));
   h2.id = 'scope-title';
   title.append(h2);
   if (sample) title.append(sampleBadge());
   head.replaceChildren(el('span', 'section-heading__eyebrow', S.eyebrow), title);
-  if (S.subtitle) head.append(el('p', 'section-heading__sub', S.subtitle));
+  if (S.subtitle) head.append(el('p', 'section-heading__sub', tie(S.subtitle)));
 
   // ---- site-type tabs: a native radio group, so the arrow keys, roving focus
   // and their RTL direction come from the browser.

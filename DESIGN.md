@@ -504,6 +504,8 @@ Inner pages (and any hero that is not the home portal):
 - Persian: treat **4.5:1 as the minimum even for large text under 24px**. Thin joins and dots lose definition faster than Latin.
 - Line-height ≥ 1.8 for Persian body text.
 - **Letter-spacing 0 on Persian text**, headings and eyebrows included (`--ls-*` are 0). Persian is a joined script: any tracking, positive or negative, opens gaps in the joins. Latin wordmarks may keep theirs.
+- **Line breaks.** Headings, section subs, card titles, stat labels, FAQ questions, the hero statement's first line and the closing heading use `text-wrap: balance`; paragraphs use `text-wrap: pretty`. Nothing may break inside a word or across a ZWNJ (no `word-break`, `overflow-wrap: anywhere` or hyphenation). In those same short texts a function word («و»، «از»، «به»، «با»، «در»، «تا»، «بدون»، «یا»، «که») is tied to the word after it with a no-break space (`&nbsp;` in the markup; `tie()` in `src/utils/format.js` for text set by script), so no line ends on one, except where the tie would leave a single word on the last line (the one case today: the card title «CRM و سیستم‌های مدیریتی»). Checked at 320, 390, 768, 1024, 1280, 1440 and 1920: no heading or sub ends on a one-word line, except that card title at 320, where its 172px column beside the chip holds one of its long words per line.
+- **Phones (below 760px):** section subs are `--text-body-lg` (18px), like the hero's, so they sit under the 30px H2s (at 23px the two were 1.3 apart). Every section H2, About's included, is `--text-display-3` at 700.
 
 ---
 
