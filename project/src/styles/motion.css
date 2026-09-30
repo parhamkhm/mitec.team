@@ -64,12 +64,15 @@ html.motion .about-grid.is-revealed .about-card__text > * {
 /* CTA heading: word by word — never by letter, Persian letters join. */
 html.motion .cta-band h2 { --stagger: 90ms; }
 
-/* Scroll-linked layers (motion/effects.js) get their own compositor layer. */
-html.motion :is(.about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
-html.motion .testimonial { will-change: transform, opacity; }
+/* Scroll-linked layers (motion/effects.js) get their own compositor layer,
+   only while their section is near the viewport (.in-view, from the engine). */
+html.motion .in-view :is(.about-title__line, .cta-band__echo, .process-rail__fill) { will-change: transform; }
+html.motion .in-view .testimonial { will-change: transform, opacity; }
 html.motion .process-rail__fill { transform: scale(0); }
 /* Process steps start empty; effects.js scrubs the fill, its edge and the
    numeral from the rail's progress. */
-html.motion .process-step__fill { transform: scale(0); will-change: transform; }
-html.motion .process-step__line { opacity: 0; will-change: opacity; }
+html.motion .process-step__fill { transform: scale(0); }
+html.motion .process-step__line { opacity: 0; }
+html.motion .in-view .process-step__fill { will-change: transform; }
+html.motion .in-view .process-step__line { will-change: opacity; }
 html.motion .process-step__n { opacity: .35; }

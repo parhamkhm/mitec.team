@@ -50,7 +50,12 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 /* Services: six cards, 3 / 2 / 1 columns. */
 .services-grid { display: grid; gap: var(--space-4); }
 .about-grid { display: grid; gap: var(--space-4); }
-@media (min-width: 760px) { .services-grid, .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 760px) {
+  .services-grid, .about-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* An odd member count: the last card sits centred at a column's width,
+     not alone at the start of its row. */
+  .about-grid > :last-child:nth-child(odd):not(:first-child) { grid-column: 1 / -1; justify-self: center; width: calc(50% - var(--space-4) / 2); }
+}
 @media (min-width: 1024px) { .services-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 /* The perspective is for the cards' tilt-and-settle entrance (effects.js). */
 .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); perspective: 1200px; }
@@ -60,7 +65,8 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 /* A decorative illustration in each card's end-bottom corner (bottom left on
    this RTL page), under a fade from the card's surface on the start side, so
    the chip, the title and the first lines always sit on near-solid surface.
-   Layers: the image, then the fade (::after), then the content (z-index 1).
+   Layers: the image and the fade (::after) below the content (z-index -1,
+   inside the card's own stacking context), then the content.
    The image box is 75% of the card's width (60% on phones). Below 1200px it
    is also held to 42% of the card's height: a wide, short card (large phones,
    the two-column tablet grid, the narrow three-column grid) would otherwise
@@ -80,6 +86,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 .service-card::after {
   content: '';
   position: absolute;
+  z-index: -1;
   inset: 0;
   /* Single hue: the surface fading out towards the end (left) side. */
   background: linear-gradient(to left, var(--color-surface) 25%, transparent 80%);
@@ -87,6 +94,7 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 }
 .service-card__art {
   position: absolute;
+  z-index: -1;
   inset-inline-end: 0;
   bottom: 0;
   width: var(--art-width);
@@ -98,9 +106,14 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   pointer-events: none;
   transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
 }
-.service-card:is(:hover, :focus-within) .service-card__art { opacity: var(--art-opacity-on); }
-@media (prefers-reduced-motion: no-preference) {
-  .service-card:is(:hover, :focus-within) .service-card__art { transform: translateY(-4px) scale(1.03); }
+.service-card:focus-within .service-card__art { opacity: var(--art-opacity-on); }
+@media (hover: hover) {
+  .service-card:hover .service-card__art { opacity: var(--art-opacity-on); }
+}
+/* The lift is motion, so it lives under html.motion like all motion (DESIGN.md §13). */
+html.motion .service-card:focus-within .service-card__art { transform: translateY(-4px) scale(1.03); }
+@media (hover: hover) {
+  html.motion .service-card:hover .service-card__art { transform: translateY(-4px) scale(1.03); }
 }
 @media (max-width: 1199px) {
   .service-card__art { max-height: 42%; }
@@ -117,8 +130,24 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
   background: var(--color-tonal); color: var(--color-tonal-text);
 }
 .service-card p { font-size: var(--text-body); color: var(--color-text-secondary); line-height: var(--lh-body); }
-.service-card__link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; font-size: var(--text-body-sm); font-weight: 700; }
+.service-card__link { display: inline-flex; align-items: center; align-self: flex-start; gap: var(--space-2); min-height: 44px; margin-top: auto; font-size: var(--text-body-sm); font-weight: 700; }
 .service-card__link .icon { width: 16px; height: 16px; }
+/* The whole card is the link: the link stays in flow (static, so its box
+   is only its label and it sits on the last line of every card in a row),
+   and its ::before covers the card. Focus shows on the card. */
+.service-card > .service-card__link { position: static; }
+.service-card__link::before { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+@supports selector(:has(a)) {
+  .service-card__link:focus-visible { outline: none; box-shadow: none; }
+  .service-card:has(.service-card__link:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
+}
+/* Phones: the chip and the title share a row, and the card is 24px in from
+   its edge, not 32: about 60px less per card. */
+@media (max-width: 759px) {
+  .service-card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-3); padding: var(--pad-card); }
+  .service-card > :not(.service-card__badge, h3) { grid-column: 1 / -1; }
+  .service-card__link { justify-self: start; }
+}
 
 /* ---------------------------------------------------------------- work / portfolio
    A forest band: a documented exception to the one-forest-band rule, next to
@@ -235,6 +264,9 @@ section[id] { scroll-margin-top: 80px; } /* clears the fixed nav on anchor jumps
 /* ---- the caption: the active project's name and one line about it (no-JS
    items reuse the two classes) */
 .work-caption__name { margin: 0; color: var(--color-text-primary); font-size: var(--text-h4); font-weight: 800; line-height: 1.4; }
+/* Under the stage the name keeps to one line (the full name in its title),
+   so a long one can never grow the caption and move the controls. */
+.work-caption .work-caption__name { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .work-caption__summary { margin: 0; color: var(--color-text-muted); font-size: var(--text-body); line-height: 1.8; }
 
 /* ---- details (the no-JS items) */
@@ -272,8 +304,19 @@ html:not(.js) .work-carousel,
 .work--static .work-carousel { display: none; }
 /* Until work.js fills it: the stage, caption and controls keep their height. */
 .work-carousel:empty { min-height: calc(var(--stage-h) + var(--space-5) + var(--caption-h) + var(--space-4) + 44px); }
+/* Up to the sheet breakpoint the centre card takes 86% of the width and the
+   side cards peek at the edges. A short screen holds it down, so it never
+   outgrows the view (but never below the wide layout's 42vw); the stage grows
+   with it, 64px taller than the card and at least 300px. Phones keep their
+   86vw card on a 300px stage. */
+@media (max-width: 989px) {
+  .work-carousel {
+    --card-w: min(86vw, max(42vw, (100svh - 240px) * (var(--work-card-ratio))));
+    --stage-h: max(300px, var(--card-w) / (var(--work-card-ratio)) + 64px);
+  }
+}
 @media (max-width: 759px) {
-  .work-carousel { --card-w: 86vw; --caption-lines: 2; }
+  .work-carousel { --caption-lines: 2; }
 }
 
 /* The stage's perspective lights the whole-stage tilt; the track's own
@@ -295,13 +338,14 @@ html:not(.js) .work-carousel,
   background: none;
   box-shadow: none;
   perspective: 1200px;
-  will-change: transform, opacity;
   transition: transform 800ms var(--ease-coverflow), opacity 800ms var(--ease-coverflow), translate 260ms var(--ease-out);
 }
 .work-stage .work-card::after { content: none; }
 .work-stage .work-card.is-teleport { transition: none; }
 .work-stage .work-card__dim { transition: opacity 800ms var(--ease-coverflow); }
-html.motion .work-stage__track { will-change: transform; }
+/* Compositor layers only while the stage is in view (work.js sets .in-view). */
+.work-carousel.in-view .work-stage .work-card { will-change: transform, opacity; }
+html.motion .work-carousel.in-view .work-stage__track { will-change: transform; }
 
 /* ---- the flip: the centre card turns over, in place. Two faces of exactly
    the card's size, back to back; the one not in view is inert (work.js).
@@ -313,7 +357,7 @@ html.motion .work-stage__track { will-change: transform; }
   transform-style: preserve-3d;
   transition: transform 700ms cubic-bezier(.2, .8, .2, 1);
 }
-.work-stage .work-card.is-active .work-card__inner { will-change: transform; }
+.work-carousel.in-view .work-stage .work-card.is-active .work-card__inner { will-change: transform; }
 .work-stage .work-card.is-flipped .work-card__inner { transform: rotateY(180deg) scale(1.04); }
 .work-card__front,
 .work-card__back {
@@ -390,7 +434,10 @@ html.motion .work-stage__track { will-change: transform; }
   white-space: nowrap;
   opacity: var(--cue-open);
   transform: translateX(calc(6px * (1 - var(--cue-open))));
-  transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
+  /* A transition takes its timing from the state it goes to: opening, the
+     label fades in over 260ms; closing, it is gone in 60ms, before the pill
+     has shrunk past it. */
+  transition: opacity calc(60ms + 200ms * var(--cue-open)) var(--ease-out), transform 260ms var(--ease-out);
 }
 .work-cue__short { display: none; }
 .work-cue__circle {
@@ -639,6 +686,10 @@ html:not(.motion) .work-cue { --cue-open: 1; }
 
 /* Without html.motion (reduced motion, forced colours): no turn. The back
    lies over the front, unrotated, and the two crossfade (250ms). */
+/* …and a slide change crossfades in place (250ms), as under reduced motion
+   below; this covers forced colours, which also lays the cards out flat. */
+html:not(.motion) .work-stage .work-card { transition: opacity 250ms linear, transform 0s linear 250ms; }
+html:not(.motion) .work-stage .work-card.is-active { transition: opacity 250ms linear, transform 0s; }
 html:not(.motion) .work-stage .work-card.is-flipped .work-card__inner { transform: none; }
 html:not(.motion) .work-card__back { transform: none; opacity: 0; transition: opacity 250ms linear; }
 html:not(.motion) .work-card__front { transition: opacity 250ms linear; }
@@ -711,31 +762,49 @@ html:has(.work-sheet[open]) { overflow: hidden; scrollbar-gutter: stable; }
 @media (max-width: 759px) { .work-arrow { display: none; } }
 
 .work-controls { display: flex; align-items: center; justify-content: center; gap: var(--space-4); min-height: 44px; margin-top: var(--space-4); }
-.work-dots { display: flex; align-items: center; }
+/* Dots: 8px, the active one a 28px pill, 24px apart; each a 24 × 44px
+   target (a 44px-wide one would push them apart). Drawn with transforms only:
+   a pill is two 8px caps and the bar between them. At rest the caps sit
+   together and the bar is folded; active, the caps move 10px apart and the
+   bar opens between them, and the dots on either side step 10px aside, so
+   the row looks as it did when the active box grew to 44px. The row's 10px
+   of padding each side is that room. */
+.work-dots { display: flex; align-items: center; padding-inline: 10px; }
 .work-dot {
+  --pill: var(--color-border-strong);
   position: relative;
   width: 24px;
-  height: 24px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
   background: none;
   cursor: pointer;
-  transition: width var(--dur) var(--ease-out);
+  transition: translate var(--dur) var(--ease-out);
 }
-.work-dot::before {
-  content: '';
+.work-dot::before,
+.work-dot::after,
+.work-dot__bar {
   position: absolute;
-  top: 8px;
-  inset-inline: 8px;
+  top: 18px;
+  left: calc(50% - 4px);
+  width: 8px;
   height: 8px;
   border-radius: var(--radius-pill);
-  background: var(--color-border-strong);
-  transition: background-color var(--dur) var(--ease-out);
+  background: var(--pill);
+  transition: transform var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
 }
-/* 44 − 2 × 8: the active dot is a 28px pill. */
-.work-dot[aria-current="true"] { width: 44px; }
-.work-dot[aria-current="true"]::before { background: var(--color-accent); }
+.work-dot::before,
+.work-dot::after { content: ''; }
+.work-dot__bar { left: calc(50% - 10px); width: 20px; border-radius: 0; transform: scaleX(0); }
+.work-dot[aria-current="true"] { --pill: var(--color-accent); }
+.work-dot[aria-current="true"]::before { transform: translateX(-10px); }
+.work-dot[aria-current="true"]::after { transform: translateX(10px); }
+.work-dot[aria-current="true"] .work-dot__bar { transform: scaleX(1); }
+/* On this RTL page the dots before the active one (in the markup) sit to its
+   right, those after it to its left. */
+.work-dot:has(~ .work-dot[aria-current="true"]) { translate: 10px 0; }
+.work-dot[aria-current="true"] ~ .work-dot { translate: -10px 0; }
 .work-counter { display: flex; align-items: center; gap: var(--space-3); color: var(--color-text-secondary); font-size: var(--text-caption); font-variant-numeric: tabular-nums; }
 .work-progress { position: relative; width: 120px; height: 2px; overflow: hidden; border-radius: 2px; background: var(--color-border); }
 .work-progress span {
@@ -746,6 +815,7 @@ html:has(.work-sheet[open]) { overflow: hidden; scrollbar-gutter: stable; }
   transition: transform 800ms var(--ease-coverflow);
 }
 .work-toggle {
+  position: relative;
   display: grid;
   place-items: center;
   width: 36px;
@@ -758,14 +828,19 @@ html:has(.work-sheet[open]) { overflow: hidden; scrollbar-gutter: stable; }
   cursor: pointer;
   transition: background-color var(--dur) var(--ease-out);
 }
+/* The 36px circle keeps its size; its target is 44px. */
+.work-toggle::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; }
 .work-toggle:hover { background: var(--color-surface-sunken); }
 .work-toggle .icon { width: 16px; height: 16px; }
 html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing turns by itself */
 
-/* Reduced motion: no 3D and no travel (work.js lays the cards out flat); a
-   slide change is a short crossfade, and so is the flip. */
+/* Reduced motion: no 3D and no travel (work.js lays the cards out flat, the
+   centre card alone); a slide change is a short crossfade in place, and so is
+   the flip. A card that stops being the centre one moves off only once it has
+   faded (the transform waits 250ms); the next one is in place at once. */
 @media (prefers-reduced-motion: reduce) {
-  .work-stage .work-card,
+  .work-stage .work-card { transition: opacity 250ms linear, transform 0s linear 250ms !important; }
+  .work-stage .work-card.is-active { transition: opacity 250ms linear, transform 0s !important; }
   .work-stage .work-card__dim,
   .work-card__front,
   .work-card__back { transition: opacity 250ms linear !important; }
@@ -778,9 +853,10 @@ html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing tur
    The numerals earn their place: the sequence is the information. They carry
    the brand colour, never the action colour — nothing here is clickable, and
    neither is the rail, which fills in forest as you read the steps. Five
-   across with the rail above them from 1024px; below that the steps stack
-   along a vertical rail on the start side (five columns would wrap and
-   break a horizontal rail). effects.js measures the rail's length. */
+   across with the rail above them from 1200px; below that the steps stack
+   along a vertical rail on the start side, where each paragraph has room
+   (five columns under 1200px set it in four or five lines). effects.js
+   measures the rail's length. */
 .process-track { position: relative; }
 .process-grid { margin: 0; padding: 0; padding-inline-start: 40px; list-style: none; display: grid; gap: var(--space-4); }
 .process-grid > li { position: relative; }
@@ -800,15 +876,36 @@ html:not(.motion) .work-toggle { display: none; } /* reduced motion: nothing tur
 html:not(.motion) .process-grid > li::before { border-color: var(--color-brand); background: var(--color-brand); }
 .process-rail { position: absolute; top: calc(var(--rail-from, 0px) + 33px); inset-inline-start: 11px; width: 2px; height: var(--rail-len, 0px); background: var(--color-border); }
 .process-rail__fill { position: absolute; inset: 0; background: var(--color-brand); transform-origin: 50% 0; }
-@media (min-width: 1024px) {
-  .process-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); padding-inline-start: 0; padding-top: 36px; }
-  .process-grid > li::before { top: -26px; inset-inline-start: 24px; }
-  .process-rail { top: 14px; inset-inline-start: 29px; width: var(--rail-len, 0px); height: 2px; }
+@media (min-width: 1200px) {
+  /* The row may run past the 1200px container, up to 1440px (never closer
+     than the gutter to the page's edge, a classic scrollbar or not), and the cards are a little
+     tighter (12px apart, 20px padding): a wider measure, so the lit card's
+     paragraph keeps to two lines where it can (DESIGN.md §6). */
+  #process { container-type: inline-size; } /* 100cqw: the page's width, without a classic scrollbar */
+  .process-track {
+    --track-w: min(100cqw - 2 * var(--gutter), 1440px);
+    width: var(--track-w);
+    margin-inline: calc((100% - var(--track-w)) / 2);
+  }
+  .process-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); padding-inline-start: 0; padding-top: 36px; }
+  .process-step { padding: var(--space-5); }
+  .process-grid > li::before { top: -26px; inset-inline-start: 20px; }
+  .process-rail { top: 14px; inset-inline-start: 25px; width: var(--rail-len, 0px); height: 2px; }
   .process-rail__fill { transform-origin: 100% 50%; } /* fills from the start edge: the right, on this RTL page */
 }
-.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); font-variant-numeric: tabular-nums; line-height: 1.1; }
+/* Proportional figures: in a tabular slot the narrow «۰» of «۰۱» sits apart. */
+.process-step__n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-h3); color: var(--color-brand); line-height: 1.1; }
 .process-step__title { margin: var(--space-3) 0 var(--space-2); }
 .process-step__body { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
+/* Stacked on a tablet or a small laptop (760–1199px), a card is too wide for
+   one short line: two columns, the numeral and title on the start side and
+   the paragraph beside them, centred on them. */
+@media (min-width: 760px) and (max-width: 1199px) {
+  .process-step { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: var(--space-6); align-items: center; }
+  .process-step__n { grid-area: 1 / 1; }
+  .process-step__title { grid-area: 2 / 1; margin-bottom: 0; }
+  .process-step__body { grid-area: 1 / 2 / 3 / 3; }
+}
 
 /* The step cards take colour from the same progress as the rail (effects.js):
    a --green-100 fill grows from the start edge as the rail head approaches a
@@ -819,16 +916,19 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
    The layers live in one clipped span so the growing fill keeps the card's
    rounded corners. The card's own fill is pinned to the light surface
    (--step-base is resolved on the li, outside the card's scope), so going
-   dark never repaints it: only the forest layer fades, and text colours
-   ease across with --dur. */
+   dark never repaints it: only the forest layer fades. It fades on
+   --ease-swap, which crosses the middle (where neither text colour reaches
+   4.5:1) in about 40ms of its 420, and the text switches colour in one step
+   at that midpoint, entering or leaving. */
 .process-grid > li { --step-base: var(--color-surface); }
 .process-step {
   position: relative;
   isolation: isolate;
+  height: 100%; /* every card in a row as tall as the tallest */
   background: var(--step-base);
   transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur) var(--ease-out);
 }
-.process-step > :not(.process-step__bg) { transition: color var(--dur) var(--ease-out); }
+.process-step > :not(.process-step__bg) { transition: color 0s linear calc(var(--dur-slow) / 2); }
 .process-step__bg {
   position: absolute;
   z-index: -1;
@@ -843,23 +943,52 @@ html:not(.motion) .process-grid > li::before { border-color: var(--color-brand);
   background: var(--color-brand);
   border: 1px solid var(--color-step-spot-line);
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease-out);
+  transition: opacity var(--dur-slow) var(--ease-swap);
 }
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .process-step__fill { transform-origin: 100% 50%; } /* grows from the start edge, like the rail */
 }
 .process-step[data-surface="dark"] { transform: translateY(-6px); box-shadow: none; }
 .process-step[data-surface="dark"] .process-step__spot { opacity: 1; }
 .process-step[data-surface="dark"] .process-step__n { color: var(--color-text-primary); }
+/* A card changes in one step as the rail head passes its mark (effects.js:
+   across, its dot; stacked, its middle): its fill, edge and numeral ease in
+   over --dur-slow, so it is either done or not started and no part-filled
+   card ever rests across a paragraph. Arriving by a link to #process shows
+   the row's end state at once (.is-jumping). */
+html.motion .process-step__fill { transition: transform var(--dur-slow) var(--ease-out); }
+html.motion .process-step__line { transition: opacity var(--dur-slow) var(--ease-out); }
+html.motion .process-step__n { transition: opacity var(--dur-slow) var(--ease-out), color 0s linear calc(var(--dur-slow) / 2); }
+.process-track.is-jumping * { transition: none !important; }
 
 /* ---------------------------------------------------------------- about
    A two-line display heading whose lines converge from opposite sides as the
    section scrolls in (effects.js). */
 .about-heading { gap: var(--space-5); }
-.about-title { font-size: clamp(34px, 5vw, 64px); font-weight: 500; line-height: 1.25; letter-spacing: 0; }
+/* Under the cards: one pair of channels (tier 2), with its line. */
+.about-channels { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-top: var(--space-9); text-align: center; }
+.about-channels__line { margin: 0; font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); }
+.about-channels .channels { width: min(100%, 30rem); }
+/* On the H2 scale (display-3, 700, as every section title): each of the two
+   lines is one line from 1024px, and balances where it must wrap. */
+.about-title { font-size: var(--text-display-3); font-weight: 700; line-height: var(--lh-display); letter-spacing: 0; text-wrap: balance; }
 .about-title__line { display: block; }
-.about-card { display: flex; gap: var(--space-5); align-items: center; }
-.about-card__photo { flex: 0 0 auto; width: 88px; height: 88px; border-radius: 50%; overflow: hidden; border: 1px solid var(--color-border-subtle); }
+.about-card { container-type: inline-size; }
+.about-card__body { display: flex; gap: var(--space-5); align-items: flex-start; } /* names level across a row */
+.about-card__photo { flex: 0 0 auto; width: 88px; aspect-ratio: 1; border-radius: 50%; overflow: hidden; border: 1px solid var(--color-border-subtle); }
+/* A real photo (see the REPLACE note in index.html): cropped to the circle. */
+.about-card__photo > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* A narrow card (under 480px; its content under 416): a 64px photo in a row
+   with the name and role, and the bio under them at the card's full width,
+   rather than a column of three or four words beside an 88px photo. */
+@container (max-width: 415px) {
+  .about-card__body { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: var(--space-4); align-items: center; }
+  .about-card__photo { width: 64px; grid-row: 1 / 3; }
+  .about-card__text { display: contents; }
+  .about-card h3 { grid-column: 2; align-self: end; }
+  .about-card__role { grid-column: 2; align-self: start; margin-bottom: 0; }
+  .about-card__bio { grid-column: 1 / -1; margin-top: var(--space-4); }
+}
 .about-card h3 { margin: 0 0 var(--space-1); }
 .about-card__role { margin: 0 0 var(--space-2); font-size: var(--text-body-sm); color: var(--color-tonal-text); font-weight: 500; }
 .about-card__bio { margin: 0; font-size: var(--text-body-sm); color: var(--color-text-secondary); line-height: var(--lh-body); }
@@ -916,6 +1045,28 @@ html:not(.js) .scope { display: none; }
 .scope[aria-busy="true"] .scope-summary,
 .scope[aria-busy="true"] .scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
 .scope[aria-busy="true"] .scope-summary .skel--heading { align-self: center; }
+/* Sized to what replaces them at each width (measured with the current
+   pricing document), so the section keeps its height when prices arrive:
+   the card's title block; the tiles at their real height; the checkout in
+   the card from 1024px and in the bar below; six tiles and «نمایش همه‌ی
+   امکانات» below 1024px, where the tabs also wrap into rows. */
+.scope[aria-busy="true"] .scope-summary .skel--heading { height: 56px; }
+.skel--pages { height: 134px; }
+.skel--tile { min-height: 150px; }
+.skel--total { height: 98px; }
+@media (min-width: 1280px) { .skel--list { height: 315px; } .skel--total { height: 110px; } }
+.scope[aria-busy="true"] .scope-addons { margin-bottom: 60px; } /* the «show all» button */
+@media (min-width: 1024px) and (max-width: 1279px) { .skel--list { height: 184px; } }
+@media (max-width: 1023px) {
+  .skel--tabs { height: 102px; border-radius: var(--radius-lg); }
+  .skel--list { height: 251px; }
+  .skel--tile { min-height: 127px; }
+  .scope[aria-busy="true"] .scope-summary :is(.skel--total, .skel--cta) { display: none; }
+  .scope[aria-busy="true"] .scope-addons > .skel--tile:nth-child(n+7) { display: none; }
+  .scope[aria-busy="true"] .scope-body { padding-bottom: 80px; } /* the bar */
+}
+@media (max-width: 599px) { .skel--tabs { height: 150px; } }
+@media (max-width: 767px) { .skel--list { height: 335px; } } /* the list folds, with «همه‌ی موارد» */
 
 /* Site-type tabs: one segmented track, centred; the native radio stays for
    its semantics and keys, the pill is its face. */
@@ -950,10 +1101,24 @@ html:not(.js) .scope { display: none; }
 .scope-tab:hover span { color: var(--color-text-primary); }
 .scope-tab input:checked + span { background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; box-shadow: var(--shadow-card); }
 .scope-tab input:focus-visible + span { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }
-.scope-unsure { font-size: var(--text-body-sm); text-decoration: underline; text-underline-offset: 5px; }
+/* Forced colours drop the fill and shadow that mark the chosen type, so each
+   tab is outlined and the chosen one takes the system's selection colours. */
+@media (forced-colors: active) {
+  .scope-tab span { border: 1px solid ButtonBorder; }
+  .scope-tab input:checked + span { forced-color-adjust: none; background: SelectedItem; color: SelectedItemText; border-color: SelectedItem; }
+}
+.scope-unsure { position: relative; font-size: var(--text-body-sm); text-decoration: underline; text-underline-offset: 5px; }
+/* A 44px-tall target round the one line of text, drawn nowhere. */
+.scope-unsure::before { content: ''; position: absolute; inset-block: calc(50% - 22px); inset-inline: 0; }
 
 .scope-cols { --stagger: 80ms; display: grid; gap: var(--space-5); align-items: start; }
-@media (min-width: 1024px) { .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+@media (min-width: 1024px) {
+  .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  /* The card follows the choices in the DOM here (scope.js), for the tab
+     order, and keeps the start column. */
+  .scope-cols > .scope-summary { grid-column: 1; grid-row: 1; }
+  .scope-cols > .scope-config { grid-column: 2; grid-row: 1; }
+}
 @media (min-width: 1280px) { .scope-cols { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
 
 /* The summary card. From 1024px it is always sticky and never taller than
@@ -1040,6 +1205,48 @@ html:not(.js) .scope { display: none; }
 /* The checkout: total, what is picked, the CTA. At the foot of the card here;
    the bottom bar below 1024px. */
 .scope-checkout { display: flex; flex-direction: column; gap: var(--space-4); }
+/* Under the figures: «جزئیات برآورد» at the start, «اعداد نمونه» at the end. */
+.scope-checkout__tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-3); }
+.scope-lines__toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link);
+  font: inherit;
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+/* A 44px-tall target round the one line, drawn nowhere. */
+.scope-lines__toggle::before { content: ''; position: absolute; inset-block: calc(50% - 22px); inset-inline: -8px; }
+.scope-lines__toggle:hover { color: var(--color-link-hover); }
+.scope-lines__toggle .icon { width: 16px; height: 16px; }
+/* The bar's chevron and short «sample» mark; the card shows the text button
+   and the badge instead. */
+.scope-lines__chevron,
+.scope-meta__mark { display: none; }
+/* The breakdown: an inset list, name at the start, amount at the end. */
+.scope-lines {
+  margin: 0;
+  padding: var(--space-1) var(--space-4);
+  list-style: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-body-sm);
+  line-height: var(--lh-tight);
+}
+.scope-lines[hidden] { display: none; }
+.scope-lines li { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-2); }
+.scope-lines li + li { border-top: 1px solid var(--color-border-subtle); }
+.scope-lines__name { min-width: 0; color: var(--color-text-secondary); }
+.scope-lines__price { flex: 0 0 auto; font-weight: 700; color: var(--color-text-primary); white-space: nowrap; }
+.scope-lines__price.is-free { font-weight: 500; color: var(--color-text-secondary); } /* muted is 4.36:1 on sunken */
+html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) var(--ease-out); }
+@keyframes scope-lines-in { from { opacity: 0; transform: translateY(6px); } }
 .scope-summary .scope-checkout { padding-top: var(--space-5); border-top: 1px solid var(--color-border); }
 .scope-checkout__figures { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); min-width: 0; text-align: center; }
 .scope-total { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 var(--space-3); margin: 0; }
@@ -1052,9 +1259,10 @@ html:not(.js) .scope { display: none; }
 .scope-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-2); margin: 0; color: var(--color-text-secondary); }
 .scope-meta[hidden],
 .scope-meta__count[hidden] { display: none; }
-/* A hairline between the duration and the count: a «·» beside Persian
-   digits reads as a zero (۰). */
-.scope-total__days + .scope-meta__count::before {
+/* A hairline between the duration, the count and the bar's «sample» mark: a
+   «·» beside Persian digits reads as a zero (۰). */
+.scope-total__days + .scope-meta__count::before,
+.scope-meta > * + .scope-meta__mark::before {
   content: '';
   display: inline-block;
   width: 1px;
@@ -1066,6 +1274,7 @@ html:not(.js) .scope { display: none; }
 .scope-summary .scope-cta { width: 100%; }
 .scope-disclaimer { margin-top: calc(-1 * var(--space-2)); font-size: var(--text-caption); color: var(--color-text-muted); text-align: center; }
 .scope-error { color: var(--color-text-secondary); text-align: center; }
+.scope-body > .channels { width: min(100%, 30rem); align-self: center; } /* the error state's direct-message pair */
 .scope-body > .scope-cta { align-self: center; }
 
 /* The end column: pages, then the add-on tiles. */
@@ -1075,6 +1284,7 @@ html:not(.js) .scope { display: none; }
 .scope-pages__title { font-weight: 700; color: var(--color-text-primary); }
 .scope-pages__value { font-weight: 800; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 .scope-pages__desc { font-size: var(--text-body-sm); color: var(--color-text-secondary); }
+.scope-pages__per { font-weight: 700; }
 
 /* Native range, token-styled. 44px tall for the hit area; the fill runs from
    the start edge (the right, on this RTL page) to the value. */
@@ -1108,6 +1318,19 @@ html:not(.js) .scope { display: none; }
 .scope-range::-moz-range-progress { height: 4px; border-radius: var(--radius-pill); background: var(--color-cta); }
 .scope-range::-moz-range-thumb { width: 18px; height: 18px; border: 3px solid var(--color-surface); border-radius: 50%; background: var(--color-cta); box-shadow: 0 0 0 1px var(--color-cta); }
 .scope-range:focus-visible { outline-offset: 4px; border-radius: var(--radius-sm); }
+/* Forced colours drop the track (a gradient) and the tick; the native
+   control draws itself in system colours. */
+@media (forced-colors: active) {
+  .scope-range { -webkit-appearance: auto; appearance: auto; }
+}
+/* The last page the type includes: a neutral tick across the track, drawn
+   on the input's own box (the track paints over its middle). The thumb's
+   centre runs from 12px to 12px short of the far end (24px thumb). */
+.scope-range.has-included {
+  background: linear-gradient(var(--color-text-muted), var(--color-text-muted)) no-repeat;
+  background-size: 2px 14px;
+  background-position: right calc(11px + (100% - 22px) * var(--included)) center;
+}
 
 .scope-addons__title { margin-top: var(--space-2); font-size: var(--text-body-lg); }
 .scope-addons__group { margin-top: var(--space-2); font-size: var(--text-body-sm); font-weight: 700; color: var(--color-text-secondary); }
@@ -1207,6 +1430,7 @@ html:not(.js) .scope { display: none; }
   color: var(--color-text-secondary);
   white-space: nowrap;
 }
+.scope-addon__price.is-free { font-weight: 500; color: var(--color-text-muted); } /* 5.38:1 off, 4.89:1 on */
 .scope-addon__toggle {
   flex: 0 0 auto;
   display: inline-flex;
@@ -1232,9 +1456,11 @@ html:not(.js) .scope { display: none; }
     position: sticky;
     bottom: 0;
     z-index: 5;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "lines lines lines" "toggle figures cta";
     align-items: center;
-    justify-content: space-between;
+    gap: 0 var(--space-3); /* no row gap: the closed breakdown's row is empty */
     margin-inline: calc(-1 * var(--gutter));
     padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--color-border-subtle);
@@ -1242,11 +1468,36 @@ html:not(.js) .scope { display: none; }
   }
   .scope-body > .scope-checkout .scope-checkout__figures { align-items: flex-start; text-align: start; }
   .scope-body > .scope-checkout .scope-total { justify-content: flex-start; }
-  .scope-body > .scope-checkout .scope-meta { justify-content: flex-start; font-size: var(--text-body-sm); }
+  .scope-body > .scope-checkout .scope-meta { justify-content: flex-start; font-size: var(--text-body-sm); line-height: 1.5; }
   .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-h4); }
-  .scope-body > .scope-checkout .scope-cta { flex: 0 0 auto; }
-  /* Keyboard focus scrolled into view clears the nav and the bar. */
-  .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 120px; }
+  .scope-body > .scope-checkout .scope-cta { grid-area: cta; }
+  .scope-body > .scope-checkout .scope-checkout__figures { grid-area: figures; }
+  /* One row: the breakdown's chevron, the figures, the CTA. The text button
+     keeps its words for screen readers only; the badge gives way to the
+     short mark after the duration. */
+  .scope-body > .scope-checkout .scope-checkout__tools { display: contents; }
+  .scope-body > .scope-checkout .scope-checkout__tools .badge { display: none; }
+  .scope-body > .scope-checkout .scope-lines__toggle {
+    grid-area: toggle;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-tonal);
+    color: var(--color-tonal-text);
+  }
+  .scope-body > .scope-checkout .scope-lines__toggle:hover { background: var(--color-tonal-hover); color: var(--color-tonal-text); }
+  .scope-body > .scope-checkout .scope-lines__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .scope-body > .scope-checkout .scope-lines__sign { display: none; }
+  .scope-body > .scope-checkout .scope-lines__chevron { display: block; width: 18px; height: 18px; transition: transform var(--dur) var(--ease-out); }
+  .scope-body > .scope-checkout .scope-lines__toggle[aria-expanded="true"] .scope-lines__chevron { transform: rotate(180deg); }
+  .scope-body > .scope-checkout .scope-meta__mark { display: inline; font-size: var(--text-eyebrow); font-weight: 500; color: var(--color-text-muted); }
+  /* Open, the breakdown sits above the rest of the bar and scrolls past 40%
+     of the screen. */
+  .scope-body > .scope-checkout .scope-lines { grid-area: lines; max-height: 40svh; margin-bottom: var(--space-3); overflow-y: auto; overscroll-behavior: contain; }
+  /* Keyboard focus scrolled into view clears the nav and the bar (whose
+     height scope.js keeps in --scope-bar-h). */
+  .scope-body :is(.scope-tab input, .scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 calc(var(--scope-bar-h, 120px) + 16px); }
 }
 
 @media (max-width: 767px) {
@@ -1256,17 +1507,47 @@ html:not(.js) .scope { display: none; }
   .scope-base__more { display: inline-flex; }
   /* A phone bar holds the price, the duration and the CTA; the count of
      picked add-ons is on the tiles themselves. */
-  .scope-body > .scope-checkout { gap: var(--space-3); }
+  .scope-body > .scope-checkout { column-gap: var(--space-3); }
   .scope-body > .scope-checkout .scope-total__label,
   .scope-body > .scope-checkout .scope-meta__count { display: none; }
-  .scope-body > .scope-checkout .scope-checkout__figures { flex: 1 1 auto; }
   .scope-body > .scope-checkout .scope-total__figure { font-size: var(--text-body-lg); white-space: nowrap; }
   .scope-body > .scope-checkout .scope-cta { padding: 12px 16px; font-size: var(--text-body-sm); }
   .scope-body > .scope-checkout .scope-cta .icon { display: none; }
 }
-@media (max-width: 759px) {
+/* Under 400px the row gets the room it needs from the bar's side padding and
+   the CTA's; under 360px the CTA takes its own row, full width, with less
+   padding round the bar. */
+@media (max-width: 399px) {
+  .scope-body > .scope-checkout { column-gap: var(--space-2); padding-inline: var(--space-4); }
+  .scope-body > .scope-checkout .scope-meta { column-gap: var(--space-1); }
+  .scope-body > .scope-checkout .scope-meta__mark::before { margin-inline-end: var(--space-1); }
+  .scope-body > .scope-checkout .scope-cta { padding-inline: 10px; }
+}
+@media (max-width: 359px) {
+  .scope-body > .scope-checkout {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "lines lines" "toggle figures" "cta cta";
+    padding-block: var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+  }
+  .scope-body > .scope-checkout .scope-cta { width: 100%; margin-top: var(--space-2); }
+}
+/* Below 1024px the six site types don't fit one row: they wrap into a grid
+   inside the same sunken track, three to a row, two below 600px, so every
+   type is in view. A long label may take two lines at 320px. */
+@media (max-width: 1023px) {
   .scope-types { align-items: stretch; }
-  .scope-tabs__track { border-radius: var(--radius-lg); }
+  .scope-tabs__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    scroll-snap-type: none;
+    border-radius: var(--radius-lg);
+  }
+  .scope-tab { display: flex; }
+  .scope-tab span { flex: 1; justify-content: center; padding-inline: var(--space-2); white-space: normal; text-align: center; }
+}
+@media (max-width: 599px) {
+  .scope-tabs__track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ---------------------------------------------------------------- FAQ
@@ -1280,21 +1561,32 @@ html:not(.js) .scope { display: none; }
   font-family: var(--font-body); font-size: var(--text-body-lg); font-weight: 700; text-align: start;
   padding: var(--space-5) 0; cursor: pointer; min-height: 44px;
 }
+.faq-item__q > span { text-wrap: balance; }
 .faq-item__chevron { flex: 0 0 auto; width: 18px; height: 18px; color: var(--color-tonal-text); }
+@media (hover: hover) { .faq-item__q:hover { color: var(--color-tonal-text); } }
+/* Without JS every answer is open and the buttons do nothing: no +/−
+   markers and no pointer. */
+html:not(.js) .faq-item__chevron { display: none; }
+html:not(.js) .faq-item__q { cursor: default; }
 .faq-item__a { padding-bottom: var(--space-5); color: var(--color-text-secondary); font-size: var(--text-body); line-height: var(--lh-body); }
 .faq-item__a[hidden] { display: none; }
-.faq-item__body { max-width: 68ch; }
+.faq-item__body { max-width: calc(68 * var(--ch)); }
+/* A link in an answer is a text link (DESIGN.md §5): underlined. Without JS the
+   calculator it points to is hidden, so it reads as plain text there. */
+.faq-item__body a { text-decoration: underline; text-underline-offset: 5px; }
 /* With JS the panels collapse by grid rows (0fr <-> 1fr) so opening animates;
-   home.js makes closed ones inert. The padding travels with the row so a
-   closed panel is truly zero-height. */
+   home.js makes closed ones inert. The space under an answer is a block
+   inside the collapsing row, so a closed panel is truly zero-height and only
+   the row animates. */
 html.js .faq-item__a {
   display: grid;
   grid-template-rows: 0fr;
   padding-bottom: 0;
-  transition: grid-template-rows var(--dur-slow) var(--ease-in-out), padding-bottom var(--dur-slow) var(--ease-in-out);
+  transition: grid-template-rows var(--dur-slow) var(--ease-in-out);
 }
-html.js .faq-item.is-open .faq-item__a { grid-template-rows: 1fr; padding-bottom: var(--space-5); }
+html.js .faq-item.is-open .faq-item__a { grid-template-rows: 1fr; }
 html.js .faq-item__body { min-height: 0; overflow: hidden; }
+html.js .faq-item__body::after { content: ''; display: block; height: var(--space-5); }
 
 /* ---------------------------------------------------------------- closing CTA band
    Centred. The heading, line and buttons sit on a "screen": an outline echo
@@ -1320,31 +1612,45 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
   border-radius: var(--radius-md);
   pointer-events: none;
 }
-.cta-band__echo::after {
-  content: '';
-  position: absolute;
-  inset-inline: -6%;
-  top: calc(100% + var(--space-2));
-  height: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-}
+.cta-band__echo { --deck-reach: -6%; } /* its deck: .deck-line (components.css) */
 @media (max-width: 620px) { .cta-band__screen { padding: var(--space-7) var(--space-4); } }
-.cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
-.cta-band h2 > span { display: inline-block; } /* whole words, so they can rise in one by one */
-.cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: 52ch; }
+.cta-band h2 { font-size: var(--text-display-3); line-height: var(--lh-display); letter-spacing: var(--ls-display); text-wrap: balance; }
+.cta-band h2 > span { display: inline-block; } /* whole words (and «از همین‌جا», one phrase), so they can rise in one by one */
+/* Forced colours paint a backplate behind each inline box; boxes per word
+   let the second line's plates cover the first line's dots and descenders.
+   The words don't rise there, so they go back to plain inline text. */
+@media (forced-colors: active) { .cta-band h2 > span { display: inline; white-space: nowrap; } }
+.cta-band p { font-size: var(--text-body-lg); line-height: var(--lh-body); color: var(--color-text-body); max-width: calc(52 * var(--ch)); }
 .cta-band__ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
-.cta-band__links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-7); align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-6); width: 100%; }
-.cta-band__links-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
-.cta-band__links a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); font-weight: 500; }
+/* Tier 2: the channels, under the primary. Services' «بپرسید» lands on them,
+   clear of the fixed nav. */
+.cta-band__channels { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); width: min(100%, 30rem); scroll-margin-top: 96px; }
+.cta-band__channels-label { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+.cta-band__channels .channels { width: 100%; }
+/* Tier 3: order tracking and Instagram, as text links. */
+.cta-band__more { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 var(--space-7); }
+.cta-band__more a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-body); text-decoration: underline; text-underline-offset: 5px; }
 
-/* ---------------------------------------------------------------- responsive nav */
+/* ---------------------------------------------------------------- responsive nav
+   Up to 860px the nav is a bar: the logo at the start edge, then a tonal
+   «شروع پروژه» (always there, so a way to start is never out of sight; tonal,
+   so the page keeps one primary) and the menu toggle at the end edge, the
+   left on this RTL page. The menu opens from the toggle's corner: it hangs
+   from the bar's end side and grows out of its top-left (transform and
+   opacity only). It ends with the channels pair. While it is open, focus
+   stays in it and everything else is inert (home.js). */
 @media (max-width: 860px) {
+  .navbar { gap: var(--space-2); }
+  .navbar__cta--bar { display: inline-flex; margin-inline-start: auto; }
+  .navbar__cta--menu { display: none; }
   .navbar__toggle { display: inline-flex; }
   .navbar__menu {
     position: fixed;
-    inset: 68px var(--gutter) auto;
+    top: 68px;
+    inset-inline-end: var(--gutter);
+    width: min(400px, 100vw - 2 * var(--gutter)); /* 400: room for the channels side by side */
     margin: 0;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-1);
@@ -1353,16 +1659,30 @@ html.js .faq-item__body { min-height: 0; overflow: hidden; }
     background: var(--color-surface);
     border: 1px solid var(--color-border-subtle);
     box-shadow: var(--shadow-elevated);
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(.96);
+    transform-origin: top left;
+    transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast);
   }
-  .navbar__menu.is-open { display: flex; }
+  .navbar__menu.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), visibility 0s;
+  }
   .navbar__link { padding-inline: var(--space-2); }
   .navbar__link::after { display: none; }
   .navbar__link.is-active { background: var(--color-surface-sunken); border-radius: var(--radius-sm); }
-  .navbar__cta { margin-top: var(--space-2); justify-content: center; }
+  .navbar__menu .navbar__channels { display: grid; margin-top: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--color-border-subtle); }
   /* DESIGN.md §8: no shadows on forest. */
   .navbar[data-surface="dark"] .navbar__menu { box-shadow: none; border-color: var(--color-border); }
+  /* Without JS the toggle can do nothing; the bar keeps the logo and «شروع پروژه». */
+  html:not(.js) .navbar__toggle { display: none; }
 }
+/* The narrowest phones: the bar's «شروع پروژه» drops its arrow, so the logo,
+   the button and the toggle keep clear of one another at 320px. */
+@media (max-width: 359px) { .navbar__cta--bar .icon { display: none; } }
 
 @media (max-width: 620px) {
   .cta-band__ctas { width: 100%; }

@@ -10,8 +10,8 @@
 - رنگ‌ها فقط در `src/styles/tokens.css` تعریف می‌شوند (primitive و semantic). کامپوننت‌ها فقط توکن‌های
   `--color-*` را می‌خوانند؛ مقدار hex در فایل کامپوننت خطاست.
 - هر ناحیه‌ی تیره `data-surface="dark"` دارد و همه‌ی توکن‌های semantic زیر آن عوض می‌شوند.
-- از Mitec Design System (`_ds/…`) فقط مقیاس‌های فاصله، شعاع و حرکت import می‌شوند. رنگ، گرادیان و
-  سایه‌ی آن (که بر پایه‌ی سرمه‌ای بود) استفاده نمی‌شود و `_ds_bundle.js` لود نمی‌شود.
+- از Mitec Design System قبلی فقط مقیاس‌های فاصله، شعاع و حرکت مانده است (بخش اول `tokens.css`).
+  بقیه‌ی آن خروجی (رنگ، گرادیان و سایه‌ی سرمه‌ای) حذف شده است.
 - فونت وزیرمتن است (Montserrat و Mulish گلیف فارسی ندارند) و letter-spacing روی متن فارسی صفر است.
 - لوگو متنی است و `direction: ltr` دارد تا در صفحه‌ی RTL جابه‌جا نشود.
 
@@ -49,14 +49,15 @@ python devserver.py 4173
 
 ## صفحه‌ها
 
-| طرح اولیه | صفحه | وضعیت |
-|---|---|---|
-| — | صفحه‌ی اصلی (`/`) | ✅ `index.html` — طبق DESIGN.md؛ `Mitec Home.dc.html` قدیمی است و مرجع بصری نیست |
-| `Mitec Order Builder.dc.html` | سفارش‌ساز و صفحه‌ی موفقیت (`/order`, `/order/success`) | ⬜ هنوز فقط طرح؛ لینک‌های `./order/` فعلاً ۴۰۴ می‌دهند |
-| `Mitec Track.dc.html` | پیگیری سفارش (`/track`) | ⬜ هنوز فقط طرح؛ لینک‌های `./track/` فعلاً ۴۰۴ می‌دهند |
-| `Mitec 404.dc.html` | صفحه‌ی ۴۰۴ | ⬜ هنوز فقط طرح |
+| صفحه | وضعیت |
+|---|---|
+| صفحه‌ی اصلی (`/`) | ✅ `index.html`، طبق DESIGN.md |
+| سفارش‌ساز و صفحه‌ی موفقیت (`/order`, `/order/success`) | ⬜ هنوز ساخته نشده؛ لینک‌های `./order/` فعلاً ۴۰۴ می‌دهند |
+| پیگیری سفارش (`/track`) | ⬜ هنوز ساخته نشده؛ لینک‌های `./track/` فعلاً ۴۰۴ می‌دهند |
+| صفحه‌ی ۴۰۴ | ⬜ هنوز ساخته نشده |
 
-فایل‌های `.dc.html` نمونه‌های اولیه‌ی Claude Design هستند و ویرایش نمی‌شوند. لایه‌ی مشترک
+طرح‌های اولیه‌ی `.dc.html` این صفحه‌ها (از Claude Design) حذف شده‌اند و اگر برای روند کار لازم شدند، در تاریخچه‌ی git
+هستند؛ مرجع بصری DESIGN.md است. لایه‌ی مشترک
 (`src/styles/`، `src/api/`، `src/config/`، `src/utils/`) برای هر چهار صفحه نوشته شده است.
 
 ## ساختار
@@ -66,11 +67,9 @@ src/api/      client.js, endpoints.js, mapper.js, mock.js  ← تنها لایه
 src/config/   app.config.js, order-catalog.json, pricing.json
 src/data/     portfolio.json, faq.json, testimonials.json, site-copy.json
 src/scripts/  home.js (ورودی صفحه‌ی اصلی), scope.js, motion/ (engine, easing, portal, effects, reveal)
-src/styles/   tokens.css, components.css, home.css, portal.css, motion.css
-src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js
-_ds/…/        سیستم طراحی قبلی؛ فقط spacing، radii و motion آن import می‌شود
-public/       sitemap.xml, robots.txt
-image-slot.js جای‌گذاری تصویر (drag & drop) در طرح‌های .dc.html
+src/styles/   tokens.css (همراه مقیاس‌های spacing، radii و motion), components.css, home.css, portal.css, motion.css
+src/utils/    persian-digits.js, validators.js, estimate.js (+ estimate.test.html), format.js, icon.js, portfolio.js
+public/       sitemap.xml, robots.txt, fonts/ (وزیرمتن)
 API_CONTRACT.md
 ```
 
@@ -90,8 +89,6 @@ API_CONTRACT.md
 ## کارهای باقی‌مانده
 
 - صفحه‌های `/order` و `/track` (و ۴۰۴) هنوز ساخته نشده‌اند.
-- `public/fonts/` — فایل‌های لوکال وزیرمتن. فونت فعلاً از Google Fonts لود می‌شود؛ **برای انتشار باید لوکال
-  شود** (دسترسی از ایران). آیکون‌ها هم از CDN لوسید (jsDelivr) mask می‌شوند — همان‌ها را هم لوکال کنید.
 - تصاویر: اسکرین‌شات هر سه پروژه (کافه مری، کارآمد، کافه E2) و نسخه‌ی تارشده‌ی هرکدام برای پس‌زمینه‌ی بخش نمونه‌کارها
   (`-ambient.webp`) در `public/images/work/` است (مسیرها در `src/data/portfolio.json` هم ثبت شده). عکس تیم هنوز `.img-slot` است — با `<img>` از `public/images/` جایگزین
   کنید (با `loading="lazy"`، `decoding="async"` و ابعاد مشخص). تصویرهای تزئینی کارت‌های خدمات در

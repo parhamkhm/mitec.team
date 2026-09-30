@@ -12,6 +12,7 @@ import { uploadsRouter } from './routes/uploads.route.js';
 import { adminAuthRouter } from './routes/adminAuth.route.js';
 import { adminPricingRouter } from './routes/adminPricing.route.js';
 import { adminOrdersRouter } from './routes/adminOrders.route.js';
+import { adminUploadsRouter } from './routes/adminUploads.route.js';
 import { notFoundMiddleware } from './middleware/notFound.js';
 import { errorHandlerMiddleware } from './middleware/errorHandler.js';
 
@@ -26,14 +27,15 @@ export function createApp() {
       credentials: true
     })
   );
-  app.use(morgan(ENV.nodeEnv === 'production' ? 'combined' : 'dev'));
+  if (ENV.nodeEnv !== 'test') app.use(morgan(ENV.nodeEnv === 'production' ? 'combined' : 'dev'));
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
   // Routes are mounted at the path API_CONTRACT.md names directly
-  // (/catalog, /pricing, /orders, ...). Point the front end's
-  // `APP_CONFIG.API_BASE_URL` at this service's origin (or reverse-proxy
-  // that origin's `/api/*` here without stripping the prefix).
+  // (/catalog, /pricing, /orders, ...). Either point the front end's
+  // `APP_CONFIG.API_BASE_URL` at this service's origin, or reverse-proxy the
+  // site's `/api/` here with the prefix stripped (production: nginx
+  // `location /api/ { proxy_pass http://127.0.0.1:4000/; }`).
   app.use(healthRouter);
   app.use(catalogRouter);
   app.use(pricingRouter);
@@ -42,6 +44,7 @@ export function createApp() {
   app.use(adminAuthRouter);
   app.use(adminPricingRouter);
   app.use(adminOrdersRouter);
+  app.use(adminUploadsRouter);
 
   app.use(notFoundMiddleware);
   app.use(errorHandlerMiddleware);

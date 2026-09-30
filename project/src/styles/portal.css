@@ -22,8 +22,10 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 .portal {
-  /* Pre-JS geometry (the desktop formula); portal.js replaces these with
-     measured px values. 99.2svh = 0.62 × vh × 1.6. */
+  /* Geometry. Under motion, the inline layout script after the portal
+     (index.html, mitecPortalLayout) sets all of these in px before first
+     paint, and portal.js re-runs it on every measure. These are only its
+     fallbacks: the desktop formula (99.2svh = 0.62 × vh × 1.6). */
   --screen-w: min(70vw, 860px, 99.2svh);
   --screen-h: calc(var(--screen-w) / 1.6);
   --screen-r: 10px;
@@ -59,7 +61,7 @@
    highlight is the text colour itself (amber-400: 6.33:1 on forest). The
    light-surface highlighter stroke would put pale paper behind light text. */
 .portal__copy[data-surface="dark"] .portal__title .headline-mark { background: none; padding: 0; color: var(--color-highlight-text); }
-.portal__sub { max-width: 46ch; }
+.portal__sub { max-width: calc(46 * var(--ch)); }
 .portal__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
 /* On forest the usual outline edge is too faint; muted text is 5.41:1 there. */
 .portal__copy[data-surface="dark"] .portal__actions .btn--outline { border-color: var(--color-text-muted); }
@@ -84,18 +86,9 @@
   letter-spacing: 0;
   text-align: center;
 }
-/* …and its keyboard deck. */
-.portal__intro::after {
-  content: '';
-  position: absolute;
-  inset-inline: -8%;
-  top: calc(100% + var(--space-2));
-  height: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-}
+/* …and its keyboard deck: .deck-line (components.css), 8% past each side. */
 .portal__intro-line { display: block; }
-.portal__intro-line:first-child { font-weight: 700; color: var(--color-text-primary); }
+.portal__intro-line:first-child { font-weight: 700; color: var(--color-text-primary); text-wrap: balance; }
 .portal__intro-line:last-child { font-size: clamp(18px, 2vw, 26px); font-weight: 500; color: var(--color-text-body); }
 /* Whole words and phrases only — never split inside a word or its ZWNJ joins. */
 .portal__intro .w,
@@ -121,9 +114,12 @@
 @media (max-width: 759px) {
   .portal__actions { flex-direction: column; align-self: stretch; }
   .proof__inner { gap: var(--space-6); }
-  .proof .stat-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); padding: var(--space-5) var(--space-3); }
-  .proof .stat-block__value { font-size: var(--text-h4); }
-  .proof .stat-block__label { font-size: var(--text-caption); }
+  /* The stats as rows: each numeral on the start side, its label beside it,
+     the labels in one column. Numerals stay at h3 or larger. */
+  .proof .stat-bar { grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: var(--space-4) var(--space-4); padding: var(--space-5); }
+  .proof .stat-block { display: contents; }
+  .proof .stat-block__value { font-size: var(--text-h3); text-align: start; }
+  .proof .stat-block__label { text-align: start; }
 }
 
 /* ================================================================ the scene */
@@ -242,7 +238,10 @@ html.motion .portal__frame {
   margin: auto;
   background: none;
   pointer-events: none;
-  transform: rotateX(10deg);
+  /* The resting pose: tilted back (flat on phones and low-power devices)
+     and, stacked, lowered under the copy. portal.js takes it over from
+     here with the same values at the top of the scroll. */
+  transform: translateY(var(--portal-dy, 0px)) rotateX(var(--portal-tilt, 10deg));
   transform-style: flat;
   backface-visibility: hidden;
 }
@@ -314,7 +313,6 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
   inset: calc(var(--screen-h) * -.3) calc(var(--screen-w) * -.25);
   background: radial-gradient(closest-side, var(--color-glow-strong) 0%, var(--color-glow) 55%, transparent);
   opacity: .8;
-  will-change: opacity;
 }
 /* …and a soft ellipse of it on the desk, just under the deck. */
 .portal__floor {
@@ -349,7 +347,6 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
     linear-gradient(235deg, var(--color-screen-glare), transparent 32%),
     radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-screen-sheen), transparent 70%),
     var(--color-screen);
-  will-change: opacity;
 }
 /* One white band that slides once across the lit screen (start → end). */
 .portal__reflection {
@@ -364,15 +361,33 @@ html.motion .portal:not(.portal--lite):not(.portal--stacked) .portal__works { di
   -webkit-mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
   mask-image: linear-gradient(90deg, transparent, black 35%, black 65%, transparent);
   transform: translateX(var(--screen-w));
-  will-change: transform;
 }
+/* The glow, the glass and the reflection hold compositor layers only while
+   the scene is near the viewport (the engine sets .in-view on .portal). */
+.portal.in-view :is(.portal__glow, .portal__glass) { will-change: opacity; }
+.portal.in-view .portal__reflection { will-change: transform; }
 /* Phones and low-power devices: no tilt, no reflection. */
 .portal--lite .portal__reflection { display: none; }
-/* Pre-JS stand-ins for the phone layout portal.js computes. */
+/* Fallbacks for the phone layout, should the inline layout script not run. */
 @media (max-width: 759px) {
-  .portal { --copy-max: calc(100vw - 48px); }
+  .portal { --copy-max: calc(100vw - 48px); --portal-dy: 22svh; --portal-tilt: 0deg; }
   html.motion .portal__copy { justify-content: flex-start; padding-top: calc(68px + var(--space-6)); }
-  html.motion .portal__frame { transform: translateY(22svh); }
+}
+
+/* Stacked only: the first project's screenshot on the lit screen at rest,
+   so the brightest shape on a phone is real work rather than a blank white
+   field. It fades out with the copy (portal.js), before the statement comes
+   up on the glass. Preloaded where the hero stacks (index.html <head>) and
+   lazy everywhere else, so no other layout downloads it. */
+.portal__shot { display: none; }
+html.motion .portal--stacked .portal__shot {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right top;
 }
 
 .portal.is-live :is(.portal__frame, .portal__room, .portal__statement, .portal__base, .portal__deck-shadow, .portal__intro .w, .portal__intro-phrase, .portal__intro-line),

@@ -2,7 +2,7 @@
 
 > **This handoff has since been implemented, and the design has moved on.** Work from the current sources instead of the instructions below:
 > `DESIGN.md` (visual authority), `PRODUCT.md` (product brief), `docs/prompts/` (the home-page redesign specs; `docs/prompts/README.md` says which overrides which), `docs/pricing-guide.md` (the pricing document), `docs/copy-todo.md` (known copy problems, not yet fixed) and `project/README.md` (the front end: how to run it, structure, open tasks).
-> The `.dc.html` prototypes are historical — `Mitec Home.dc.html` predates the current design system and is **not** a visual source. Do not edit them.
+> The `.dc.html` prototypes this handoff describes have been removed from `project/` (git history keeps them). They predated the current design system and were **not** a visual source.
 
 This is a **handoff bundle** from Claude Design (claude.ai/design).
 

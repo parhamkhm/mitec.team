@@ -4,7 +4,7 @@
 // engine parks every effect at its end state while its section is off
 // screen. Reveal-once motion lives in reveal.js + motion.css, not here.
 
-import { track, view, whenMotion } from './engine.js';
+import { track, view, whenMotion, kick } from './engine.js';
 import { clamp, seg, lerp, outCubic } from './easing.js';
 
 const root = document.documentElement;
@@ -71,16 +71,22 @@ function testimonialsTilt() {
 }
 
 // Process: a forest rail fills along the steps and fills each dot it
-// reaches. Across (≥1024px) the fill runs
-// while the steps rise through the viewport; stacked, it follows a reading
-// line at 60% of the viewport. The geometry is measured with or without
-// motion, so the static rail has its length too.
+// reaches, as you scroll. The geometry is measured with or without motion,
+// so the static rail has its length too.
 //
-// The same head position colours the step cards: each fills with
-// --color-step-fill over the stretch of rail leading into its dot (the first
-// over an equal lead-in before the rail starts), and the card whose dot the
-// head reached last is the one forest spotlight. Per frame only transform and
-// opacity change; the spotlight's data-surface flips only when its index does.
+// Stacked, the head follows a reading line at 60% of the viewport. Across
+// (the five in a row), it starts only once the whole row is in view and
+// reaches the end (step 5 lit) by the time the row's top is 25% down the
+// viewport; arriving by a link to #process shows that end state at once,
+// until the section next leaves the screen.
+//
+// In both, a card changes in one step as the head passes its mark (across,
+// its dot; stacked, its middle): its fill, edge and numeral ease in over
+// --dur-slow (home.css), so a card is either done or not started and no
+// part-filled card ever rests across its paragraph. The card whose mark the
+// head passed last is the one forest spotlight, and scrolling back reverses
+// each change at the same mark. Per frame only transform and opacity change;
+// the spotlight's data-surface flips only when its index does.
 function processRail() {
   const box = document.querySelector('.process-track');
   if (!box) return null;
@@ -92,7 +98,19 @@ function processRail() {
   });
   const end = (li) => li.offsetLeft + li.offsetWidth; // the start edge, on this RTL page
   const HYST = 6; // px past a dot, either way, before the spotlight moves: no flicker on the line
-  let across = true, top = 0, from = 0, len = 1, at = [], dots = [], last = null, spot = -1;
+  let across = true, top = 0, from = 0, len = 1, at = [], dots = [], marks = [], last = null, spot = -1;
+  let a0 = 0, a1 = 1;      // across: the scroll range from the whole row in view to its top at 25%
+  // Arrived by a link: the end state until the section, once shown so, leaves
+  // the screen (on a load with the hash it starts off screen, before the jump).
+  let arrived = location.hash === '#process', shown = false;
+  const arrive = () => {
+    arrived = true;
+    shown = false;
+    last = null;
+    kick();
+  };
+  addEventListener('hashchange', () => { if (location.hash === '#process') arrive(); });
+  document.addEventListener('click', (e) => { if (e.target.closest?.('a[href$="#process"]')) arrive(); }, true);
   const setSpot = (s) => {
     if (s === spot) return;
     cards[spot]?.c.removeAttribute('data-surface');
@@ -107,36 +125,48 @@ function processRail() {
       len = (across ? end(a) - end(z) : z.offsetTop - a.offsetTop) || 1;
       at = steps.map((li) => (across ? end(a) - end(li) : li.offsetTop - a.offsetTop) / len);
       dots = at.map((t) => t * len);
+      // Where each card changes, in px along the rail: across, at its dot;
+      // stacked, at its middle (the dot sits 33px into the card).
+      marks = across ? dots : steps.map((li) => li.offsetTop - a.offsetTop + li.offsetHeight / 2 - 33);
       from = a.offsetTop;
       box.style.setProperty('--rail-len', `${len}px`);
       box.style.setProperty('--rail-from', `${from}px`);
       top = docTop(box);
+      a1 = top - 0.25 * view.h;
+      a0 = Math.min(top + box.offsetHeight - view.h, a1 - 0.2 * view.h); // a short screen still gets some travel
       last = null;
     },
-    update() {
+    update(dt, snap) {
+      if (snap && shown) arrived = shown = false; // left: the next visit scrolls in as usual
+      else if (!snap && arrived && this.on) shown = true; // this.on: the engine's observer has seen it on screen
       if (!root.classList.contains('motion')) return;
       // The rail head, in px along the rail from the first dot (negative
-      // before the rail starts). Clamped to the range where anything changes.
+      // before the rail starts). Clamped to the range where anything changes:
+      // up to just past the last mark's hysteresis band.
       const lead = dots[1] - dots[0];
-      const raw = across
-        ? ((view.y - top + 0.85 * view.h) / (0.5 * view.h)) * len
-        : view.y + 0.6 * view.h - (top + from + 33);
-      const h = clamp(raw, -lead - 1, len + HYST + 1); // past the last dot's hysteresis band
+      const end_ = Math.max(len, marks[marks.length - 1]) + HYST + 1;
+      const h = across
+        ? -lead + (arrived ? 1 : seg(view.y, a0, a1)) * (len + lead + HYST + 1)
+        : clamp(view.y + 0.6 * view.h - (top + from + 33), -lead - 1, end_);
       if (h === last) return;
+      const jump = last === null && arrived; // shown at once: no easing into the end state
       last = h;
       const p = clamp(h / len);
+      let s = spot;
+      while (s < marks.length - 1 && h >= marks[s + 1] + HYST) s++;
+      while (s >= 0 && h < marks[s] - HYST) s--;
+      if (jump) {
+        box.classList.add('is-jumping');
+        requestAnimationFrame(() => requestAnimationFrame(() => box.classList.remove('is-jumping')));
+      }
       fill.style.transform = across ? `scaleX(${p})` : `scaleY(${p})`;
       steps.forEach((li, i) => li.classList.toggle('is-reached', p > 0 && p >= at[i] - 0.001));
       cards.forEach((k, i) => {
-        const from_ = i ? dots[i - 1] : -lead;
-        const f = clamp((h - from_) / (dots[i] - from_));
+        const f = +(i <= s);
         k.fill.style.transform = across ? `scaleX(${f})` : `scaleY(${f})`;
         k.line.style.opacity = f;
-        k.n.style.opacity = 0.35 + 0.65 * f;
+        k.n.style.opacity = 0.55 + 0.45 * f; // .55: 3.45:1 on white, over large text's 3:1
       });
-      let s = spot;
-      while (s < dots.length - 1 && h >= dots[s + 1] + HYST) s++;
-      while (s >= 0 && h < dots[s] - HYST) s--;
       setSpot(s);
     },
     reset() {
@@ -149,17 +179,28 @@ function processRail() {
   };
 }
 
-// About: the heading's two lines start pushed apart and meet by the time the
-// section is centred (10vw each way; 6vw on phones).
+// About: the heading's two lines start pushed apart (10vw each way; 6vw on
+// phones) and meet over the title's own passage: from the moment the whole
+// title is on screen to its top 45% down the viewport. Timed to the section,
+// most of the travel happened before the title could be seen.
 function aboutConverge() {
   const sec = document.querySelector('#about');
   const lines = sec ? $$('.about-title__line', sec) : [];
   if (lines.length < 2) return [];
-  return [passing(sec, (t) => {
-    const d = (view.w < 760 ? 6 : 10) * (view.w / 100) * (1 - outCubic(seg(t, 0, 0.5)));
-    lines[0].style.transform = d ? `translateX(${-d}px)` : '';
-    lines[1].style.transform = d ? `translateX(${d}px)` : '';
-  })];
+  const title = lines[0].parentElement;
+  let top = 0, h = 0, last = -1;
+  return [{
+    el: sec,
+    measure() { top = docTop(title); h = title.offsetHeight; last = -1; },
+    update() {
+      const t = seg(view.y, top + h - view.h, top - 0.45 * view.h);
+      if (t === last) return;
+      last = t;
+      const d = (view.w < 760 ? 6 : 10) * (view.w / 100) * (1 - outCubic(t));
+      lines[0].style.transform = d ? `translateX(${-d}px)` : '';
+      lines[1].style.transform = d ? `translateX(${d}px)` : '';
+    }
+  }];
 }
 
 // Closing CTA: the laptop echo grows from .92 to 1.04 as the band passes.

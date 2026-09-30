@@ -5,6 +5,9 @@ import { Errors } from '../lib/errors.js';
 import { ENV } from '../env.js';
 import { assertValidOrder, assertValidTrackRequest } from '../validation/orderSchema.js';
 import { createOrder, findOrderByTrackingCode } from '../db/ordersRepo.js';
+import { claimUploads } from '../db/uploadsRepo.js';
+import { withTransaction } from '../db/pool.js';
+import { quoteOrder } from '../pricing/quote.js';
 import { sendNewOrderEmail } from '../utils/mailer.js';
 import { orderSubmitLimiter, orderTrackLimiter } from '../middleware/rateLimit.js';
 
@@ -16,7 +19,14 @@ ordersRouter.post(
   orderSubmitLimiter,
   asyncHandler(async (req, res) => {
     const order = assertValidOrder(req.body);
-    const saved = await createOrder(order);
+    // The order and its attachments are saved together: if any attachment id
+    // is unknown or taken, no order is created.
+    const saved = await withTransaction(async (client) => {
+      const { pricingVersion, quote } = await quoteOrder(order, client);
+      const row = await createOrder({ ...order, pricing_version: pricingVersion, quote }, client);
+      await claimUploads(order.attachments.map((a) => a.id), row.id, client);
+      return row;
+    });
 
     // Best-effort; sendNewOrderEmail never throws (it logs and swallows).
     sendNewOrderEmail(saved);
@@ -48,7 +58,9 @@ ordersRouter.post(
       status_label: order.status_label,
       created_at: order.created_at,
       estimate_weeks: order.estimate_weeks,
-      notes: order.notes
+      // The contract's `notes` is the customer-facing note only —
+      // internal_notes must never appear in this response.
+      notes: order.customer_note
     });
   })
 );

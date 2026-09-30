@@ -12,15 +12,60 @@
 <!-- No favicon has been designed yet; an empty icon stops the browser from
      requesting /favicon.ico (a console 404) until one exists. -->
 <link rel="icon" href="data:,">
-<!-- PRODUCTION: self-host Vazirmatn from public/fonts — Google Fonts can be unreachable from
-     Iran. See project README §"کارهای باقی‌مانده". This CDN link is a stand-in for now. -->
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<!-- Everything is served from this origin: Vazirmatn is self-hosted (public/fonts, @font-face
+     in tokens.css) and the icons are the inline sprite at the top of <body>. No font is preloaded:
+     on a slow connection a preload takes bandwidth from the stylesheets and delays first paint,
+     and the metric-matched fallback already keeps the swap from moving text. -->
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/components.css">
 <link rel="stylesheet" href="src/styles/home.css">
 <link rel="stylesheet" href="src/styles/portal.css">
 <link rel="stylesheet" href="src/styles/motion.css">
+<!-- The stacked hero's screenshot on the lit screen (see .portal__shot), fetched early at high
+     priority where it is the largest thing in the first view (the LCP): where the hero stacks
+     (867px wide or less, or 612px tall or less, whatever the other side) and from 414px wide,
+     where the H1 drops to three lines and the screenshot outgrows it. On narrower phones the H1 is
+     the LCP, and fetching the image early would only take bandwidth from the stylesheets.
+     Measured with the current copy; recheck if the hero copy or its sizes change. Elsewhere the
+     image is lazy and hidden, so a desktop never downloads it. -->
+<link rel="preload" as="image" href="public/images/work/mery-home-960.webp" fetchpriority="high" media="(min-width: 414px) and (max-width: 867px), (min-width: 414px) and (max-height: 612px)">
+<script>
+  // The whole module graph of src/scripts/home.js, preloaded in parallel as soon as the page has
+  // first painted. Without it the browser finds each import only once the file that imports it has
+  // arrived (four levels deep), and no module runs until the last one is in. Not <link
+  // rel="modulepreload"> tags: those start at once and, on a slow connection, take bandwidth from
+  // the stylesheets and hold up first paint. Keep the list in step with the imports.
+  try {
+    new PerformanceObserver((list, observer) => {
+      if (!list.getEntriesByName('first-contentful-paint').length) return;
+      observer.disconnect();
+      for (const href of [
+        'src/scripts/home.js',
+        'src/scripts/motion/engine.js',
+        'src/scripts/motion/easing.js',
+        'src/scripts/motion/portal.js',
+        'src/scripts/motion/effects.js',
+        'src/scripts/motion/reveal.js',
+        'src/scripts/scope.js',
+        'src/scripts/work.js',
+        'src/utils/icon.js',
+        'src/utils/format.js',
+        'src/utils/portfolio.js',
+        'src/utils/estimate.js',
+        'src/api/client.js',
+        'src/api/endpoints.js',
+        'src/api/mock.js',
+        'src/api/mapper.js',
+        'src/config/app.config.js'
+      ]) {
+        const link = document.createElement('link');
+        link.rel = 'modulepreload';
+        link.href = href;
+        document.head.append(link);
+      }
+    }).observe({ type: 'paint', buffered: true });
+  } catch { /* no paint timing: the imports load one level at a time, as before */ }
+</script>
 <script>
   // Decided before first paint so the pinned hero never flashes in its static
   // layout first. Motion is opt-in; motion/engine.js keeps this in sync after.
@@ -31,17 +76,41 @@
 </script>
 </head>
 <body>
+<!-- Icons, self-hosted so no icon depends on a CDN. Only the ones a first view can show are inline
+     here (the nav, the hero's buttons and float cards, the menu's pair); the rest are in
+     public/icons.svg, used as <use href="public/icons.svg#i-NAME"/> (it works without JS too).
+     Moving an icon into a first view means moving its <symbol> here. Sources:
+     - Lucide v0.544.0 (lucide-static, ISC licence): every icon but the two below.
+     - WhatsApp and Telegram: the brands' marks from Simple Icons v16.33.0 (simple-icons.org, CC0 1.0; the marks
+       themselves are the brands' trademarks). Monochrome in currentColor, never the brand colours; filled rather
+       than stroked, and inset in their box (see the viewBox) to sit at the Lucide icons' optical size.
+     Use: <svg class="icon icon-NAME" aria-hidden="true"><use href="#i-NAME"/></svg>; src/utils/icon.js builds
+     the same from script and picks the inline symbol or the file. Size, stroke (2), caps and joins come
+     from .icon in components.css. -->
+<svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+<symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+<symbol id="i-shopping-bag" viewBox="0 0 24 24"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></symbol>
+<symbol id="i-telegram" viewBox="-2.5 -2.5 29 29"><path fill="currentColor" stroke="none" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol>
+<symbol id="i-whatsapp" viewBox="-2 -2 28 28"><path fill="currentColor" stroke="none" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+</svg>
 <a class="skip-link" href="#top">پرش به محتوای اصلی</a>
 
 <!-- Overlays the portal. Starts on forest; motion/portal.js drops data-surface
-     once the visitor is inside the light room. -->
+     once the visitor is inside the light room. Up to 860px it is a bar: the logo
+     at the start edge, then a tonal «شروع پروژه» and the menu toggle at the end
+     edge (the left, on this RTL page), and the menu opens from that corner. -->
 <header class="navbar" data-surface="dark">
   <a class="logo" href="#top" style="--logo-size:21px" aria-label="mitec — صفحه‌ی اصلی">
     <span class="logo__mi">mi</span><span>tec</span><span class="logo__dot">.</span><span class="logo__team">team</span>
   </a>
 
+  <a href="./order/" class="btn btn--sm btn--tonal navbar__cta navbar__cta--bar">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
   <button type="button" class="navbar__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="باز کردن فهرست">
-    <span class="icon icon-menu" aria-hidden="true"></span>
+    <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
   </button>
 
   <nav class="navbar__menu" id="navMenu" aria-label="فهرست اصلی">
@@ -51,7 +120,11 @@
     <a href="#process" class="navbar__link">فرایند</a>
     <a href="#about" class="navbar__link">درباره‌ی ما</a>
     <a href="#contact" class="navbar__link">تماس</a>
-    <a href="./order/" class="btn btn--sm btn--tonal navbar__cta">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+    <a href="./order/" class="btn btn--sm btn--tonal navbar__cta navbar__cta--menu">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
+    <div class="channels navbar__channels">
+      <a class="btn btn--md btn--tonal" href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp" aria-label="پیام در واتساپ"><svg class="icon icon-whatsapp" aria-hidden="true"><use href="#i-whatsapp"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>واتساپ</span></a>
+      <a class="btn btn--md btn--tonal" href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram" aria-label="پیام در تلگرام"><svg class="icon icon-telegram" aria-hidden="true"><use href="#i-telegram"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>تلگرام</span></a>
+    </div>
   </nav>
 </header>
 
@@ -74,23 +147,16 @@
         </h1>
         <p class="section-heading__sub portal__sub">طراحی سایت، سرویس‌های آنلاین، CRM و اتوماسیون، تحلیل داده و پشتیبانی؛ از اولین ایده تا رشد کسب‌وکارتان، کنار شما هستیم.</p>
         <div class="portal__actions">
-          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-          <a class="btn btn--lg btn--outline" href="#work"><span class="icon icon-layout-dashboard" aria-hidden="true"></span> دیدن نمونه‌کارها</a>
+          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
+          <a class="btn btn--lg btn--outline" href="#work"><svg class="icon icon-layout-dashboard" aria-hidden="true"><use href="#i-layout-dashboard"/></svg> دیدن نمونه‌کارها</a>
         </div>
       </div>
-      <script>
-        // Before first paint: on the pinned scene the copy starts on the
-        // laptop's lit screen, in the light token set. motion/portal.js
-        // re-decides on every measure (stacked above the laptop, on phones or
-        // when it cannot fit, it keeps the forest set).
-        if (document.documentElement.classList.contains('motion') && innerWidth >= 760) document.currentScript.previousElementSibling.removeAttribute('data-surface');
-      </script>
 
       <!-- The intro statement the screen shows before it "loads" into the room.
            Line 1 is split by whole words (never inside a word or its ZWNJ
            joins), line 2 by phrase, in the markup so the no-JS text is exact. -->
       <div class="portal__statement texture-grid" data-surface="dark">
-        <p class="portal__intro">
+        <p class="portal__intro deck-line">
           <span class="portal__intro-line"><span class="w">آماده‌اید</span> <span class="w">زیرساخت</span> <span class="w">دیجیتال</span> <span class="w">کسب‌وکارتان</span> <span class="w">را</span> <span class="w">بسازید؟</span></span>
           <span class="portal__intro-line">
             <span class="portal__intro-phrase">سایت شما.</span>
@@ -108,7 +174,7 @@
             <div class="section-heading section-heading--center">
               <span class="section-heading__eyebrow">کارنامه‌ی ما</span>
               <h2 id="proof-title" class="section-heading__title section-heading__title--display-3">خودتان ببینید</h2>
-              <p class="section-heading__sub">پروژه‌های واقعی، بدون واسطه و بدون ادعای اضافه.</p>
+              <p class="section-heading__sub">پروژه‌های واقعی، بدون&nbsp;واسطه و&nbsp;بدون&nbsp;ادعای اضافه.</p>
             </div>
 
             <!-- Stats: real facts only, mirrored in src/data/site-copy.json. Never invented figures.
@@ -116,8 +182,8 @@
                  fills it in); the digit here is only for visitors without JS. -->
             <div class="stat-bar">
               <div class="stat-block"><div class="stat-block__value" data-stat="projects">۳</div><div class="stat-block__label">پروژه‌ی تحویل‌شده</div></div>
-              <div class="stat-block"><div class="stat-block__value">۰</div><div class="stat-block__label">واسطه بین شما و تیم</div></div>
-              <div class="stat-block"><div class="stat-block__value">۱ روز کاری</div><div class="stat-block__label">زمان پاسخ به درخواست</div></div>
+              <div class="stat-block"><div class="stat-block__value">۰</div><div class="stat-block__label">واسطه بین شما و&nbsp;تیم</div></div>
+              <div class="stat-block"><div class="stat-block__value">۱ <span class="stat-block__unit">روز کاری</span></div><div class="stat-block__label">زمان پاسخ به&nbsp;درخواست</div></div>
             </div>
           </div>
         </section>
@@ -137,7 +203,11 @@
         <div class="portal__glow"></div>
         <div class="portal__floor"></div>
         <div class="laptop__lid portal__lid"><span class="laptop__camera"></span></div>
-        <div class="portal__glass"><span class="portal__reflection"></span></div>
+        <!-- Stacked only (phones, and wherever the copy does not fit on the screen): the first
+             project's screenshot on the lit screen at rest, fading out with the copy. Keep it in
+             step with the first entry of src/data/portfolio.json (image.src960) and with its
+             preload in <head>. -->
+        <div class="portal__glass"><img class="portal__shot" src="public/images/work/mery-home-960.webp" width="960" height="461" alt="" loading="lazy" decoding="async"><span class="portal__reflection"></span></div>
         <div class="portal__deck-shadow"></div>
         <div class="laptop__base portal__base"></div>
       </div>
@@ -153,6 +223,114 @@
         اسکرول کنید
       </button>
     </div>
+    <script>
+      // The hero's layout before first paint; motion/portal.js runs it again on every measure.
+      // How it works: "The first-frame layout" in portal.js.
+      window.mitecPortalLayout = (vh = innerHeight, lowPower = (navigator.hardwareConcurrency || 8) <= 4 || !!navigator.connection?.saveData) => {
+        const portal = document.querySelector('.portal');
+        const q = (s) => portal.querySelector(s);
+        const stage = q('.portal__stage'), copy = q('.portal__copy'), title = q('.portal__title'), sub = q('.portal__sub');
+        const kids = copy.children;
+        const px = (n) => `${n}px`;
+        const set = (k, v) => portal.style.setProperty(k, v);
+        const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+        const w = innerWidth;
+        const sh = stage.clientHeight; // 100svh: steady while a phone's URL bar slides
+        const sw = stage.clientWidth;
+        const small = w < 760;
+        const lite = small || lowPower;
+        const W = Math.round(Math.min(0.7 * w, 860, 0.62 * sh * 1.6));
+        const H = Math.round(W / 1.6);
+        const r = Math.round(clamp(0.012 * W, 8, 12));
+        const b = Math.round(clamp(0.016 * W, 10, 16));
+        const chin = Math.round(1.4 * b);
+        const bh = Math.round(clamp(0.02 * W, 10, 16));
+        const L = Math.round(vh * (w >= 1024 ? 3 : small ? 2.1 : 2.4));
+        const tilt = lite ? 0 : 10;
+        portal.classList.toggle('portal--lite', lite);
+        set('--portal-track', px(L));
+        set('--screen-w', px(W));
+        set('--screen-h', px(H));
+        set('--screen-r', px(r));
+        set('--bezel', px(b));
+        set('--chin', px(chin));
+        set('--base-h', px(bh));
+        set('--portal-tilt', `${tilt}deg`);
+        set('--portal-hole', `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${W} ${H}'%3E%3Crect width='${W}' height='${H}' rx='${r}'/%3E%3C/svg%3E")`);
+        // The statement stays on the glass even while the screen is at its smallest.
+        set('--say-max', px(Math.round(Math.min(w - 48, 1.25 * W - 32))));
+
+        // Copy height from its first child's top to its last child's bottom: layout offsets, so
+        // the lift transforms don't count.
+        const copyEnd = () => kids[kids.length - 1].offsetTop + kids[kids.length - 1].offsetHeight;
+        const copyH = () => copyEnd() - kids[0].offsetTop;
+        // The H1's words in Vazirmatn 800, in em, to fit it for the font before it lands (portal.js).
+        const VZ = { ' ': .248, 'فراتر': 1.8632, 'از': .6323, 'طراحی': 2.603, 'سایت؛': 2.7289, 'ساخت': 2.7026, 'زیرساخت': 3.7485,
+          'دیجیتال': 3.2007, 'برای': 1.6289, 'رشد': 1.6343, 'کسب‌وکار': 3.812, 'شما': 1.6523 };
+        const words = title.textContent.trim().split(/\s+/);
+        const vzPending = !document.fonts.check('800 16px Vazirmatn', 'ف') && words.every((x) => VZ[x]);
+        const vzExtra = (size) => {
+          if (!vzPending) return 0;
+          let lines = 1, x = -VZ[' '];
+          for (const word of words) {
+            x += VZ[' '] + VZ[word];
+            if (x * size > title.clientWidth + .5) { lines++; x = VZ[word]; }
+          }
+          const d = lines * parseFloat(getComputedStyle(title).lineHeight) - title.offsetHeight;
+          return d > 1 ? d : 0; // offsetHeight is rounded
+        };
+        // Shrink the H1 in 4px steps towards 36px (its clamp floor) until the copy fits `avail`;
+        // only if that is not enough does the sub drop to body-lg. True if it fits.
+        const fit = (avail) => {
+          title.style.fontSize = sub.style.fontSize = title.style.minHeight = '';
+          let size = parseFloat(getComputedStyle(title).fontSize);
+          const h = () => copyH() + vzExtra(size);
+          while (h() > avail && size > 36) title.style.fontSize = px((size = Math.max(36, size - 4)));
+          if (h() > avail) sub.style.fontSize = 'var(--text-body-lg)';
+          // Hold the H1 at Vazirmatn's height meanwhile, so nothing under it moves when it lands.
+          const extra = vzExtra(size);
+          if (extra) title.style.minHeight = px(title.offsetHeight + extra);
+          return h() <= avail;
+        };
+
+        // On the lit screen the copy reads in the light token set; stacked, it sits on the
+        // forest wall and keeps the forest one.
+        let stacked = small;
+        if (!stacked) {
+          portal.classList.remove('portal--stacked');
+          copy.removeAttribute('data-surface');
+          set('--copy-max', px(W - 96));
+          stacked = !fit(H - 56);
+        }
+        if (stacked) copy.dataset.surface = 'dark';
+        portal.classList.toggle('portal--stacked', stacked);
+        let dy0 = 0;
+        if (stacked) {
+          set('--copy-max', px(w - 48));
+          const lh = b + H + chin + bh; // lid top to base bottom
+          const floor = sh - 68;        // keep the hint's corner clear
+          fit(floor - kids[0].offsetTop - 24 - lh);
+          const from = copyEnd() + 24;
+          // Centred in the space under the copy. Where there is no room (tight), it starts under
+          // the copy and is cropped: pulled up, its lit screen would sit behind the copy's
+          // forest-set text.
+          const lt = from + Math.max(0, (floor - from - lh) / 2);
+          dy0 = lt + b + H / 2 - sh / 2;
+          portal.classList.toggle('portal--tight', lt + lh > floor);
+        } else portal.classList.remove('portal--tight');
+        set('--portal-dy', px(dy0));
+        set('--portal-w', px(Math.ceil(1.05 * Math.hypot(w, sh + 2 * Math.abs(dy0)))));
+        return { sw, sh, W, H, bezel: b, chin, L, lite, tilt, stacked, dy0 };
+      };
+      if (document.documentElement.classList.contains('motion')) {
+        mitecPortalLayout();
+        // Fit again as each Vazirmatn weight lands (portal.js).
+        for (const f of document.fonts) {
+          if (f.family.replace(/"/g, '') !== 'Vazirmatn' || f.status === 'loaded') continue;
+          f.loaded.then(() => document.documentElement.classList.contains('motion') && mitecPortalLayout(), () => {});
+        }
+      }
+    </script>
   </section>
 
 
@@ -169,17 +347,16 @@
   <section id="work" class="band work" data-surface="dark" data-autoplay="true" data-autoplay-delay="4500" aria-labelledby="work-title">
     <div class="work__ambient" aria-hidden="true">
       <img class="work__ambient-layer is-on" src="public/images/work/mery-home-ambient.webp" width="480" height="230" alt="" decoding="async">
-      <img class="work__ambient-layer" width="480" height="230" alt="" decoding="async">
     </div>
     <div class="band__inner">
       <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">نمونه‌کارها</span>
-        <h2 id="work-title" class="section-heading__title section-heading__title--display-3">پروژه‌هایی که تحویل داده‌ایم</h2>
-        <p class="section-heading__sub">هر پروژه با یک نیاز مشخص شروع شد و با یک راهکار مشخص به نتیجه رسید.</p>
+        <h2 id="work-title" class="section-heading__title section-heading__title--display-3">پروژه‌هایی که&nbsp;تحویل داده‌ایم</h2>
+        <p class="section-heading__sub">هر پروژه با&nbsp;یک نیاز مشخص شروع شد و&nbsp;با&nbsp;یک راهکار مشخص به&nbsp;نتیجه رسید.</p>
       </div>
 
       <!-- Filled by work.js; the stage and controls keep their height before it runs. -->
-      <div class="work-carousel" aria-roledescription="carousel" aria-label="نمونه‌کارها" data-reveal></div>
+      <div class="work-carousel" role="region" aria-roledescription="اسلایدر نمونه‌کارها" aria-label="نمونه‌کارها" data-reveal></div>
 
       <ul class="work-list" role="list">
         <li class="work-item">
@@ -195,7 +372,7 @@
             <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
             <div><dt>نتیجه</dt><dd>مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.</dd></div>
           </dl>
-          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <span class="icon icon-arrow-up-left" aria-hidden="true"></span></a>
+          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <svg class="icon icon-arrow-up-left" aria-hidden="true"><use href="public/icons.svg#i-arrow-up-left"/></svg></a>
         </li>
         <li class="work-item">
           <figure class="work-card">
@@ -240,7 +417,7 @@
     <div class="band__inner">
       <div class="testimonials__head" data-reveal>
         <h2 id="t-title" class="section-heading__title section-heading__title--display-3">نظر مشتری‌ها</h2>
-        <span class="badge badge--highlight"><span class="icon icon-clock" aria-hidden="true"></span>نمونه</span>
+        <span class="badge badge--highlight"><svg class="icon icon-clock" aria-hidden="true"><use href="public/icons.svg#i-clock"/></svg>نمونه</span>
       </div>
       <div class="testimonials-grid">
         <div class="card card--surface card--pad-lg testimonial">
@@ -260,56 +437,56 @@
   </section>
 
   <!-- ============================================================ SERVICES -->
-  <section id="services" class="band">
+  <section id="services" class="band" aria-labelledby="services-title">
     <div class="band__inner">
       <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">خدمات</span>
-        <h2 class="section-heading__title section-heading__title--display-3">هر آنچه کسب‌وکار شما برای رشد آنلاین لازم دارد</h2>
-        <p class="section-heading__sub">از طراحی سایت تا CRM، اتوماسیون، تحلیل داده و پشتیبانی؛ یک تیم، از شروع تا رشد.</p>
+        <h2 id="services-title" class="section-heading__title section-heading__title--display-3">هر آنچه کسب‌وکار شما برای رشد آنلاین لازم دارد</h2>
+        <p class="section-heading__sub">از&nbsp;طراحی سایت تا&nbsp;CRM، اتوماسیون، تحلیل داده و&nbsp;پشتیبانی؛ یک تیم، از&nbsp;شروع تا&nbsp;رشد.</p>
       </div>
 
       <div class="services-grid" data-reveal-stagger>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-1-768.webp" srcset="public/images/services/service-1-768.webp 768w, public/images/services/service-1-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-layout-dashboard" aria-hidden="true"></span></span>
-          <h3 class="card-title">طراحی و ساخت سایت</h3>
+          <img class="service-card__art" src="public/images/services/service-1-768.webp" srcset="public/images/services/service-1-384.webp 384w, public/images/services/service-1-768.webp 768w, public/images/services/service-1-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-layout-dashboard" aria-hidden="true"><use href="#i-layout-dashboard"/></svg></span>
+          <h3 class="card-title">طراحی و&nbsp;ساخت سایت</h3>
           <p>فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین، کاتالوگ و لندینگ؛ با طراحی رابط کاربری اختصاصی، نه قالب آماده.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/" aria-label="شروع پروژه: طراحی و ساخت سایت">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-2-768.webp" srcset="public/images/services/service-2-768.webp 768w, public/images/services/service-2-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-blocks" aria-hidden="true"></span></span>
+          <img class="service-card__art" src="public/images/services/service-2-768.webp" srcset="public/images/services/service-2-384.webp 384w, public/images/services/service-2-768.webp 768w, public/images/services/service-2-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-blocks" aria-hidden="true"><use href="public/icons.svg#i-blocks"/></svg></span>
           <h3 class="card-title">سرویس‌های آنلاین اختصاصی</h3>
           <p>باشگاه مشتریان، نوبت‌دهی و رزرو، پنل مدیریت محتوا، ثبت سفارش و پرداخت آنلاین؛ ابزارهایی که کار روزانه‌ی شما را ساده‌تر می‌کنند.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/" aria-label="شروع پروژه: سرویس‌های آنلاین اختصاصی">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-3-768.webp" srcset="public/images/services/service-3-768.webp 768w, public/images/services/service-3-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-users" aria-hidden="true"></span></span>
+          <img class="service-card__art" src="public/images/services/service-3-768.webp" srcset="public/images/services/service-3-384.webp 384w, public/images/services/service-3-768.webp 768w, public/images/services/service-3-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-users" aria-hidden="true"><use href="public/icons.svg#i-users"/></svg></span>
           <h3 class="card-title">CRM و سیستم‌های مدیریتی</h3>
           <p>مشتری‌ها، فروش، سفارش‌ها و کارهای تیم در یک پنل؛ متناسب با روند کاری خود شما، نه یک نرم‌افزار آماده‌ی عمومی.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/" aria-label="شروع پروژه: CRM و سیستم‌های مدیریتی">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-4-768.webp" srcset="public/images/services/service-4-768.webp 768w, public/images/services/service-4-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-trending-up" aria-hidden="true"></span></span>
-          <h3 class="card-title">اتوماسیون و تحلیل داده</h3>
+          <img class="service-card__art" src="public/images/services/service-4-768.webp" srcset="public/images/services/service-4-384.webp 384w, public/images/services/service-4-768.webp 768w, public/images/services/service-4-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-trending-up" aria-hidden="true"><use href="public/icons.svg#i-trending-up"/></svg></span>
+          <h3 class="card-title">اتوماسیون و&nbsp;تحلیل داده</h3>
           <p>خودکارسازی کارهای تکراری، و گزارش‌ها و داشبوردهایی که نشان می‌دهند کسب‌وکارتان کجا رشد می‌کند و کجا نیاز به توجه دارد.</p>
-          <a class="service-card__link" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="./order/" aria-label="شروع پروژه: اتوماسیون و تحلیل داده">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-5-768.webp" srcset="public/images/services/service-5-768.webp 768w, public/images/services/service-5-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-shield-check" aria-hidden="true"></span></span>
-          <h3 class="card-title">سئو، امنیت و بهینه‌سازی</h3>
+          <img class="service-card__art" src="public/images/services/service-5-768.webp" srcset="public/images/services/service-5-384.webp 384w, public/images/services/service-5-768.webp 768w, public/images/services/service-5-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-shield-check" aria-hidden="true"><use href="public/icons.svg#i-shield-check"/></svg></span>
+          <h3 class="card-title">سئو، امنیت و&nbsp;بهینه‌سازی</h3>
           <p>سئوی پایه، بهینه‌سازی سرعت، امنیت و گواهی SSL، و خرید و تنظیم دامنه و هاست به نام خودتان.</p>
-          <a class="service-card__link" href="#contact">بپرسید <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="#channels">بپرسید <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
-          <img class="service-card__art" src="public/images/services/service-6-768.webp" srcset="public/images/services/service-6-768.webp 768w, public/images/services/service-6-1536.webp 1536w" sizes="(min-width: 1024px) 33vw, (min-width: 760px) 50vw, 100vw" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><span class="icon icon-headset" aria-hidden="true"></span></span>
-          <h3 class="card-title">پشتیبانی و توسعه‌ی مداوم</h3>
+          <img class="service-card__art" src="public/images/services/service-6-768.webp" srcset="public/images/services/service-6-384.webp 384w, public/images/services/service-6-768.webp 768w, public/images/services/service-6-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="service-card__badge"><svg class="icon icon-headset" aria-hidden="true"><use href="public/icons.svg#i-headset"/></svg></span>
+          <h3 class="card-title">پشتیبانی و&nbsp;توسعه‌ی مداوم</h3>
           <p>یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت شما بعد از تحویل رها نمی‌شود و همراه کسب‌وکارتان رشد می‌کند.</p>
-          <a class="service-card__link" href="#faq">جزئیات پشتیبانی <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
+          <a class="service-card__link" href="#faq">جزئیات پشتیبانی <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
       </div>
     </div>
@@ -321,7 +498,7 @@
       <div class="section-heading section-heading--center" data-reveal>
         <span class="section-heading__eyebrow">فرایند کار</span>
         <h2 class="section-heading__title section-heading__title--display-3">پنج مرحله‌ی مشخص</h2>
-        <p class="section-heading__sub">از اولین گفت‌وگو تا بعد از تحویل، همیشه می‌دانید کار کجاست.</p>
+        <p class="section-heading__sub">از&nbsp;اولین گفت‌وگو تا&nbsp;بعد از&nbsp;تحویل، همیشه می‌دانید کار کجاست.</p>
       </div>
 
       <div class="process-track">
@@ -367,32 +544,42 @@
     <div class="band__inner">
       <div class="section-heading section-heading--center about-heading">
         <span class="section-heading__eyebrow">درباره‌ی ما</span>
-        <h2 class="about-title"><span class="about-title__line">تیمی متخصص،</span> <span class="about-title__line">از ایده تا رشد کنار شما</span></h2>
-        <p class="section-heading__sub">پروژه را همان تیمی انجام می‌دهد که با آن صحبت می‌کنید؛ بدون واسطه و بدون برون‌سپاری.</p>
+        <h2 class="about-title"><span class="about-title__line">تیمی متخصص،</span> <span class="about-title__line">از&nbsp;ایده تا&nbsp;رشد کنار شما</span></h2>
+        <p class="section-heading__sub">پروژه را همان تیمی انجام می‌دهد که&nbsp;با&nbsp;آن صحبت می‌کنید؛ بدون&nbsp;واسطه و&nbsp;بدون&nbsp;برون‌سپاری.</p>
       </div>
 
       <div class="about-grid" data-reveal>
-        <div class="card card--surface card--pad-lg about-card">
+        <div class="card card--surface card--pad-lg about-card"><div class="about-card__body">
           <div class="about-card__photo">
-            <!-- REPLACE: real photo -->
-            <div class="img-slot img-slot--circle"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">عکس</span></div>
+            <!-- REPLACE: real photo, as <img src="public/images/team/NAME.webp" width="176" height="176" alt="{the member's name}">:
+                 square, at least 176px (88px at DPR 2), WebP. The circle crops it (object-fit: cover). -->
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="public/icons.svg#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">پرهام موحدی</h3>
             <p class="about-card__role">طراحی رابط کاربری و فرانت‌اند</p>
             <p class="about-card__bio">طراحی رابط کاربری و پیاده‌سازی صفحه‌ها، با تمرکز روی سرعت و تجربه‌ی موبایل.</p>
           </div>
-        </div>
-        <div class="card card--surface card--pad-lg about-card">
+        </div></div>
+        <div class="card card--surface card--pad-lg about-card"><div class="about-card__body">
           <div class="about-card__photo">
-            <!-- REPLACE: real photo -->
-            <div class="img-slot img-slot--circle"><span class="icon icon-image" aria-hidden="true"></span><span class="img-slot__label">عکس</span></div>
+            <!-- REPLACE: real photo, as <img src="public/images/team/NAME.webp" width="176" height="176" alt="{the member's name}">:
+                 square, at least 176px (88px at DPR 2), WebP. The circle crops it (object-fit: cover). -->
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="public/icons.svg#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">سینا علیپور</h3>
             <p class="about-card__role">بک‌اند و زیرساخت</p>
             <p class="about-card__bio">سرویس‌های اختصاصی، CRM و سیستم‌های مدیریتی، اتوماسیون و تحلیل داده، زیرساخت و امنیت، و پشتیبانی فنی بعد از تحویل.</p>
           </div>
+        </div></div>
+      </div>
+
+      <div class="about-channels" data-reveal>
+        <p class="about-channels__line">مستقیم با&nbsp;خود تیم حرف بزنید</p>
+        <div class="channels">
+          <a class="btn btn--md btn--tonal" href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp" aria-label="پیام در واتساپ"><svg class="icon icon-whatsapp" aria-hidden="true"><use href="#i-whatsapp"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>واتساپ</span></a>
+          <a class="btn btn--md btn--tonal" href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram" aria-label="پیام در تلگرام"><svg class="icon icon-telegram" aria-hidden="true"><use href="#i-telegram"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>تلگرام</span></a>
         </div>
       </div>
     </div>
@@ -407,7 +594,7 @@
        the shell, with a loading skeleton in the shape of the result. Without
        JS the section is hidden: it is a tool, and the order builder asks the
        same questions. -->
-  <section id="scope" class="band band--alt scope" aria-labelledby="scope-title" aria-busy="true">
+  <section id="scope" class="band band--alt scope" aria-busy="true">
     <div class="band__inner">
       <div class="section-heading section-heading--center scope-head" id="scopeHead" data-reveal>
         <span class="skel skel--eyebrow"></span>
@@ -455,16 +642,16 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q1" aria-expanded="true" aria-controls="faq-a1">
               <span>پروژه چقدر طول می‌کشد؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
-          <div class="faq-item__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq-item__body">بستگی به نوع سایت و امکاناتش دارد. زمان تقریبی را در «برآورد سریع» همین صفحه ببینید؛ زمان دقیق بعد از جلسه‌ی مشاوره و مشخص شدن محتوا اعلام می‌شود.</div></div>
+          <div class="faq-item__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq-item__body">بستگی به نوع سایت و امکاناتش دارد. زمان تقریبی را در «<span data-href="#scope">برآورد سریع</span>» همین صفحه ببینید؛ زمان دقیق بعد از جلسه‌ی مشاوره و مشخص شدن محتوا اعلام می‌شود.</div></div>
         </div>
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q2" aria-expanded="true" aria-controls="faq-a2">
               <span>پرداخت چطور انجام می‌شود؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div class="faq-item__body">معمولاً در سه قسمت: بخشی در شروع کار، بخشی بعد از تأیید طراحی و بخش آخر هنگام تحویل. جزئیات در قرارداد نوشته می‌شود.</div></div>
@@ -472,8 +659,8 @@
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q3" aria-expanded="true" aria-controls="faq-a3">
-              <span>هاست و دامنه را هم شما تهیه می‌کنید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <span>هاست و&nbsp;دامنه را هم شما تهیه می‌کنید؟</span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div class="faq-item__body">بله؛ تهیه و تنظیم دامنه، هاست و SSL بخشی از خدمات ماست. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</div></div>
@@ -481,8 +668,8 @@
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q4" aria-expanded="true" aria-controls="faq-a4">
-              <span>بعد از تحویل پشتیبانی دارید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <span>بعد از&nbsp;تحویل پشتیبانی دارید؟</span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div class="faq-item__body">بله. یک دوره پشتیبانی بعد از تحویل بدون هزینه است و بعد از آن به‌صورت ماهانه یا موردی ادامه پیدا می‌کند؛ امکانات جدید هم در همین مسیر به سایت اضافه می‌شود.</div></div>
@@ -490,8 +677,8 @@
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q5" aria-expanded="true" aria-controls="faq-a5">
-              <span>فقط سایت می‌سازید یا سیستم‌های داخلی کسب‌وکار را هم؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <span>فقط سایت می‌سازید یا&nbsp;سیستم‌های داخلی کسب‌وکار را هم؟</span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div class="faq-item__body">هر دو. علاوه بر سایت، CRM، پنل‌های مدیریتی، اتوماسیون فرایندها و داشبوردهای گزارش را هم طراحی و پیاده‌سازی می‌کنیم؛ جداگانه یا متصل به سایتتان.</div></div>
@@ -499,8 +686,8 @@
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q6" aria-expanded="true" aria-controls="faq-a6">
-              <span>بعد از تحویل، خودم می‌توانم محتوا را تغییر دهم؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <span>بعد از&nbsp;تحویل، خودم می‌توانم محتوا را تغییر دهم؟</span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div class="faq-item__body">اگر پنل مدیریت محتوا در پروژه‌ی شما باشد، بله؛ آموزش کار با آن هم بخشی از تحویل است.</div></div>
@@ -508,8 +695,8 @@
         <div class="faq-item">
           <h3>
             <button type="button" class="faq-item__q" id="faq-q7" aria-expanded="true" aria-controls="faq-a7">
-              <span>لوگو و برند هم طراحی می‌کنید؟</span>
-              <span class="icon icon-minus faq-item__chevron" aria-hidden="true"></span>
+              <span>لوگو و&nbsp;برند هم طراحی می‌کنید؟</span>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a7" role="region" aria-labelledby="faq-q7"><div class="faq-item__body">نه. تمرکز ما سایت، سرویس‌های آنلاین و سیستم‌های دیجیتال کسب‌وکار است. اگر لوگو ندارید، با یک نشانه‌ی ساده‌ی متنی کار را پیش می‌بریم یا شما را به یک طراح معرفی می‌کنیم.</div></div>
@@ -524,19 +711,24 @@
       <!-- A "screen": the heading, line and buttons framed by an outline echo
            of the portal laptop, which grows gently as the band passes. -->
       <div class="cta-band__screen">
-        <div class="cta-band__echo" aria-hidden="true"></div>
-        <h2 data-reveal-stagger><span>مسیر</span> <span>دیجیتال</span> <span>کسب‌وکارتان</span> <span>را</span> <span>از</span> <span>همین‌جا</span> <span>شروع</span> <span>کنید</span></h2>
+        <div class="cta-band__echo deck-line" aria-hidden="true"></div>
+        <h2 data-reveal-stagger><span>مسیر</span> <span>دیجیتال</span> <span>کسب‌وکارتان</span> <span>را</span> <span>از همین‌جا</span> <span>شروع</span> <span>کنید</span></h2>
         <p>در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید. هر جا مطمئن نبودید، گزینه‌ی «نمی‌دانم» هست و ما پیشنهاد می‌دهیم.</p>
         <div class="cta-band__ctas">
-          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <span class="icon icon-arrow-left" aria-hidden="true"></span></a>
-          <a class="btn btn--lg btn--outline" href="./track/">پیگیری سفارش</a>
+          <a class="btn btn--lg btn--primary" href="./order/">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
-      </div>
-      <div class="cta-band__links">
-        <span class="cta-band__links-label">یا مستقیم پیام بدهید:</span>
-        <a href="https://wa.me/989000000000" target="_blank" rel="noopener">واتساپ</a>
-        <a href="https://t.me/mitec_studio" target="_blank" rel="noopener">تلگرام</a>
-        <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener">اینستاگرام</a>
+        <!-- Services' «بپرسید» lands here. -->
+        <div class="cta-band__channels" id="channels">
+          <span class="cta-band__channels-label">یا مستقیم پیام بدهید:</span>
+          <div class="channels">
+            <a class="btn btn--md btn--tonal" href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp" aria-label="پیام در واتساپ"><svg class="icon icon-whatsapp" aria-hidden="true"><use href="#i-whatsapp"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>واتساپ</span></a>
+            <a class="btn btn--md btn--tonal" href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram" aria-label="پیام در تلگرام"><svg class="icon icon-telegram" aria-hidden="true"><use href="#i-telegram"/></svg> <span class="channels__label"><span class="channels__verb">پیام در </span>تلگرام</span></a>
+          </div>
+        </div>
+        <div class="cta-band__more">
+          <a href="./track/">پیگیری سفارش</a>
+          <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram">اینستاگرام</a>
+        </div>
       </div>
     </div>
   </section>
@@ -550,14 +742,18 @@
     <nav class="footer__nav" aria-label="فهرست پایین صفحه">
       <a href="#services">خدمات</a>
       <a href="#work">نمونه‌کارها</a>
-      <a href="./order/">شروع پروژه</a>
-      <a href="./track/">پیگیری سفارش</a>
     </nav>
+    <div class="footer__channels">
+      <a href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp"><svg class="icon icon-whatsapp" aria-hidden="true"><use href="#i-whatsapp"/></svg> واتساپ</a>
+      <a href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram"><svg class="icon icon-telegram" aria-hidden="true"><use href="#i-telegram"/></svg> تلگرام</a>
+      <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram"><svg class="icon icon-instagram" aria-hidden="true"><use href="public/icons.svg#i-instagram"/></svg> اینستاگرام</a>
+    </div>
     <span class="footer__copy">© ۱۴۰۵ mitec — طراحی سایت و راهکارهای دیجیتال</span>
   </div>
 </footer>
 
-<!-- If the module can't load, fall back to the static, fully visible page. -->
-<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion'); document.querySelector('.portal__copy').dataset.surface = 'dark'"></script>
+<!-- If the module can't load, fall back to the static, fully visible page (and drop the sizes the
+     hero's layout script set for the scene). -->
+<script type="module" src="src/scripts/home.js" onerror="document.documentElement.classList.remove('js', 'motion'); document.querySelector('.portal__copy').dataset.surface = 'dark'; document.querySelectorAll('.portal, .portal__title, .portal__sub').forEach((el) => el.removeAttribute('style'))"></script>
 </body>
 </html>

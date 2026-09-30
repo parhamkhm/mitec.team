@@ -36,8 +36,14 @@ let raf = 0;
 let last = 0;
 let pending = 0;
 
+// A tracked element near the viewport (within a quarter of it) also carries
+// .in-view, which the stylesheets use to hold compositor layers (will-change)
+// only while its effects can run.
 const io = new IntersectionObserver((entries) => {
-  for (const e of entries) for (const t of byEl.get(e.target) || []) t.on = e.isIntersecting;
+  for (const e of entries) {
+    e.target.classList.toggle('in-view', e.isIntersecting);
+    for (const t of byEl.get(e.target) || []) t.on = e.isIntersecting;
+  }
   kick();
 }, { rootMargin: '25% 0px' });
 
@@ -102,6 +108,7 @@ export function track(t) {
     else {
       byEl.delete(t.el);
       io.unobserve(t.el);
+      t.el.classList.remove('in-view');
     }
   };
 }

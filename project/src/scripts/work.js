@@ -26,7 +26,9 @@
 
 import { track, kick, whenMotion } from './motion/engine.js';
 import { clamp, damp } from './motion/easing.js';
-import { faNumber } from '../utils/format.js';
+import { faNumber, tie } from '../utils/format.js';
+import { icon, setIcon } from '../utils/icon.js';
+import { loadPortfolio } from '../utils/portfolio.js';
 
 const POOL = 7;          // offsets −3 … +3
 const HOLD_MS = 8000;    // autoplay rests this long after a manual interaction or the details close
@@ -40,10 +42,15 @@ const HINT_MS = 260 + 2400; // the first-view hint: expand, hold while the ring 
 // rotateY, opacity, dim]. The side cards turn to face the centre. Tuned for
 // the 16:10 card (measured): from 1280px each ±2 card is ~90% on screen and
 // 42–44% clear of the ±1 card in front of it, which stays ~55% clear of the
-// centre card.
+// centre card. ±1 is fully opaque (the dim layer alone sets it back), so no
+// card ever shows another through it; only ±2 fades, and ±3 is out.
+// flat (reduced motion): the centre card alone, flat; the others wait,
+// invisible and inert, a card's width (+4%) apart, and a slide change
+// crossfades in place (home.css), so nothing slides.
 const LAYOUT = {
-  wide: [[0, 1, 0, 1, 0], [50, .74, 34, .6, .45], [88, .56, 46, .3, .6], [124, .46, 48, 0, .6]],
-  narrow: [[0, 1, 0, 1, 0], [62, .86, 16, .6, .45], [112, .72, 24, .3, .6], [150, .6, 30, 0, .6]]
+  wide: [[0, 1, 0, 1, 0], [50, .74, 34, 1, .45], [88, .56, 46, .3, .6], [124, .46, 48, 0, .6]],
+  narrow: [[0, 1, 0, 1, 0], [62, .86, 16, 1, .45], [112, .72, 24, .3, .6], [150, .6, 30, 0, .6]],
+  flat: [[0, 1, 0, 1, 0], [104, 1, 0, 0, 0], [208, 1, 0, 0, 0], [312, 1, 0, 0, 0]]
 };
 const Z = [30, 20, 10, 0];
 const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is turned over
@@ -51,14 +58,16 @@ const FLIPPED_DIM = .15; // extra dim on the side cards while the centre card is
 // The back's three blocks, in reading order (right to left).
 const TABS = [['need', 'نیاز'], ['built', 'راهکار'], ['result', 'نتیجه']];
 
-// The screenshot covers a 16:10 card of clamp(300px, 42vw, 600px) (86vw on
-// phones); it is about 2:1, so it is drawn at ~1.3× the card's width.
-const CARD_SIZES = '(max-width: 759px) 112vw, (max-width: 1428px) 55vw, 780px';
+// The screenshot covers a 16:10 card of clamp(300px, 42vw, 600px) (86vw up
+// to 989px, less on a short screen); it is about 2:1, so it is drawn at
+// ~1.3× the card's width.
+const CARD_SIZES = '(max-width: 989px) 112vw, (max-width: 1428px) 55vw, 780px';
 const SHEET_SIZES = '100vw';
 const NOTE = 'لینک سایت بعد از تأیید مشتری منتشر می‌شود.';
 
 const root = document.documentElement;
-const narrow = matchMedia('(max-width: 759px)');
+// Up to the sheet breakpoint the centre card is 86vw and the side cards peek.
+const narrow = matchMedia('(max-width: 989px)');
 // Below 990px a 16:10 card is under ~260px tall: too short for its back, so
 // the details open as a bottom sheet there (phones included).
 const sheetMode = matchMedia('(max-width: 989px)');
@@ -77,15 +86,16 @@ function h(tag, cls, attrs = {}) {
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   return el;
 }
-function iconButton(cls, icon, label) {
+function iconButton(cls, name, label) {
   const b = h('button', cls, { type: 'button', 'aria-label': label });
-  b.append(h('span', `icon ${icon}`, { 'aria-hidden': 'true' }));
+  b.append(icon(name));
   return b;
 }
 const srcsetOf = (im) => [im.src960 && `${im.src960} 960w`, im.src1920 && `${im.src1920} 1920w`].filter(Boolean).join(', ');
+// Text from portfolio.json goes through tie() (DESIGN.md §9), wherever it is shown.
 const chips = (tags) => (tags || []).map((t) => {
   const chip = h('span', 'work-card__tag');
-  chip.textContent = t;
+  chip.textContent = tie(t);
   return chip;
 });
 
@@ -95,9 +105,7 @@ export async function initWork() {
   if (!host) return;
   let projects;
   try {
-    const res = await fetch(new URL('../data/portfolio.json', import.meta.url));
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    projects = (await res.json()).filter((p) => p && p.id);
+    projects = (await loadPortfolio()).filter((p) => p && p.id);
     if (!projects.length) throw new Error('no projects');
   } catch (e) {
     console.warn('[work] portfolio unavailable; showing the static list', e);
@@ -110,7 +118,17 @@ export async function initWork() {
 function build(section, host, projects) {
   const N = projects.length;
   const many = N > 1;
+  // The backdrop's two crossfading layers: the markup has the first (with a
+  // src, for the first paint); the second is made here, so no <img> ever
+  // stands in the page without one.
   const layers = [...section.querySelectorAll('.work__ambient-layer')];
+  if (layers.length === 1) {
+    const second = layers[0].cloneNode(false);
+    second.removeAttribute('src');
+    second.classList.remove('is-on');
+    layers[0].after(second);
+    layers.push(second);
+  }
   const easeOut = getComputedStyle(root).getPropertyValue('--ease-out').trim() || 'ease-out';
 
   // ---- state
@@ -151,14 +169,16 @@ function build(section, host, projects) {
   host.append(stage);
   if (many) {
     host.append(
-      iconButton('work-arrow work-arrow--prev', 'icon-chevron-right', 'پروژه‌ی قبلی'),
-      iconButton('work-arrow work-arrow--next', 'icon-chevron-left', 'پروژه‌ی بعدی')
+      iconButton('work-arrow work-arrow--prev', 'chevron-right', 'پروژه‌ی قبلی'),
+      iconButton('work-arrow work-arrow--next', 'chevron-left', 'پروژه‌ی بعدی')
     );
     if (N <= MAX_DOTS) {
       const wrap = h('div', 'work-dots');
       dots = projects.map((_, i) => {
-        const d = h('button', 'work-dot', { type: 'button', 'aria-label': `رفتن به پروژه‌ی ${faNumber(i + 1)}` });
+        // Named by project, like the side cards' fronts.
+        const d = h('button', 'work-dot', { type: 'button', 'aria-label': `رفتن به پروژه‌ی ${nameOf(projects[i])}` });
         d.dataset.to = i;
+        d.append(h('span', 'work-dot__bar', { 'aria-hidden': 'true' }));
         return d;
       });
       wrap.append(...dots);
@@ -172,7 +192,7 @@ function build(section, host, projects) {
       box.append(counter, progress);
       controls.append(box);
     }
-    toggle = iconButton('work-toggle', 'icon-pause', 'توقف چرخش');
+    toggle = iconButton('work-toggle', 'pause', 'توقف چرخش');
     controls.append(toggle);
   }
   host.append(caption, controls);
@@ -197,7 +217,7 @@ function build(section, host, projects) {
     label.firstChild.textContent = 'جزئیات پروژه';
     label.lastChild.textContent = 'جزئیات';
     const circle = h('span', 'work-cue__circle');
-    circle.append(h('span', 'icon icon-plus'));
+    circle.append(icon('plus'));
     cue.append(h('span', 'work-cue__pill'), label, circle);
     const dim = h('span', 'work-card__dim', { 'aria-hidden': 'true' });
     front.append(img, pan, cue, dim);
@@ -208,7 +228,7 @@ function build(section, host, projects) {
     const sheet = h('div', 'work-card__sheet');
     const head = h('div', 'work-card__head');
     const backTags = h('div', 'work-card__tags');
-    head.append(backTags, iconButton('work-card__close', 'icon-x', 'بستن جزئیات'));
+    head.append(backTags, iconButton('work-card__close', 'x', 'بستن جزئیات'));
     const backTitle = h('h3', 'work-card__back-title', { id: `work-back-title-${i}` });
     const tablist = h('div', 'work-tabs', { role: 'tablist', 'aria-labelledby': backTitle.id });
     const indicator = h('span', 'work-tabs__indicator', { 'aria-hidden': 'true' });
@@ -258,15 +278,15 @@ function build(section, host, projects) {
     s.pan.classList.remove('is-ready');
     s.full.removeAttribute('src');
     s.fullSrc = im?.full || '';
-    s.backTitle.textContent = pr.nameFa || pr.title || nameOf(pr);
+    s.backTitle.textContent = tie(pr.nameFa || pr.title || nameOf(pr));
     s.backTags.replaceChildren(...chips(pr.tags));
     s.backImg.hidden = !im?.ambient;
     if (im?.ambient) s.backImg.src = im.ambient;
-    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = pr[key] || ''; });
+    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = tie(pr[key]); });
     if (pr.url && pr.url !== '#') {
       const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
       a.href = pr.url;
-      a.append('دیدن سایت ', h('span', 'icon icon-arrow-up-left', { 'aria-hidden': 'true' }));
+      a.append('دیدن سایت ', icon('arrow-up-left'));
       s.foot.replaceChildren(a);
     } else {
       const note = h('p', 'work-note');
@@ -460,8 +480,9 @@ function build(section, host, projects) {
     const pr = projects[p];
     const inc = capItems[1 - capCur], out = capItems[capCur];
     capCur = 1 - capCur;
-    inc.name.textContent = nameOf(pr);
-    inc.summary.textContent = summaryOf(pr);
+    inc.name.textContent = tie(nameOf(pr));
+    inc.name.title = nameOf(pr);
+    inc.summary.textContent = tie(summaryOf(pr));
     inc.summary.title = summaryOf(pr);
     // Manual moves are announced once; autoplay's never.
     clearTimeout(politeTimer);
@@ -494,15 +515,16 @@ function build(section, host, projects) {
     const a = Math.min(Math.abs(s.pos), 3);
     const side = Math.sign(s.pos);
     const [x, sc, r, o, dim] = lay[a];
-    s.el.style.transform = `translateX(${-side * x || 0}%) scale(${flat ? 1 : sc}) rotateY(${flat ? 0 : side * r}deg)`;
+    s.el.style.transform = `translateX(${-side * x || 0}%) scale(${sc}) rotateY(${side * r}deg)`;
     s.el.style.opacity = o;
     s.el.style.zIndex = Z[a];
     // A card leaving for ±3 fades out fast, so its slot is free to recycle soon.
-    s.el.style.transitionDuration = s.exiting ? `800ms, ${exitMs()}ms` : '';
+    // (Flat, every card but the centre one is already invisible.)
+    s.el.style.transitionDuration = s.exiting && !flat ? `800ms, ${exitMs()}ms` : '';
     s.dim.style.opacity = flipped && a ? Math.min(dim + FLIPPED_DIM, .85) : dim;
     s.el.dataset.pos = s.pos;
     s.el.classList.toggle('is-active', a === 0);
-    s.el.inert = a === 3;
+    s.el.inert = a === 3 || (flat && a > 0);
     const name = nameOf(projects[s.p]);
     s.front.tabIndex = a === 0 ? 0 : -1;
     if (a === 0) {
@@ -524,7 +546,7 @@ function build(section, host, projects) {
   function paint() {
     raf = 0;
     const flat = !motionOn();
-    const lay = narrow.matches ? LAYOUT.narrow : LAYOUT.wide;
+    const lay = flat ? LAYOUT.flat : narrow.matches ? LAYOUT.narrow : LAYOUT.wide;
     const jumped = [];
     for (const s of slots) {
       if (s.teleport) {
@@ -661,7 +683,7 @@ function build(section, host, projects) {
     userPaused = v;
     if (toggle) {
       toggle.setAttribute('aria-label', v ? 'ادامه‌ی چرخش' : 'توقف چرخش');
-      toggle.firstChild.className = `icon ${v ? 'icon-play' : 'icon-pause'}`;
+      setIcon(toggle.firstChild, v ? 'play' : 'pause');
     }
     schedule();
   }
@@ -742,6 +764,7 @@ function build(section, host, projects) {
   });
   new IntersectionObserver(([e]) => {
     onScreen = e.isIntersecting;
+    host.classList.toggle('in-view', onScreen); // the cards' compositor layers, only while the stage is seen
     schedule();
   }, { threshold: 0.25 }).observe(stage);
   document.addEventListener('visibilitychange', schedule);

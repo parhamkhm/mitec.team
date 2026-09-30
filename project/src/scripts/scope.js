@@ -17,19 +17,28 @@
 
 import { getPricing } from '../api/client.js';
 import { estimate } from '../utils/estimate.js';
-import { faNumber, fill, formatPrice, formatDuration } from '../utils/format.js';
+import { faNumber, fill, formatPrice, formatDuration, tie } from '../utils/format.js';
+import { icon, setIcon } from '../utils/icon.js';
 
 // The only strings not taken from the pricing document: what shows when it
 // cannot be loaded, the way out for visitors unsure of their site type, the
-// count of chosen add-ons under the total, and the defaults for the two
-// optional section fields that fold a long add-on list.
+// count of chosen add-ons under the total, and the defaults for the optional
+// section fields of the same names: the two that fold a long add-on list, the
+// breakdown's button and its line for the pages beyond those included, the
+// price of one more page, a free add-on's price, and the bar's short «sample»
+// mark.
 const COPY = {
   error: 'برآورد در دسترس نیست؛ مستقیم در سفارش‌ساز ادامه دهید',
   cta: 'ادامه در سفارش‌ساز',
   unsure: 'مطمئن نیستید؟ در سفارش‌ساز کمکتان می‌کنیم',
   picked: '{n} امکان انتخاب شده',
   showAllAddons: 'نمایش همه‌ی امکانات ({n})',
-  showFewerAddons: 'نمایش کمتر'
+  showFewerAddons: 'نمایش کمتر',
+  breakdown: 'جزئیات برآورد',
+  extraPages: '{n} صفحه‌ی بیشتر',
+  perPage: 'هر صفحه‌ی بیشتر: از {price}',
+  free: 'بدون هزینه‌ی اضافه',
+  sampleMark: 'نمونه'
 };
 const ORDER_URL = './order/';
 const STORE_KEY = 'mitec.order.v1'; // the order builder's own saved state
@@ -39,16 +48,14 @@ const STICKY_GAP = 24; // px between the nav and the sticky card
 const ADDONS_SHOWN = { wide: 9, narrow: 6 }; // tiles shown before «show all add-ons»
 const root = document.documentElement;
 
+// Every text the calculator shows (from the pricing document, or a COPY
+// default) goes through tie() (DESIGN.md §9: function words tied to the next
+// word), so text edited in pricing.json follows the rule without &nbsp;.
 const el = (tag, cls, text) => {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
-  if (text != null) n.textContent = text;
+  if (text != null) n.textContent = tie(String(text));
   return n;
-};
-const icon = (name) => {
-  const i = el('span', `icon icon-${name}`);
-  i.setAttribute('aria-hidden', 'true');
-  return i;
 };
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -56,7 +63,7 @@ const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 // slides in, both in one grid cell so the line never reflows mid-fade.
 function swap(box, text) {
   const old = box.lastElementChild;
-  if (old?.textContent === text) return;
+  if (old?.textContent === tie(text)) return; // el() ties the text it sets
   box.append(el('span', null, text));
   if (!old) return;
   if (!root.classList.contains('motion')) return old.remove();
@@ -92,11 +99,17 @@ export async function initScope() {
   const types = P ? P.siteTypes.filter((t) => t.active) : [];
   sec.removeAttribute('aria-busy');
 
-  // Unavailable: one line and the way on, nothing else.
+  // Unavailable: one line, the way on, and the direct-message pair (the same
+  // tier-2 pair as About's; DESIGN.md, the direct-message tiers). The line
+  // names the section while there is no heading.
   if (!types.length) {
     console.error('[scope] pricing unavailable', res.error || 'no active site types');
     head.replaceChildren();
-    body.replaceChildren(el('p', 'scope-error', COPY.error), cta(COPY.cta));
+    const line = el('p', 'scope-error', COPY.error);
+    line.id = 'scope-title';
+    const pair = document.querySelector('.about-channels .channels')?.cloneNode(true);
+    body.replaceChildren(line, cta(COPY.cta), ...(pair ? [pair] : []));
+    sec.setAttribute('aria-labelledby', line.id);
     return;
   }
 
@@ -104,18 +117,31 @@ export async function initScope() {
   const addons = new Map(P.addons.filter((a) => a.active).map((a) => [a.id, a]));
   const unit = { prefix: P.display.durationPrefix, label: P.display.durationLabel };
   const price = (n) => formatPrice(n, P.currency);
-  const state = { type: types[0], pages: 0, picked: new Set() };
+  const free = S.free || COPY.free;
+  // The visitor's choices are kept whole across site types: `picked` holds
+  // every add-on chosen, including ones the current type doesn't offer (no
+  // tile shows them and estimate() leaves them out, so they return with a
+  // type that offers them), and `wanted` is the page count last asked for on
+  // the slider (0 until then). `pages` is what the current type shows.
+  const state = { type: types[0], pages: 0, wanted: 0, picked: new Set() };
 
-  // ---- heading (+ the «sample numbers» badge while the numbers are placeholders)
+  // «Sample numbers», while the numbers are placeholders: in the heading, and
+  // again under the total in the card (the bar has a short mark instead), so
+  // the figure carries its caveat wherever it is seen.
+  const sampleBadge = () => {
+    const badge = el('span', 'badge badge--highlight');
+    badge.append(icon('clock'), tie(S.placeholderBadge));
+    return badge;
+  };
+  const sample = P.placeholder && S.placeholderBadge;
+
+  // ---- heading
   const title = el('div', 'scope-head__title');
   const h2 = el('h2', 'section-heading__title section-heading__title--display-3', S.title);
   h2.id = 'scope-title';
+  sec.setAttribute('aria-labelledby', h2.id); // named once the heading exists
   title.append(h2);
-  if (P.placeholder && S.placeholderBadge) {
-    const badge = el('span', 'badge badge--highlight');
-    badge.append(icon('clock'), S.placeholderBadge);
-    title.append(badge);
-  }
+  if (sample) title.append(sampleBadge());
   head.replaceChildren(el('span', 'section-heading__eyebrow', S.eyebrow), title);
   if (S.subtitle) head.append(el('p', 'section-heading__sub', S.subtitle));
 
@@ -157,11 +183,46 @@ export async function initScope() {
   }
   const count = el('span', 'scope-meta__count');
   meta.append(count);
+  // In the bar, the «sample numbers» badge is this short mark after the
+  // duration (the card has the badge; screen readers have the heading's).
+  const mark = sample ? el('span', 'scope-meta__mark', S.sampleMark || COPY.sampleMark) : null;
+  if (mark) {
+    mark.setAttribute('aria-hidden', 'true');
+    meta.append(mark);
+  }
   figures.append(meta);
   const live = el('p', 'visually-hidden');
   live.setAttribute('aria-live', 'polite');
   const go = cta(S.ctaLabel || COPY.cta);
-  checkout.append(figures, live, go);
+
+  // The breakdown: what the estimate is made of (estimate()'s lines), folded
+  // under a button. In the card it is a text button next to the «sample
+  // numbers» badge, and the list opens under it. In the bar it is a chevron
+  // in the same row as the total (its text kept for screen readers), and the
+  // list opens above the row, so the bar grows upward.
+  const tools = el('div', 'scope-checkout__tools');
+  let lines = null;
+  if (P.display.showPrice) {
+    const toggle = el('button', 'scope-lines__toggle');
+    toggle.type = 'button';
+    const sign = icon('plus', 'scope-lines__sign');
+    toggle.append(el('span', 'scope-lines__label', S.breakdown || COPY.breakdown), sign, icon('chevron-up', 'scope-lines__chevron'));
+    lines = el('ul', 'scope-lines');
+    lines.id = 'scopeLines';
+    lines.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', lines.id);
+    toggle.addEventListener('click', () => {
+      const open = lines.hidden;
+      lines.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      setIcon(sign, open ? 'minus' : 'plus');
+      scrollable(lines, S.breakdown || COPY.breakdown);
+    });
+    tools.append(toggle);
+  }
+  if (sample) tools.append(sampleBadge());
+  checkout.append(figures, ...(tools.childElementCount ? [tools] : []), ...(lines ? [lines] : []), live, go);
 
   // ---- the summary card: the base (rebuilt per type), then the checkout and
   // the disclaimer
@@ -174,20 +235,27 @@ export async function initScope() {
   let list = null; // the included items; scrolls inside the sticky card when it must
   let listBox = null;
 
+  // A box that scrolls must be reachable by keyboard to be scrolled: then it
+  // takes focus, named by `label`. True if it scrolls.
+  function scrollable(box, label) {
+    const scrolls = box.scrollHeight > box.clientHeight + 1;
+    if (scrolls !== box.hasAttribute('tabindex')) {
+      if (scrolls) {
+        box.tabIndex = 0;
+        box.setAttribute('aria-label', label);
+      } else {
+        box.removeAttribute('tabindex');
+        box.removeAttribute('aria-label');
+      }
+    }
+    return scrolls;
+  }
+
   // The fade at the list's foot shows only while there is more below.
   function listEdge() {
     if (!list) return;
-    const scrolls = list.scrollHeight > list.clientHeight + 1;
+    const scrolls = scrollable(list, state.type.base.title);
     listBox.classList.toggle('has-more', scrolls && list.scrollTop + list.clientHeight < list.scrollHeight - 1);
-    // A list that scrolls must be reachable by keyboard to be scrolled.
-    if (scrolls === list.hasAttribute('tabindex')) return;
-    if (scrolls) {
-      list.tabIndex = 0;
-      list.setAttribute('aria-label', state.type.base.title);
-    } else {
-      list.removeAttribute('tabindex');
-      list.removeAttribute('aria-label');
-    }
   }
 
   function renderBase(t) {
@@ -219,7 +287,7 @@ export async function initScope() {
       more.addEventListener('click', () => {
         const open = list.classList.toggle('is-open');
         more.setAttribute('aria-expanded', String(open));
-        more.lastChild.className = `icon icon-${open ? 'minus' : 'plus'}`;
+        setIcon(more.lastChild, open ? 'minus' : 'plus');
       });
       parts.push(more);
     }
@@ -248,7 +316,7 @@ export async function initScope() {
       b.append(desc);
     }
     // No price element at all when prices are off.
-    if (P.display.showPrice) b.append(el('span', 'scope-addon__price', a.price > 0 ? price(a.price) : ''));
+    if (P.display.showPrice) b.append(a.price > 0 ? el('span', 'scope-addon__price', price(a.price)) : el('span', 'scope-addon__price is-free', free));
     return b;
   }
 
@@ -267,16 +335,27 @@ export async function initScope() {
       slider = el('input', 'scope-range');
       Object.assign(slider, { type: 'range', id: 'scopePages', min: t.pages.min, max: t.pages.max, step: 1, value: state.pages });
       slider.addEventListener('input', () => {
-        state.pages = Number(slider.value);
+        state.pages = state.wanted = Number(slider.value);
         update(true);
       });
-      box.append(top, slider);
-      if (S.pagesDesc) {
-        const hint = el('p', 'scope-pages__desc', S.pagesDesc);
-        hint.id = 'scopePagesDesc';
-        slider.setAttribute('aria-describedby', hint.id);
-        box.append(hint);
+      // Where the type includes more than its minimum, a neutral tick on the
+      // track marks the last included page (the steps up to it cost nothing).
+      const inc = t.base.pagesIncluded || 1;
+      if (inc > t.pages.min && inc < t.pages.max) {
+        slider.classList.add('has-included');
+        slider.style.setProperty('--included', String((inc - t.pages.min) / (t.pages.max - t.pages.min)));
       }
+      box.append(top, slider);
+      // The price of one more page, then the section's note on extra pages.
+      const hints = [];
+      if (P.display.showPrice && t.pages.pricePerExtra > 0) {
+        const amount = formatPrice(t.pages.pricePerExtra, { ...P.currency, from: '' });
+        hints.push(el('p', 'scope-pages__desc scope-pages__per', fill(S.perPage || COPY.perPage, { price: amount })));
+      }
+      if (S.pagesDesc) hints.push(el('p', 'scope-pages__desc', S.pagesDesc));
+      hints.forEach((hint, i) => { hint.id = `scopePagesDesc${i}`; });
+      if (hints.length) slider.setAttribute('aria-describedby', hints.map((hint) => hint.id).join(' '));
+      box.append(...hints);
       parts.push(box);
     }
 
@@ -359,7 +438,7 @@ export async function initScope() {
     if (on) state.picked.add(b.dataset.id);
     else state.picked.delete(b.dataset.id);
     b.setAttribute('aria-pressed', String(on));
-    b.querySelector('.scope-addon__toggle .icon').className = `icon icon-${on ? 'minus' : 'plus'}`;
+    setIcon(b.querySelector('.scope-addon__toggle .icon'), on ? 'minus' : 'plus');
     update(true);
   });
 
@@ -380,17 +459,27 @@ export async function initScope() {
     const n = est.lines.filter((l) => addons.has(l.id)).length;
     count.textContent = n ? fill(COPY.picked, { n: faNumber(n) }) : '';
     count.hidden = !n;
-    meta.hidden = !n && !meta.contains(daysBox);
+    meta.hidden = !n && !meta.contains(daysBox) && !mark;
+    // The breakdown: the type itself, the pages beyond those included
+    // («۴ صفحه‌ی بیشتر»), then each add-on, a free one as such.
+    if (lines) {
+      lines.replaceChildren(...est.lines.map((l) => {
+        const name = l.id === 'base' ? t.label : l.id === 'extra-pages' ? fill(S.extraPages || COPY.extraPages, { n: faNumber(l.qty) }) : l.title;
+        const li = el('li');
+        li.append(el('span', 'scope-lines__name', name), el('span', l.price > 0 ? 'scope-lines__price' : 'scope-lines__price is-free', l.price > 0 ? price(l.price) : free));
+        return li;
+      }));
+      if (!lines.hidden) scrollable(lines, S.breakdown || COPY.breakdown);
+    }
     if (announce) live.textContent = [S.totalLabel, [priceText, daysText].filter(Boolean).join('، ')].filter(Boolean).join(': ');
     return est;
   }
 
   function selectType(t, announce) {
     state.type = t;
-    // Keep the chosen add-ons this type also offers, and the page count
-    // within this type's range.
-    state.picked = new Set([...state.picked].filter((id) => t.addons.includes(id) && addons.has(id)));
-    state.pages = clamp(state.pages || t.base.pagesIncluded, t.pages.min, t.pages.max);
+    // Nothing chosen is dropped (see state). The slider starts at the pages
+    // last asked for, and never below the pages this type includes.
+    state.pages = clamp(Math.max(state.wanted, t.base.pagesIncluded || 1), t.pages.min, t.pages.max);
     renderBase(t);
     renderConfig(t);
     update(announce);
@@ -428,12 +517,21 @@ export async function initScope() {
 
   // From 1024px the checkout is the foot of the summary card; below, it is the
   // bar after the columns (pinned by CSS while the calculator is on screen).
+  // From 1024px the card also follows the slider and the tiles in the DOM
+  // (home.css keeps it in the start column), so the keyboard reaches the
+  // choices before the CTA; below, it comes first, as it reads.
+  const cols = summary.parentNode;
   function place() {
     const inCard = wide.matches;
     if (inCard === (checkout.parentNode === summary) && checkout.parentNode) return;
-    const focused = checkout.contains(document.activeElement) ? document.activeElement : null;
-    if (inCard) summary.insertBefore(checkout, note);
-    else body.append(checkout);
+    const focused = summary.contains(document.activeElement) || checkout.contains(document.activeElement) ? document.activeElement : null;
+    if (inCard) {
+      summary.insertBefore(checkout, note);
+      cols.append(summary);
+    } else {
+      body.append(checkout);
+      cols.prepend(summary);
+    }
     focused?.focus({ preventScroll: true });
   }
 
@@ -453,6 +551,7 @@ export async function initScope() {
       summary.classList.add('has-desc');
       if (wide.matches && list) summary.classList.toggle('has-desc', list.scrollHeight <= list.clientHeight + 1);
       listEdge();
+      if (lines && !lines.hidden) scrollable(lines, S.breakdown || COPY.breakdown);
     });
   }
 
@@ -460,6 +559,9 @@ export async function initScope() {
   place();
   fit();
   new ResizeObserver(fit).observe(summary);
+  // The bar's height (it grows with the breakdown), so a control focused by
+  // keyboard below 1024px scrolls clear of it (home.css).
+  new ResizeObserver(() => sec.style.setProperty('--scope-bar-h', `${checkout.offsetHeight}px`)).observe(checkout);
   addEventListener('resize', fit);
   wide.addEventListener('change', () => {
     place();

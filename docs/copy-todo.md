@@ -5,8 +5,10 @@ The site copy now follows **`docs/copy-final.md`**, the owner's final text, appl
 lists what is still open, then what the pass resolved.
 
 Where copy lives: section copy in `project/index.html` and `project/src/data/*.json`; everything in the
-pricing calculator in `project/src/config/pricing.json` (`section`, `siteTypes`, `addons`), except the three
-fallback strings and the chosen-add-on count in `COPY` at the top of `project/src/scripts/scope.js`.
+pricing calculator in `project/src/config/pricing.json` (`section`, `siteTypes`, `addons`), except the strings in
+`COPY` at the top of `project/src/scripts/scope.js`: the three fallbacks, the chosen-add-on count, and defaults that a
+`section` field of the same name overrides (the two fold buttons and, from Impeccable batch 5, the owner-approved
+«جزئیات برآورد» (`breakdown`) with its «{n} صفحه‌ی بیشتر» line (`extraPages`; its first line is the site type's own label), «هر صفحه‌ی بیشتر: از {price}» (`perPage`) and «بدون هزینه‌ی اضافه» (`free`), and the bar's «نمونه» mark (`sampleMark`)).
 
 Conventions every new string follows (from `copy-final.md`):
 
@@ -32,10 +34,43 @@ Conventions every new string follows (from `copy-final.md`):
 | `index.html` → Work screenshots | Alt texts «صفحه‌ی اصلی سایت کافه مری» / «صفحه‌ی اصلی فروشگاه تجهیزات پزشکی کارآمد» / «صفحه‌ی اصلی منوی آنلاین کافه E2» | New with the screenshots; not in `copy-final.md` (the first two come from the request; E2's was written to match, from its project title). | Owner to confirm. |
 | `index.html` → Work, no-JS list | Three cards written by hand in `.work-list` | The carousel is now built from `portfolio.json`, but the fallback for visitors without JS is still static markup mirroring it: a new project needs an entry in `portfolio.json` **and** a card in `index.html` for them. | Accept, or generate the list at build time if a build step is ever added. |
 | `portfolio.json` → `summary` | «منوی آنلاین دوزبانه و باشگاه مشتریان امتیازی» / «فروشگاه اینترنتی با دسته‌بندی فنی و پنل مدیریت» / «منوی QR سبک و سریع، بهینه برای موبایل» | New with the V6 coverflow cards; the wording comes from that spec, not from `copy-final.md`. | Owner to confirm. |
-| `work.js` → carousel labels | Card: «{name} — مشاهده‌ی جزئیات پروژه»، side cards «رفتن به پروژه‌ی {name}»؛ cue chip «جزئیات پروژه» / «جزئیات» (touch and phones)؛ controls «پروژه‌ی بعدی»، «پروژه‌ی قبلی»، «رفتن به پروژه‌ی ۲»، «توقف چرخش» / «ادامه‌ی چرخش»، «۳ از ۱۲»؛ on a card's back «نیاز» · «راهکار» · «نتیجه» and «بستن جزئیات»؛ for screen readers «اسلاید» | From the V6 and V7 specs and the card-flip request, except «اسلاید» (the slide's role name), written to match. | Owner to confirm. |
-| `site-copy.json` → `hero.floatCards` | «رتبه‌ی ۱ گوگل»؛ «سفارش جدید ثبت شد» / «همین حالا · به CRM اضافه شد»؛ «بازدید این ماه» / «۳۲٪ رشد» | From the V8 spec: the three decorative cards round the hero laptop (`aria-hidden`). They illustrate what a client's SEO, CRM and analytics can look like; the figures are part of the illustration, not facts about the team. The file's own rule is "real, verifiable facts only", so this reading needs the owner's yes. | Owner to confirm, or make the figures clearly generic. |
+| `work.js` → carousel labels | Card: «{name} — مشاهده‌ی جزئیات پروژه»، side cards «رفتن به پروژه‌ی {name}»؛ cue chip «جزئیات پروژه» / «جزئیات» (touch and phones)؛ controls «پروژه‌ی بعدی»، «پروژه‌ی قبلی»، «رفتن به پروژه‌ی ۲»، «توقف چرخش» / «ادامه‌ی چرخش»، «۳ از ۱۲»؛ on a card's back «نیاز» · «راهکار» · «نتیجه» and «بستن جزئیات»؛ for screen readers «اسلایدر نمونه‌کارها» (the carousel) and «اسلاید» (the current slide) | From the V6 and V7 specs and the card-flip request. The two screen-reader role names are the owner's approved copy (after Impeccable batch 4). | Owner to confirm the rest. |
 | `order-catalog.json` (for the future `/order` builder) | Feature and section labels | Written before `copy-final.md`; not reviewed against its conventions. | Review when the builder is built. |
 | Proof room stats at 360px | «۱ روز کاری» | At 360px wide the value wraps to two lines, so its label sits one line lower than the other two. Fine from 390px. | Accept, or give the stat values `white-space: nowrap` with a smaller size below ~380px. |
+
+## از Impeccable
+
+Copy flags from the Impeccable reports 02–09 (`docs/impeccable/`), left as they are for the owner's copy pass; no
+rewrites are proposed. "Report" is the report's number and where in it the flag is. Flags that later decisions
+already settled are not listed: the direct-message path (batch 3), the calculator's new strings (batch 5), «از» on
+the total, «پیگیری سفارش» as a tier-3 link, and the hero float cards (decorative, confirmed).
+
+| Section | Report | Current text | Issue |
+|---|---|---|---|
+| Hero: H1 and sub | 02 · heuristic 2; persona Jordan | «فراتر از طراحی سایت؛ ساخت زیرساخت دیجیتال برای رشد کسب‌وکار شما» / «طراحی سایت، سرویس‌های آنلاین، CRM و اتوماسیون، تحلیل داده و پشتیبانی؛ از اولین ایده تا رشد کسب‌وکارتان، کنار شما هستیم.» | «زیرساخت دیجیتال», Latin «CRM» and six services in one sentence ask a lot of a café owner. |
+| Hero: CRM float card (decorative) | 02 · minor | «همین حالا · به CRM اضافه شد» | Latin «CRM» inside a 12–14px RTL caption. |
+| Proof: heading | 03 · minor, copy flags | «خودتان ببینید» | Heads a room with nothing to look at (three numbers, no work). |
+| Work: E2's tag and title | 03 · minor, copy flags | tag «منوی آنلاین» over the title «منوی آنلاین کافه E2» | The tag repeats the title. |
+| Services: heading | 04 · minor, copy flags | «هر آنچه کسب‌وکار شما برای رشد آنلاین لازم دارد» | Category-generic: it could head any agency's services. |
+| Services: sub | 04 · minor, copy flags | «از طراحی سایت تا CRM، اتوماسیون، تحلیل داده و پشتیبانی؛ یک تیم، از شروع تا رشد.» | Restates the six card titles. |
+| Services, Process, calculator: jargon | 04 · heuristic 2; 09 · heuristic 2 | card 1 «…کاتالوگ و لندینگ؛…»; card 3 «CRM و سیستم‌های مدیریتی»; card 5 «…امنیت و گواهی SSL…»; Process step 4 «…با SSL و آموزش کار با پنل مدیریت.»; the calculator's «لندینگ پیج» and «به نام خودتان، با SSL» | «CRM», «لندینگ» and «SSL» are jargon for café and shop owners (card 3's text glosses CRM well). |
+| Services: card links | 09 · MO4 | «شروع پروژه» on four cards, then «بپرسید» and «جزئیات پشتیبانی» | The same link four times in one section; whether the repeats stay is an IA and copy question. |
+| Services: card 3's title | 18 · batch 7 (typeset) | «CRM و سیستم‌های مدیریتی» | At 320 it keeps a lone last word («CRM و / سیستم‌های / مدیریتی»): its 172px column beside the chip holds one long word per line. Needs a shorter title. |
+| Process: sub | 05 · persona (first-time café owner) | «از اولین گفت‌وگو تا بعد از تحویل، همیشه می‌دانید کار کجاست.» | Promises that you always know where the work is, but never names «پیگیری سفارش». |
+| Process: steps 2 and 3 | 05 · heuristic 9 | «…قبل از شروع برنامه‌نویسی تأیید می‌شود.» / «…با نسخه‌ی آزمایشی که در طول کار می‌بینید.» | They imply recourse, but nothing covers revisions or what happens if the client is unhappy. |
+| Process: the five steps | 05 · persona (first-time café owner) | (not covered) | "How long?" and "what do I provide, and how much of my time?" are not answered, and nothing points to the calculator's working days. |
+| Process: step numbers | 05 · PR5 | «۰۱» … «۰۵» | Whether to keep the leading zero. Batch 7 set the numerals in proportional figures, so the narrow «۰» now sits close to its digit instead of apart, but the zero itself is a copy decision. |
+| Process: the step paragraphs, five across | 05 · PR3 (the owner's decision: list, don't rewrite) | «می‌فهمیم کسب‌وکارتان چه می‌کند و سایت باید چه مشکلی را حل کند.» / «ساختار صفحه‌ها و طراحی رابط کاربری؛ قبل از شروع برنامه‌نویسی تأیید می‌شود.» / «ساخت سایت و سرویس‌ها، با نسخه‌ی آزمایشی که در طول کار می‌بینید.» / «راه‌اندازی روی دامنه و هاست خودتان، با SSL و آموزش کار با پنل مدیریت.» / «رفع مشکل، به‌روزرسانی و توسعه‌ی بعدی؛ همراه رشد کسب‌وکارتان.» | On the lit (forest) card a paragraph should keep to two lines. They need 203 / 231 / 221 / 217 / 198px for two lines; the widened row gives 195px at 1280 (all five run to three lines), 212 at 1366 (steps 2–4), 227 at 1440 (step 2) and 236 at 1920 (none). |
+| About: title | 06 · copy flags | «تیمی متخصص، از ایده تا رشد کنار شما» | Repeats the hero eyebrow's «تیم متخصص». |
+| About: roles | 06 · heuristic 2 | «طراحی رابط کاربری و فرانت‌اند» / «بک‌اند و زیرساخت» | Developer jargon for café and clinic owners. |
+| About: Parham's bio | 06 · copy flags | «طراحی رابط کاربری و پیاده‌سازی صفحه‌ها، با تمرکز روی سرعت و تجربه‌ی موبایل.» | Repeats his role. |
+| About: Sina's bio | 06 · copy flags | «سرویس‌های اختصاصی، CRM و سیستم‌های مدیریتی، اتوماسیون و تحلیل داده، زیرساخت و امنیت، و پشتیبانی فنی بعد از تحویل.» | A list of services with no voice, out of balance with Parham's. |
+| Calculator: CTA | 07 · persona Jordan | «ادامه در سفارش‌ساز» | Doesn't say whether continuing commits the visitor to anything. |
+| Calculator: summary card title | 07 · minor | «همیشه شامل می‌شود» | Never names the chosen site type. |
+| FAQ: eyebrow and title | 08 · minor, heuristic 8 | «سؤالات متداول» / «پاسخ سؤال‌های رایج» | Both say the same thing. |
+| FAQ: the questions | 08 · heuristic 10 | «پروژه چقدر طول می‌کشد؟»، «پرداخت چطور انجام می‌شود؟»، «هاست و دامنه را هم شما تهیه می‌کنید؟»، «بعد از تحویل پشتیبانی دارید؟»، «فقط سایت می‌سازید یا سیستم‌های داخلی کسب‌وکار را هم؟»، «بعد از تحویل، خودم می‌توانم محتوا را تغییر دهم؟»، «لوگو و برند هم طراحی می‌کنید؟» | No question about cost, and no way out to a person at the end. |
+| Closing band | 08 · persona (café owner who would rather message) | «مسیر دیجیتال کسب‌وکارتان را از همین‌جا شروع کنید» / «در سفارش‌ساز، قدم‌به‌قدم نیازتان را مشخص کنید. هر جا مطمئن نبودید، گزینه‌ی «نمی‌دانم» هست و ما پیشنهاد می‌دهیم.» | Nothing says how fast the team replies; «۱ روز کاری» appears only in Proof. |
+| Section preambles, Services to FAQ | 09 · design verdict | eyebrows «خدمات»، «فرایند کار»، «درباره‌ی ما»، «برآورد سریع»، «سؤالات متداول», each over an H2 and a sub | Every section opens with the same eyebrow → H2 → sub preamble; the eyebrows mostly name the section. |
 
 ## Resolved in the final pass
 
@@ -61,3 +96,4 @@ Conventions every new string follows (from `copy-final.md`):
 | Six drafted add-on descriptions | Final text for all twelve add-ons, including the new CRM, automation and analytics add-ons. |
 | «سفارش‌ساز» a word visitors may not know | Kept on purpose as the tool's one name; the CTA band introduces it. |
 | Instagram link shown as «@mitec.studio» | Link text «اینستاگرام» (the URL is still a placeholder, above). |
+| Hero float cards (`site-copy.json` → `hero.floatCards`: «رتبه‌ی ۱ گوگل»، «سفارش جدید ثبت شد»، «۳۲٪ رشد») awaiting the owner's reading of their figures | Confirmed by the owner as decorative illustration (`aria-hidden`), not factual claims; recorded in `PRODUCT.md` → Evidence on Hand. |

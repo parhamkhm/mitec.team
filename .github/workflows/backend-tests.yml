@@ -1,0 +1,61 @@
+name: Backend tests
+
+# The server imports the front end's mapper.js, estimate.js and pricing.json
+# and validates against docs/pricing.schema.json, so changes there can break
+# it too.
+on:
+  push:
+    paths:
+      - 'server/**'
+      - 'project/src/api/**'
+      - 'project/src/utils/**'
+      - 'project/src/config/pricing.json'
+      - 'docs/pricing.schema.json'
+      - '.github/workflows/backend-tests.yml'
+  pull_request:
+    paths:
+      - 'server/**'
+      - 'project/src/api/**'
+      - 'project/src/utils/**'
+      - 'project/src/config/pricing.json'
+      - 'docs/pricing.schema.json'
+      - '.github/workflows/backend-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: mitec
+          POSTGRES_PASSWORD: mitec
+          POSTGRES_DB: mitec
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mitec"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - run: npm ci
+
+      # The tests create mitec_test themselves and wipe it before each file.
+      - run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://mitec:mitec@127.0.0.1:5432/mitec_test

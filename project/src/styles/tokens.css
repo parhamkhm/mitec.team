@@ -3,19 +3,64 @@
    The single source of colour truth for the site. See DESIGN.md at the repo
    root for the rules these tokens encode.
 
-   Only the STRUCTURAL scales still come from the bound Mitec Design System —
-   spacing, radii and motion, none of which carry colour. Its colour, gradient
-   and elevation files are deliberately NOT imported: this system is light-first
-   sage and forest green, and the old palette was navy-based, which rule 1 of
-   DESIGN.md now forbids outright.
+   Only the STRUCTURAL scales still come from the retired Mitec Design System —
+   spacing, radii and motion (the first section below), none of which carry
+   colour.
+   Its colour, gradient and elevation files were removed: this system is
+   light-first sage and forest green, and the old palette was navy-based,
+   which rule 1 of DESIGN.md now forbids outright.
 
    Components must use the semantic --color-* tokens only. Primitives live here
    and nowhere else; a raw hex in a component file is a defect.
    ────────────────────────────────────────────────────────────────────────── */
 
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/spacing.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/radii.css");
-@import url("../../_ds/mitec-design-system-43d123c9-3483-4ef5-99d3-fe6170ed1165/tokens/motion.css");
+/* ─── Structural scales ──────────────────────────────────────────
+   Spacing, radii and motion, kept as the retired system exported them (the
+   @kind notes are its own). They were three files; they live here so the
+   page makes one request for them, not three: on a slow mobile network each
+   request costs a full round trip. */
+:root{
+--space-0:0px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;
+--space-7:32px;--space-8:40px;--space-9:48px;--space-10:64px;--space-11:80px;--space-12:96px;--space-13:128px;
+
+/* Rhythm */
+--gutter:24px;
+--section-y:clamp(64px,8vw,128px); /* @kind spacing */
+--container-max:1200px;
+--container-narrow:760px;
+--pad-card:24px;
+--pad-card-lg:32px;
+--pad-control-x:20px;
+--pad-control-y:11px;
+}
+:root{
+--radius-xs:6px;--radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;--radius-2xl:36px;--radius-pill:999px;--radius-circle:50%;
+--radius-card:var(--radius-lg);
+--radius-control:var(--radius-pill);
+--radius-input:var(--radius-sm);
+--radius-media:var(--radius-md);
+--border-width:1px;--border-width-thick:1.5px;
+}
+:root{
+--dur-instant:90ms; /* @kind other */
+--dur-fast:140ms; /* @kind other */
+--dur:220ms; /* @kind other */
+--dur-slow:420ms; /* @kind other */
+--dur-ambient:6s; /* @kind other */
+--ease-out:cubic-bezier(.22,.61,.36,1); /* @kind other */
+--ease-in-out:cubic-bezier(.65,.05,.36,1); /* @kind other */
+--ease-entrance:cubic-bezier(.16,.84,.44,1); /* @kind other */
+--transition-control:background-color var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out),color var(--dur) var(--ease-out),border-color var(--dur) var(--ease-out); /* @kind other */
+--transition-lift:transform var(--dur) var(--ease-out),box-shadow var(--dur) var(--ease-out); /* @kind other */
+--lift-hover:translateY(-2px); /* @kind other */
+--press-scale:.97; /* @kind other */
+}
+@media (prefers-reduced-motion:reduce){:root{
+--dur-instant:0ms; /* @kind other */
+--dur-fast:0ms; /* @kind other */
+--dur:0ms; /* @kind other */
+--dur-slow:0ms; /* @kind other */
+}}
 
 /* ─── Primitives ─────────────────────────────────────────────── */
 :root {
@@ -54,11 +99,51 @@
    The scale is a 1.414 ratio. Its floor honours DESIGN.md §9: body never
    below 16px, secondary and caption never below 14px, eyebrow never below
    12px — Persian loses joins and dots faster than Latin does.
-   PRODUCTION: self-host Vazirmatn from public/fonts; Google Fonts can be
-   unreachable from Iran. */
+
+   Self-hosted (public/fonts, see its README): a CDN can be slow or unreachable
+   from Iran, and a hanging font stylesheet blanks the page. Vazirmatn v33.003,
+   subset to Arabic + Latin, one file per weight, none preloaded (a preload
+   takes bandwidth from the stylesheets on a slow connection).
+
+   Until a weight arrives, text shows in the device's own Persian font,
+   scaled and re-metricked to Vazirmatn so the swap moves no text. One
+   family per platform font; a device skips those it lacks:
+   - Tahoma: Windows and macOS;
+   - Geeza Pro: iOS (macOS takes Tahoma first);
+   - Noto Naskh Arabic, then Noto Sans Arabic: Android. Their "UI"
+     variants share the family (within 0.4% of the width). Neither has
+     Latin letters, which fall through to Roboto, and Vazirmatn's Latin is
+     Roboto's.
+   Regular stands in for 400 and 500, Bold for 700 and 800 (no platform
+   ships the others everywhere). Per weight range, size-adjust = Vazirmatn's
+   width ÷ the fallback's on the page's own Persian text; the overrides are
+   Vazirmatn's ascent (2100) and descent (1100) over its 2048 units, divided
+   by that size-adjust. public/fonts/fallback-check.html measures them on
+   any device. Geeza Pro is not measured yet (no Apple device here), so it
+   is at 100% until that page is run on an iPhone. */
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-500.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn'; src: url('../../public/fonts/vazirmatn-800.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Vazirmatn Tahoma'; src: local('Tahoma'); font-weight: 100 450; size-adjust: 93%; ascent-override: 110.26%; descent-override: 57.75%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Tahoma'; src: local('Tahoma'); font-weight: 451 599; size-adjust: 93.8%; ascent-override: 109.32%; descent-override: 57.26%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Tahoma'; src: local('Tahoma Bold'), local('Tahoma-Bold'); font-weight: 600 750; size-adjust: 83.8%; ascent-override: 122.36%; descent-override: 64.09%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Tahoma'; src: local('Tahoma Bold'), local('Tahoma-Bold'); font-weight: 751 900; size-adjust: 84.1%; ascent-override: 121.93%; descent-override: 63.87%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Geeza'; src: local('Geeza Pro'), local('Geeza Pro Regular'), local('GeezaPro'); font-weight: 100 450; size-adjust: 100%; ascent-override: 102.54%; descent-override: 53.71%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Geeza'; src: local('Geeza Pro'), local('Geeza Pro Regular'), local('GeezaPro'); font-weight: 451 599; size-adjust: 100%; ascent-override: 102.54%; descent-override: 53.71%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Geeza'; src: local('Geeza Pro Bold'), local('GeezaPro-Bold'); font-weight: 600 750; size-adjust: 100%; ascent-override: 102.54%; descent-override: 53.71%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Geeza'; src: local('Geeza Pro Bold'), local('GeezaPro-Bold'); font-weight: 751 900; size-adjust: 100%; ascent-override: 102.54%; descent-override: 53.71%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Naskh'; src: local('Noto Naskh Arabic'), local('Noto Naskh Arabic Regular'), local('NotoNaskhArabic-Regular'), local('Noto Naskh Arabic UI'), local('Noto Naskh Arabic UI Regular'), local('NotoNaskhArabicUI-Regular'); font-weight: 100 450; size-adjust: 109.4%; ascent-override: 93.73%; descent-override: 49.1%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Naskh'; src: local('Noto Naskh Arabic'), local('Noto Naskh Arabic Regular'), local('NotoNaskhArabic-Regular'), local('Noto Naskh Arabic UI'), local('Noto Naskh Arabic UI Regular'), local('NotoNaskhArabicUI-Regular'); font-weight: 451 599; size-adjust: 110.3%; ascent-override: 92.96%; descent-override: 48.7%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Naskh'; src: local('Noto Naskh Arabic Bold'), local('NotoNaskhArabic-Bold'), local('Noto Naskh Arabic UI Bold'), local('NotoNaskhArabicUI-Bold'); font-weight: 600 750; size-adjust: 107.6%; ascent-override: 95.3%; descent-override: 49.92%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Naskh'; src: local('Noto Naskh Arabic Bold'), local('NotoNaskhArabic-Bold'), local('Noto Naskh Arabic UI Bold'), local('NotoNaskhArabicUI-Bold'); font-weight: 751 900; size-adjust: 107.9%; ascent-override: 95.03%; descent-override: 49.78%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Noto Sans'; src: local('Noto Sans Arabic'), local('Noto Sans Arabic Regular'), local('NotoSansArabic-Regular'), local('Noto Sans Arabic UI'), local('Noto Sans Arabic UI Regular'), local('NotoSansArabicUI-Regular'); font-weight: 100 450; size-adjust: 99.3%; ascent-override: 103.26%; descent-override: 54.09%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Noto Sans'; src: local('Noto Sans Arabic'), local('Noto Sans Arabic Regular'), local('NotoSansArabic-Regular'), local('Noto Sans Arabic UI'), local('Noto Sans Arabic UI Regular'), local('NotoSansArabicUI-Regular'); font-weight: 451 599; size-adjust: 100.1%; ascent-override: 102.44%; descent-override: 53.66%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Noto Sans'; src: local('Noto Sans Arabic Bold'), local('NotoSansArabic-Bold'), local('Noto Sans Arabic UI Bold'), local('NotoSansArabicUI-Bold'); font-weight: 600 750; size-adjust: 91.7%; ascent-override: 111.82%; descent-override: 58.57%; line-gap-override: 0%; }
+@font-face { font-family: 'Vazirmatn Noto Sans'; src: local('Noto Sans Arabic Bold'), local('NotoSansArabic-Bold'), local('Noto Sans Arabic UI Bold'), local('NotoSansArabicUI-Bold'); font-weight: 751 900; size-adjust: 92%; ascent-override: 111.46%; descent-override: 58.38%; line-gap-override: 0%; }
 :root {
-  --font-display: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
-  --font-body: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  --font-display: 'Vazirmatn', 'Vazirmatn Tahoma', 'Vazirmatn Geeza', 'Vazirmatn Naskh', 'Vazirmatn Noto Sans', Tahoma, 'Segoe UI', sans-serif;
+  --font-body: 'Vazirmatn', 'Vazirmatn Tahoma', 'Vazirmatn Geeza', 'Vazirmatn Naskh', 'Vazirmatn Noto Sans', Tahoma, 'Segoe UI', sans-serif;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -84,6 +169,11 @@
   --lh-tight: 1.5;
   --lh-heading: 1.2;
   --lh-display: 1.08;
+  /* Reading measures are counted in this, not in ch: 1ch is the "0" of
+     whichever font is showing, so the fallback's narrower "0" would narrow
+     every measure and re-wrap its lines when Vazirmatn lands. This is 1ch of
+     Vazirmatn Regular, so calc(52 * var(--ch)) lays out exactly as 52ch did. */
+  --ch: 0.56201em;
   /* Zero, not tight: Persian is a joined script, and any tracking — negative
      or positive — opens gaps in the joins (DESIGN.md §13). */
   --ls-display: 0;
@@ -96,9 +186,13 @@
    values extend the system's --dur / --ease scale for the scroll scene and
    reveals, and zero out with it under reduced motion. */
 :root {
-  --section-pad: clamp(96px, 11vw, 176px);
+  --section-pad: clamp(64px, 11vw, 176px); /* 64px on phones (under ~580px), 176px from 1600px */
 
   --ease-portal: cubic-bezier(.65, 0, .35, 1);
+  /* A swap between a light and a dark surface: slow at both ends, through
+     the middle (where no text colour would pass) in about a tenth of the
+     time. Process's spotlight fades on it, its text switching at the midpoint. */
+  --ease-swap: cubic-bezier(1, 0, 0, 1);
   --dur-reveal: 600ms;
   --dur-media: 700ms;
   --stagger: 70ms;
@@ -138,9 +232,10 @@
   --color-cta-active: var(--green-800);
   --color-cta-text:   #FFFFFF;
 
-  --color-tonal:       var(--green-50);
-  --color-tonal-hover: var(--green-100);
-  --color-tonal-text:  var(--green-700);
+  --color-tonal:        var(--green-50);
+  --color-tonal-hover:  var(--green-100);
+  --color-tonal-text:   var(--green-700);
+  --color-tonal-border: var(--color-border-hover); /* tonal buttons' edge on light */
 
   --color-link:       var(--green-600);
   --color-link-hover: var(--green-700);
@@ -215,9 +310,10 @@
   --color-cta-active: var(--green-300);
   --color-cta-text:   var(--green-950);
 
-  --color-tonal:       rgba(87, 183, 154, .14);
-  --color-tonal-hover: rgba(87, 183, 154, .22);
-  --color-tonal-text:  var(--green-300);
+  --color-tonal:        rgba(87, 183, 154, .14);
+  --color-tonal-hover:  rgba(87, 183, 154, .22);
+  --color-tonal-text:   var(--green-300);
+  --color-tonal-border: transparent; /* no edge on forest */
 
   --color-link:           var(--green-300);
   --color-link-hover:     var(--on-dark-1);

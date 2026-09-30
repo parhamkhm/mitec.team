@@ -8,7 +8,9 @@ web
 
 ## Users
 
-Two roughly-equal audiences, both Iranian: (1) small businesses that don't yet have a professional website, and (2) individuals or small teams who need a custom online service or tool built (not just a marketing site). Both groups come to mitec via the order builder, describing what they actually need rather than picking a fixed package.
+Two roughly-equal audiences, both Iranian: (1) owners of small and medium businesses — cafés, shops, clinics, companies — many of them without a professional website yet, and (2) individuals or small teams who need a custom online service or tool built (not just a marketing site). Both groups come to mitec via the order builder, describing what they actually need rather than picking a fixed package.
+
+Visitors arrive on phones and desktops in a real mix (the owner's view), so neither the phone nor the desktop layout is secondary.
 
 ## Product Purpose
 
@@ -25,26 +27,28 @@ Services (the home page's six Services cards, in this order):
 
 mitec does not design logos or brands (FAQ).
 
+Success on the site: the visitor starts a project («شروع پروژه» → سفارش‌ساز). A visitor who is not ready for that also counts as a success when they message the team directly (WhatsApp or Telegram, the "no middleman" promise in action) or follow mitec on Instagram. The quick price estimate leads into the order builder; on its own it was not named as a success.
+
 ## Positioning
 
 Every engagement gets a design built specifically for that client's need — not a template or fixed package — with direct access to the team, no middleman, no outsourcing: the people the client talks to are the people who build and support it. The order builder is the mechanism that makes per-client custom scoping practical instead of a sales-call luxury.
 
 ## Operating Context
 
-- The order builder wizard (`Mitec Order Builder.dc.html` → `/order`, `/order/success`) is how clients describe their needs and place an order.
-- Order tracking (`Mitec Track.dc.html` → `/track`) lets clients check status on an existing order; requires a phone number (`TRACK_REQUIRES_PHONE: true`).
-- The backend is being built by a teammate; the frontend talks to it only through `src/api/client.js` / `mapper.js`, currently mocked (`USE_MOCK: true`).
+- The order builder wizard (`/order`, `/order/success`) is how clients describe their needs and place an order.
+- Order tracking (`/track`) lets clients check status on an existing order; requires a phone number (`TRACK_REQUIRES_PHONE: true`).
+- A back end now exists in `server/` (Node.js + Express + PostgreSQL, built by a teammate to `project/API_CONTRACT.md`: pricing, orders, tracking and admin accounts, with a contract test that runs the front end's own `mapper.js` and `estimate.js`). The front end talks to it only through `src/api/client.js` / `mapper.js` and still runs on the mock (`USE_MOCK: true`); switching to the real back end is the owner's call.
 - The wizard summary still hides prices (`APP_CONFIG.showPrice: false`). The home page's quick scope shows price and working days from the pricing document instead (`display.showPrice` / `showDuration` there).
 - Prices, durations, packages and add-ons live in one pricing document (`src/config/pricing.json` now, `GET /pricing` later, edited by the future admin panel; `docs/pricing-guide.md`, `docs/pricing.schema.json`). The home page's quick scope renders it, prices it with `src/utils/estimate.js` (which the order builder will import too), and hands the choice over in the builder's saved state (`localStorage['mitec.order.v1']`: `{ selection: { siteType, pages, addons }, step, unsure, pricingVersion }`).
 - Contact channels: WhatsApp, Telegram, Instagram (placeholder values in `app.config.js`, not yet real).
 
 ## Capabilities and Constraints
 
-- Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three exist only as `.dc.html` design prototypes, not yet built, so every `./order/` and `./track/` link on the home page 404s until they are. The `.dc.html` files are old prototypes, not a visual source; DESIGN.md is.
-- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (three project rows), Services (six cards), Process, About, Quick scope (site type, pages and add-ons → price and working days, then on to the order builder), FAQ, closing CTA. A Testimonials section sits between Work and Services in the markup but is hidden until real quotes exist.
+- Four pages: Home (implemented, `index.html`), Order Builder, Track, 404 — the latter three are not built yet, so every `./order/` and `./track/` link on the home page 404s until they are. Their old `.dc.html` prototypes were removed (git history keeps them); DESIGN.md is the visual source.
+- Home, in order: a scroll-driven "portal" hero (a forest scene with a laptop; scrolling dives into its screen, past a short intro statement, into the light Proof room with the real stats), Work (a carousel of the delivered projects, built from `src/data/portfolio.json`, so a new project appears without a code change), Services (six cards), Process, About, Quick scope (site type, pages and add-ons → price and working days, then on to the order builder), FAQ, closing CTA. A Testimonials section sits between Work and Services in the markup but is hidden until real quotes exist.
 - Copy conventions (`docs/copy-final.md`): formal «شما» everywhere; ezafe after a final «ه» always written «ه‌ی»; the order builder is always «سفارش‌ساز», buttons that lead to it say «شروع پروژه» (except the calculator's «ادامه در سفارش‌ساز»), and the tracking page is «پیگیری سفارش».
 - Motion is an enhancement, never a requirement: it runs only when the visitor has not asked for reduced motion, and without it (or without JS) the page is the complete static document (DESIGN.md §13). No animation library, no WebGL — a small vanilla engine in `src/scripts/motion/`.
-- The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose colour, gradient and elevation files are no longer imported; only its spacing, radii and motion scales remain. Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
+- The visual system is defined by DESIGN.md at the repo root: a light sage canvas with deep-forest bands, one action green, and amber as a rare highlight. It replaced the original navy/emerald Mitec Design System, whose export has been removed; only its spacing, radii and motion scales remain (the first section of `src/styles/tokens.css`). Vazirmatn still replaces Montserrat/Mulish (no Persian glyphs), and `direction: ltr` still keeps the Latin-built logo from flipping in RTL.
 - No build step; ES modules served over HTTP (not `file://`).
 - Persian language and RTL layout are load-bearing, not optional. The theme is light-first: forest green appears only as bands, media tiles and the footer.
 - Directness of access is a fact the design and copy must keep truthful. The copy never states the team's size: the team may grow, so the promise is direct access, not a head count.
@@ -63,6 +67,7 @@ Every engagement gets a design built specifically for that client's need — not
 - Team photos are placeholders pending real photos.
 - Every price and duration in the pricing document is a placeholder until the owner enters real ones (`"placeholder": true`, labelled «اعداد نمونه» on the page). The old week-based estimates in `order-catalog.json` are no longer used for quoting: the owner found them unrealistic.
 - Contact info (WhatsApp number, Telegram, Instagram) in `app.config.js` is placeholder/TODO, not the real accounts yet.
+- The hero's three float cards (`src/data/site-copy.json` → `hero.floatCards`: «رتبه‌ی ۱ گوگل», «سفارش جدید ثبت شد», «۳۲٪ رشد») are confirmed by the owner as decorative illustration: `aria-hidden`, showing what a client's SEO, CRM and analytics can look like, not factual claims about mitec. They are not fabricated proof and are not to be raised as a finding.
 
 ## Product Principles
 
