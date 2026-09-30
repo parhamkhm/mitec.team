@@ -1486,7 +1486,7 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
   .scope-body > .scope-checkout .scope-lines { grid-area: lines; max-height: 40svh; margin-bottom: var(--space-3); overflow-y: auto; overscroll-behavior: contain; }
   /* Keyboard focus scrolled into view clears the nav and the bar (whose
      height scope.js keeps in --scope-bar-h). */
-  .scope-body :is(.scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 calc(var(--scope-bar-h, 120px) + 16px); }
+  .scope-body :is(.scope-tab input, .scope-unsure, .scope-range, .scope-addon, .scope-base__more, .scope-addons__more) { scroll-margin: 96px 0 calc(var(--scope-bar-h, 120px) + 16px); }
 }
 
 @media (max-width: 767px) {
