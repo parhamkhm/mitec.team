@@ -76,37 +76,24 @@
 </script>
 </head>
 <body>
-<!-- Icons, inlined as one sprite so no icon depends on a CDN:
+<!-- Icons, self-hosted so no icon depends on a CDN. Only the ones a first view can show are inline
+     here (the nav, the hero's buttons and float cards, the menu's pair); the rest are in
+     public/icons.svg, used as <use href="public/icons.svg#i-NAME"/> (it works without JS too).
+     Moving an icon into a first view means moving its <symbol> here. Sources:
      - Lucide v0.544.0 (lucide-static, ISC licence): every icon but the two below.
      - WhatsApp and Telegram: the brands' marks from Simple Icons v16.33.0 (simple-icons.org, CC0 1.0; the marks
        themselves are the brands' trademarks). Monochrome in currentColor, never the brand colours; filled rather
        than stroked, and inset in their box (see the viewBox) to sit at the Lucide icons' optical size.
      Use: <svg class="icon icon-NAME" aria-hidden="true"><use href="#i-NAME"/></svg>; src/utils/icon.js builds
-     the same from script. Size, stroke (2), caps and joins come from .icon in components.css. -->
+     the same from script and picks the inline symbol or the file. Size, stroke (2), caps and joins come
+     from .icon in components.css. -->
 <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
 <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
-<symbol id="i-arrow-up-left" viewBox="0 0 24 24"><path d="M7 17V7h10"/><path d="M17 17 7 7"/></symbol>
-<symbol id="i-blocks" viewBox="0 0 24 24"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></symbol>
-<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
-<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
-<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
-<symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
-<symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></symbol>
-<symbol id="i-headset" viewBox="0 0 24 24"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></symbol>
-<symbol id="i-instagram" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
-<symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
 <symbol id="i-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
 <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
-<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-<symbol id="i-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></symbol>
-<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
 <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
-<symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
 <symbol id="i-shopping-bag" viewBox="0 0 24 24"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></symbol>
 <symbol id="i-telegram" viewBox="-2.5 -2.5 29 29"><path fill="currentColor" stroke="none" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol>
-<symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></symbol>
-<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
 <symbol id="i-whatsapp" viewBox="-2 -2 28 28"><path fill="currentColor" stroke="none" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
 <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
 </svg>
@@ -237,13 +224,8 @@
       </button>
     </div>
     <script>
-      // The hero's layout, run here before first paint and again by motion/portal.js on every
-      // measure (resize, load, font swap), so the first frame already is the measured one and
-      // nothing moves when the modules arrive. It lives inline because a module cannot run before
-      // first paint. It sizes the display (and the lid parts round it) to the viewport, then puts
-      // the copy on the lit screen, shrinking the H1 towards its clamp floor until it fits; where
-      // it cannot fit, or below 760px, the copy stacks above the laptop on the forest wall and the
-      // laptop starts under it (DESIGN.md §5). Returns what the scene needs for scrolling.
+      // The hero's layout before first paint; motion/portal.js runs it again on every measure.
+      // How it works: "The first-frame layout" in portal.js.
       window.mitecPortalLayout = (vh = innerHeight, lowPower = (navigator.hardwareConcurrency || 8) <= 4 || !!navigator.connection?.saveData) => {
         const portal = document.querySelector('.portal');
         const q = (s) => portal.querySelector(s);
@@ -282,13 +264,7 @@
         // the lift transforms don't count.
         const copyEnd = () => kids[kids.length - 1].offsetTop + kids[kids.length - 1].offsetHeight;
         const copyH = () => copyEnd() - kids[0].offsetTop;
-        // Until Vazirmatn 800 has landed, the H1 is fitted for it too: the fallback matches its
-        // width overall, not word by word, so a line can break elsewhere once it lands (at 1440,
-        // «دیجیتال» is 7% wider in Vazirmatn, and at 76px the H1 takes four lines, not three).
-        // The lines it will take are counted from each word's width in Vazirmatn 800, in em
-        // (measured; the mark's .08em padding is added to its first and last word), and the fit
-        // takes the taller of the two. A word not in the table (the copy changed) turns this off,
-        // and the fit then follows the fallback until the font lands.
+        // The H1's words in Vazirmatn 800, in em, to fit it for the font before it lands (portal.js).
         const VZ = { ' ': .248, 'فراتر': 1.8632, 'از': .6323, 'طراحی': 2.603, 'سایت؛': 2.7289, 'ساخت': 2.7026, 'زیرساخت': 3.7485,
           'دیجیتال': 3.2007, 'برای': 1.6289, 'رشد': 1.6343, 'کسب‌وکار': 3.812, 'شما': 1.6523 };
         const words = title.textContent.trim().split(/\s+/);
@@ -348,10 +324,7 @@
       };
       if (document.documentElement.classList.contains('motion')) {
         mitecPortalLayout();
-        // A Vazirmatn weight that lands after this re-wraps the copy in the real font. Fit again
-        // as it lands: for the 800 this confirms the size fitted for it above (and drops the
-        // held height); for the others, and wherever the fallback wrapped taller, it corrects
-        // the fit (Chrome still records that as a small shift).
+        // Fit again as each Vazirmatn weight lands (portal.js).
         for (const f of document.fonts) {
           if (f.family.replace(/"/g, '') !== 'Vazirmatn' || f.status === 'loaded') continue;
           f.loaded.then(() => document.documentElement.classList.contains('motion') && mitecPortalLayout(), () => {});
@@ -399,7 +372,7 @@
             <div><dt>راهکار ما</dt><dd>سایت دوزبانه با منوی آنلاین، باشگاه مشتریان امتیازی و بخش نظرها و پیشنهادها.</dd></div>
             <div><dt>نتیجه</dt><dd>مشتری‌های همیشگی از داخل باشگاه پیگیری می‌شوند و منو بدون چاپ دوباره به‌روز می‌شود.</dd></div>
           </dl>
-          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <svg class="icon icon-arrow-up-left" aria-hidden="true"><use href="#i-arrow-up-left"/></svg></a>
+          <a class="btn btn--md btn--outline work-item__link" href="https://meryclub.ir" target="_blank" rel="noopener">دیدن سایت <svg class="icon icon-arrow-up-left" aria-hidden="true"><use href="public/icons.svg#i-arrow-up-left"/></svg></a>
         </li>
         <li class="work-item">
           <figure class="work-card">
@@ -444,7 +417,7 @@
     <div class="band__inner">
       <div class="testimonials__head" data-reveal>
         <h2 id="t-title" class="section-heading__title section-heading__title--display-3">نظر مشتری‌ها</h2>
-        <span class="badge badge--highlight"><svg class="icon icon-clock" aria-hidden="true"><use href="#i-clock"/></svg>نمونه</span>
+        <span class="badge badge--highlight"><svg class="icon icon-clock" aria-hidden="true"><use href="public/icons.svg#i-clock"/></svg>نمونه</span>
       </div>
       <div class="testimonials-grid">
         <div class="card card--surface card--pad-lg testimonial">
@@ -482,35 +455,35 @@
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-2-768.webp" srcset="public/images/services/service-2-384.webp 384w, public/images/services/service-2-768.webp 768w, public/images/services/service-2-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><svg class="icon icon-blocks" aria-hidden="true"><use href="#i-blocks"/></svg></span>
+          <span class="service-card__badge"><svg class="icon icon-blocks" aria-hidden="true"><use href="public/icons.svg#i-blocks"/></svg></span>
           <h3 class="card-title">سرویس‌های آنلاین اختصاصی</h3>
           <p>باشگاه مشتریان، نوبت‌دهی و رزرو، پنل مدیریت محتوا، ثبت سفارش و پرداخت آنلاین؛ ابزارهایی که کار روزانه‌ی شما را ساده‌تر می‌کنند.</p>
           <a class="service-card__link" href="./order/" aria-label="شروع پروژه: سرویس‌های آنلاین اختصاصی">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-3-768.webp" srcset="public/images/services/service-3-384.webp 384w, public/images/services/service-3-768.webp 768w, public/images/services/service-3-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><svg class="icon icon-users" aria-hidden="true"><use href="#i-users"/></svg></span>
+          <span class="service-card__badge"><svg class="icon icon-users" aria-hidden="true"><use href="public/icons.svg#i-users"/></svg></span>
           <h3 class="card-title">CRM و سیستم‌های مدیریتی</h3>
           <p>مشتری‌ها، فروش، سفارش‌ها و کارهای تیم در یک پنل؛ متناسب با روند کاری خود شما، نه یک نرم‌افزار آماده‌ی عمومی.</p>
           <a class="service-card__link" href="./order/" aria-label="شروع پروژه: CRM و سیستم‌های مدیریتی">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-4-768.webp" srcset="public/images/services/service-4-384.webp 384w, public/images/services/service-4-768.webp 768w, public/images/services/service-4-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><svg class="icon icon-trending-up" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
+          <span class="service-card__badge"><svg class="icon icon-trending-up" aria-hidden="true"><use href="public/icons.svg#i-trending-up"/></svg></span>
           <h3 class="card-title">اتوماسیون و&nbsp;تحلیل داده</h3>
           <p>خودکارسازی کارهای تکراری، و گزارش‌ها و داشبوردهایی که نشان می‌دهند کسب‌وکارتان کجا رشد می‌کند و کجا نیاز به توجه دارد.</p>
           <a class="service-card__link" href="./order/" aria-label="شروع پروژه: اتوماسیون و تحلیل داده">شروع پروژه <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-5-768.webp" srcset="public/images/services/service-5-384.webp 384w, public/images/services/service-5-768.webp 768w, public/images/services/service-5-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><svg class="icon icon-shield-check" aria-hidden="true"><use href="#i-shield-check"/></svg></span>
+          <span class="service-card__badge"><svg class="icon icon-shield-check" aria-hidden="true"><use href="public/icons.svg#i-shield-check"/></svg></span>
           <h3 class="card-title">سئو، امنیت و&nbsp;بهینه‌سازی</h3>
           <p>سئوی پایه، بهینه‌سازی سرعت، امنیت و گواهی SSL، و خرید و تنظیم دامنه و هاست به نام خودتان.</p>
           <a class="service-card__link" href="#channels">بپرسید <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
         </div>
         <div class="card card--surface card--pad-lg card--interactive service-card">
           <img class="service-card__art" src="public/images/services/service-6-768.webp" srcset="public/images/services/service-6-384.webp 384w, public/images/services/service-6-768.webp 768w, public/images/services/service-6-1536.webp 1536w" sizes="(min-width: 1200px) 280px, (min-width: 1024px) calc((100vw - 80px) / 4), (min-width: 760px) calc((100vw - 64px) * .375), calc((100vw - 96px) * .6)" width="768" height="512" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <span class="service-card__badge"><svg class="icon icon-headset" aria-hidden="true"><use href="#i-headset"/></svg></span>
+          <span class="service-card__badge"><svg class="icon icon-headset" aria-hidden="true"><use href="public/icons.svg#i-headset"/></svg></span>
           <h3 class="card-title">پشتیبانی و&nbsp;توسعه‌ی مداوم</h3>
           <p>یک دوره پشتیبانی بدون هزینه بعد از تحویل، و بعد از آن ماهانه یا موردی. سایت شما بعد از تحویل رها نمی‌شود و همراه کسب‌وکارتان رشد می‌کند.</p>
           <a class="service-card__link" href="#faq">جزئیات پشتیبانی <svg class="icon icon-arrow-left" aria-hidden="true"><use href="#i-arrow-left"/></svg></a>
@@ -580,7 +553,7 @@
           <div class="about-card__photo">
             <!-- REPLACE: real photo, as <img src="public/images/team/NAME.webp" width="176" height="176" alt="{the member's name}">:
                  square, at least 176px (88px at DPR 2), WebP. The circle crops it (object-fit: cover). -->
-            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="public/icons.svg#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">پرهام موحدی</h3>
@@ -592,7 +565,7 @@
           <div class="about-card__photo">
             <!-- REPLACE: real photo, as <img src="public/images/team/NAME.webp" width="176" height="176" alt="{the member's name}">:
                  square, at least 176px (88px at DPR 2), WebP. The circle crops it (object-fit: cover). -->
-            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
+            <div class="img-slot img-slot--circle"><svg class="icon icon-image" aria-hidden="true"><use href="public/icons.svg#i-image"/></svg><span class="img-slot__label" aria-hidden="true">عکس</span></div>
           </div>
           <div class="about-card__text">
             <h3 class="card-title">سینا علیپور</h3>
@@ -669,7 +642,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q1" aria-expanded="true" aria-controls="faq-a1">
               <span>پروژه چقدر طول می‌کشد؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq-item__body">بستگی به نوع سایت و امکاناتش دارد. زمان تقریبی را در «<span data-href="#scope">برآورد سریع</span>» همین صفحه ببینید؛ زمان دقیق بعد از جلسه‌ی مشاوره و مشخص شدن محتوا اعلام می‌شود.</div></div>
@@ -678,7 +651,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q2" aria-expanded="true" aria-controls="faq-a2">
               <span>پرداخت چطور انجام می‌شود؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div class="faq-item__body">معمولاً در سه قسمت: بخشی در شروع کار، بخشی بعد از تأیید طراحی و بخش آخر هنگام تحویل. جزئیات در قرارداد نوشته می‌شود.</div></div>
@@ -687,7 +660,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q3" aria-expanded="true" aria-controls="faq-a3">
               <span>هاست و&nbsp;دامنه را هم شما تهیه می‌کنید؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a3" role="region" aria-labelledby="faq-q3"><div class="faq-item__body">بله؛ تهیه و تنظیم دامنه، هاست و SSL بخشی از خدمات ماست. مالکیت دامنه و هاست به نام خودتان ثبت می‌شود.</div></div>
@@ -696,7 +669,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q4" aria-expanded="true" aria-controls="faq-a4">
               <span>بعد از&nbsp;تحویل پشتیبانی دارید؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a4" role="region" aria-labelledby="faq-q4"><div class="faq-item__body">بله. یک دوره پشتیبانی بعد از تحویل بدون هزینه است و بعد از آن به‌صورت ماهانه یا موردی ادامه پیدا می‌کند؛ امکانات جدید هم در همین مسیر به سایت اضافه می‌شود.</div></div>
@@ -705,7 +678,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q5" aria-expanded="true" aria-controls="faq-a5">
               <span>فقط سایت می‌سازید یا&nbsp;سیستم‌های داخلی کسب‌وکار را هم؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a5" role="region" aria-labelledby="faq-q5"><div class="faq-item__body">هر دو. علاوه بر سایت، CRM، پنل‌های مدیریتی، اتوماسیون فرایندها و داشبوردهای گزارش را هم طراحی و پیاده‌سازی می‌کنیم؛ جداگانه یا متصل به سایتتان.</div></div>
@@ -714,7 +687,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q6" aria-expanded="true" aria-controls="faq-a6">
               <span>بعد از&nbsp;تحویل، خودم می‌توانم محتوا را تغییر دهم؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a6" role="region" aria-labelledby="faq-q6"><div class="faq-item__body">اگر پنل مدیریت محتوا در پروژه‌ی شما باشد، بله؛ آموزش کار با آن هم بخشی از تحویل است.</div></div>
@@ -723,7 +696,7 @@
           <h3>
             <button type="button" class="faq-item__q" id="faq-q7" aria-expanded="true" aria-controls="faq-a7">
               <span>لوگو و&nbsp;برند هم طراحی می‌کنید؟</span>
-              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="#i-minus"/></svg>
+              <svg class="icon icon-minus faq-item__chevron" aria-hidden="true"><use href="public/icons.svg#i-minus"/></svg>
             </button>
           </h3>
           <div class="faq-item__a" id="faq-a7" role="region" aria-labelledby="faq-q7"><div class="faq-item__body">نه. تمرکز ما سایت، سرویس‌های آنلاین و سیستم‌های دیجیتال کسب‌وکار است. اگر لوگو ندارید، با یک نشانه‌ی ساده‌ی متنی کار را پیش می‌بریم یا شما را به یک طراح معرفی می‌کنیم.</div></div>
@@ -773,7 +746,7 @@
     <div class="footer__channels">
       <a href="https://wa.me/989000000000" target="_blank" rel="noopener" data-channel="whatsapp"><svg class="icon icon-whatsapp" aria-hidden="true"><use href="#i-whatsapp"/></svg> واتساپ</a>
       <a href="https://t.me/mitec_studio" target="_blank" rel="noopener" data-channel="telegram"><svg class="icon icon-telegram" aria-hidden="true"><use href="#i-telegram"/></svg> تلگرام</a>
-      <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram"><svg class="icon icon-instagram" aria-hidden="true"><use href="#i-instagram"/></svg> اینستاگرام</a>
+      <a href="https://instagram.com/mitec.studio" target="_blank" rel="noopener" data-channel="instagram"><svg class="icon icon-instagram" aria-hidden="true"><use href="public/icons.svg#i-instagram"/></svg> اینستاگرام</a>
     </div>
     <span class="footer__copy">© ۱۴۰۵ mitec — طراحی سایت و راهکارهای دیجیتال</span>
   </div>

@@ -383,13 +383,37 @@ export function initPortal() {
     setNav(light ? p >= 0.84 : p >= 0.86);
   }
 
+  // The first-frame layout: window.mitecPortalLayout, inline after the portal
+  // in index.html, runs before first paint and again here on every measure
+  // (resize, load, font swap), so the first frame already is the measured one
+  // and nothing moves when the modules arrive. It lives inline because a
+  // module cannot run before first paint; its notes live here, to keep the
+  // bytes the first frame waits for down.
+  // - It sizes the display (and the lid parts round it) to the viewport, then
+  //   puts the copy on the lit screen, shrinking the H1 towards its clamp
+  //   floor until it fits; where it cannot fit, or below 760px, the copy
+  //   stacks above the laptop on the forest wall and the laptop starts under
+  //   it (DESIGN.md §5). It returns what the scene needs for scrolling.
+  // - Until Vazirmatn 800 has landed, the H1 is fitted for it too: the
+  //   fallback matches its width overall, not word by word, so a line can
+  //   break elsewhere once it lands (at 1440, «دیجیتال» is 7% wider in
+  //   Vazirmatn, and at 76px the H1 takes four lines, not three). The lines it
+  //   will take are counted from each word's width in Vazirmatn 800, in em (the
+  //   VZ table: measured; the mark's .08em padding is added to its first and
+  //   last word), and the fit takes the taller of the two. A word not in the
+  //   table (the copy changed) turns this off, and the fit then follows the
+  //   fallback until the font lands.
+  // - A Vazirmatn weight that lands after first paint re-wraps the copy in the
+  //   real font, so the inline script fits again as each lands: for the 800
+  //   this confirms the size fitted for it (and drops the held height); for
+  //   the others, and wherever the fallback wrapped taller, it corrects the fit
+  //   (Chrome still records that as a small shift).
   const scene = {
     el: portal,
     measure() {
       // The layout itself (display and lid, where the copy goes and how big
-      // the H1 is, where the laptop starts) lives inline after the portal in
-      // index.html, which runs it before first paint; calling the same
-      // function here keeps the two in step. The rest is for scrolling.
+      // the H1 is, where the laptop starts): the first-frame layout above.
+      // The rest is for scrolling.
       const g = window.mitecPortalLayout(view.h, view.lite);
       ({ sw, sh, W, H, dy0, lite, tilt, stacked } = g);
       bz = g.bezel;
