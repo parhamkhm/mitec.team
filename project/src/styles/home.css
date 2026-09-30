@@ -1043,6 +1043,28 @@ html:not(.js) .scope { display: none; }
 .scope[aria-busy="true"] .scope-summary,
 .scope[aria-busy="true"] .scope-config { display: flex; flex-direction: column; gap: var(--space-4); }
 .scope[aria-busy="true"] .scope-summary .skel--heading { align-self: center; }
+/* Sized to what replaces them at each width (measured with the current
+   pricing document), so the section keeps its height when prices arrive:
+   the card's title block; the tiles at their real height; the checkout in
+   the card from 1024px and in the bar below; six tiles and «نمایش همه‌ی
+   امکانات» below 1024px, where the tabs also wrap into rows. */
+.scope[aria-busy="true"] .scope-summary .skel--heading { height: 56px; }
+.skel--pages { height: 134px; }
+.skel--tile { min-height: 150px; }
+.skel--total { height: 98px; }
+@media (min-width: 1280px) { .skel--list { height: 315px; } .skel--total { height: 110px; } }
+.scope[aria-busy="true"] .scope-addons { margin-bottom: 60px; } /* the «show all» button */
+@media (min-width: 1024px) and (max-width: 1279px) { .skel--list { height: 184px; } }
+@media (max-width: 1023px) {
+  .skel--tabs { height: 102px; border-radius: var(--radius-lg); }
+  .skel--list { height: 251px; }
+  .skel--tile { min-height: 127px; }
+  .scope[aria-busy="true"] .scope-summary :is(.skel--total, .skel--cta) { display: none; }
+  .scope[aria-busy="true"] .scope-addons > .skel--tile:nth-child(n+7) { display: none; }
+  .scope[aria-busy="true"] .scope-body { padding-bottom: 80px; } /* the bar */
+}
+@media (max-width: 599px) { .skel--tabs { height: 150px; } }
+@media (max-width: 767px) { .skel--list { height: 335px; } } /* the list folds, with «همه‌ی موارد» */
 
 /* Site-type tabs: one segmented track, centred; the native radio stays for
    its semantics and keys, the pill is its face. */
