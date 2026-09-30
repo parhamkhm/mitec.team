@@ -179,17 +179,28 @@ function processRail() {
   };
 }
 
-// About: the heading's two lines start pushed apart and meet by the time the
-// section is centred (10vw each way; 6vw on phones).
+// About: the heading's two lines start pushed apart (10vw each way; 6vw on
+// phones) and meet over the title's own passage: from the moment the whole
+// title is on screen to its top 45% down the viewport. Timed to the section,
+// most of the travel happened before the title could be seen.
 function aboutConverge() {
   const sec = document.querySelector('#about');
   const lines = sec ? $$('.about-title__line', sec) : [];
   if (lines.length < 2) return [];
-  return [passing(sec, (t) => {
-    const d = (view.w < 760 ? 6 : 10) * (view.w / 100) * (1 - outCubic(seg(t, 0, 0.5)));
-    lines[0].style.transform = d ? `translateX(${-d}px)` : '';
-    lines[1].style.transform = d ? `translateX(${d}px)` : '';
-  })];
+  const title = lines[0].parentElement;
+  let top = 0, h = 0, last = -1;
+  return [{
+    el: sec,
+    measure() { top = docTop(title); h = title.offsetHeight; last = -1; },
+    update() {
+      const t = seg(view.y, top + h - view.h, top - 0.45 * view.h);
+      if (t === last) return;
+      last = t;
+      const d = (view.w < 760 ? 6 : 10) * (view.w / 100) * (1 - outCubic(t));
+      lines[0].style.transform = d ? `translateX(${-d}px)` : '';
+      lines[1].style.transform = d ? `translateX(${d}px)` : '';
+    }
+  }];
 }
 
 // Closing CTA: the laptop echo grows from .92 to 1.04 as the band passes.
