@@ -25,9 +25,9 @@ export const APP_CONFIG = {
   captcha: { enabled: false, provider: null, siteKey: '' },
 
   contact: {
-    whatsapp: 'https://wa.me/989000000000',   // TODO replace with the real number
-    telegram: 'https://t.me/mitec_studio',    // TODO replace
-    instagram: 'https://instagram.com/mitec.studio'
+    whatsapp: 'https://wa.me/989381461858',
+    telegram: 'https://t.me/+989381461858',
+    instagram: 'https://instagram.com/mitec.studio' // TODO: the handle is not decided yet
   },
 
   timeoutMs: 15000
