@@ -437,7 +437,7 @@ Inner pages (and any hero that is not the home portal):
 
 ### Final CTA band
 
-- Full width, `data-surface="dark"`, grid texture + one mint glow.
+- Full width, `data-surface="dark"`, grid texture. No glow: the band is built without one, and none is to be added.
 - Heading `--color-text-primary`, one line of `--color-text-body`, one primary button (mint).
 - Home page: centred. The heading, line and buttons sit on a "screen" framed by a `--color-border` outline echo of the hero laptop; the heading reveals word by word. On the screen, under the primary: the channels pair with its lead-in «یا مستقیم پیام بدهید:» (`--color-text-muted`), then «پیگیری سفارش» and Instagram as text links (Direct messages). No hairline above them.
 
