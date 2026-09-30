@@ -20,6 +20,7 @@ import { track, view, whenMotion, kick } from './engine.js';
 import { clamp, seg, lerp, damp, inCubic, outCubic, inOutSine, inOutCubic } from './easing.js';
 import { icon as glyph } from '../../utils/icon.js';
 import { loadPortfolio } from '../../utils/portfolio.js';
+import { tie } from '../../utils/format.js';
 
 const DEPTH = 1600; // the stage's perspective (portal.css)
 
@@ -48,10 +49,11 @@ const CHART = '<svg class="portal__card-chart" viewBox="0 0 204 54" width="204" 
   + '<path d="M0 46 26 40 52 43 78 30 104 33 130 22 156 24 182 10 204 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 const WALL_TILES = 20; // 5 × 4
 
+// Text goes through tie() (DESIGN.md §9: function words tied to the next word).
 const make = (tag, cls, text) => {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
-  if (text) n.textContent = text;
+  if (text) n.textContent = tie(text);
   return n;
 };
 const icon = (name) => {
@@ -131,7 +133,7 @@ export function initPortal() {
         seo: () => {
           const b = make('div');
           const label = make('span');
-          label.append(`${data.seo.before} `, make('span', 'portal__card-num', data.seo.value), ` ${data.seo.after}`);
+          label.append(`${tie(data.seo.before)} `, make('span', 'portal__card-num', data.seo.value), ` ${tie(data.seo.after)}`);
           b.append(icon('search'), label);
           return b;
         },

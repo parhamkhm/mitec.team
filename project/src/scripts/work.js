@@ -26,7 +26,7 @@
 
 import { track, kick, whenMotion } from './motion/engine.js';
 import { clamp, damp } from './motion/easing.js';
-import { faNumber } from '../utils/format.js';
+import { faNumber, tie } from '../utils/format.js';
 import { icon, setIcon } from '../utils/icon.js';
 import { loadPortfolio } from '../utils/portfolio.js';
 
@@ -92,9 +92,10 @@ function iconButton(cls, name, label) {
   return b;
 }
 const srcsetOf = (im) => [im.src960 && `${im.src960} 960w`, im.src1920 && `${im.src1920} 1920w`].filter(Boolean).join(', ');
+// Text from portfolio.json goes through tie() (DESIGN.md §9), wherever it is shown.
 const chips = (tags) => (tags || []).map((t) => {
   const chip = h('span', 'work-card__tag');
-  chip.textContent = t;
+  chip.textContent = tie(t);
   return chip;
 });
 
@@ -277,11 +278,11 @@ function build(section, host, projects) {
     s.pan.classList.remove('is-ready');
     s.full.removeAttribute('src');
     s.fullSrc = im?.full || '';
-    s.backTitle.textContent = pr.nameFa || pr.title || nameOf(pr);
+    s.backTitle.textContent = tie(pr.nameFa || pr.title || nameOf(pr));
     s.backTags.replaceChildren(...chips(pr.tags));
     s.backImg.hidden = !im?.ambient;
     if (im?.ambient) s.backImg.src = im.ambient;
-    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = pr[key] || ''; });
+    TABS.forEach(([key], k) => { s.panels[k].firstChild.textContent = tie(pr[key]); });
     if (pr.url && pr.url !== '#') {
       const a = h('a', 'btn btn--sm btn--outline work-card__site', { target: '_blank', rel: 'noopener' });
       a.href = pr.url;
@@ -479,8 +480,9 @@ function build(section, host, projects) {
     const pr = projects[p];
     const inc = capItems[1 - capCur], out = capItems[capCur];
     capCur = 1 - capCur;
-    inc.name.textContent = inc.name.title = nameOf(pr);
-    inc.summary.textContent = summaryOf(pr);
+    inc.name.textContent = tie(nameOf(pr));
+    inc.name.title = nameOf(pr);
+    inc.summary.textContent = tie(summaryOf(pr));
     inc.summary.title = summaryOf(pr);
     // Manual moves are announced once; autoplay's never.
     clearTimeout(politeTimer);

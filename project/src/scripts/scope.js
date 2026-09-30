@@ -48,10 +48,13 @@ const STICKY_GAP = 24; // px between the nav and the sticky card
 const ADDONS_SHOWN = { wide: 9, narrow: 6 }; // tiles shown before «show all add-ons»
 const root = document.documentElement;
 
+// Every text the calculator shows (from the pricing document, or a COPY
+// default) goes through tie() (DESIGN.md §9: function words tied to the next
+// word), so text edited in pricing.json follows the rule without &nbsp;.
 const el = (tag, cls, text) => {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
-  if (text != null) n.textContent = text;
+  if (text != null) n.textContent = tie(String(text));
   return n;
 };
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -60,7 +63,7 @@ const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 // slides in, both in one grid cell so the line never reflows mid-fade.
 function swap(box, text) {
   const old = box.lastElementChild;
-  if (old?.textContent === text) return;
+  if (old?.textContent === tie(text)) return; // el() ties the text it sets
   box.append(el('span', null, text));
   if (!old) return;
   if (!root.classList.contains('motion')) return old.remove();
@@ -121,19 +124,19 @@ export async function initScope() {
   // the figure carries its caveat wherever it is seen.
   const sampleBadge = () => {
     const badge = el('span', 'badge badge--highlight');
-    badge.append(icon('clock'), S.placeholderBadge);
+    badge.append(icon('clock'), tie(S.placeholderBadge));
     return badge;
   };
   const sample = P.placeholder && S.placeholderBadge;
 
   // ---- heading
   const title = el('div', 'scope-head__title');
-  const h2 = el('h2', 'section-heading__title section-heading__title--display-3', tie(S.title));
+  const h2 = el('h2', 'section-heading__title section-heading__title--display-3', S.title);
   h2.id = 'scope-title';
   title.append(h2);
   if (sample) title.append(sampleBadge());
   head.replaceChildren(el('span', 'section-heading__eyebrow', S.eyebrow), title);
-  if (S.subtitle) head.append(el('p', 'section-heading__sub', tie(S.subtitle)));
+  if (S.subtitle) head.append(el('p', 'section-heading__sub', S.subtitle));
 
   // ---- site-type tabs: a native radio group, so the arrow keys, roving focus
   // and their RTL direction come from the browser.
