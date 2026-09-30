@@ -99,11 +99,17 @@ export async function initScope() {
   const types = P ? P.siteTypes.filter((t) => t.active) : [];
   sec.removeAttribute('aria-busy');
 
-  // Unavailable: one line and the way on, nothing else.
+  // Unavailable: one line, the way on, and the direct-message pair (the same
+  // tier-2 pair as About's; DESIGN.md, the direct-message tiers). The line
+  // names the section while there is no heading.
   if (!types.length) {
     console.error('[scope] pricing unavailable', res.error || 'no active site types');
     head.replaceChildren();
-    body.replaceChildren(el('p', 'scope-error', COPY.error), cta(COPY.cta));
+    const line = el('p', 'scope-error', COPY.error);
+    line.id = 'scope-title';
+    const pair = document.querySelector('.about-channels .channels')?.cloneNode(true);
+    body.replaceChildren(line, cta(COPY.cta), ...(pair ? [pair] : []));
+    sec.setAttribute('aria-labelledby', line.id);
     return;
   }
 
@@ -133,6 +139,7 @@ export async function initScope() {
   const title = el('div', 'scope-head__title');
   const h2 = el('h2', 'section-heading__title section-heading__title--display-3', S.title);
   h2.id = 'scope-title';
+  sec.setAttribute('aria-labelledby', h2.id); // named once the heading exists
   title.append(h2);
   if (sample) title.append(sampleBadge());
   head.replaceChildren(el('span', 'section-heading__eyebrow', S.eyebrow), title);
@@ -510,12 +517,21 @@ export async function initScope() {
 
   // From 1024px the checkout is the foot of the summary card; below, it is the
   // bar after the columns (pinned by CSS while the calculator is on screen).
+  // From 1024px the card also follows the slider and the tiles in the DOM
+  // (home.css keeps it in the start column), so the keyboard reaches the
+  // choices before the CTA; below, it comes first, as it reads.
+  const cols = summary.parentNode;
   function place() {
     const inCard = wide.matches;
     if (inCard === (checkout.parentNode === summary) && checkout.parentNode) return;
-    const focused = checkout.contains(document.activeElement) ? document.activeElement : null;
-    if (inCard) summary.insertBefore(checkout, note);
-    else body.append(checkout);
+    const focused = summary.contains(document.activeElement) || checkout.contains(document.activeElement) ? document.activeElement : null;
+    if (inCard) {
+      summary.insertBefore(checkout, note);
+      cols.append(summary);
+    } else {
+      body.append(checkout);
+      cols.prepend(summary);
+    }
     focused?.focus({ preventScroll: true });
   }
 

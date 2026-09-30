@@ -1082,7 +1082,13 @@ html:not(.js) .scope { display: none; }
 .scope-unsure::before { content: ''; position: absolute; inset-block: calc(50% - 22px); inset-inline: 0; }
 
 .scope-cols { --stagger: 80ms; display: grid; gap: var(--space-5); align-items: start; }
-@media (min-width: 1024px) { .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+@media (min-width: 1024px) {
+  .scope-cols { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  /* The card follows the choices in the DOM here (scope.js), for the tab
+     order, and keeps the start column. */
+  .scope-cols > .scope-summary { grid-column: 1; grid-row: 1; }
+  .scope-cols > .scope-config { grid-column: 2; grid-row: 1; }
+}
 @media (min-width: 1280px) { .scope-cols { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
 
 /* The summary card. From 1024px it is always sticky and never taller than
@@ -1238,6 +1244,7 @@ html.motion .scope-lines:not([hidden]) { animation: scope-lines-in var(--dur) va
 .scope-summary .scope-cta { width: 100%; }
 .scope-disclaimer { margin-top: calc(-1 * var(--space-2)); font-size: var(--text-caption); color: var(--color-text-muted); text-align: center; }
 .scope-error { color: var(--color-text-secondary); text-align: center; }
+.scope-body > .channels { width: min(100%, 30rem); align-self: center; } /* the error state's direct-message pair */
 .scope-body > .scope-cta { align-self: center; }
 
 /* The end column: pages, then the add-on tiles. */
