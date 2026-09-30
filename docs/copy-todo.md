@@ -23,7 +23,6 @@ Conventions every new string follows (from `copy-final.md`):
 
 | Where | Text | Problem | Suggestion |
 |---|---|---|---|
-| `app.config.js` / `index.html` → Instagram link | Instagram `mitec.studio` | Placeholder handle; the handle is not decided yet. WhatsApp and Telegram are real (`989381461858`). The link texts are final: «واتساپ · تلگرام · اینستاگرام». | The real handle, in `app.config.js` and the two static links in `index.html`. |
 | `index.html` → Testimonials (hidden) and `testimonials.json` | Two sample quotes starting «متن نمونه:» | The section is hidden until real quotes exist. | When real quotes arrive: put them in, remove `hidden` and the «نمونه» badge, and swap `band` / `band--alt` on the sections after it (see the comment in `index.html`). |
 | `pricing.json` → first `included` item of ecommerce, menu, catalog, landing, custom | e.g. «فروشگاه اینترنتی / فروش محصول، سبد خرید و پرداخت آنلاین» | Not covered by `copy-final.md`; reused from the order catalog. | Owner to review. |
 | `scope.js` → `COPY.picked` | «{n} امکان انتخاب شده» | Final text, but it lives in code because V4 allowed no data change other than `group`. | Move to `section` in `pricing.json` with the next data-model change. |
@@ -95,5 +94,5 @@ the total, «پیگیری سفارش» as a tier-3 link, and the hero float card
 | Calculator total «جمع: از ۲۷ میلیون تومان» | «برآورد: از …». The «از» stays (changing it would need a data field). |
 | Six drafted add-on descriptions | Final text for all twelve add-ons, including the new CRM, automation and analytics add-ons. |
 | «سفارش‌ساز» a word visitors may not know | Kept on purpose as the tool's one name; the CTA band introduces it. |
-| Instagram link shown as «@mitec.studio» | Link text «اینستاگرام» (the URL is still a placeholder, above). |
+| Instagram link shown as a handle | Link text «اینستاگرام»; the link is https://instagram.com/mitec.team. |
 | Hero float cards (`site-copy.json` → `hero.floatCards`: «رتبه‌ی ۱ گوگل»، «سفارش جدید ثبت شد»، «۳۲٪ رشد») awaiting the owner's reading of their figures | Confirmed by the owner as decorative illustration (`aria-hidden`), not factual claims; recorded in `PRODUCT.md` → Evidence on Hand. |

@@ -27,7 +27,7 @@ export const APP_CONFIG = {
   contact: {
     whatsapp: 'https://wa.me/989381461858',
     telegram: 'https://t.me/+989381461858',
-    instagram: 'https://instagram.com/mitec.studio' // TODO: the handle is not decided yet
+    instagram: 'https://instagram.com/mitec.team'
   },
 
   timeoutMs: 15000
