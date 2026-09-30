@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-27T12:41:19Z",
+  "generatedAt": "2026-09-30T15:49:47Z",
   "title": "Design System: mitec.team",
   "extensions": {
     "colorMeta": {
@@ -258,6 +258,16 @@
         "name": "reveal-rise",
         "value": "28px",
         "purpose": "How far an entrance rises (20–28px per §13)."
+      },
+      {
+        "name": "ease-swap",
+        "value": "cubic-bezier(1, 0, 0, 1)",
+        "purpose": "The Process spotlight's cross-fade: slow at both ends, through the middle in about 40ms, with the text switching colour at its midpoint."
+      },
+      {
+        "name": "dur-media",
+        "value": "700ms",
+        "purpose": "Media crossfades, such as Work's ambient backdrop when the slide changes."
       }
     ],
     "breakpoints": [
@@ -274,8 +284,16 @@
         "value": "max-width: 860px"
       },
       {
+        "name": "work-sheet",
+        "value": "max-width: 989px"
+      },
+      {
         "name": "desktop",
         "value": "1024px"
+      },
+      {
+        "name": "process-row",
+        "value": "1200px"
       },
       {
         "name": "wide",
@@ -296,9 +314,9 @@
       "name": "Tonal Button",
       "kind": "button",
       "refersTo": "color-tonal",
-      "description": "The second conversion path, e.g. the nav's «شروع پروژه».",
+      "description": "The second conversion path: the nav's «شروع پروژه» and the WhatsApp / Telegram pair. On light a 1px --color-border-hover edge (--color-tonal-border); none on forest. Hover changes the fill; the edge stays.",
       "html": "<a class=\"ds-btn-tonal\" href=\"#\" dir=\"rtl\">شروع پروژه <svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 12H5\"/><path d=\"m12 19-7-7 7-7\"/></svg></a>",
-      "css": ".ds-btn-tonal { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 15px 30px; font-family: var(--font-body); font-size: var(--text-body-lg); font-weight: 700; line-height: 1; border-radius: var(--radius-pill); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out); padding: 8px 16px; font-size: var(--text-body-sm); gap: 7px; background: var(--color-tonal); color: var(--color-tonal-text); } .ds-btn-tonal:hover { background: var(--color-tonal-hover); } .ds-btn-tonal:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }"
+      "css": ".ds-btn-tonal { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 15px 30px; font-family: var(--font-body); font-size: var(--text-body-lg); font-weight: 700; line-height: 1; border-radius: var(--radius-pill); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out); padding: 8px 16px; font-size: var(--text-body-sm); gap: 7px; background: var(--color-tonal); color: var(--color-tonal-text); border-color: var(--color-tonal-border); } .ds-btn-tonal:hover { background: var(--color-tonal-hover); } .ds-btn-tonal:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }"
     },
     {
       "name": "Outline Button",
@@ -320,7 +338,7 @@
       "name": "Service Card",
       "kind": "card",
       "refersTo": "color-surface",
-      "description": "A light surface card: subtle border, forest-tinted card shadow, a tonal icon chip; on hover the border warms to --color-border-hover and the shadow lifts to --shadow-elevated.",
+      "description": "A light surface card: subtle border, forest-tinted card shadow, a tonal icon chip; on hover the border warms to --color-border-hover and the shadow lifts to --shadow-elevated. The whole card is its link: the link on the last line, its ::before covering the card, named «شروع پروژه: {title}»; keyboard focus rings the card.",
       "html": "<article class=\"ds-card\" dir=\"rtl\"><span class=\"ds-card__chip\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m16 18 6-6-6-6\"/><path d=\"m8 6-6 6 6 6\"/></svg></span><h3 class=\"ds-card__title\">طراحی و ساخت سایت</h3><p class=\"ds-card__text\">فروشگاه اینترنتی، سایت شرکتی، منوی آنلاین، کاتالوگ و صفحه‌ی فرود؛ با رابط اختصاصی، نه قالب آماده.</p></article>",
       "css": ".ds-card { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--pad-card); border-radius: var(--radius-card); background: var(--color-surface); border: 1px solid var(--color-border-subtle); box-shadow: var(--shadow-card); font-family: var(--font-body); transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); } .ds-card:hover { border-color: var(--color-border-hover); box-shadow: var(--shadow-elevated); } .ds-card__chip { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--color-tonal); color: var(--color-tonal-text); } .ds-card__title { margin: 0; font-size: var(--text-h4); font-weight: 700; line-height: 1.2; color: var(--color-text-primary); } .ds-card__text { margin: 0; font-size: var(--text-body); line-height: var(--lh-body); color: var(--color-text-secondary); }"
     },
@@ -360,14 +378,14 @@
       "name": "Segmented Tabs",
       "kind": "custom",
       "refersTo": "color-surface-sunken",
-      "description": "The calculator's site-type switch: one track on --color-surface-sunken; the selected tab is --color-surface with --shadow-card. 44px targets.",
+      "description": "The calculator's site-type switch: one track on --color-surface-sunken; the selected tab is --color-surface with --shadow-card. 44px targets. In forced colours each tab is outlined and the selected one takes the system's selection colours.",
       "html": "<div class=\"ds-tabs\" role=\"tablist\" dir=\"rtl\"><button class=\"ds-tabs__btn is-active\" role=\"tab\" aria-selected=\"true\">فروشگاهی</button><button class=\"ds-tabs__btn\" role=\"tab\" aria-selected=\"false\">شرکتی</button><button class=\"ds-tabs__btn\" role=\"tab\" aria-selected=\"false\">منوی آنلاین</button></div>",
-      "css": ".ds-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--radius-pill); background: var(--color-surface-sunken); } .ds-tabs__btn { min-height: 44px; padding: 8px 18px; border-radius: var(--radius-pill); border: 1px solid transparent; cursor: pointer; font-family: var(--font-body); font-size: var(--text-body-sm); font-weight: 700; background: transparent; color: var(--color-text-secondary); transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out); } .ds-tabs__btn:hover { color: var(--color-text-primary); } .ds-tabs__btn.is-active { background: var(--color-surface); color: var(--color-text-primary); box-shadow: var(--shadow-card); } .ds-tabs__btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); }"
+      "css": ".ds-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--radius-pill); background: var(--color-surface-sunken); } .ds-tabs__btn { min-height: 44px; padding: 8px 18px; border-radius: var(--radius-pill); border: 1px solid transparent; cursor: pointer; font-family: var(--font-body); font-size: var(--text-body-sm); font-weight: 700; background: transparent; color: var(--color-text-secondary); transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out); } .ds-tabs__btn:hover { color: var(--color-text-primary); } .ds-tabs__btn.is-active { background: var(--color-surface); color: var(--color-text-primary); box-shadow: var(--shadow-card); } .ds-tabs__btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; box-shadow: 0 0 0 6px var(--color-focus-halo); } @media (forced-colors: active) { .ds-tabs__btn { border-color: ButtonBorder; } .ds-tabs__btn.is-active { forced-color-adjust: none; background: SelectedItem; color: SelectedItemText; border-color: SelectedItem; } }"
     }
   ],
   "narrative": {
     "northStar": "Read in daylight, recognize in forest, act on one green — and let amber only ever whisper.",
-    "overview": "Sage-light surfaces carry the reading. Deep forest green (the Instagram color) carries the identity, in tiles and bands. One action green carries every clickable primary action and nothing else. Amber is a rare highlight, never an action. If a new element makes any of these jobs ambiguous, its color is wrong.\n\nBrand: Mitec (میتک), a studio for websites and digital solutions (online services, CRM, automation, data analytics, support). Target market: Iran. Language: Persian, RTL (`<html lang=\"fa\" dir=\"rtl\">`). Latin appears only in brand names and the `mitec.team` wordmark. Font: Vazirmatn (weights 400 / 500 / 700 / 800). Fallback: `Tahoma, \"Segoe UI\", sans-serif`. Numerals: use Persian digits (۰–۹) in UI copy and stats. Visual link: the site must feel like the same brand as the Instagram page (dark green `#12312A` posts, mint `#57B79A`, amber `#E0A25C`, subtle grid texture, device mockups on green).",
+    "overview": "Sage-light surfaces carry the reading. Deep forest green (the Instagram color) carries the identity, in tiles and bands. One action green carries every clickable primary action and nothing else. Amber is a rare highlight, never an action. If a new element makes any of these jobs ambiguous, its color is wrong.\n\nBrand: Mitec (میتک), a studio for websites and digital solutions (online services, CRM, automation, data analytics, support). Target market: Iran. Language: Persian, RTL (`<html lang=\"fa\" dir=\"rtl\">`). Latin appears only in brand names and the `mitec.team` wordmark. Font: Vazirmatn (weights 400 / 500 / 700 / 800), self-hosted. Fallback: the device's own Persian font, scaled and re-metricked to Vazirmatn so the swap moves no text (Tahoma, Geeza Pro, Noto Naskh Arabic or Noto Sans Arabic; `tokens.css`), then `Tahoma, \"Segoe UI\", sans-serif`. Everything is served from this origin; nothing loads from a CDN. That includes the icons: Lucide (v0.544.0, ISC) and the WhatsApp and Telegram marks (Simple Icons v16.33.0, CC0), as SVG symbols. The ones a first view can show are an inline sprite at the top of `index.html`; the rest are in `public/icons.svg`, used as `<use href=\"public/icons.svg#i-NAME\">` (it works without JS). `src/utils/icon.js` picks whichever holds the symbol. An icon that moves into a first view moves its symbol into the sprite. Numerals: use Persian digits (۰–۹) in UI copy and stats. Visual link: the site must feel like the same brand as the Instagram page (dark green `#12312A` posts, mint `#57B79A`, amber `#E0A25C`, subtle grid texture, device mockups on green).",
     "keyCharacteristics": [
       "Sage-light surfaces carry the reading.",
       "Deep forest green (the Instagram color) carries the identity, in tiles and bands.",
@@ -387,7 +405,7 @@
       },
       {
         "name": "One solid primary button per viewport",
-        "body": "One solid primary button per viewport , and at most one per section.",
+        "body": "One solid primary button per viewport, and at most one per section.",
         "section": "colors"
       },
       {
@@ -431,18 +449,33 @@
         "section": "typography"
       },
       {
-        "name": "Persian: treat 4",
+        "name": "Persian: treat 4.5:1 as the minimum even for large text under 24px",
         "body": "Persian: treat 4.5:1 as the minimum even for large text under 24px. Thin joins and dots lose definition faster than Latin.",
         "section": "typography"
       },
       {
-        "name": "Line-height ≥ 1",
+        "name": "Line-height ≥ 1.8 for Persian body text",
         "body": "Line-height ≥ 1.8 for Persian body text.",
         "section": "typography"
       },
       {
-        "name": "Letter-spacing 0 on Persian text, headings and eyebrows included (`--ls-*` are 0)",
+        "name": "Letter-spacing 0 on Persian text",
         "body": "Letter-spacing 0 on Persian text, headings and eyebrows included (`--ls-*` are 0). Persian is a joined script: any tracking, positive or negative, opens gaps in the joins. Latin wordmarks may keep theirs.",
+        "section": "typography"
+      },
+      {
+        "name": "Line breaks",
+        "body": "Line breaks. Headings, section subs, card titles, stat labels, FAQ questions, the hero statement's first line and the closing heading use `text-wrap: balance`; paragraphs use `text-wrap: pretty`. Nothing may break inside a word or across a ZWNJ (no `word-break`, `overflow-wrap: anywhere` or hyphenation). Checked at 320, 390, 768, 1024, 1280, 1440 and 1920: no heading or sub ends on a one-word line, except the card title «CRM و سیستم‌های مدیریتی» at 320, where its 172px column beside the chip holds one of its long words per line.",
+        "section": "typography"
+      },
+      {
+        "name": "Word ties",
+        "body": "Word ties. The short function words «و»، «از»، «به»، «با»، «در»، «تا»، «بدون»، «یا» and «که» are tied to the word after them with a no-break space, so no line ends on one. In the markup: by hand (`&nbsp;`) in `index.html`'s headings, subs, stat labels, card titles and FAQ questions. At render time: `tie()` (`src/utils/format.js`), for all text that comes from a data file, in the same place it is rendered today, so the timing and first paint are unchanged: `portfolio.json` (Work's cards, tags and caption), `pricing.json` (every string the calculator shows, its defaults included) and `site-copy.json` (the hero's float cards). Text edited in those files follows the rule without a hand-placed `&nbsp;`. `faq.json` and `testimonials.json` are not rendered from data today: the FAQ is markup in `index.html`, and Testimonials is hidden. Two exceptions: the card title «CRM و سیستم‌های مدیریتی» is not tied, because the tie would leave «مدیریتی» alone on its last line; and the hero's sub is not tied, because in the first view its tied units broke differently in the fallback and in Vazirmatn, so the font swap moved its text (CLS on a slow phone 0.0006 → 0.0014).",
+        "section": "typography"
+      },
+      {
+        "name": "Phones (below 760px)",
+        "body": "Phones (below 760px): section subs are `--text-body-lg` (18px), like the hero's, so they sit under the 30px H2s (at 23px the two were 1.3 apart). Every section H2, About's included, is `--text-display-3` at 700.",
         "section": "typography"
       },
       {
@@ -476,6 +509,16 @@
         "section": "motion"
       },
       {
+        "name": "The first frame is the final layout",
+        "body": "The first frame is the final layout. What paints first stays where it is: layout that needs measuring runs inline before first paint (the hero), space is reserved for what arrives later (the calculator's skeleton, Work's stage and caption), and the metric-matched fallback fonts keep the font swap from moving text. Target: CLS under 0.1 on a throttled phone.",
+        "section": "motion"
+      },
+      {
+        "name": "Layers only while they're needed",
+        "body": "Layers only while they're needed. `will-change` sits only under `.in-view`, which the engine (and Work's own observer) sets on a tracked element near the viewport.",
+        "section": "motion"
+      },
+      {
         "name": "Reveal once, calmly",
         "body": "Reveal once, calmly. Entrances play once as a section arrives: rise 20–28px and fade, 600–700ms `--ease-entrance`, 60–90ms stagger. Content that keyboard focus reaches shows at once.",
         "section": "motion"
@@ -487,7 +530,7 @@
       },
       {
         "name": "Letter-spacing 0 on Persian text",
-        "body": "Letter-spacing 0 on Persian text , animated or not (§9).",
+        "body": "Letter-spacing 0 on Persian text, animated or not (§9).",
         "section": "motion"
       },
       {
@@ -502,7 +545,7 @@
       },
       {
         "name": "Tools respond; they don't perform",
-        "body": "Tools respond; they don't perform. In the pricing calculator nothing is scroll-linked: tabs, tiles and toggle circles transition background and border over `--dur`, and a changed figure cross-fades (the old value up and out 8px, the new one in, 220ms; instant without `html.motion`). The sticky summary card and the bottom bar are plain CSS `position: sticky`. Keyboard focus scrolled into view clears the nav and the bar (`scroll-margin`).",
+        "body": "Tools respond; they don't perform. In the pricing calculator nothing is scroll-linked: tabs, tiles and toggle circles transition background and border over `--dur`, and a changed figure cross-fades (the old value up and out 8px, the new one in, 220ms; instant without `html.motion`). The sticky summary card and the bottom bar are plain CSS `position: sticky`. Keyboard focus scrolled into view clears the nav and the bar (`scroll-margin`, from the bar's measured height, `--scope-bar-h`, as the breakdown can make it taller), on every control in the calculator, the site-type tabs included.",
         "section": "motion"
       }
     ],
