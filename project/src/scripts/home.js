@@ -128,6 +128,15 @@ function initFaq() {
     setOpen(item, false);
   }
 
+  // A link to the calculator exists only with JS: without it the calculator
+  // is hidden, and the markup carries the same words as plain text.
+  for (const span of list.querySelectorAll('span[data-href]')) {
+    const a = document.createElement('a');
+    a.href = span.dataset.href;
+    a.textContent = span.textContent;
+    span.replaceWith(a);
+  }
+
   list.addEventListener('click', (e) => {
     const btn = e.target.closest('.faq-item__q');
     if (!btn) return;
